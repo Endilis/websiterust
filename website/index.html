@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RustInfo · Статус и сервера</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0e0f13;
+      --card: rgba(255,255,255,0.04);
+      --muted: #9ba0ad;
+      --accent: #e36f2d;
+      --accent-2: #f2b441;
+      --border: rgba(255,255,255,0.08);
+      --text: #f6f7fb;
+      --shadow: 0 10px 40px rgba(0,0,0,0.4);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      background: radial-gradient(circle at 20% 20%, rgba(227,111,45,0.10), transparent 25%),
+                  radial-gradient(circle at 80% 0%, rgba(242,180,65,0.12), transparent 28%),
+                  radial-gradient(circle at 80% 70%, rgba(227,111,45,0.10), transparent 30%),
+                  var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .wrap {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: var(--shadow);
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    button, .btn {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 150ms ease, border-color 150ms ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    button.primary, .btn.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: transparent;
+      color: #0b0c10;
+      box-shadow: 0 10px 30px rgba(227,111,45,0.35);
+    }
+    button:hover, .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(255,255,255,0.18);
+    }
+    button:active, .btn:active {
+      transform: translateY(0);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow);
+    }
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+    .muted { color: var(--muted); font-size: 14px; margin: 0; }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+      background: #8ddf5f;
+      box-shadow: 0 0 0 6px rgba(141,223,95,0.15);
+    }
+    .inline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .data-box {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+      border: 1px dashed var(--border);
+      font-family: "Space Grotesk", monospace;
+      white-space: pre-wrap;
+      word-break: break-word;
+      min-height: 80px;
+    }
+    .pill-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    footer {
+      margin-top: 32px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <div class="logo-mark"></div>
+        <div class="title">RustInfo • Статус</div>
+      </div>
+      <div class="actions">
+        <button class="primary" id="refreshBtn">Обновить статус</button>
+        <a class="btn" href="https://stats.rustinfo.online" target="_blank" rel="noreferrer">Перейти к API</a>
+      </div>
+    </header>
+
+    <div class="grid" style="margin-bottom:16px;">
+      <div class="card">
+        <div class="inline">
+          <span class="status-dot" id="statusDot"></span>
+          <h3 id="statusTitle">Проверка воркера…</h3>
+        </div>
+        <p class="muted">Данные из Cloudflare Worker: быстрый ответ для сайта и бота.</p>
+        <div class="pill-row">
+          <span class="pill" id="latency">latency: —</span>
+          <span class="pill" id="updated">обновлено: —</span>
+        </div>
+        <div class="data-box" id="workerMessage">Загрузка…</div>
+      </div>
+      <div class="card">
+        <h3>Действия</h3>
+        <p class="muted">Быстрые действия для мониторинга.</p>
+        <div class="pill-row">
+          <button class="btn" id="pingBtn">Ping</button>
+          <button class="btn" id="copyBtn">Скопировать ответ</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      RustInfo • Rust+ helper · Работает на Worker API
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
