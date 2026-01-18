@@ -180,9 +180,14 @@
           const count = data.guild_count || 0;
           document.getElementById('guildCount').textContent = count;
           document.getElementById('guildCountText').textContent = count;
+          console.log('Guild metrics loaded:', data);
+        } else {
+          console.error('Failed to load guild metrics, status:', res.status);
         }
       } catch (e) {
         console.error('Failed to fetch guild metrics:', e);
+        document.getElementById('guildCount').textContent = '?';
+        document.getElementById('guildCountText').textContent = '?';
       }
     }
     
@@ -220,11 +225,10 @@
     }
     document.addEventListener('DOMContentLoaded', () => {
       fetchGuildMetrics(); // Загружаем метрики при загрузке страницы
-      fetchWorker();
+      setInterval(fetchGuildMetrics, 60000); // Обновляем каждую минуту
       document.getElementById('refreshBtn').addEventListener('click', fetchWorker);
       document.getElementById('copyBtn').addEventListener('click', copyResponse);
       document.getElementById('pingBtn').addEventListener('click', fetchWorker);
-          const WORKER_URL = 'https://stats.rustinfo.online/metrics/guilds';
     });
   </script>
 </body>
