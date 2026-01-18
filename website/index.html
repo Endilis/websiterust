@@ -4,9 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RustInfo · Статус и сервера</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #0e0f13;
@@ -21,12 +18,9 @@
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: "Space Grotesk", system-ui, sans-serif;
-      background: radial-gradient(circle at 20% 20%, rgba(227,111,45,0.10), transparent 25%),
-                  radial-gradient(circle at 80% 0%, rgba(242,180,65,0.12), transparent 28%),
-                  radial-gradient(circle at 80% 70%, rgba(227,111,45,0.10), transparent 30%),
-                  var(--bg);
-      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0e0f13;
+      color: #f6f7fb;
       min-height: 100vh;
     }
     .wrap {
@@ -196,6 +190,51 @@
     </footer>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+const WORKER_URL = "https://stats.rustinfo.online";
+
+async function fetchWorker() {
+  const messageEl = document.getElementById("workerMessage");
+  const statusTitle = document.getElementById("statusTitle");
+  const statusDot = document.getElementById("statusDot");
+  const latency = document.getElementById("latency");
+  const updated = document.getElementById("updated");
+
+  const started = performance.now();
+  messageEl.textContent = "Загрузка…";
+  statusTitle.textContent = "Проверяем...";
+  statusDot.style.background = "#f6d14a";
+
+  try {
+    const res = await fetch(WORKER_URL);
+    const text = await res.text();
+    const ms = Math.round(performance.now() - started);
+
+    latency.textContent = `latency: ${ms} ms`;
+    updated.textContent = `обновлено: ${new Date().toLocaleTimeString()}`;
+
+    statusTitle.textContent = res.ok ? "Воркера отвечает" : "Ответ с ошибкой";
+    statusDot.style.background = res.ok ? "#8ddf5f" : "#f97a6a";
+    messageEl.textContent = text;
+  } catch (e) {
+    statusTitle.textContent = "Нет ответа";
+    statusDot.style.background = "#f97a6a";
+    messageEl.textContent = "Ошибка загрузки данных";
+    latency.textContent = "latency: —";
+  }
+}
+
+function copyResponse() {
+  const text = document.getElementById("workerMessage").textContent;
+  navigator.clipboard.writeText(text).catch(() => {});
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("refreshBtn").addEventListener("click", fetchWorker);
+  document.getElementById("copyBtn").addEventListener("click", copyResponse);
+  document.getElementById("pingBtn").addEventListener("click", fetchWorker);
+  fetchWorker();
+});
+  </script>
 </body>
 </html>
