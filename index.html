@@ -3,192 +3,259 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RustInfo · Статус и сервера</title>
+  <title>RustInfo — Статус сервера и инструменты</title>
   <style>
-    :root {
-      --bg: #0e0f13;
-      --card: rgba(255,255,255,0.04);
-      --muted: #9ba0ad;
-      --accent: #e36f2d;
-      --accent-2: #f2b441;
-      --border: rgba(255,255,255,0.08);
-      --text: #f6f7fb;
-      --shadow: 0 10px 40px rgba(0,0,0,0.4);
-    }
-    * { box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #0e0f13;
-      color: #f6f7fb;
-      min-height: 100vh;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+      color: #e0e0e0;
+      line-height: 1.6;
     }
-    .wrap {
-      max-width: 1160px;
+    
+    /* Navigation */
+    nav {
+      background: rgba(10, 10, 10, 0.95);
+      border-bottom: 1px solid rgba(227, 111, 45, 0.2);
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav .container {
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 32px 20px 64px;
-    }
-    header {
+      padding: 0 20px;
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 16px;
       justify-content: space-between;
-      margin-bottom: 28px;
-    }
-    .logo {
-      display: flex;
       align-items: center;
-      gap: 12px;
     }
-    .logo-mark {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: var(--shadow);
-    }
-    .title {
-      font-size: 22px;
+    nav .logo {
+      font-size: 24px;
       font-weight: 700;
-      letter-spacing: 0.01em;
+      color: #e36f2d;
+      text-decoration: none;
     }
-    .actions {
+    nav a {
+      color: #b0b0b0;
+      text-decoration: none;
+      margin-left: 30px;
+      font-size: 14px;
+      transition: color 200ms;
+    }
+    nav a:hover { color: #e36f2d; }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 80px 20px;
+      text-align: center;
+      background: radial-gradient(circle at 50% 0%, rgba(227,111,45,0.15), transparent 70%);
+    }
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #e36f2d, #f2b441);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 20px;
+      color: #a0a0a0;
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+    .btn-group {
       display: flex;
-      gap: 10px;
+      gap: 12px;
+      justify-content: center;
       flex-wrap: wrap;
     }
-    button, .btn {
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      padding: 10px 16px;
-      border-radius: 12px;
+    .btn {
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
-      transition: transform 120ms ease, box-shadow 150ms ease, border-color 150ms ease;
+      transition: all 200ms;
       text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    button.primary, .btn.primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      border-color: transparent;
-      color: #0b0c10;
-      box-shadow: 0 10px 30px rgba(227,111,45,0.35);
-    }
-    button:hover, .btn:hover {
-      transform: translateY(-1px);
-      border-color: rgba(255,255,255,0.18);
-    }
-    button:active, .btn:active {
-      transform: translateY(0);
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px 18px 16px;
-      box-shadow: var(--shadow);
-    }
-    .card h3 {
-      margin: 0 0 8px;
-      font-size: 18px;
-    }
-    .muted { color: var(--muted); font-size: 14px; margin: 0; }
-    .status-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
       display: inline-block;
-      margin-right: 6px;
-      background: #8ddf5f;
-      box-shadow: 0 0 0 6px rgba(141,223,95,0.15);
+      font-size: 14px;
     }
-    .inline {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .btn-primary {
+      background: linear-gradient(135deg, #e36f2d, #f2b441);
+      color: #000;
+      box-shadow: 0 8px 24px rgba(227,111,45,0.4);
     }
-    .data-box {
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 12px;
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(227,111,45,0.6);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: #e0e0e0;
+      border: 1px solid rgba(227,111,45,0.3);
+    }
+    .btn-secondary:hover {
+      background: rgba(227,111,45,0.15);
+      border-color: #e36f2d;
+    }
+
+    /* Status Section */
+    .status-section {
+      padding: 60px 20px;
       background: rgba(255,255,255,0.02);
-      border: 1px dashed var(--border);
-      font-family: monospace;
-      white-space: pre-wrap;
-      word-break: break-word;
-      min-height: 80px;
+      border-top: 1px solid rgba(227,111,45,0.1);
+      border-bottom: 1px solid rgba(227,111,45,0.1);
     }
-    .pill-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 8px;
-    }
-    .pill {
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.03);
-      color: var(--muted);
-      font-size: 13px;
-    }
-    footer {
-      margin-top: 32px;
-      color: var(--muted);
-      font-size: 13px;
+    .status-section h2 {
+      font-size: 32px;
+      margin-bottom: 32px;
       text-align: center;
     }
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .status-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(227,111,45,0.2);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 200ms;
+    }
+    .status-card:hover {
+      background: rgba(227,111,45,0.1);
+      border-color: #e36f2d;
+    }
+    .status-card h3 {
+      font-size: 18px;
+      margin-bottom: 12px;
+      color: #e36f2d;
+    }
+    .status-card p {
+      color: #a0a0a0;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+      background: #8ddf5f;
+      box-shadow: 0 0 0 8px rgba(141,223,95,0.2);
+    }
+
+    /* Data Box */
+    .data-display {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(227,111,45,0.2);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: #8ddf5f;
+      min-height: 100px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      overflow-y: auto;
+      max-height: 300px;
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(10, 10, 10, 0.95);
+      border-top: 1px solid rgba(227,111,45,0.1);
+      padding: 40px 20px;
+      margin-top: 60px;
+    }
+    footer .container {
+      text-align: center;
+      color: #707070;
+      font-size: 13px;
+    }
+    footer a {
+      color: #e36f2d;
+      text-decoration: none;
+      margin: 0 8px;
+    }
+    footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="logo">
-        <div class="logo-mark"></div>
-        <div class="title">RustInfo • Статус</div>
-      </div>
-      <div class="actions">
-        <button class="primary" id="refreshBtn">Обновить статус</button>
-        <a class="btn" href="https://stats.rustinfo.online" target="_blank" rel="noreferrer">Перейти к API</a>
-      </div>
-    </header>
-
-    <div class="grid" style="margin-bottom:16px;">
-      <div class="card">
-        <div class="inline">
-          <span class="status-dot" id="statusDot"></span>
-          <h3 id="statusTitle">Проверка воркера…</h3>
-        </div>
-        <p class="muted">Данные из Cloudflare Worker: быстрый ответ для сайта и бота.</p>
-        <div class="pill-row">
-          <span class="pill" id="latency">latency: —</span>
-          <span class="pill" id="updated">обновлено: —</span>
-        </div>
-        <div class="data-box" id="workerMessage">Загрузка…</div>
-      </div>
-      <div class="card">
-        <h3>Действия</h3>
-        <p class="muted">Быстрые действия для мониторинга.</p>
-        <div class="pill-row">
-          <button class="btn" id="pingBtn">Ping</button>
-          <button class="btn" id="copyBtn">Скопировать ответ</button>
-        </div>
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="/" class="logo">RustInfo</a>
+      <div>
+        <a href="#status">Статус</a>
+        <a href="https://stats.rustinfo.online" target="_blank">API</a>
       </div>
     </div>
+  </nav>
 
-    <footer>
-      RustInfo • Rust+ helper · Работает на Worker API
-    </footer>
-  </div>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>Мониторинг Rust+</h1>
+      <p>Проверьте статус сервера и получайте обновления в реальном времени</p>
+      <div class="btn-group">
+        <button class="btn btn-primary" id="refreshBtn">Проверить статус</button>
+        <a href="https://stats.rustinfo.online" target="_blank" class="btn btn-secondary">Открыть API</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Status Section -->
+  <section class="status-section" id="status">
+    <div class="container">
+      <h2>Статус Воркера</h2>
+      <div class="status-grid">
+        <div class="status-card">
+          <h3><span class="status-dot" id="statusDot"></span>Статус системы</h3>
+          <p id="statusTitle">Проверяем...</p>
+          <div style="font-size: 12px; color: #707070;">
+            <p>Задержка: <span id="latency">—</span></p>
+            <p>Обновлено: <span id="updated">—</span></p>
+          </div>
+        </div>
+        
+        <div class="status-card">
+          <h3>Быстрые действия</h3>
+          <p>Управление сервером</p>
+          <div class="btn-group" style="gap: 8px;">
+            <button class="btn btn-secondary" style="flex: 1; padding: 10px;" id="pingBtn">Ping</button>
+            <button class="btn btn-secondary" style="flex: 1; padding: 10px;" id="copyBtn">Копировать</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 32px;">
+        <h3 style="margin-bottom: 12px;">Ответ сервера:</h3>
+        <div class="data-display" id="workerMessage">Загрузка данных...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>RustInfo — инструмент для мониторинга Rust+ | 
+        <a href="https://rust.facepunch.com" target="_blank">Rust</a> | 
+        <a href="https://facepunch.com" target="_blank">Facepunch</a>
+      </p>
+      <p style="margin-top: 12px;">© 2026. Все права защищены.</p>
+    </div>
+  </footer>
 
   <script>
 const WORKER_URL = "https://stats.rustinfo.online";
@@ -201,7 +268,7 @@ async function fetchWorker() {
   const updated = document.getElementById("updated");
 
   const started = performance.now();
-  messageEl.textContent = "Загрузка…";
+  messageEl.textContent = "Загрузка данных...";
   statusTitle.textContent = "Проверяем...";
   statusDot.style.background = "#f6d14a";
 
@@ -210,23 +277,32 @@ async function fetchWorker() {
     const text = await res.text();
     const ms = Math.round(performance.now() - started);
 
-    latency.textContent = `latency: ${ms} ms`;
-    updated.textContent = `обновлено: ${new Date().toLocaleTimeString()}`;
+    latency.textContent = `${ms} ms`;
+    updated.textContent = new Date().toLocaleTimeString('ru-RU');
 
-    statusTitle.textContent = res.ok ? "Воркера отвечает" : "Ответ с ошибкой";
-    statusDot.style.background = res.ok ? "#8ddf5f" : "#f97a6a";
+    if (res.ok) {
+      statusTitle.textContent = "✓ Воркер активен";
+      statusDot.style.background = "#8ddf5f";
+    } else {
+      statusTitle.textContent = "⚠ Ошибка ответа";
+      statusDot.style.background = "#f97a6a";
+    }
     messageEl.textContent = text;
   } catch (e) {
-    statusTitle.textContent = "Нет ответа";
+    statusTitle.textContent = "✕ Нет соединения";
     statusDot.style.background = "#f97a6a";
-    messageEl.textContent = "Ошибка загрузки данных";
-    latency.textContent = "latency: —";
+    messageEl.textContent = "Ошибка при подключении к серверу. Проверьте соединение.";
+    latency.textContent = "—";
   }
 }
 
 function copyResponse() {
   const text = document.getElementById("workerMessage").textContent;
-  navigator.clipboard.writeText(text).catch(() => {});
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Скопировано в буфер обмена");
+  }).catch(() => {
+    alert("Ошибка при копировании");
+  });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
