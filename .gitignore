@@ -43,3 +43,6 @@ yarn-error.log*
 
 # Images
 images/
+
+# Private bot files
+/rustinfo/
