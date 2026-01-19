@@ -226,6 +226,34 @@
       transform: translateY(0);
     }
 
+    .lang-switcher {
+      display: flex;
+      gap: 8px;
+      margin-left: 16px;
+      padding: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .lang-switcher a {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .lang-switcher a:hover {
+      background: rgba(255, 107, 53, 0.1);
+      text-shadow: none;
+    }
+
+    .lang-switcher a.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #0a0b0f;
+    }
+
     /* Premium Sections */
     .section { 
       padding: 100px 0;
@@ -627,10 +655,11 @@
         <a class="link" href="docs.html">Документация</a>
         <a class="link" href="setup.html">Подключение</a>
         <a class="link" href="https://discord.gg/qGcrzT2dcx" target="_blank" rel="noreferrer">Discord</a>
-        <div style="border-left: 1px solid rgba(255,255,255,0.1); margin: 0 8px; height: 24px;"></div>
-        <a class="link" href="docs.html" title="Російська">🇷🇺 RU</a>
-        <a class="link" href="docs_en.html" title="Англійська">🇬🇧 EN</a>
-        <a class="link" href="docs_ua.html" title="Українська">🇺🇦 UA</a>
+        <div class="lang-switcher">
+          <a href="docs.html" class="active">🇷🇺</a>
+          <a href="docs_en.html">🇬🇧</a>
+          <a href="docs_ua.html">🇺🇦</a>
+        </div>
       </nav>
     </div>
   </header>
