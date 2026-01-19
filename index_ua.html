@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RustInfo — Explore • Build • Survive</title>
-  <meta name="description" content="RustInfo: мониторинг Rust+ и серверов, быстрый статус, новости и инструменты." />
+  <title>RustInfo — Досліджуй • Будуй • Виживай</title>
+  <meta name="description" content="RustInfo: моніторинг Rust+ та серверів, швидкий статус, новини та інструменти." />
   <style>
     :root {
       --bg: #0a0b0f;
@@ -223,6 +223,34 @@
     
     .link:hover::before {
       transform: translateY(0);
+    }
+
+    .lang-switcher {
+      display: flex;
+      gap: 8px;
+      margin-left: 16px;
+      padding: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .lang-switcher a {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .lang-switcher a:hover {
+      background: rgba(255, 107, 53, 0.1);
+      text-shadow: none;
+    }
+
+    .lang-switcher a.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #0a0b0f;
     }
 
     /* Premium Hero Section */
@@ -704,6 +732,12 @@
       .grid {
         grid-template-columns: 1fr;
       }
+      .lang-switcher {
+        margin-left: 0;
+        margin-top: 8px;
+        width: 100%;
+        justify-content: center;
+      }
     }
     
     @media (prefers-reduced-motion: reduce) {
@@ -743,18 +777,19 @@
   </style>
 </head>
 <body>
-  <header aria-label="Навигация">
+  <header aria-label="Навігація">
     <div class="container nav">
       <div class="brand"><div class="logo" aria-hidden="true"></div><div class="title">RustInfo</div></div>
-      <nav class="links" aria-label="Основные ссылки">
+      <nav class="links" aria-label="Основні посилання">
         <a class="link" href="#status">Статус</a>
-        <a class="link" href="docs.html">Документация</a>
-        <a class="link" href="setup.html">Подключение</a>
-        <a class="link" href="#tools">Инструменты</a>
-        <div style="border-left: 1px solid rgba(255,255,255,0.1); margin: 0 8px; height: 24px;"></div>
-        <a class="link" href="index.html" title="Русский">🇷🇺 RU</a>
-        <a class="link" href="index_en.html" title="English">🇬🇧 EN</a>
-        <a class="link" href="index_ua.html" title="Українська">🇺🇦 UA</a>
+        <a class="link" href="docs_ua.html">Документація</a>
+        <a class="link" href="setup_ua.html">Підключення</a>
+        <a class="link" href="#tools">Інструменти</a>
+        <div class="lang-switcher">
+          <a href="index.html">🇷🇺</a>
+          <a href="index_en.html">🇬🇧</a>
+          <a href="index_ua.html" class="active">🇺🇦</a>
+        </div>
       </nav>
     </div>
   </header>
@@ -767,25 +802,25 @@
             <span class="icon">🔥</span>
             <div>
               <div class="stats-number" id="guildCount">—</div>
-              <div class="stats-label">RustInfo следит за <span id="guildCountText">—</span> серверами</div>
+              <div class="stats-label">RustInfo стежить за <span id="guildCountText">—</span> серверами</div>
             </div>
           </div>
-          <h1><span class="grad">Explore • Build • Survive</span><br/>Мониторинг Rust+ и серверов</h1>
-          <p>Следите за статусом ваших серверов, получайте быстрые ответы из Rust+ Worker, будьте на шаг впереди.</p>
+          <h1><span class="grad">Досліджуй • Будуй • Виживай</span><br/>Моніторинг Rust+ і серверів</h1>
+          <p>Стежте за статусом ваших серверів, отримуйте швидкі відповіді від Rust+ Worker, будьте на крок попереду.</p>
           <div class="cta">
             <a class="btn discord-btn" href="https://discord.gg/qGcrzT2dcx" target="_blank" rel="noreferrer">
               <svg class="discord-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/></svg>
-              Присоединиться к Discord
+              Приєднатися до Discord
             </a>
-            <a class="btn" href="docs.html">Документация</a>
+            <a class="btn" href="docs_ua.html">Документація</a>
           </div>
         </div>
         <div class="demo-gif">
-          <h3>🎮 Rust+ Smart Switch в действии</h3>
+          <h3>🎮 Rust+ Smart Switch в дії</h3>
           <img src="https://cdn.discordapp.com/attachments/1340732896578768959/1364602849735999610/9rolbw.gif?ex=696e39f0&is=696ce870&hm=d1df7772ca387f615449ce047c84971eb62e0ba0e684d1597e2677783862397d&" alt="Smart Switch Demo" loading="lazy">
           <a class="btn primary discord-btn" href="https://discord.com/oauth2/authorize?client_id=1334943377124495421&permissions=8&integration_type=0&scope=bot" target="_blank" rel="noreferrer" style="margin-top: 20px; width: 100%; justify-content: center;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8z"/></svg>
-            Добавить бота
+            Додати бота
           </a>
         </div>
       </div>
@@ -793,21 +828,21 @@
 
     <section id="tools" class="section">
       <div class="container">
-        <h2>Инструменты RustInfo</h2>
-        <p>Надёжный набор утилит для мониторинга и автоматизации.</p>
+        <h2>Інструменти RustInfo</h2>
+        <p>Надійний набір утиліт для моніторингу та автоматизації.</p>
         <div class="grid">
-          <div class="card"><h3>Оповещения</h3><p>Мгновенные уведомления о рейдах, событиях, статусе серверов.</p></div>
-          <div class="card"><h3>Rust+ интеграция</h3><p>Подключение к Rust+ приложениям, удалённые действия и запросы.</p></div>
-          <div class="card"><h3>API доступ</h3><p>Лёгкий доступ к данным через API для ваших приложений.</p></div>
-          <div class="card"><h3>Командный центр</h3><p>Управление командами, ролями и разрешениями в одном месте.</p></div>
+          <div class="card"><h3>Сповіщення</h3><p>Миттєві повідомлення про рейди, події, статус серверів.</p></div>
+          <div class="card"><h3>Rust+ інтеграція</h3><p>Підключення до Rust+ додатків, віддалені дії та запити.</p></div>
+          <div class="card"><h3>API доступ</h3><p>Легкий доступ до даних через API для ваших додатків.</p></div>
+          <div class="card"><h3>Командний центр</h3><p>Управління командами, ролями та дозволами в одному місці.</p></div>
         </div>
       </div>
     </section>
 
     <section class="section">
       <div class="container">
-        <h2>Присоединяйтесь к сообществу</h2>
-        <p>Общайтесь с другими игроками, получайте помощь и следите за обновлениями.</p>
+        <h2>Приєднуйтесь до спільноти</h2>
+        <p>Спілкуйтеся з іншими гравцями, отримуйте допомогу та стежте за оновленнями.</p>
         <div class="discord-widget">
           <iframe src="https://discord.com/widget?id=1336416466605572149&theme=dark" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
         </div>
@@ -816,12 +851,12 @@
 
     <section class="section">
       <div class="container">
-        <h2>Новости</h2>
-        <p>Скоро: интеграция новостей и обновлений прямо здесь.</p>
+        <h2>Новини</h2>
+        <p>Незабаром: інтеграція новин та оновлень прямо тут.</p>
         <div class="grid">
-          <div class="card"><h3>12 лет Rust</h3><p>Итоги года и планы на 2026 — скоро на RustInfo.</p></div>
-          <div class="card"><h3>Twitch Drops</h3><p>Следите за кампаниями и не пропускайте награды.</p></div>
-          <div class="card"><h3>Companion</h3><p>Rust+ Companion — оставайтесь на связи с вашей базой.</p></div>
+          <div class="card"><h3>12 років Rust</h3><p>Підсумки року та плани на 2026 — скоро на RustInfo.</p></div>
+          <div class="card"><h3>Twitch Drops</h3><p>Стежте за кампаніями та не пропускайте нагороди.</p></div>
+          <div class="card"><h3>Companion</h3><p>Rust+ Companion — залишайтеся на зв'язку з вашою базою.</p></div>
         </div>
       </div>
     </section>
@@ -829,7 +864,7 @@
 
   <footer>
     <div class="container foot">
-      RustInfo · Неофициальный помощник Rust+ · © 2026
+      RustInfo · Неофіційний помічник Rust+ · © 2026
       · <a href="https://discord.gg/qGcrzT2dcx" target="_blank" rel="noreferrer">Discord</a>
       · <a href="https://rust.facepunch.com" target="_blank">Rust</a>
       · <a href="https://facepunch.com" target="_blank">Facepunch</a>
