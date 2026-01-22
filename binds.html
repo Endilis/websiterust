@@ -203,19 +203,23 @@
       margin-left: 16px;
     }
 
-    .lang-link {
+    .lang-switcher a {
       padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--muted);
-      background: rgba(255, 255, 255, 0.03);
+      font-size: 24px;
       transition: all 0.3s;
+      opacity: 0.6;
+      filter: grayscale(100%);
     }
 
-    .lang-link:hover, .lang-link.active {
-      color: var(--text);
-      background: rgba(255, 107, 53, 0.15);
+    .lang-switcher a:hover {
+      opacity: 1;
+      filter: grayscale(0%);
+      transform: scale(1.1);
+    }
+
+    .lang-switcher a.active {
+      opacity: 1;
+      filter: grayscale(0%);
     }
 
     main {
@@ -422,9 +426,9 @@
             <a class="link" href="binds.html" style="color: var(--accent-2);">Бинды</a>
           </div>
           <div class="lang-switcher">
-            <a href="binds.html" class="lang-link active">RU</a>
-            <a href="index_en.html" class="lang-link">EN</a>
-            <a href="index_ua.html" class="lang-link">UA</a>
+            <a href="binds.html" class="active">🇷🇺</a>
+            <a href="index_en.html">🇬🇧</a>
+            <a href="index_ua.html">🇺🇦</a>
           </div>
         </div>
       </nav>
