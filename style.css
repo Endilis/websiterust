@@ -995,18 +995,35 @@ footer::before {
   padding: 40px 0;
   color: var(--muted);
   font-size: 14px;
-  text-align: center;
   line-height: 1.8;
 }
 
-.foot a {
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.footer-text {
+  text-align: left;
+}
+
+.footer-discord-btn {
+  padding: 12px 24px;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.foot a:not(.footer-discord-btn) {
   color: var(--accent-2);
   font-weight: 600;
   transition: all 0.3s ease;
   padding: 0 4px;
 }
 
-.foot a:hover {
+.foot a:not(.footer-discord-btn):hover {
   color: var(--accent);
   text-decoration: none;
   text-shadow: 0 0 15px var(--glow);
@@ -1071,6 +1088,21 @@ footer::before {
   h2 { font-size: 36px; }
   h3 { font-size: 24px; }
   .step-card { padding: 24px; }
+  
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .footer-text {
+    text-align: center;
+  }
+  
+  .footer-discord-btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
