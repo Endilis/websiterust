@@ -1,4 +1,4 @@
-﻿# Robots.txt для RustInfo - Оптимизировано для максимальной видимости
+# Robots.txt для RustInfo - Оптимизировано для максимальной видимости
 User-agent: *
 Allow: /
 
