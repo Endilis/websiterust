@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EPL0ZGMYGW"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-EPL0ZGMYGW');
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <!-- SEO Meta Tags -->
+  <title>🔥 Rust Бинды 2026 — Полный Гид по Настройке Горячих Клавиш | RustInfo</title>
+  <meta name="description" content="⌨️ Полный гид по биндам Rust 2026: PvP бинды, автобег, автоатака, настройка keys.cfg. ТОП команды для строительства, рейдов и комфортной игры. Готовые решения!" />
+  <meta name="keywords" content="rust binds, rust бинды, горячие клавиши rust, rust консольные команды, rust pvp binds, keys.cfg rust, rust автобег, rust автоатака" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <link rel="canonical" href="https://rustinfo.online/binds.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="🔥 Rust Бинды 2026 — Полный Гид" />
+  <meta property="og:description" content="Полное руководство по настройке биндов в Rust: PvP, строительство, автоматизация" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="alternate" hreflang="ru" href="https://rustinfo.online/binds.html" />
+  
+  <style>
+    :root {
+      --bg: #0a0b0f;
+      --surface: rgba(255,255,255,0.04);
+      --muted: #9ca3af;
+      --text: #f8fafc;
+      --accent: #ff6b35;
+      --accent-2: #fbbf24;
+      --accent-purple: #a78bfa;
+      --accent-cyan: #22d3ee;
+      --border: rgba(255,255,255,0.08);
+      --glow: rgba(255, 107, 53, 0.5);
+    }
+    
+    * { 
+      box-sizing: border-box; 
+      margin: 0;
+      padding: 0;
+    }
+    
+    html { 
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+    
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text);
+      background: #0a0b0f;
+      position: relative;
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 107, 53, 0.15), transparent),
+        radial-gradient(ellipse 60% 50% at 0% 50%, rgba(167, 139, 250, 0.1), transparent),
+        radial-gradient(ellipse 60% 50% at 100% 50%, rgba(34, 211, 238, 0.1), transparent),
+        linear-gradient(to bottom, rgba(10, 11, 15, 0.88), rgba(10, 11, 15, 0.96)),
+        url('https://images.steamusercontent.com/ugc/1852681509990702152/D2197C6F9F5E3C6102A180AEA47BD4ECCB2EC7E9/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false') center/cover fixed;
+      z-index: -1;
+      animation: bgPulse 20s ease-in-out infinite;
+    }
+    
+    @keyframes bgPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.95; }
+    }
+    
+    body::after {
+      content: '';
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background-image: 
+        radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.15), transparent),
+        radial-gradient(2px 2px at 60% 70%, rgba(255, 107, 53, 0.2), transparent),
+        radial-gradient(1px 1px at 50% 50%, rgba(167, 139, 250, 0.15), transparent),
+        radial-gradient(1px 1px at 80% 10%, rgba(34, 211, 238, 0.15), transparent),
+        radial-gradient(2px 2px at 90% 60%, rgba(251, 191, 36, 0.1), transparent);
+      background-size: 200% 200%;
+      animation: particles 40s linear infinite;
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    @keyframes particles {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+    
+    a { 
+      color: var(--accent-2); 
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    a:hover { 
+      color: var(--accent);
+      text-shadow: 0 0 20px var(--glow);
+    }
+    
+    .container { 
+      max-width: 1280px; 
+      margin: 0 auto; 
+      padding: 0 24px; 
+    }
+
+    header {
+      position: sticky; 
+      top: 0; 
+      z-index: 100;
+      backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(10, 11, 15, 0.75);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .nav { 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      padding: 16px 0;
+    }
+    
+    .brand { 
+      display: flex; 
+      align-items: center; 
+      gap: 12px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    
+    .brand:hover { transform: scale(1.05); }
+    
+    .logo { 
+      width: 40px; 
+      height: 40px; 
+      border-radius: 12px; 
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 8px 32px rgba(255, 107, 53, 0.4);
+      animation: logoFloat 3s ease-in-out infinite;
+    }
+    
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
+    }
+    
+    .title { 
+      font-weight: 800; 
+      letter-spacing: -0.02em; 
+      font-size: 22px;
+      background: linear-gradient(135deg, var(--text), var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .links { 
+      display: flex; 
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 6px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    
+    .link { 
+      color: var(--muted); 
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 10px;
+      transition: all 0.3s;
+    }
+    
+    .link:hover {
+      color: var(--text);
+      background: rgba(255, 107, 53, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .lang-switcher {
+      display: flex;
+      gap: 8px;
+      margin-left: 16px;
+    }
+
+    .lang-link {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.03);
+      transition: all 0.3s;
+    }
+
+    .lang-link:hover, .lang-link.active {
+      color: var(--text);
+      background: rgba(255, 107, 53, 0.15);
+    }
+
+    main {
+      padding: 80px 0;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 900;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--text), var(--accent-2), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Quick Navigation */
+    .quick-nav {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 40px;
+      backdrop-filter: blur(10px);
+    }
+
+    .quick-nav h3 {
+      font-size: 18px;
+      margin-bottom: 16px;
+      color: var(--accent-2);
+    }
+
+    .quick-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .quick-nav-btn {
+      padding: 12px 20px;
+      background: rgba(255, 107, 53, 0.1);
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      border-radius: 10px;
+      color: var(--text);
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .quick-nav-btn:hover {
+      background: rgba(255, 107, 53, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3);
+    }
+
+    .content-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 32px;
+      backdrop-filter: blur(10px);
+    }
+
+    .content-section h2 {
+      font-size: 32px;
+      margin-bottom: 24px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .content-section h3 {
+      font-size: 24px;
+      margin: 32px 0 16px;
+      color: var(--accent-2);
+    }
+
+    .content-section p {
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .code-block {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 16px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      color: var(--accent-cyan);
+      overflow-x: auto;
+    }
+
+    .binds-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+    }
+
+    .binds-table th {
+      background: rgba(255, 107, 53, 0.1);
+      padding: 16px;
+      text-align: left;
+      font-weight: 700;
+      color: var(--accent-2);
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .binds-table td {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .binds-table tr:hover {
+      background: rgba(255, 107, 53, 0.05);
+    }
+
+    .binds-table code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 4px 8px;
+      border-radius: 6px;
+      color: var(--accent-cyan);
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+    }
+
+    .tip-box {
+      background: rgba(251, 191, 36, 0.1);
+      border-left: 4px solid var(--accent-2);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 24px 0;
+    }
+
+    .tip-box strong {
+      color: var(--accent-2);
+    }
+
+    footer {
+      padding: 40px 0;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      margin-top: 80px;
+    }
+
+    .foot {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .foot a {
+      margin: 0 8px;
+    }
+
+    @media (max-width: 768px) {
+      .quick-nav-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .content-section {
+        padding: 24px;
+      }
+
+      .binds-table {
+        font-size: 14px;
+      }
+
+      .binds-table th, .binds-table td {
+        padding: 12px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="nav">
+        <a href="index.html" class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div class="title">RustInfo</div>
+        </a>
+        <div style="display: flex; align-items: center;">
+          <div class="links">
+            <a class="link" href="index.html">Главная</a>
+            <a class="link" href="docs.html">Документация</a>
+            <a class="link" href="setup.html">Подключение</a>
+            <a class="link" href="binds.html" style="color: var(--accent-2);">Бинды</a>
+          </div>
+          <div class="lang-switcher">
+            <a href="binds.html" class="lang-link active">RU</a>
+            <a href="index_en.html" class="lang-link">EN</a>
+            <a href="index_ua.html" class="lang-link">UA</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="hero">
+        <h1>🔥 Rust бинды — полный гид (2026)</h1>
+        <p>Бинды в Rust — это привязки действий или консольных команд к клавишам, которые ускоряют геймплей, помогают в PvP, автоматизируют рутину и дают преимущество в рейдах.</p>
+      </div>
+
+      <!-- Quick Navigation -->
+      <div class="quick-nav">
+        <h3>⚡ Быстрая навигация</h3>
+        <div class="quick-nav-grid">
+          <a href="#what-are-binds" class="quick-nav-btn">🧠 Что такое бинды</a>
+          <a href="#how-to-setup" class="quick-nav-btn">🎮 Как настроить</a>
+          <a href="#pvp-binds" class="quick-nav-btn">🏃 PvP бинды</a>
+          <a href="#console-stats" class="quick-nav-btn">📌 Консоль и статистика</a>
+          <a href="#building-raids" class="quick-nav-btn">🧰 Строительство и рейды</a>
+          <a href="#automation" class="quick-nav-btn">🧪 Автоматизация</a>
+          <a href="#comfort-tools" class="quick-nav-btn">⚙️ Инструменты комфорта</a>
+          <a href="#save-config" class="quick-nav-btn">💡 Сохранение биндов</a>
+        </div>
+      </div>
+
+      <!-- Что такое бинды -->
+      <div id="what-are-binds" class="content-section">
+        <h2>🧠 Что такое бинды и как они работают</h2>
+        <p><strong>Бинд (bind)</strong> — это команда, которая привязывает действие или консольную команду к клавише/комбинации клавиш.</p>
+        <p>Формат базовой команды:</p>
+        <div class="code-block">bind [КЛАВИША] [КОМАНДА_ИЛИ_ДЕЙСТВИЕ]</div>
+        
+        <h3>Примеры:</h3>
+        <div class="code-block">bind q forward;sprint  // автобег
+bind z +attack  // автоатака
+bind k kill  // самоубийство
+bind m +map  // открыть карту</div>
+        
+        <p>Каждое действие может быть простым (<code>+attack</code>) или сложным (несколько через <code>;</code>) — всё это работает внутри консоли Rust.</p>
+      </div>
+
+      <!-- Как настроить -->
+      <div id="how-to-setup" class="content-section">
+        <h2>🎮 Как настроить и удалить бинды</h2>
+        
+        <h3>Настройка:</h3>
+        <ol style="color: var(--muted); margin-left: 20px;">
+          <li>Открой Rust</li>
+          <li>Нажми <strong>F1</strong>, чтобы открыть консоль</li>
+          <li>Вставь готовую команду бинда</li>
+          <li>Нажми <strong>Enter</strong></li>
+        </ol>
+
+        <h3>Удаление или сброс бинда:</h3>
+        <div class="code-block">unbind [клавиша]  // удаляет бинды с конкретной клавиши
+bind [клавиша] clear  // очищает бинды на клавише
+clearbinds  // удаляет все бинды</div>
+      </div>
+
+      <!-- PvP бинды -->
+      <div id="pvp-binds" class="content-section">
+        <h2>🏃 Основные и PvP-бинды</h2>
+        <p>Самые популярные бинды для боя и передвижения:</p>
+        
+        <table class="binds-table">
+          <thead>
+            <tr>
+              <th>Бинд</th>
+              <th>Описание</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>bind q forward;sprint</code></td>
+              <td>Автобег</td>
+            </tr>
+            <tr>
+              <td><code>bind z +attack</code></td>
+              <td>Автоатака</td>
+            </tr>
+            <tr>
+              <td><code>bind x +attack;+duck</code></td>
+              <td>Автоатака + присед</td>
+            </tr>
+            <tr>
+              <td><code>bind p +jump;+sprint;+duck</code></td>
+              <td>Быстрый прыжок через препятствия</td>
+            </tr>
+            <tr>
+              <td><code>bind k kill</code></td>
+              <td>Самоубийство</td>
+            </tr>
+            <tr>
+              <td><code>bind m +map</code></td>
+              <td>Открыть карту</td>
+            </tr>
+            <tr>
+              <td><code>bind mouse1 +lighttoggle;+attack2</code></td>
+              <td>Автоматическое включение фонаря/лазера при стрельбе</td>
+            </tr>
+            <tr>
+              <td><code>bind 0 gc.collect</code></td>
+              <td>Очистка памяти (уменьшает лаги)</td>
+            </tr>
+            <tr>
+              <td><code>bind 5 +slot5;+attack</code></td>
+              <td>Использовать предмет из 5-го слота + автоатака</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Консоль и статистика -->
+      <div id="console-stats" class="content-section">
+        <h2>📌 Быстрый доступ к консоли и статистике</h2>
+        <p>Эти бинды помогают быстро получить информацию о бою, пинге и действиях:</p>
+        <div class="code-block">bind f1 consoletoggle;combatlog;ping</div>
+        <p>Открывает консоль сразу с боевым логом и пингом.</p>
+      </div>
+
+      <!-- Строительство и рейды -->
+      <div id="building-raids" class="content-section">
+        <h2>🧰 Бинды для строительства и рейдов</h2>
+        
+        <table class="binds-table">
+          <thead>
+            <tr>
+              <th>Бинд</th>
+              <th>Действие</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>bind r reload;attack;duck</code></td>
+              <td>Автоатака + перезарядка при рейде</td>
+            </tr>
+            <tr>
+              <td><code>bind v +attack;+jump</code></td>
+              <td>Удары/атака в прыжке (для потолков)</td>
+            </tr>
+            <tr>
+              <td><code>bind u chat.say "/remove"</code></td>
+              <td>Включить режим удаления построек (на некоторых серверах)</td>
+            </tr>
+            <tr>
+              <td><code>bind g chat.say "/home 1"</code></td>
+              <td>Телепорт домой (только на серверах с плагинами)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Автоматизация -->
+      <div id="automation" class="content-section">
+        <h2>🧪 Автоматизация процессов</h2>
+        <p>Полезно для фарма, плавания и других повседневных задач:</p>
+        
+        <div class="code-block">bind j forward;sprint;jump   // автоплавание / перемещение
+bind 3 +slot3;+attack        // быстрое использование хилов</div>
+        
+        <p>Эти бинды освобождают руки и ускоряют действия.</p>
+      </div>
+
+      <!-- Инструменты комфорта -->
+      <div id="comfort-tools" class="content-section">
+        <h2>⚙️ Инструменты для комфорта и настройки</h2>
+        <p>Rust позволяет использовать бинды не только под действия персонажа:</p>
+        
+        <ul style="color: var(--muted); margin-left: 20px; line-height: 2;">
+          <li><strong>graphics.vm_horizontal_flip</strong> — смена положения рук (лево/право)</li>
+          <li><strong>graphics.vm_fov_scale</strong> — изменение отдаления рук/оружия на экране</li>
+          <li><strong>input.sensitivity</strong> — динамическое изменение чувствительности мыши</li>
+        </ul>
+      </div>
+
+      <!-- Сохранение биндов -->
+      <div id="save-config" class="content-section">
+        <h2>💡 Советы по сохранению биндов</h2>
+        <p>После настройки рекомендуем сохранить конфигурацию, чтобы не потерять бинды после перезапуска:</p>
+        
+        <div class="code-block">global.writecfg</div>
+        
+        <p>Это создаст запись биндов в конфиг и сделает их постоянными.</p>
+
+        <div class="tip-box">
+          <strong>📁 Где Rust хранит бинды</strong><br>
+          Файл с биндами находится по пути:<br>
+          <code style="color: var(--accent-cyan);">...\Steam\steamapps\common\Rust\cfg\keys.cfg</code><br><br>
+          Ты можешь вручную его отредактировать или выставить атрибут «только для чтения», чтобы бинды не сбивались.
+        </div>
+      </div>
+
+      <!-- Заключение -->
+      <div class="content-section">
+        <h2>🏁 Заключение</h2>
+        <p>Бинды в Rust — не просто горячие клавиши: это инструмент, который даёт преимущество в бою, ускоряет взаимодействие с интерфейсом и помогает автоматизировать рутину. Настроив их под себя, ты экономишь время и выигрываешь важные секунды в PvP.</p>
+        <p style="margin-top: 24px;"><strong>Используй бинды с умом и доминируй на серверах! 🚀</strong></p>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="container foot">
+      RustInfo · Неофициальный помощник Rust+ · © 2026
+      · <a href="https://discord.gg/ZRDtafakuf" target="_blank" rel="noreferrer">Discord</a>
+      · <a href="https://rust.facepunch.com" target="_blank">Rust</a>
+      · <a href="https://facepunch.com" target="_blank">Facepunch</a>
+    </div>
+  </footer>
+</body>
+</html>

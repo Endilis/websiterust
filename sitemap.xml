@@ -111,4 +111,12 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://rustinfo.online/setup_en.html"/>
   </url>
   
+  <!-- Бинды Rust (RU) -->
+  <url>
+    <loc>https://rustinfo.online/binds.html</loc>
+    <lastmod>2026-01-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
 </urlset>
