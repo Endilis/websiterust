@@ -201,25 +201,28 @@
       display: flex;
       gap: 8px;
       margin-left: 16px;
+      padding: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .lang-switcher a {
       padding: 6px 12px;
-      font-size: 24px;
-      transition: all 0.3s;
-      opacity: 0.6;
-      filter: grayscale(100%);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
     }
 
     .lang-switcher a:hover {
-      opacity: 1;
-      filter: grayscale(0%);
-      transform: scale(1.1);
+      background: rgba(255, 107, 53, 0.1);
+      text-shadow: none;
     }
 
     .lang-switcher a.active {
-      opacity: 1;
-      filter: grayscale(0%);
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #0a0b0f;
     }
 
     main {
@@ -418,20 +421,18 @@
           <div class="logo" aria-hidden="true"></div>
           <div class="title">RustInfo</div>
         </a>
-        <div style="display: flex; align-items: center;">
-          <div class="links">
-            <a class="link" href="index.html">Главная</a>
-            <a class="link" href="docs.html">Документация</a>
-            <a class="link" href="setup.html">Подключение</a>
-            <a class="link" href="binds.html" style="color: var(--accent-2);">Бинды</a>
-          </div>
+        <nav class="links" aria-label="Основные ссылки">
+          <a class="link" href="index.html">Главная</a>
+          <a class="link" href="docs.html">Документация</a>
+          <a class="link" href="setup.html">Подключение</a>
+          <a class="link" href="binds.html" style="color: var(--accent-2);">Бинды</a>
           <div class="lang-switcher">
             <a href="binds.html" class="active">🇷🇺</a>
             <a href="index_en.html">🇬🇧</a>
             <a href="index_ua.html">🇺🇦</a>
           </div>
-        </div>
-      </nav>
+        </nav>
+      </div>
     </div>
   </header>
 
