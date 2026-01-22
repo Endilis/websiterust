@@ -1,0 +1,36 @@
+﻿# Robots.txt для RustInfo - Оптимизировано для максимальной видимости
+User-agent: *
+Allow: /
+
+# Разрешаем индексацию всех страниц
+Allow: /index.html
+Allow: /index_en.html
+Allow: /index_ua.html
+Allow: /docs.html
+Allow: /docs_en.html
+Allow: /docs_ua.html
+Allow: /setup.html
+Allow: /setup_en.html
+Allow: /setup_ua.html
+
+# Ускоряем краулинг для Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Ускоряем для Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+# Ускоряем для Yandex (важно для русскоязычной аудитории)
+User-agent: Yandex
+Allow: /
+Crawl-delay: 0
+
+# Sitemap для поисковых систем
+Sitemap: https://rustinfo.online/sitemap.xml
+
+# Блокируем только служебные файлы
+Disallow: /.git/
+Disallow: /.gitignore
