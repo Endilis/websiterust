@@ -41,8 +41,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Images
-images/
-
 # Private bot files
 /rustinfo/
