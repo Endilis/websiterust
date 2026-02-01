@@ -141,7 +141,10 @@ header:hover {
   width: 40px; 
   height: 40px; 
   border-radius: 12px; 
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  background-image: url('icon.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   box-shadow: 0 8px 32px rgba(255, 107, 53, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
   position: relative;
   animation: logoFloat 3s ease-in-out infinite;
