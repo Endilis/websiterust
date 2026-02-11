@@ -1,0 +1,18 @@
+# Кэширование HTML - короткий срок для частых обновлений
+/*.html
+  Cache-Control: public, max-age=300, must-revalidate
+  
+# Кэширование изображений - долгий срок
+/images/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Кэширование CSS/JS с версионированием
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+  
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+# Корневые файлы
+/
+  Cache-Control: public, max-age=300, must-revalidate
