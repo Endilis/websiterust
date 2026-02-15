@@ -581,10 +581,27 @@ header:hover {
   font-size: 16px;
 }
 
-/* Stats Badge */
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.1); opacity: 0.8; }
+/* Stats Badge - Premium Edition */
+@keyframes badgePulse {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.05) rotate(-2deg); }
+  50% { transform: scale(1.1) rotate(2deg); }
+  75% { transform: scale(1.05) rotate(-1deg); }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 40px rgba(255, 107, 53, 0.4),
+      0 0 80px rgba(255, 107, 53, 0.2),
+      inset 0 0 40px rgba(255, 107, 53, 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 0 60px rgba(255, 107, 53, 0.6),
+      0 0 120px rgba(255, 107, 53, 0.3),
+      inset 0 0 60px rgba(255, 107, 53, 0.2);
+  }
 }
 
 @keyframes shimmer {
@@ -592,85 +609,132 @@ header:hover {
   100% { background-position: 200% center; }
 }
 
-@keyframes glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 53, 0.3), 0 0 40px rgba(255, 107, 53, 0.1); }
-  50% { box-shadow: 0 0 30px rgba(255, 107, 53, 0.5), 0 0 60px rgba(255, 107, 53, 0.2); }
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(5deg); }
 }
 
 .stats-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 16px;
-  background: linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(251, 191, 36, 0.1));
-  padding: 20px 32px;
-  border-radius: 12px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
   position: relative;
+  display: inline-flex;
+  background: linear-gradient(135deg, 
+    rgba(255, 107, 53, 0.25) 0%,
+    rgba(251, 191, 36, 0.15) 50%,
+    rgba(255, 107, 53, 0.25) 100%);
+  padding: 28px 40px;
+  border-radius: 24px;
   margin-bottom: 32px;
-  animation: fadeInUp 0.8s ease-out 0.1s both, glow 3s ease-in-out infinite;
-  transition: all 0.3s ease;
-  overflow: hidden;
+  backdrop-filter: blur(20px) saturate(180%);
+  animation: fadeInUp 0.8s ease-out 0.1s both, glowPulse 4s ease-in-out infinite;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: visible;
+  border: 2px solid rgba(255, 107, 53, 0.3);
+  box-shadow: 
+    0 20px 60px rgba(255, 107, 53, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 0 40px rgba(255, 107, 53, 0.2) inset;
 }
 
 .stats-badge::before {
   content: '';
   position: absolute;
-  inset: 0;
-  border-radius: 12px;
-  padding: 2px;
-  background: linear-gradient(135deg, rgba(255, 107, 53, 0.6), rgba(251, 191, 36, 0.4), rgba(255, 107, 53, 0.6));
-  background-size: 200% 100%;
+  inset: -2px;
+  border-radius: 24px;
+  padding: 3px;
+  background: linear-gradient(135deg, 
+    #ff6b35 0%,
+    #fbbf24 25%,
+    #ff6b35 50%,
+    #fbbf24 75%,
+    #ff6b35 100%);
+  background-size: 300% 100%;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  animation: shimmer 3s linear infinite;
-  pointer-events: none;
+  animation: shimmer 4s linear infinite;
+  opacity: 0.8;
 }
 
 .stats-badge:hover {
-  transform: translateY(-2px);
-  animation: fadeInUp 0.8s ease-out 0.1s both, glow 1.5s ease-in-out infinite;
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(255, 107, 53, 0.5);
 }
 
-.stats-badge .icon-pulse {
-  font-size: 32px;
+.badge-glow {
+  position: absolute;
+  inset: -40px;
+  background: radial-gradient(circle at center, rgba(255, 107, 53, 0.3) 0%, transparent 70%);
+  filter: blur(30px);
+  opacity: 0.6;
+  animation: glowPulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.badge-content {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
-  animation: pulse 2s ease-in-out infinite;
-  filter: drop-shadow(0 0 8px rgba(255, 107, 53, 0.5));
+  gap: 24px;
 }
 
-.stats-badge .stats-content {
+.badge-icon {
+  font-size: 56px;
+  line-height: 1;
+  animation: badgePulse 3s ease-in-out infinite, float 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(255, 107, 53, 0.8))
+          drop-shadow(0 0 40px rgba(255, 107, 53, 0.4));
+  transform-origin: center;
+}
+
+.badge-stats {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
+  align-items: flex-start;
 }
 
-.stats-badge .stats-text {
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 16px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  line-height: 1.4;
-}
-
-.stats-badge .stats-number {
-  display: inline-block;
-  background: linear-gradient(135deg, #ff6b35, #fbbf24, #ff6b35);
+.badge-number {
+  font-size: 64px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, 
+    #ff6b35 0%,
+    #fbbf24 50%,
+    #ff6b35 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-size: 28px;
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  line-height: 1;
   animation: shimmer 3s linear infinite;
-  text-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
-  margin: 0 4px;
-  vertical-align: middle;
+  filter: drop-shadow(0 4px 12px rgba(255, 107, 53, 0.5))
+          drop-shadow(0 0 30px rgba(255, 107, 53, 0.3));
+  text-shadow: 0 0 40px rgba(255, 107, 53, 0.6);
+  position: relative;
+}
+
+.badge-number::after {
+  content: attr(data-target);
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #fbbf24 0%, #ff6b35 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: blur(20px);
+  opacity: 0.4;
+  z-index: -1;
+}
+
+.badge-label {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 /* CTA / Buttons */
