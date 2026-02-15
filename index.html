@@ -59,10 +59,10 @@
       <div class="container hero-grid">
         <div>
           <div class="stats-badge">
-            <span class="icon">🔥</span>
-            <div>
-              <div class="stats-number" id="guildCount">—</div>
-              <div class="stats-label">RustInfo следит за <span id="guildCountText">—</span> серверами</div>
+            <span class="icon-pulse">🔥</span>
+            <div class="stats-content">
+              <div class="stats-number" id="guildCount" data-target="0">—</div>
+              <div class="stats-label">Discord серверов под защитой</div>
             </div>
           </div>
           <h1><span class="grad">Explore • Build • Survive</span><br/>Мониторинг Rust+ и серверов</h1>
@@ -141,14 +141,32 @@
   <script>
     const METRICS_URL = 'https://stats.rustinfo.online/metrics/guilds';
     
+    function animateCounter(element, target) {
+      const duration = 2000;
+      const start = parseInt(element.dataset.target) || 0;
+      const increment = (target - start) / (duration / 16);
+      let current = start;
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if ((increment > 0 && current >= target) || (increment < 0 && current <= target)) {
+          element.textContent = target;
+          element.dataset.target = target;
+          clearInterval(timer);
+        } else {
+          element.textContent = Math.floor(current);
+        }
+      }, 16);
+    }
+    
     async function fetchGuildMetrics() {
       try {
         const res = await fetch(METRICS_URL);
         if (res.ok) {
           const data = await res.json();
           const count = data.guild_count || 0;
-          document.getElementById('guildCount').textContent = count;
-          document.getElementById('guildCountText').textContent = count;
+          const countEl = document.getElementById('guildCount');
+          animateCounter(countEl, count);
           console.log('Guild metrics loaded:', data);
         } else {
           console.error('Failed to load guild metrics, status:', res.status);
@@ -156,13 +174,12 @@
       } catch (e) {
         console.error('Failed to fetch guild metrics:', e);
         document.getElementById('guildCount').textContent = '?';
-        document.getElementById('guildCountText').textContent = '?';
       }
     }
     
     document.addEventListener('DOMContentLoaded', () => {
       fetchGuildMetrics();
-      setInterval(fetchGuildMetrics, 10 * 60 * 1000); // 🕐 Каждые 10 минут
+      setInterval(fetchGuildMetrics, 10 * 60 * 1000);
     });
   </script>
 </body>
