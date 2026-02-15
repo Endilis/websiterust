@@ -643,15 +643,11 @@ header:hover {
   padding: 3px;
   background: linear-gradient(135deg, 
     #ff6b35 0%,
-    #fbbf24 25%,
-    #ff6b35 50%,
-    #fbbf24 75%,
+    #fbbf24 50%,
     #ff6b35 100%);
-  background-size: 300% 100%;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  animation: shimmer 4s linear infinite;
   opacity: 0.8;
 }
 
