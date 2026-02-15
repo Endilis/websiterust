@@ -602,8 +602,8 @@ header:hover {
   align-items: center;
   gap: 16px;
   background: linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(251, 191, 36, 0.1));
-  padding: 16px 28px;
-  border-radius: 60px;
+  padding: 20px 32px;
+  border-radius: 12px;
   border: 2px solid transparent;
   background-clip: padding-box;
   position: relative;
@@ -617,7 +617,7 @@ header:hover {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 60px;
+  border-radius: 12px;
   padding: 2px;
   background: linear-gradient(135deg, rgba(255, 107, 53, 0.6), rgba(251, 191, 36, 0.4), rgba(255, 107, 53, 0.6));
   background-size: 200% 100%;
@@ -634,7 +634,7 @@ header:hover {
 }
 
 .stats-badge .icon-pulse {
-  font-size: 28px;
+  font-size: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -648,26 +648,29 @@ header:hover {
   gap: 4px;
 }
 
+.stats-badge .stats-text {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+}
+
 .stats-badge .stats-number {
+  display: inline-block;
   background: linear-gradient(135deg, #ff6b35, #fbbf24, #ff6b35);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 900;
   letter-spacing: -0.02em;
   line-height: 1;
   animation: shimmer 3s linear infinite;
   text-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
-}
-
-.stats-badge .stats-label {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  margin: 0 4px;
+  vertical-align: middle;
 }
 
 /* CTA / Buttons */
