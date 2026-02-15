@@ -1,6 +1,8 @@
-# Кэширование HTML - короткий срок для частых обновлений
+# HTML без кэширования - мгновенные обновления
 /*.html
-  Cache-Control: public, max-age=300, must-revalidate
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
   
 # Кэширование изображений - долгий срок
 /images/*
@@ -19,4 +21,6 @@
 
 # Корневые файлы
 /
-  Cache-Control: public, max-age=300, must-revalidate
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
