@@ -703,11 +703,9 @@ header:hover {
     #ff6b35 0%,
     #fbbf24 50%,
     #ff6b35 100%);
-  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: shimmer 3s linear infinite;
   filter: drop-shadow(0 4px 12px rgba(255, 107, 53, 0.5))
           drop-shadow(0 0 30px rgba(255, 107, 53, 0.3));
   text-shadow: 0 0 40px rgba(255, 107, 53, 0.6);
