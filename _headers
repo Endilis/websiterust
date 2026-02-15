@@ -6,12 +6,12 @@
 /images/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Кэширование CSS/JS с версионированием - короткий срок для быстрых обновлений
+# Кэширование CSS/JS с версионированием - 1 минута для моментальных обновлений
 /*.css
-  Cache-Control: public, max-age=300, must-revalidate
+  Cache-Control: public, max-age=60, must-revalidate
   
 /*.js
-  Cache-Control: public, max-age=300, must-revalidate
+  Cache-Control: public, max-age=60, must-revalidate
 
 # Корневые файлы
 /
