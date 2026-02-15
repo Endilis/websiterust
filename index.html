@@ -31,7 +31,15 @@
   <link rel="alternate" hreflang="ru" href="https://rustinfo.online/" />
   <link rel="alternate" hreflang="en" href="https://rustinfo.online/index_en.html" />
   <link rel="alternate" hreflang="uk" href="https://rustinfo.online/index_ua.html" />
-  <link rel="stylesheet" href="style.css?v=8">
+  <script>
+    // Dynamic CSS loading with timestamp to bypass all caching
+    (function() {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'style.css?t=' + new Date().getTime();
+      document.head.appendChild(link);
+    })();
+  </script>
 </head>
 <body>
   <header aria-label="Навигация">
