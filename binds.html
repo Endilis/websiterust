@@ -30,7 +30,7 @@
   <meta property="og:description" content="Полное руководство по настройке биндов в Rust: PvP, строительство, автоматизация" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="alternate" hreflang="ru" href="https://rustinfo.online/binds.html" />
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=15">
 </head>
 <body>
   <header aria-label="Навигация">
@@ -128,40 +128,40 @@ clearbinds  // удаляет все бинды</div>
           </thead>
           <tbody>
             <tr>
-              <td><code>bind q forward;sprint</code></td>
-              <td>Автобег</td>
+              <td data-label="Бинд"><code>bind q forward;sprint</code></td>
+              <td data-label="Описание">Автобег</td>
             </tr>
             <tr>
-              <td><code>bind z +attack</code></td>
-              <td>Автоатака</td>
+              <td data-label="Бинд"><code>bind z +attack</code></td>
+              <td data-label="Описание">Автоатака</td>
             </tr>
             <tr>
-              <td><code>bind x +attack;+duck</code></td>
-              <td>Автоатака + присед</td>
+              <td data-label="Бинд"><code>bind x +attack;+duck</code></td>
+              <td data-label="Описание">Автоатака + присед</td>
             </tr>
             <tr>
-              <td><code>bind p +jump;+sprint;+duck</code></td>
-              <td>Быстрый прыжок через препятствия</td>
+              <td data-label="Бинд"><code>bind p +jump;+sprint;+duck</code></td>
+              <td data-label="Описание">Быстрый прыжок через препятствия</td>
             </tr>
             <tr>
-              <td><code>bind k kill</code></td>
-              <td>Самоубийство</td>
+              <td data-label="Бинд"><code>bind k kill</code></td>
+              <td data-label="Описание">Самоубийство</td>
             </tr>
             <tr>
-              <td><code>bind m +map</code></td>
-              <td>Открыть карту</td>
+              <td data-label="Бинд"><code>bind m +map</code></td>
+              <td data-label="Описание">Открыть карту</td>
             </tr>
             <tr>
-              <td><code>bind mouse1 +lighttoggle;+attack2</code></td>
-              <td>Автоматическое включение фонаря/лазера при стрельбе</td>
+              <td data-label="Бинд"><code>bind mouse1 +lighttoggle;+attack2</code></td>
+              <td data-label="Описание">Автоматическое включение фонаря/лазера при стрельбе</td>
             </tr>
             <tr>
-              <td><code>bind 0 gc.collect</code></td>
-              <td>Очистка памяти (уменьшает лаги)</td>
+              <td data-label="Бинд"><code>bind 0 gc.collect</code></td>
+              <td data-label="Описание">Очистка памяти (уменьшает лаги)</td>
             </tr>
             <tr>
-              <td><code>bind 5 +slot5;+attack</code></td>
-              <td>Использовать предмет из 5-го слота + автоатака</td>
+              <td data-label="Бинд"><code>bind 5 +slot5;+attack</code></td>
+              <td data-label="Описание">Использовать предмет из 5-го слота + автоатака</td>
             </tr>
           </tbody>
         </table>
@@ -188,20 +188,20 @@ clearbinds  // удаляет все бинды</div>
           </thead>
           <tbody>
             <tr>
-              <td><code>bind r reload;attack;duck</code></td>
-              <td>Автоатака + перезарядка при рейде</td>
+              <td data-label="Бинд"><code>bind r reload;attack;duck</code></td>
+              <td data-label="Действие">Автоатака + перезарядка при рейде</td>
             </tr>
             <tr>
-              <td><code>bind v +attack;+jump</code></td>
-              <td>Удары/атака в прыжке (для потолков)</td>
+              <td data-label="Бинд"><code>bind v +attack;+jump</code></td>
+              <td data-label="Действие">Удары/атака в прыжке (для потолков)</td>
             </tr>
             <tr>
-              <td><code>bind u chat.say "/remove"</code></td>
-              <td>Включить режим удаления построек (на некоторых серверах)</td>
+              <td data-label="Бинд"><code>bind u chat.say "/remove"</code></td>
+              <td data-label="Действие">Включить режим удаления построек (на некоторых серверах)</td>
             </tr>
             <tr>
-              <td><code>bind g chat.say "/home 1"</code></td>
-              <td>Телепорт домой (только на серверах с плагинами)</td>
+              <td data-label="Бинд"><code>bind g chat.say "/home 1"</code></td>
+              <td data-label="Действие">Телепорт домой (только на серверах с плагинами)</td>
             </tr>
           </tbody>
         </table>
@@ -265,5 +265,6 @@ bind 3 +slot3;+attack        // быстрое использование хил
       · <a href="https://facepunch.com" target="_blank">Facepunch</a>
     </div>
   </footer>
+  <script src="mobile-menu.js"></script>
 </body>
 </html>
