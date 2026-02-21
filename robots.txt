@@ -12,6 +12,7 @@ Allow: /docs_ua.html
 Allow: /setup.html
 Allow: /setup_en.html
 Allow: /setup_ua.html
+Allow: /binds.html
 
 # Ускоряем краулинг для Google
 User-agent: Googlebot
