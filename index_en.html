@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EPL0ZGMYGW"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-EPL0ZGMYGW');
-  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
@@ -21,6 +12,9 @@
   <link rel="preconnect" href="https://stats.rustinfo.online">
   <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
   <link rel="dns-prefetch" href="https://discord.com">
+  
+  <!-- Preload critical CSS -->
+  <link rel="preload" href="style.css?v=16" as="style">
   
   <!-- Favicons -->
   <link rel="icon" type="image/png" href="/images/icon.png" />
@@ -529,6 +523,23 @@
       setInterval(fetchGuildMetrics, 10 * 60 * 1000);
     });
   </script>
-  <script src="mobile-menu.js"></script>
+  <script defer src="mobile-menu.js"></script>
+  
+  <!-- Google Analytics - Deferred for Performance -->
+  <script>
+    window.addEventListener('load', function() {
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=G-EPL0ZGMYGW';
+      document.head.appendChild(script);
+      
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-EPL0ZGMYGW');
+      };
+    });
+  </script>
 </body>
 </html>
