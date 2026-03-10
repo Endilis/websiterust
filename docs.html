@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -7,153 +7,1023 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-EPL0ZGMYGW');
   </script>
+  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
+
+
+
+  
   <link rel="icon" type="image/png" href="/images/icon.png" />
   <link rel="shortcut icon" type="image/png" href="/images/icon.png" />
   <link rel="apple-touch-icon" href="/images/icon.png" />
-  <!-- SEO Meta Tags -->
-  <title>Документация RustInfo — Полное Руководство по Discord Боту для Rust+</title>
-  <meta name="description" content="📚 Полная документация RustInfo бота: команды, настройка мониторинга Rust+ серверов, управление умными устройствами, FAQ. Пошаговые инструкции с примерами." />
-  <meta name="keywords" content="rustinfo документация, rust bot guide, rust+ commands, discord bot documentation, rust server monitoring guide" />
+  
+  <title>RustInfo — Discord Бот для Rust+ | Все Команды | rustbot rustplusbot бот для раста</title>
+  <meta name="description" content="RustInfo — #1 Discord бот для Rust+. Команды .pop .time .add .sw .events и другие. Мониторинг Rust+ серверов 24/7, управление SmartSwitch, уведомления рейдов. Бесплатный rustbot rustplusbot для вашего Discord сервера!" />
+  <meta name="keywords" content="rustinfo, rustbot, rustplusbot, rustplusplus, rustandraids, rust plus bot, rust discord bot, rust+ bot, бот для раста, раст бот, rust бот discord, бот для rust+, discord bot rust, rust server monitoring, rust plus commands, rust smart switch bot, команды раст бот, раст плюс бот, rust monitoring bot, бот раст" />
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <meta name="author" content="RustInfo Team" />
+  
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="RustInfo — Discord Бот для Rust+ | Команды и Мониторинг" />
+  <meta property="og:description" content="Полный гайд по командам Rust+ бота RustInfo: .pop .time .add .sw .events и другие. Мониторинг серверов, управление SmartSwitch, бесплатно." />
+  <meta property="og:url" content="https://rustinfo.online/docs.html" />
+  <meta property="og:image" content="https://rustinfo.online/images/promo.png" />
+  <meta property="og:site_name" content="RustInfo" />
+  
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RustInfo — Бот для Rust+ | Все Команды" />
+  <meta name="twitter:description" content="Полный гайд по командам Discord бота RustInfo для Rust+. Rust+ мониторинг, SmartSwitch, события." />
+  <meta name="twitter:image" content="https://rustinfo.online/images/promo.png" />
+  
   <link rel="canonical" href="https://rustinfo.online/docs.html" />
-  <meta property="og:title" content="Документация RustInfo — Полное Руководство" />
-  <meta property="og:description" content="Полная документация по использованию RustInfo бота" />
   <link rel="alternate" hreflang="ru" href="https://rustinfo.online/docs.html" />
   <link rel="alternate" hreflang="en" href="https://rustinfo.online/docs_en.html" />
   <link rel="alternate" hreflang="uk" href="https://rustinfo.online/docs_ua.html" />
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="alternate" hreflang="x-default" href="https://rustinfo.online/docs.html" />
+  
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="docs-styles.css?v=11">
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "RustInfo — Discord Бот для Rust+ | Все Команды",
+    "description": "Полный гайд по командам Discord бота RustInfo для Rust+. Команды .pop .time .add .sw .events и другие. Мониторинг серверов Rust+.",
+    "keywords": "rustinfo, rustbot, rustplusbot, бот для раста, раст бот, rust discord bot",
+    "author": {"@type": "Organization", "name": "RustInfo Team"},
+    "datePublished": "2024-01-01",
+    "dateModified": "2026-03-10",
+    "publisher": {"@type": "Organization", "name": "RustInfo", "logo": {"@type": "ImageObject", "url": "https://rustinfo.online/images/icon.png"}}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type": "Question", "name": "Как начать использовать Rust+ команды?", "acceptedAnswer": {"@type": "Answer", "text": "Чтобы подключить бота RustInfo, ознакомьтесь со статьёй Подключение. После получения сообщения Connected в игровом чате все команды .pop .time .add и другие будут доступны."}},
+      {"@type": "Question", "name": "Почему не работают команды .time .pop .add?", "acceptedAnswer": {"@type": "Answer", "text": "Убедитесь что бот подключен правильно и в чате отправлено сообщение Connected. Бот работает только в командном чате. По умолчанию префикс команд . (точка)."}},
+      {"@type": "Question", "name": "Как часто обновляются данные мониторинга?", "acceptedAnswer": {"@type": "Answer", "text": "Данные о сервере обновляются каждые 10-30 секунд. Статус отслеживаемых игроков обновляется каждые 2-4 минуты."}},
+      {"@type": "Question", "name": "Могу ли я управлять несколькими серверами?", "acceptedAnswer": {"@type": "Answer", "text": "Да, RustInfo поддерживает мониторинг и управление несколькими серверами одновременно. Вы можете переключаться между ними в Discord."}},
+      {"@type": "Question", "name": "Безопасно ли давать боту доступ к Rust+?", "acceptedAnswer": {"@type": "Answer", "text": "Да, бот использует официальный API Rust+ и не хранит ваши учетные данные. Все соединения зашифрованы. Вы можете в любой момент отозвать доступ через приложение Rust+."}},
+      {"@type": "Question", "name": "Что делать, если устройство не отвечает?", "acceptedAnswer": {"@type": "Answer", "text": "Проверьте подключение к серверу Rust. Убедитесь, что устройство всё ещё существует в игре и правильно связано. Попробуйте удалить устройство командой .remove и добавить заново."}}
+    ]
+  }
+  </script>
 </head>
 <body>
-  <header aria-label="Навигация">
+  <!-- Reading Progress Bar -->
+  <div class="reading-progress" id="readingProgress" aria-hidden="true">
+    <div class="reading-progress-fill" id="readingProgressFill"></div>
+  </div>
+
+  <!-- Cursor Spotlight -->
+  <div class="cursor-spotlight" id="cursorSpotlight" aria-hidden="true"></div>
+
+  <!-- Sticky Navigation -->
+  <header aria-label="Основная навигация">
     <div class="container nav">
       <div class="brand">
-        <a href="index.html" style="display:flex; align-items:center; gap: 10px;">
+        <a href="index.html" style="display:flex; align-items:center; gap: 10px;" aria-label="RustInfo Главная">
           <div class="logo" aria-hidden="true"></div>
           <div class="title">RustInfo</div>
         </a>
       </div>
-      <div style="display: flex; align-items: center;">
-        <nav class="links" aria-label="Основные ссылки">
+      <div class="nav-right">
+        <nav class="links" aria-label="Основные разделы">
           <a class="link" href="index.html">Главная</a>
-          <a class="link" href="docs.html">Документация</a>
+          <a class="link active-page" href="docs.html">Документация</a>
           <a class="link" href="setup.html">Подключение</a>
           <a class="link" href="binds.html">Бинды</a>
-          <a class="link" href="https://discord.gg/ZRDtafakuf" target="_blank" rel="noreferrer">Discord</a>
+          <a class="link" href="https://discord.gg/ZRDtafakuf" target="_blank" rel="noopener noreferrer">Discord</a>
         </nav>
         <div class="lang-switcher">
-          <a href="docs.html" class="active">🇷🇺</a>
-          <a href="docs_en.html">🇬🇧</a>
-          <a href="docs_ua.html">🇺🇦</a>
+          <a href="docs.html" class="active" aria-label="Русский">&#127479;&#127482;</a>
+          <a href="docs_en.html" aria-label="English">&#127468;&#127463;</a>
+          <a href="docs_ua.html" aria-label="Українська">&#127482;&#127462;</a>
         </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Меню" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
     </div>
   </header>
 
-  <main>
-    <section class="section" style="padding-top: 80px;">
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+    <div class="mobile-menu-content">
+      <nav aria-label="Мобильное меню">
+        <a href="index.html">Главная</a>
+        <a href="docs.html" class="active">Документация</a>
+        <a href="setup.html">Подключение</a>
+        <a href="binds.html">Бинды</a>
+        <a href="https://discord.gg/ZRDtafakuf" target="_blank" rel="noopener noreferrer">Discord</a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Premium Sidebar -->
+  <aside class="docs-sidebar" id="docsSidebar">
+    <div class="sidebar-content">
+      <div class="sidebar-search">
+        <svg class="sidebar-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="cmdSearch" placeholder="Поиск команд..." class="sidebar-search-input" autocomplete="off" />
+        <kbd class="sidebar-search-kbd">/</kbd>
+      </div>
+      
+      <div class="sidebar-section">
+        <h4>Начало</h4>
+        <nav aria-label="Навигация по разделам">
+          <a href="#overview" class="sidebar-link" data-section="overview"><span class="sidebar-dot"></span>Обзор</a>
+          <a href="#monitoring" class="sidebar-link" data-section="monitoring"><span class="sidebar-dot"></span>Мониторинг</a>
+        </nav>
+      </div>
+
+      <div class="sidebar-section">
+        <h4>Команды</h4>
+        <nav aria-label="Команды">
+          <a href="#rust-plus" class="sidebar-link" data-section="rust-plus"><span class="sidebar-dot"></span>Rust+ Команды</a>
+          <a href="#cmd-help" class="sidebar-link sub" data-section="cmd-help"><code>.help</code></a>
+          <a href="#cmd-pop" class="sidebar-link sub" data-section="cmd-pop"><code>.pop</code></a>
+          <a href="#cmd-time" class="sidebar-link sub" data-section="cmd-time"><code>.time</code></a>
+          <a href="#cmd-add" class="sidebar-link sub" data-section="cmd-add"><code>.add</code></a>
+          <a href="#cmd-devices" class="sidebar-link sub" data-section="cmd-devices"><code>.devices</code></a>
+          <a href="#cmd-remove" class="sidebar-link sub" data-section="cmd-remove"><code>.remove</code></a>
+          <a href="#cmd-sw" class="sidebar-link sub" data-section="cmd-sw"><code>.sw</code></a>
+          <a href="#cmd-afk" class="sidebar-link sub" data-section="cmd-afk"><code>.afk</code></a>
+          <a href="#cmd-mark" class="sidebar-link sub" data-section="cmd-mark"><code>.mark</code></a>
+          <a href="#cmd-events" class="sidebar-link sub" data-section="cmd-events"><code>.events</code></a>
+          <a href="#cmd-cargo" class="sidebar-link sub" data-section="cmd-cargo"><code>.cargo</code></a>
+          <a href="#cmd-ch47" class="sidebar-link sub" data-section="cmd-ch47"><code>.ch47</code></a>
+          <a href="#cmd-patrol" class="sidebar-link sub" data-section="cmd-patrol"><code>.patrol</code></a>
+          <a href="#cmd-crate" class="sidebar-link sub" data-section="cmd-crate"><code>.crate</code></a>
+          <a href="#cmd-deepsea" class="sidebar-link sub" data-section="cmd-deepsea"><code>.deepsea</code></a>
+          <a href="#cmd-crash" class="sidebar-link sub" data-section="cmd-crash"><code>.crash</code></a>
+          <a href="#cmd-lang" class="sidebar-link sub" data-section="cmd-lang"><code>.lang</code></a>
+          <a href="#cmd-prefix" class="sidebar-link sub" data-section="cmd-prefix"><code>.prefix</code></a>
+        </nav>
+      </div>
+
+      <div class="sidebar-section">
+        <h4>Discord</h4>
+        <nav aria-label="Discord команды">
+          <a href="#discord-commands" class="sidebar-link" data-section="discord-commands"><span class="sidebar-dot"></span>Discord Команды</a>
+          <a href="#cmd-map" class="sidebar-link sub" data-section="cmd-map"><code>!map</code></a>
+          <a href="#cmd-info" class="sidebar-link sub" data-section="cmd-info"><code>!info</code></a>
+        </nav>
+      </div>
+
+      <div class="sidebar-section">
+        <h4>Помощь</h4>
+        <nav><a href="#faq" class="sidebar-link" data-section="faq"><span class="sidebar-dot"></span>FAQ</a></nav>
+      </div>
+
+      <div class="sidebar-progress" aria-hidden="true">
+        <div class="sidebar-progress-fill" id="sidebarProgressFill"></div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="docs-main">
+    <!-- Hero Section -->
+    <section class="docs-hero">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-grid-pattern" aria-hidden="true"></div>
       <div class="container">
-        <h2>Документация RustInfo</h2>
-        <p>Полное руководство по использованию бота и его возможностей</p>
+        <div class="docs-hero-content">
+          <div class="badge"><span class="badge-pulse"></span>&#128218; Документация v2.0</div>
+          <h1 class="hero-title">
+            <span class="hero-title-line">RustInfo — Бот для Rust+</span>
+            <span class="hero-title-line">Полное руководство по <span class="gradient-text">Командам</span></span>
+          </h1>
+          <p class="lead">Профессиональный Discord бот для мониторинга Rust серверов и управления устройствами через Rust+</p>
+          
+          <div class="hero-actions">
+            <a href="#rust-plus" class="hero-btn hero-btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              Перейти к командам
+            </a>
+            <a href="#overview" class="hero-btn hero-btn-secondary">
+              Начать обзор
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+            </a>
+          </div>
+          
+          <div class="docs-hero-stats">
+            <div class="stat-card">
+              <div class="stat-value">10-30<span class="stat-unit">сек</span></div>
+              <div class="stat-label">Обновление данных</div>
+              <div class="stat-glow"></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">16<span class="stat-unit">+</span></div>
+              <div class="stat-label">Команд</div>
+              <div class="stat-glow"></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">24<span class="stat-unit">/7</span></div>
+              <div class="stat-label">Мониторинг</div>
+              <div class="stat-glow"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Overview Section -->
+    <section id="overview" class="docs-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-label">Возможности</div>
+          <h2>Добро пожаловать в RustInfo</h2>
+          <p class="section-subtitle">Мощный инструмент для управления Rust серверами прямо из Discord</p>
+        </div>
         
-        <div class="docs-intro">
-          <h3>Приветствуем в сообществе поддержки бот - 𝐑𝐮𝐬𝐭𝐈𝐧𝐟𝐨</h3>
-          <p>RustInfo — многофункциональный Discord бот для мониторинга Rust серверов, отслеживания игроков и управления устройствами через Rust+.</p>
+        <div class="feature-grid-3">
+          <div class="feature-card-modern" data-tilt>
+            <div class="feature-card-shine"></div>
+            <div class="feature-card-border"></div>
+            <div class="feature-icon">&#128202;</div>
+            <h3>Мониторинг в реальном времени</h3>
+            <p>Отслеживайте статус сервера, онлайн игроков и загрузку с обновлением каждые 10-30 секунд</p>
+          </div>
+          <div class="feature-card-modern" data-tilt>
+            <div class="feature-card-shine"></div>
+            <div class="feature-card-border"></div>
+            <div class="feature-icon">&#128276;</div>
+            <h3>Умные уведомления</h3>
+            <p>Получайте мгновенные оповещения когда отслеживаемые игроки заходят или покидают сервер</p>
+          </div>
+          <div class="feature-card-modern" data-tilt>
+            <div class="feature-card-shine"></div>
+            <div class="feature-card-border"></div>
+            <div class="feature-icon">&#127899;&#65039;</div>
+            <h3>Управление устройствами</h3>
+            <p>Контролируйте умные выключатели и другие устройства Rust+ удалённо через Discord</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Monitoring Section -->
+    <section id="monitoring" class="docs-section alt-bg">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-label">Мониторинг</div>
+          <h2>Мониторинг сервера</h2>
+          <p class="section-subtitle">Полный контроль над вашим Rust сервером</p>
         </div>
 
-        <div class="feature-list">
-          <div class="feature-item">
-            <h4>📈 Мониторинг сервера</h4>
-            <p>Показывает информацию о выбранном сервере и обновляет данные каждые <strong>10-30 секунд</strong>:</p>
-            <ul>
-              <li>Статус сервера</li>
-              <li>Количество онлайн игроков</li>
-              <li>Загруженность сервера</li>
+        <div class="feature-showcase">
+          <div class="showcase-content">
+            <div class="showcase-tag"><span class="showcase-tag-dot"></span>Обновление каждые 10-30 секунд</div>
+            <h3>Отслеживание в реальном времени</h3>
+            <ul class="feature-list-modern">
+              <li><span class="list-icon">&#10004;</span><div><strong>Статус сервера</strong><p>Мгновенная информация о доступности сервера</p></div></li>
+              <li><span class="list-icon">&#10004;</span><div><strong>Онлайн игроки</strong><p>Текущее количество игроков и лимит слотов</p></div></li>
+              <li><span class="list-icon">&#10004;</span><div><strong>Загрузка сервера</strong><p>Производительность и нагрузка в процентах</p></div></li>
             </ul>
-            <img src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/monintoring.png" alt="Мониторинг сервера" loading="lazy">
-            
-            <h4 style="margin-top: 30px;">🎮 Поиск игроков</h4>
-            <p>Быстрый поиск игроков по имени на выбранном сервере.</p>
-            
-            <h4 style="margin-top: 30px;">🟢 Статус игроков</h4>
-            <p>Отображает список игроков и их статус онлайн/оффлайн с обновлением каждые <strong>2-4 минуты</strong>.</p>
-            <p><strong>Уведомления:</strong></p>
-            <ul>
-              <li>+ Включайте уведомления об отслеживаемых игроках</li>
-              <li>- Выключайте уведомления об отслеживаемых игроках</li>
-            </ul>
+          </div>
+          <div class="showcase-image">
+            <div class="showcase-image-glow"></div>
+            <img width="800" height="500" src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/monintoring.png" alt="Панель мониторинга RustInfo сервера" loading="lazy">
           </div>
         </div>
 
-        <h3 style="margin-top: 40px; margin-bottom: 20px; color: var(--accent-2);">Rust+ Команды</h3>
-        <div class="note">
-          <strong>📌 Важно:</strong> Rust+ доступен только для пользователей с ролью @Тестер. Напишите <code>!tester</code> в общем чате для автоматической выдачи роли.
+        <div class="info-cards-grid">
+          <div class="info-card" data-tilt><div class="info-card-border"></div><div class="info-icon">&#128269;</div><h4>Поиск игроков</h4><p>Быстрый поиск любого игрока по имени на выбранном сервере</p></div>
+          <div class="info-card" data-tilt><div class="info-card-border"></div><div class="info-icon">&#128994;</div><h4>Статус игроков</h4><p>Список отслеживаемых игроков с статусом онлайн/оффлайн (обновление каждые 2-4 минуты)</p></div>
+          <div class="info-card" data-tilt><div class="info-card-border"></div><div class="info-icon">&#128276;</div><h4>Уведомления</h4><p>Включайте (+) или выключайте (-) оповещения об активности игроков</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Rust+ Commands Section -->
+    <section id="rust-plus" class="docs-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-label">Команды</div>
+          <h2>Rust+ Команды</h2>
+          <p class="section-subtitle">Управляйте своими устройствами и отслеживайте сервер через Discord</p>
         </div>
 
-        <div class="command-card">
-          <h5>.help</h5>
-          <p>Выводит список доступных команд</p>
-          <p><strong>Команды:</strong> .help, .add &lt;name&gt;, .remove &lt;name&gt;, .devices, .sw &lt;name&gt; &lt;0|1&gt;, .pop, .time</p>
-          <img src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/ds_info.png" alt=".help команда" loading="lazy">
+        <!-- Command: .help -->
+        <div id="cmd-help" class="command-block" data-cmd=".help">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.help</code><button class="copy-btn" data-copy=".help" aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge">Информация</span>
+            </div>
+            <p class="command-description">Отображает полный список доступных команд с кратким описанием</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <h4>Список команд:</h4>
+              <div class="command-list-grid">
+                <div class="mini-cmd"><code>.help</code> &#8212; Справка</div>
+                <div class="mini-cmd"><code>.pop</code> &#8212; Онлайн сервера</div>
+                <div class="mini-cmd"><code>.time</code> &#8212; Время на сервере</div>
+                <div class="mini-cmd"><code>.afk</code> &#8212; AFK игроки</div>
+                <div class="mini-cmd"><code>.mark</code> &#8212; Метка позиции</div>
+                <div class="mini-cmd"><code>.add</code> &#8212; Добавить устройство</div>
+                <div class="mini-cmd"><code>.remove</code> &#8212; Удалить устройство</div>
+                <div class="mini-cmd"><code>.devices</code> &#8212; Список устройств</div>
+                <div class="mini-cmd"><code>.sw</code> &#8212; Управление выключателем</div>
+                <div class="mini-cmd"><code>.events</code> &#8212; Активные события</div>
+                <div class="mini-cmd"><code>.cargo</code> &#8212; Статус CargoShip</div>
+                <div class="mini-cmd"><code>.ch47</code> &#8212; Статус CH47</div>
+                <div class="mini-cmd"><code>.patrol</code> &#8212; Статус PatrolHeli</div>
+                <div class="mini-cmd"><code>.crate</code> &#8212; Статус Crate</div>
+                <div class="mini-cmd"><code>.deepsea</code> &#8212; Статус DeepSea</div>
+                <div class="mini-cmd"><code>.crash</code> &#8212; Место крушения</div>
+                <div class="mini-cmd"><code>.lang</code> &#8212; Язык чата</div>
+                <div class="mini-cmd"><code>.prefix</code> &#8212; Префикс чата</div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="command-card">
-          <h5>.pop</h5>
-          <p>Показывает текущий онлайн на сервере, включая очередь и количество слотов</p>
-          <img src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/pop.png" alt=".pop команда" loading="lazy">
+        <!-- Command: .pop -->
+        <div id="cmd-pop" class="command-block" data-cmd=".pop">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.pop</code><button class="copy-btn" data-copy=".pop" aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge server">Сервер</span>
+            </div>
+            <p class="command-description">Показывает актуальную информацию об онлайне сервера</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <h4>Отображаемая информация:</h4>
+              <ul class="feature-list-modern compact">
+                <li><span class="list-icon">&#128101;</span> Текущее количество игроков онлайн</li>
+                <li><span class="list-icon">&#127918;</span> Максимальное количество слотов</li>
+                <li><span class="list-icon">&#9203;</span> Количество игроков в очереди</li>
+              </ul>
+              <div class="tip-box"><strong>&#128161; Совет:</strong> Вы всегда можете быстро узнать онлайн и очередь на сервере</div>
+            </div>
+            <div class="command-image"><img width="600" height="400" src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/pop.png" alt="Команда .pop" loading="lazy"></div>
+          </div>
         </div>
 
-        <div class="command-card">
-          <h5>.time</h5>
-          <p>Показывает текущее время на сервере и оставшееся время в минутах до рассвета или заката</p>
-          <img src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/time.png" alt=".time команда" loading="lazy">
+        <!-- Command: .time -->
+        <div id="cmd-time" class="command-block" data-cmd=".time">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.time</code><button class="copy-btn" data-copy=".time" aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge server">Сервер</span>
+            </div>
+            <p class="command-description">Отображает игровое время и прогноз до заката/рассвета</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <h4>Информация о времени:</h4>
+              <ul class="feature-list-modern compact">
+                <li><span class="list-icon">&#128336;</span> Текущее игровое время на сервере</li>
+                <li><span class="list-icon">&#127749;</span> Время до рассвета (в минутах)</li>
+                <li><span class="list-icon">&#127750;</span> Время до заката (в минутах)</li>
+              </ul>
+              <div class="tip-box"><strong>&#128161; Совет:</strong> Планируйте рейды и фарм, зная точное время на сервере — ночь не застанет вас врасплох</div>
+            </div>
+            <div class="command-image"><img width="600" height="400" src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/time.png" alt="Команда .time" loading="lazy"></div>
+          </div>
         </div>
 
-        <div class="note">
-          <strong>⚠️ Прежде чем использовать команду .add, вы должны связать устройство через приложение Rust+!</strong>
+        <div class="alert-box warning">
+          <div class="alert-icon-wrap warning">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01"/></svg>
+          </div>
+          <div class="alert-content">
+            <strong>Важно перед использованием .add</strong>
+            <p>Прежде чем добавлять устройство через команду <code>.add</code>, вы должны предварительно связать его через мобильное приложение Rust+!</p>
+          </div>
         </div>
 
-        <div class="command-card">
-          <h5>.add &lt;имя устройства&gt;</h5>
-          <p>Добавление устройства в базу данных бота. После выполнения команды вы получите сообщение об успешном добавлении устройства.</p>
-          <img src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/add.png" alt=".add команда" loading="lazy">
+        <!-- Command: .add -->
+        <div id="cmd-add" class="command-block" data-cmd=".add">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.add &lt;имя_устройства&gt;</code><button class="copy-btn" data-copy=".add " aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge device">Устройство</span>
+            </div>
+            <p class="command-description">Добавляет умное устройство в базу данных бота для дистанционного управления</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <h4>Как использовать:</h4>
+              <ol class="steps-list">
+                <li>Свяжите устройство в приложении Rust+ и дайте ему имя</li>
+                <li>Выполните команду: <code>.add имя_устройства</code></li>
+                <li>Получите подтверждение об успешном добавлении</li>
+              </ol>
+              <div class="example-box"><strong>Пример:</strong> <code>.add главный_свет</code></div>
+              <div class="tip-box"><strong>&#128161; Совет:</strong> Используйте понятные имена без пробелов — чем короче слово, тем легче включить в экстренной ситуации</div>
+            </div>
+            <div class="command-image"><img width="600" height="400" src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/add.png" alt="Команда .add" loading="lazy"></div>
+          </div>
         </div>
 
-        <div class="command-card">
-          <h5>.devices</h5>
-          <p>Вывод списка устройств, которые вы подключали. Вывод производится с задержкой в 1 секунду.</p>
-          <img src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/devices.png" alt=".devices команда" loading="lazy">
+        <!-- Command: .devices -->
+        <div id="cmd-devices" class="command-block" data-cmd=".devices">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.devices</code><button class="copy-btn" data-copy=".devices" aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge device">Устройство</span>
+            </div>
+            <p class="command-description">Показывает список всех подключенных устройств с их текущим состоянием</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <h4>Отображаемые данные:</h4>
+              <ul class="feature-list-modern compact">
+                <li><span class="list-icon">&#128221;</span> Название устройства</li>
+                <li><span class="list-icon">&#128204;</span> Тип устройства</li>
+                <li><span class="list-icon">&#9889;</span> Текущее состояние (вкл/выкл)</li>
+              </ul>
+              <div class="note-box"><strong>&#128204; Примечание:</strong> Вывод списка производится с задержкой в 1 секунду между устройствами</div>
+            </div>
+            <div class="command-image"><img width="600" height="400" src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/devices.png" alt="Команда .devices" loading="lazy"></div>
+          </div>
         </div>
 
-        <div class="command-card">
-          <h5>.remove &lt;имя устройства&gt; или .remove all</h5>
-          <p>Удаление неиспользуемых устройств. Используйте <code>.remove all</code> чтобы удалить все устройства.</p>
-          <img src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/remove.png" alt="Remove команда демо" loading="lazy">
+        <!-- Command: .remove -->
+        <div id="cmd-remove" class="command-block" data-cmd=".remove">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.remove &lt;имя | all&gt;</code><button class="copy-btn" data-copy=".remove " aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge danger">Удаление</span>
+            </div>
+            <p class="command-description">Удаляет одно или все устройства из базы данных бота</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <h4>Варианты использования:</h4>
+              <div class="usage-variants">
+                <div class="variant"><code>.remove имя_устройства</code><p>Удаляет конкретное устройство</p></div>
+                <div class="variant"><code>.remove all</code><p>Удаляет все устройства</p></div>
+              </div>
+              <div class="example-box"><strong>Примеры:</strong><br><code>.remove turret</code><br><code>.remove all</code></div>
+              <div class="warning-box"><strong>&#9888;&#65039; Внимание:</strong> Команда <code>.remove all</code> удалит все ваши устройства без возможности восстановления!</div>
+            </div>
+            <div class="command-image"><img width="600" height="400" src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/remove.png" alt="Команда .remove" loading="lazy"></div>
+          </div>
         </div>
 
-        <div class="command-card">
-          <h5>.sw &lt;имя устройства&gt; &lt;0|1&gt;</h5>
-          <p>Включение &lt;1&gt; или Выключение &lt;0&gt; умного выключателя</p>
-          <img src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/main.gif" alt="Smart Switch демо" loading="lazy">
+        <!-- Command: .sw -->
+        <div id="cmd-sw" class="command-block highlighted" data-cmd=".sw">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.sw &lt;устройство&gt; &lt;0|1&gt;</code><button class="copy-btn" data-copy=".sw " aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge primary">Управление</span>
+            </div>
+            <p class="command-description">Дистанционное управление умными выключателями</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <h4>Параметры команды:</h4>
+              <div class="parameters-grid">
+                <div class="parameter"><code>имя_устройства</code><p>Название вашего устройства</p></div>
+                <div class="parameter"><code>1</code><p>Включить устройство</p></div>
+                <div class="parameter"><code>0</code><p>Выключить устройство</p></div>
+              </div>
+              <div class="example-box"><strong>Примеры:</strong><br><code>.sw turret 1</code> &#8212; Включить<br><code>.sw turret 0</code> &#8212; Выключить</div>
+              <div class="tip-box"><strong>&#127919; Pro совет:</strong> Используйте понятные имена без пробелов для удобного управления</div>
+            </div>
+            <div class="command-image"><img width="600" height="400" src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/main.gif" alt="Команда .sw в действии" loading="lazy"></div>
+          </div>
+        </div>
+
+        <!-- Command: .afk -->
+        <div id="cmd-afk" class="command-block" data-cmd=".afk">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.afk</code><button class="copy-btn" data-copy=".afk" aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge server">Команда</span>
+            </div>
+            <p class="command-description">Показывает список тиммейтов, которые не двигались длительное время</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <h4>Отображаемые данные:</h4>
+              <ul class="feature-list-modern compact">
+                <li><span class="list-icon">&#128100;</span> Имя игрока</li>
+                <li><span class="list-icon">&#9203;</span> Время бездействия</li>
+              </ul>
+              <div class="tip-box"><strong>&#128161; Совет:</strong> Тиммейт не отвечает в чат? Теперь ты знаешь что он тебя не игнорит, а просто мама позвала покушать)</div>
+            </div>
+            <div class="command-image"><img width="600" height="400" src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/afk.png" alt="Команда .afk" loading="lazy"></div>
+          </div>
+        </div>
+
+        <!-- Command: .mark -->
+        <div id="cmd-mark" class="command-block" data-cmd=".mark">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.mark</code><button class="copy-btn" data-copy=".mark" aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge server">Команда</span>
+            </div>
+            <p class="command-description">Отправляет ваш текущий квадрат карты в игровой чат и в канал Alerts в Discord с вырезкой карты</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <h4>Отображаемые данные:</h4>
+              <ul class="feature-list-modern compact">
+                <li><span class="list-icon">&#128205;</span> Имя игрока и квадрат карты (например B7)</li>
+                <li><span class="list-icon">&#128248;</span> Вырезка карты с красной точкой &#8212; в Discord канал Alerts</li>
+              </ul>
+              <div class="note-box"><strong>&#128204; Примечание:</strong> Для отправки скриншота в Discord необходимо настроить канал Alerts в настройках бота</div>
+            </div>
+            <div class="command-image"><img width="600" height="400" src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/mark.png" alt="Команда .mark" loading="lazy"></div>
+          </div>
+        </div>
+
+        <!-- Events divider -->
+        <div class="alert-box info" style="margin-top:32px">
+          <div class="alert-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          </div>
+          <div class="alert-content">
+            <strong>&#128506; Команды событий</strong>
+            <p>Следующие команды отображают текущий статус игровых событий: активно ли событие и в каком квадрате карты.</p>
+          </div>
+        </div>
+
+        <!-- Command: .events -->
+        <div id="cmd-events" class="command-block" data-cmd=".events">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.events</code><button class="copy-btn" data-copy=".events" aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge primary">События</span>
+            </div>
+            <p class="command-description">Показывает все активные в данный момент события на сервере в одном сообщении</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <h4>Отслеживаемые события:</h4>
+              <ul class="feature-list-modern compact">
+                <li><span class="list-icon">&#128674;</span> CargoShip &#8212; грузовой корабль</li>
+                <li><span class="list-icon">&#128641;</span> CH47 &#8212; Чинук</li>
+                <li><span class="list-icon">&#128641;</span> PatrolHelicopter &#8212; патрульный вертолёт</li>
+                <li><span class="list-icon">&#128230;</span> Crate &#8212; locked crate с вертолёта</li>
+                <li><span class="list-icon">&#127754;</span> DeepSea &#8212; событие глубокого моря</li>
+              </ul>
+              <div class="tip-box"><strong>&#128161; Совет:</strong> Используйте <code>.events</code> вместо отдельных команд &#8212; выводит всё одним сообщением</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Command: .cargo -->
+        <div id="cmd-cargo" class="command-block" data-cmd=".cargo">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.cargo</code><button class="copy-btn" data-copy=".cargo" aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge primary">События</span>
+            </div>
+            <p class="command-description">Показывает текущий статус события CargoShip (грузовой корабль)</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <ul class="feature-list-modern compact">
+                <li><span class="list-icon">&#9989;</span> Активен ли CargoShip на сервере</li>
+                <li><span class="list-icon">&#128506;</span> Текущий квадрат карты</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Command: .ch47 -->
+        <div id="cmd-ch47" class="command-block" data-cmd=".ch47">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.ch47</code><button class="copy-btn" data-copy=".ch47" aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge primary">События</span>
+            </div>
+            <p class="command-description">Показывает текущий статус события CH47 (Чинук)</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <ul class="feature-list-modern compact">
+                <li><span class="list-icon">&#9989;</span> Активен ли CH47 на сервере</li>
+                <li><span class="list-icon">&#128506;</span> Текущий квадрат карты</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Command: .patrol -->
+        <div id="cmd-patrol" class="command-block" data-cmd=".patrol">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.patrol</code><button class="copy-btn" data-copy=".patrol" aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge primary">События</span>
+            </div>
+            <p class="command-description">Показывает текущий статус PatrolHelicopter (патрульный вертолёт)</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <ul class="feature-list-modern compact">
+                <li><span class="list-icon">&#9989;</span> Активен ли PatrolHeli на сервере</li>
+                <li><span class="list-icon">&#128506;</span> Текущий квадрат карты</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Command: .crate -->
+        <div id="cmd-crate" class="command-block" data-cmd=".crate">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.crate</code><button class="copy-btn" data-copy=".crate" aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge primary">События</span>
+            </div>
+            <p class="command-description">Показывает статус Locked Crate &#8212; ящика, сброшенного вертолётом</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <ul class="feature-list-modern compact">
+                <li><span class="list-icon">&#9989;</span> Активен ли Crate на сервере</li>
+                <li><span class="list-icon">&#128506;</span> Текущий квадрат карты</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Command: .deepsea -->
+        <div id="cmd-deepsea" class="command-block" data-cmd=".deepsea">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.deepsea</code><button class="copy-btn" data-copy=".deepsea" aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge primary">События</span>
+            </div>
+            <p class="command-description">Показывает статус события DeepSea (глубокое море)</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <ul class="feature-list-modern compact">
+                <li><span class="list-icon">&#9989;</span> Активно ли событие DeepSea</li>
+                <li><span class="list-icon">&#127754;</span> Статус подводного ивента</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Command: .crash -->
+        <div id="cmd-crash" class="command-block" data-cmd=".crash">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.crash</code><button class="copy-btn" data-copy=".crash" aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge primary">События</span>
+            </div>
+            <p class="command-description">Показывает квадрат карты, где упал PatrolHelicopter</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <h4>Как работает:</h4>
+              <ul class="feature-list-modern compact">
+                <li><span class="list-icon">&#128269;</span> Проверяет live-маркеры на наличие взрыва</li>
+                <li><span class="list-icon">&#128190;</span> Если маркер исчез &#8212; берёт последнее сохранённое место из кеша</li>
+                <li><span class="list-icon">&#128506;</span> Выводит квадрат карты (например D5)</li>
+              </ul>
+              <div class="tip-box"><strong>&#128161; Совет:</strong> Используйте сразу после падения &#8212; координаты сохраняются в кеше даже после исчезновения маркера</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings divider -->
+        <div class="alert-box info" style="margin-top:32px">
+          <div class="alert-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          </div>
+          <div class="alert-content">
+            <strong>&#9881;&#65039; Команды настройки</strong>
+            <p>Настройки игрового чата бота. Изменения применяются для всей вашей гильдии.</p>
+          </div>
+        </div>
+
+        <!-- Command: .lang -->
+        <div id="cmd-lang" class="command-block" data-cmd=".lang">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.lang &lt;ru|en&gt;</code><button class="copy-btn" data-copy=".lang " aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge">Настройка</span>
+            </div>
+            <p class="command-description">Переключает язык ответов бота в игровом чате Rust для вашей гильдии</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <h4>Варианты использования:</h4>
+              <div class="usage-variants">
+                <div class="variant"><code>.lang ru</code><p>Переключить на русский язык</p></div>
+                <div class="variant"><code>.lang en</code><p>Переключить на английский язык</p></div>
+              </div>
+              <div class="example-box"><strong>Примеры:</strong><br><code>.lang ru</code><br><code>.lang en</code></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Command: .prefix -->
+        <div id="cmd-prefix" class="command-block" data-cmd=".prefix">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>.prefix &lt;текст&gt;</code><button class="copy-btn" data-copy=".prefix " aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge">Настройка</span>
+            </div>
+            <p class="command-description">Изменяет префикс, который бот добавляет к каждому сообщению в игровом чате</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <h4>Параметры:</h4>
+              <ul class="feature-list-modern compact">
+                <li><span class="list-icon">&#128221;</span> Любой текст до 20 символов</li>
+                <li><span class="list-icon">&#9888;&#65039;</span> По умолчанию: <code>[rustinfo.online]</code></li>
+              </ul>
+              <div class="example-box"><strong>Примеры:</strong><br><code>.prefix [BOT]</code><br><code>.prefix [MyServer]</code></div>
+              <div class="tip-box"><strong>&#128161; Совет:</strong> Короткий префикс удобнее читать в игровом чате</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Discord Commands Section -->
+    <section id="discord-commands" class="docs-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-label">Discord</div>
+          <h2>Discord Команды</h2>
+          <p class="section-subtitle">Команды для использования в Discord каналах</p>
+        </div>
+
+        <!-- Command: !map -->
+        <div id="cmd-map" class="command-block" data-cmd="!map">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>!map</code><button class="copy-btn" data-copy="!map" aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge server">Discord</span>
+            </div>
+            <p class="command-description">Показывает карту сервера с отображением позиций тиммейтов</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <h4>Отображаемые данные:</h4>
+              <ul class="feature-list-modern compact">
+                <li><span class="list-icon">&#128506;</span> Полная карта игрового сервера</li>
+                <li><span class="list-icon">&#128100;</span> Позиции всех тиммейтов на карте</li>
+                <li><span class="list-icon">&#128203;</span> Сетка квадратов карты</li>
+              </ul>
+              <div class="tip-box"><strong>&#128161; Совет:</strong> Используйте для быстрой ориентации — видна карта целиком с позициями всех участников команды</div>
+            </div>
+            <div class="command-image"><img width="600" height="400" src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/ds_map.png" alt="Команда !map" loading="lazy"></div>
+          </div>
+        </div>
+
+        <!-- Command: !info -->
+        <div id="cmd-info" class="command-block" data-cmd="!info">
+          <div class="command-header">
+            <div class="command-title">
+              <div class="cmd-code-wrap"><code>!info &lt;имя монитора&gt;</code><button class="copy-btn" data-copy="!info " aria-label="Копировать команду" title="Копировать"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>
+              <span class="command-badge device">Discord</span>
+            </div>
+            <p class="command-description">Показывает содержимое ящика или шкафа, подключённого как монитор ресурсов</p>
+          </div>
+          <div class="command-body">
+            <div class="command-details">
+              <h4>Отображаемые данные:</h4>
+              <ul class="feature-list-modern compact">
+                <li><span class="list-icon">&#128230;</span> Список предметов с количеством</li>
+                <li><span class="list-icon">&#128203;</span> Иконки предметов</li>
+                <li><span class="list-icon">&#9203;</span> Время защиты шкафа (если применимо)</li>
+              </ul>
+              <div class="example-box"><strong>Пример:</strong> <code>!info мой_ящик</code></div>
+              <div class="note-box"><strong>&#128204; Примечание:</strong> Устройство должно быть предварительно добавлено через команду <code>.add</code> в игровом чате</div>
+            </div>
+            <div class="command-image"><img width="600" height="400" src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/ds_info.png" alt="Команда !info" loading="lazy"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="docs-section alt-bg">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-label">Поддержка</div>
+          <h2>Часто задаваемые вопросы</h2>
+          <p class="section-subtitle">Ответы на популярные вопросы о RustInfo</p>
+        </div>
+
+        <div class="faq-grid">
+          <details class="faq-item"><summary><span>Как начать использовать Rust+ команды?</span></summary><div class="faq-answer"><p>Чтобы подключить бота, ознакомьтесь со статьёй <a href="setup.html" style="color:var(--accent);text-decoration:underline">Подключение</a>.</p></div></details>
+          <details class="faq-item"><summary><span>Почему не работают команды? .time .pop .add и т.д.</span></summary><div class="faq-answer"><p>Убедитесь что бот подключен правильно и в чате отправлено сообщение <strong>Connected</strong></p><p>Проверьте, не забыли ли вы создать команду?</p><p>Бот работает только <strong>в командном чате</strong></p><p>По умолчанию префикс команд <strong>.</strong> (точка)</p></div></details>
+          <details class="faq-item"><summary><span>Как часто обновляются данные мониторинга?</span></summary><div class="faq-answer"><p>Данные о сервере обновляются каждые 10-30 секунд. Статус отслеживаемых игроков обновляется каждые 2-4 минуты для оптимизации нагрузки на сервер.</p></div></details>
+          <details class="faq-item"><summary><span>Могу ли я управлять несколькими серверами?</span></summary><div class="faq-answer"><p>Да, RustInfo поддерживает мониторинг и управление несколькими серверами одновременно. Вы можете переключаться между ними в Discord.</p></div></details>
+          <details class="faq-item"><summary><span>Безопасно ли давать боту доступ к Rust+?</span></summary><div class="faq-answer"><p>Да, бот использует официальный API Rust+ и не хранит ваши учетные данные. Все соединения зашифрованы. Вы можете в любой момент отозвать доступ через приложение Rust+.</p></div></details>
+          <details class="faq-item"><summary><span>Что делать, если устройство не отвечает?</span></summary><div class="faq-answer"><p>Проверьте подключение к серверу Rust. Убедитесь, что устройство всё ещё существует в игре и правильно связано. Попробуйте удалить устройство командой <code>.remove</code> и добавить заново.</p></div></details>
+        </div>
+
+        <div class="cta-box">
+          <div class="cta-glow"></div>
+          <h3>Нужна помощь?</h3>
+          <p>Присоединяйтесь к нашему Discord серверу для получения поддержки</p>
+          <a href="https://discord.gg/ZRDtafakuf" class="cta-button" target="_blank" rel="noopener noreferrer">
+            <span>Присоединиться к Discord</span>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 3L14 10L7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
         </div>
       </div>
     </section>
   </main>
 
+  <!-- Footer -->
   <footer>
     <div class="container foot">
-      RustInfo · Неофициальный помощник Rust+ · © 2026
-      · <a href="https://discord.gg/ZRDtafakuf" target="_blank" rel="noreferrer">Discord</a>
-      · <a href="https://rust.facepunch.com" target="_blank">Rust</a>
-      · <a href="https://facepunch.com" target="_blank">Facepunch</a>
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="logo-footer"></div>
+          <strong>RustInfo</strong>
+          <p>Неофициальный Discord бот-помощник для Rust+</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col"><h5>Навигация</h5><a href="index.html">Главная</a><a href="docs.html">Документация</a><a href="setup.html">Подключение</a><a href="binds.html">Бинды</a></div>
+          <div class="footer-col"><h5>Сообщество</h5><a href="https://discord.gg/ZRDtafakuf" target="_blank" rel="noopener noreferrer">Discord Сервер</a><a href="https://discord.com/oauth2/authorize?client_id=1062429235688316938" target="_blank" rel="noopener noreferrer">Добавить бота</a></div>
+          <div class="footer-col"><h5>Ресурсы</h5><a href="https://rust.facepunch.com" target="_blank" rel="noopener noreferrer">Rust</a><a href="https://facepunch.com" target="_blank" rel="noopener noreferrer">Facepunch</a></div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 RustInfo. Все права защищены.</p>
+        <p class="footer-disclaimer">RustInfo не является официальным продуктом Facepunch Studios</p>
+      </div>
     </div>
   </footer>
+
+  <button id="scrollToTop" class="scroll-to-top" aria-label="Прокрутить наверх">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M12 5L5 12M12 5L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <div class="copy-toast" id="copyToast">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+    Скопировано!
+  </div>
+
+  <script>
+    // === READING PROGRESS BAR ===
+    const progressFill = document.getElementById('readingProgressFill');
+    const sidebarProgressFill = document.getElementById('sidebarProgressFill');
+    function updateProgress() {
+      const scrollTop = window.pageYOffset;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      if (progressFill) progressFill.style.width = progress + '%';
+      if (sidebarProgressFill) sidebarProgressFill.style.width = progress + '%';
+    }
+
+    // === CURSOR SPOTLIGHT (desktop only) ===
+    const spotlight = document.getElementById('cursorSpotlight');
+    if (window.matchMedia('(pointer: fine)').matches && spotlight) {
+      document.addEventListener('mousemove', (e) => { spotlight.style.left = e.clientX + 'px'; spotlight.style.top = e.clientY + 'px'; spotlight.style.opacity = '1'; });
+      document.addEventListener('mouseleave', () => { spotlight.style.opacity = '0'; });
+    }
+
+    // === COPY TO CLIPBOARD ===
+    const copyToast = document.getElementById('copyToast');
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const text = btn.getAttribute('data-copy');
+        navigator.clipboard.writeText(text).then(() => { copyToast.classList.add('visible'); setTimeout(() => copyToast.classList.remove('visible'), 2000); });
+      });
+    });
+
+    // === COMMAND SEARCH ===
+    const cmdSearch = document.getElementById('cmdSearch');
+    const commandBlocks = document.querySelectorAll('.command-block[data-cmd]');
+    const sidebarLinks = document.querySelectorAll('.sidebar-link.sub[data-section]');
+    cmdSearch.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      commandBlocks.forEach(block => {
+        const cmd = block.getAttribute('data-cmd').toLowerCase();
+        const text = block.textContent.toLowerCase();
+        const match = !query || cmd.includes(query) || text.includes(query);
+        block.style.display = match ? '' : 'none';
+      });
+      sidebarLinks.forEach(link => {
+        const section = link.getAttribute('data-section');
+        const linkText = link.textContent.toLowerCase();
+        const match = !query || section.includes(query.replace('.','')) || linkText.includes(query);
+        link.style.display = match ? '' : 'none';
+      });
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement !== cmdSearch) { e.preventDefault(); cmdSearch.focus(); }
+      if (e.key === 'Escape') { cmdSearch.blur(); cmdSearch.value = ''; cmdSearch.dispatchEvent(new Event('input')); }
+    });
+
+    // === 3D TILT EFFECT ===
+    document.querySelectorAll('[data-tilt]').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left, y = e.clientY - rect.top;
+        const rX = ((y - rect.height/2) / (rect.height/2)) * -6;
+        const rY = ((x - rect.width/2) / (rect.width/2)) * 6;
+        card.style.transform = 'perspective(800px) rotateX(' + rX + 'deg) rotateY(' + rY + 'deg) translateZ(10px)';
+        const shine = card.querySelector('.feature-card-shine');
+        if (shine) shine.style.background = 'radial-gradient(circle at ' + x + 'px ' + y + 'px, rgba(255,107,53,0.15), transparent 60%)';
+      });
+      card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+    });
+
+    // === MOBILE MENU ===
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+    if (mobileMenuBtn && mobileMenuOverlay) {
+      mobileMenuBtn.addEventListener('click', () => {
+        const isActive = mobileMenuBtn.classList.toggle('active');
+        mobileMenuOverlay.classList.toggle('active');
+        mobileMenuBtn.setAttribute('aria-expanded', isActive);
+        document.body.style.overflow = isActive ? 'hidden' : '';
+      });
+      mobileMenuOverlay.addEventListener('click', (e) => { if (e.target === mobileMenuOverlay) { mobileMenuBtn.classList.remove('active'); mobileMenuOverlay.classList.remove('active'); mobileMenuBtn.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; } });
+      mobileMenuOverlay.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { mobileMenuBtn.classList.remove('active'); mobileMenuOverlay.classList.remove('active'); mobileMenuBtn.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; }); });
+    }
+
+    // === SMOOTH SCROLL ===
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.pageYOffset - 90, behavior: 'smooth' });
+          if (mobileMenuOverlay && mobileMenuOverlay.classList.contains('active')) mobileMenuBtn.click();
+        }
+      });
+    });
+
+    // === SCROLL HANDLERS ===
+    const scrollToTopBtn = document.getElementById('scrollToTop');
+    const anchorIds = ['overview','monitoring','rust-plus','cmd-help','cmd-pop','cmd-time','cmd-add','cmd-devices','cmd-remove','cmd-sw','cmd-afk','cmd-mark','cmd-events','cmd-cargo','cmd-ch47','cmd-patrol','cmd-crate','cmd-deepsea','cmd-crash','cmd-lang','cmd-prefix','discord-commands','cmd-map','cmd-info','faq'];
+    window.addEventListener('scroll', () => {
+      updateProgress();
+      scrollToTopBtn.classList.toggle('visible', window.pageYOffset > 300);
+      const headerH = (document.querySelector('header') || {offsetHeight: 80}).offsetHeight;
+      const offset = headerH + 20;
+      let current = '';
+      anchorIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && window.pageYOffset >= el.getBoundingClientRect().top + window.pageYOffset - offset) {
+          current = id;
+        }
+      });
+      document.querySelectorAll('.sidebar-link').forEach(link => {
+        link.classList.toggle('active', link.getAttribute('data-section') === current);
+      });
+      const activeLink = document.querySelector('.sidebar-link.active');
+      if (activeLink) activeLink.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+    scrollToTopBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+    // === FAQ ACCORDION ===
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.addEventListener('toggle', function() {
+        if (this.open) document.querySelectorAll('.faq-item').forEach(o => { if (o !== this && o.open) o.open = false; });
+      });
+    });
+
+    // === SCROLL REVEAL ANIMATIONS ===
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) { setTimeout(() => entry.target.classList.add('revealed'), i * 80); observer.unobserve(entry.target); }
+      });
+    }, { threshold: 0.05, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('.command-block, .faq-item, .feature-card-modern, .info-card, .feature-showcase, .alert-box, .cta-box, .stat-card').forEach(el => { el.classList.add('reveal-on-scroll'); observer.observe(el); });
+
+    // === SIDEBAR + MAIN: sync with actual fixed header height ===
+    function syncSidebarToHeader() {
+      const headerEl = document.querySelector('header');
+      const sidebarEl = document.getElementById('docsSidebar');
+      const mainEl = document.querySelector('.docs-main');
+      if (!headerEl || !sidebarEl) return;
+      const h = headerEl.offsetHeight;
+      sidebarEl.style.top = h + 'px';
+      sidebarEl.style.height = 'calc(100vh - ' + h + 'px)';
+      if (mainEl) mainEl.style.paddingTop = h + 'px';
+    }
+    requestAnimationFrame(syncSidebarToHeader);
+    window.addEventListener('load', syncSidebarToHeader);
+    window.addEventListener('resize', syncSidebarToHeader);
+
+    updateProgress();
+  </script>
 </body>
 </html>
