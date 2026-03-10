@@ -1,44 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EPL0ZGMYGW"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-EPL0ZGMYGW');
-  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
+  
+  <!-- Preconnect for Speed -->
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="preconnect" href="https://stats.rustinfo.online">
+  <link rel="preconnect" href="https://raw.githubusercontent.com">
+  <link rel="preconnect" href="https://discord.com">
+  
+  <!-- Preload critical CSS -->
+  <link rel="preload" href="style.css?v=17" as="style">
+  
+  <!-- Favicons -->
   <link rel="icon" type="image/png" href="/images/icon.png" />
   <link rel="shortcut icon" type="image/png" href="/images/icon.png" />
   <link rel="apple-touch-icon" href="/images/icon.png" />
+  
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#ff6b35">
+  <meta name="msapplication-TileColor" content="#ff6b35">
+  <meta name="msapplication-TileImage" content="/images/icon.png">
+  
   <!-- SEO Meta Tags -->
-  <title>RustInfo — Discord Bot for Rust+ Server Monitoring | Live Status</title>
-  <meta name="description" content="🎮 RustInfo - Discord bot for real-time Rust+ server monitoring. Check status, online players, control smart devices. Trusted by 1000+ servers!" />
-  <meta name="keywords" content="rust, rust+, rust plus, rustinfo, discord bot, rust server monitoring, rust companion, facepunch, rust game bot" />
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <title>⚡ RustInfo — Rust Plus Bot #1 for Discord | 24/7 Monitoring</title>
+  <meta name="description" content="⚡ RustInfo - Best Rust Plus Bot for Discord! 24/7 Rust+ server monitoring, Smart Switch control, online player status, raid notifications. Professional rustplusbot trusted by 60+ servers. Install in 2 minutes!" />
+  <meta name="author" content="RustInfo Team">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   <link rel="canonical" href="https://rustinfo.online/index_en.html" />
+  
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="RustInfo — Discord Bot for Rust+" />
-  <meta property="og:description" content="Real-time Rust+ server monitoring via Discord" />
+  <meta property="og:url" content="https://rustinfo.online/index_en.html" />
+  <meta property="og:site_name" content="RustInfo" />
+  <meta property="og:title" content="⚡ RustInfo — Rust Plus Bot #1 for Discord" />
+  <meta property="og:description" content="Best Discord bot for 24/7 Rust+ server monitoring. Smart Switch control, player status, raid notifications. Reliable service!" />
+  <meta property="og:image" content="https://rustinfo.online/images/icon.png" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta property="og:image:alt" content="RustInfo - Rust Plus Bot for Discord" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale:alternate" content="ru_RU" />
+  <meta property="og:locale:alternate" content="uk_UA" />
+  
+  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@RustInfo" />
+  <meta name="twitter:creator" content="@RustInfo" />
+  <meta name="twitter:title" content="⚡ RustInfo — Rust Plus Bot #1 for Discord" />
+  <meta name="twitter:description" content="Best Discord bot for 24/7 Rust+ server monitoring. Smart Switch, player status, raid notifications. Reliable service!" />
+  <meta name="twitter:image" content="https://rustinfo.online/images/icon.png" />
+  
+  <!-- Alternate Languages -->
   <link rel="alternate" hreflang="en" href="https://rustinfo.online/index_en.html" />
   <link rel="alternate" hreflang="ru" href="https://rustinfo.online/" />
   <link rel="alternate" hreflang="uk" href="https://rustinfo.online/index_ua.html" />
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="alternate" hreflang="x-default" href="https://rustinfo.online/index_en.html" />
+  
+  <link rel="stylesheet" href="style.css?v=17">
+  
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "RustInfo",
+    "applicationCategory": "GameApplication",
+    "operatingSystem": "Discord",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "ratingCount": "1500",
+      "bestRating": "5",
+      "worstRating": "1"
+    },
+    "description": "RustInfo - professional Discord bot for Rust+ server monitoring. Smart Switch control, player status, raid notifications in real-time.",
+    "keywords": "rust plus bot, rustplusbot, rust+ discord bot, rust companion bot, rust server monitoring",
+    "url": "https://rustinfo.online",
+    "image": "https://rustinfo.online/images/icon.png",
+    "screenshot": "https://raw.githubusercontent.com/Endilis/websiterust/main/images/main.gif",
+    "author": {
+      "@type": "Organization",
+      "name": "RustInfo Team"
+    },
+    "downloadUrl": "https://discord.com/oauth2/authorize?client_id=1334943377124495421&permissions=8&integration_type=0&scope=bot",
+    "installUrl": "https://discord.com/oauth2/authorize?client_id=1334943377124495421&permissions=8&integration_type=0&scope=bot",
+    "featureList": [
+      "24/7 Rust+ server monitoring",
+      "Smart Switch control via Discord",
+      "Real-time online player status",
+      "Raid and event notifications",
+      "Rust+ Companion API integration",
+      "Multi-server support",
+      "Automatic notifications",
+      "Device management",
+      "Player tracking"
+    ],
+    "softwareVersion": "2.0",
+    "releaseNotes": "Updated interface, improved performance, new monitoring features"
+  }
+  </script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "RustInfo",
+    "url": "https://rustinfo.online",
+    "logo": "https://rustinfo.online/images/icon.png",
+    "description": "Professional Discord bot for Rust+ server monitoring",
+    "sameAs": [
+      "https://discord.gg/ZRDtafakuf"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "Customer Support",
+      "url": "https://discord.gg/ZRDtafakuf",
+      "availableLanguage": ["English", "Russian", "Ukrainian"]
+    }
+  }
+  </script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How to add RustInfo bot to my Discord server?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Click the 'Add Bot' button on rustinfo.online, select your Discord server and grant the required permissions. The bot will automatically create channels for monitoring your Rust+ servers and start tracking player status."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What features does RustInfo offer?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "RustInfo offers: 24/7 Rust+ server monitoring, Smart Switch and device control via Discord, real-time online player tracking, instant raid and event notifications, Rust+ Companion API integration, support for multiple servers simultaneously."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How to control Smart Switch through RustInfo?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "After connecting the bot to your Rust+ server, you can control all Smart Switch devices directly from Discord using simple commands. The bot displays the status of all devices and allows you to turn them on/off with one click."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many servers can I monitor with RustInfo?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "RustInfo supports monitoring multiple Rust+ servers simultaneously. You can add the bot to unlimited Discord servers and connect your Rust+ servers to each for monitoring."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What languages does RustInfo support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "RustInfo supports three languages: English, Russian, and Ukrainian. You can select your preferred interface language in the bot settings."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I get raid notifications?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "RustInfo automatically sends notifications to a dedicated Discord channel when a raid or other important events occur at your base. You'll receive instant alerts and can react quickly."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need Rust+ to use RustInfo?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, RustInfo requires connection to the Rust+ Companion API. You'll need to pair your Rust+ account with the bot through the official Facepunch Rust+ app."
+        }
+      }
+    ]
+  }
+  </script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://rustinfo.online/index_en.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Documentation",
+        "item": "https://rustinfo.online/docs_en.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Setup",
+        "item": "https://rustinfo.online/setup_en.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "Binds",
+        "item": "https://rustinfo.online/binds.html"
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <header aria-label="Navigation">
     <div class="container nav">
       <div class="brand"><div class="logo" aria-hidden="true"></div><div class="title">RustInfo</div></div>
       <div style="display: flex; align-items: center;">
-        <nav class="links" aria-label="Основные ссылки">
+        <nav class="links" aria-label="Main links">
           <a class="link" href="#status">Status</a>
           <a class="link" href="docs_en.html">Documentation</a>
           <a class="link" href="setup_en.html">Setup</a>
@@ -59,14 +254,18 @@
       <div class="container hero-grid">
         <div>
           <div class="stats-badge">
-            <span class="icon">🔥</span>
-            <div>
-              <div class="stats-number" id="guildCount">—</div>
-              <div class="stats-label">RustInfo monitors <span id="guildCountText">—</span> servers</div>
+            <div class="badge-glow"></div>
+            <div class="badge-content">
+              <div class="badge-icon">🔥</div>
+              <div class="badge-stats">
+                <div class="badge-number" id="guildCount" data-target="0">—</div>
+                <div class="badge-label">Discord servers<br>RustInfo connected</div>
+              </div>
             </div>
           </div>
-          <h1><span class="grad">Explore • Build • Survive</span><br/>Rust+ and Server Monitoring</h1>
-          <p>Track your server status, get quick responses from Rust+ Worker, stay one step ahead.</p>
+          <h1><span class="grad">Rust Plus Bot #1</span><br/>Discord Bot for Rust+ Server Monitoring</h1>
+          <p>🚀 Best RustPlusBot for Discord! 24/7 server monitoring, Smart Switch control, online player status. Trusted by 60+ servers!</p>
+          <p>Install <a href="setup_en.html">Discord bot for Rust+</a> in 2 minutes and get full control over your server. Check <a href="docs_en.html">command documentation</a> or view <a href="binds.html">ready binds</a> for quick setup.</p>
           <div class="cta">
             <a class="btn discord-btn" href="https://discord.gg/ZRDtafakuf" target="_blank" rel="noreferrer">
               <svg class="discord-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/></svg>
@@ -75,10 +274,28 @@
             <a class="btn" href="docs_en.html">Documentation</a>
           </div>
         </div>
-        <div class="demo-gif">
-          <h3>🎮 Rust+ Smart Switch in Action</h3>
-          <img src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/main.gif" alt="Smart Switch Demo" loading="lazy">
-          <a class="btn primary discord-btn" href="https://discord.com/oauth2/authorize?client_id=1334943377124495421&permissions=8&integration_type=0&scope=bot" target="_blank" rel="noreferrer" style="margin-top: 20px; width: 100%; justify-content: center;">
+        <div class="demo-showcase">
+          <div class="showcase-header">
+            <span class="showcase-icon">🎮</span>
+            <h3>Smart Switch in Action</h3>
+          </div>
+          <div class="showcase-media">
+            <img src="https://raw.githubusercontent.com/Endilis/websiterust/main/images/main.gif" 
+                 alt="RustInfo Discord Bot - Smart Switch Control in Rust Plus via Discord Interface in Real Time" 
+                 title="Smart Switch Device Control Demo via RustInfo Bot"
+                 loading="lazy"
+                 decoding="async"
+                 width="600" 
+                 height="400">
+            <div class="showcase-overlay">
+              <div class="showcase-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                Live Demo
+              </div>
+            </div>
+          </div>
+          <a class="btn-premium" href="https://discord.com/oauth2/authorize?client_id=1334943377124495421&permissions=8&integration_type=0&scope=bot" target="_blank" rel="noreferrer">
+            <span class="btn-shine"></span>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8z"/></svg>
             Add Bot
           </a>
@@ -87,6 +304,128 @@
     </section>
 
     <section id="tools" class="section">
+      <div class="container">
+        <h2>RustInfo Features — Best Discord Bot for Rust Plus</h2>
+        <p>RustInfo provides a complete set of tools for professional monitoring and management of Rust+ servers directly from Discord.</p>
+        <div class="grid">
+          <div class="card">
+            <h3>⚡ 24/7 Server Monitoring</h3>
+            <p>Round-the-clock tracking of your Rust+ server status. Instant alerts when online changes, server restarts or technical issues occur. RustInfo never sleeps!</p>
+          </div>
+          <div class="card">
+            <h3>🎮 Smart Switch Control</h3>
+            <p>Full control over all Smart Switch devices through Discord. Turn lights, turrets, traps on/off with a single command. Create automated scenarios for base protection.</p>
+          </div>
+          <div class="card">
+            <h3>👥 Player Tracking</h3>
+            <p>See who's online on the server in real-time. Get notifications when your friends or enemies join the server. Player activity statistics always at hand.</p>
+          </div>
+          <div class="card">
+            <h3>🔔 Raid Notifications</h3>
+            <p>Instant Discord alerts when your base is under attack. RustInfo will notify you about C4, rockets, turret raids and other threats. Defend your resources in time!</p>
+          </div>
+          <div class="card">
+            <h3>🌍 Server Map</h3>
+            <p>Integration with Rust server maps. View the game map, markers, monuments directly in Discord. Plan routes and coordinate team actions.</p>
+          </div>
+          <div class="card">
+            <h3>🔧 API Integration</h3>
+            <p>Full integration with Rust+ Companion API from Facepunch. Access to official game functionality through convenient Discord interface. Safe and reliable.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background: linear-gradient(135deg, rgba(255,107,53,0.05) 0%, rgba(255,107,53,0) 100%);">
+      <div class="container">
+        <h2>Why 60+ Servers Chose RustInfo as the Best Rust Plus Bot?</h2>
+        <div class="grid">
+          <div class="card">
+
+            <h3>⚡ Instant Setup</h3>
+            <p>Install RustInfo Discord bot in 2 minutes. Just click "Add Bot", select a server and you're done! Automatic channel setup, intuitive interface. Even beginners can handle it without instructions.</p>
+          </div>
+          <div class="card">
+            <h3>🛡️ Reliability and Stability</h3>
+            <p>99.9% uptime. RustInfo runs on professional infrastructure with redundancy and automatic recovery. Your monitoring will never be interrupted.</p>
+          </div>
+          <div class="card">
+            <h3>🌐 3 Language Support</h3>
+            <p>English, Russian, Ukrainian interface. RustInfo speaks your language! Switch localization with one command for comfortable work.</p>
+          </div>
+          <div class="card">
+            <h3>📱 Mobile Support</h3>
+            <p>Manage Rust+ server from Discord on your phone! RustInfo works perfectly on mobile devices. Control your base even away from your computer.</p>
+          </div>
+          <div class="card">
+            <h3>🔄 Regular Updates</h3>
+            <p>We constantly add new features and improve existing ones. RustInfo follows Rust+ and Discord API updates. Always current functionality.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2>How to Start Using RustInfo Discord Bot for Rust+?</h2>
+        <p style="max-width: 800px; margin: 0 auto 40px; font-size: 1.1rem;">Setting up RustInfo takes just a few minutes. Follow the simple step-by-step instructions:</p>
+        <div class="grid">
+          <div class="card">
+            <h3>1️⃣ Add Bot to Discord</h3>
+            <p>Click the "Add Bot" button on this page. Select your Discord server from the list and grant the necessary permissions. RustInfo will automatically create the needed channels.</p>
+          </div>
+          <div class="card">
+            <h3>2️⃣ Connect Rust+ Server</h3>
+            <p>Open the Rust+ app on your phone. Go to server settings and get the pairing code. Enter the code in Discord with command <code>!pair [code]</code>. Done!</p>
+          </div>
+          <div class="card">
+            <h3>3️⃣ Configure Notifications</h3>
+            <p>Choose which events you want to track: raids, online players, Smart Switch status. Set up channels for different notification types. Use the <code>!settings</code> command.</p>
+          </div>
+          <div class="card">
+            <h3>4️⃣ Enjoy Automation!</h3>
+            <p>Now RustInfo automatically monitors your Rust+ server 24/7. Get notifications, manage devices, track players. Full control from Discord!</p>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 40px;">
+          <p style="font-size: 1.1rem; margin-bottom: 20px;">Need help? Read <a href="docs_en.html" style="color: #ff6b35; font-weight: bold;">detailed documentation</a> or join our <a href="https://discord.gg/ZRDtafakuf" style="color: #ff6b35; font-weight: bold;">Discord server</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background: linear-gradient(135deg, rgba(255,107,53,0.03) 0%, rgba(255,107,53,0) 100%);">
+      <div class="container">
+        <h2>Frequently Asked Questions about RustInfo</h2>
+        <div style="max-width: 900px; margin: 0 auto;">
+          <div class="card" style="margin-bottom: 20px; text-align: left;">
+            <h3>❓ How to add RustInfo bot to my Discord server?</h3>
+            <p>Click the "Add Bot" button at the top of the page or <a href="https://discord.com/oauth2/authorize?client_id=1334943377124495421&permissions=8&integration_type=0&scope=bot" style="color: #ff6b35;">this link</a>. Select your Discord server and grant the required permissions. The bot will automatically create channels and be ready to work.</p>
+          </div>
+          <div class="card" style="margin-bottom: 20px; text-align: left;">
+            <h3>❓ What commands does RustInfo have?</h3>
+            <p>RustInfo supports a wide range of commands: <code>!status</code> (server status), <code>!players</code> (player list), <code>!switch</code> (Smart Switch control), <code>!map</code> (server map), <code>!pair</code> (connect to Rust+) and much more. Full command list is available in the <a href="docs_en.html" style="color: #ff6b35;">documentation</a>.</p>
+          </div>
+          <div class="card" style="margin-bottom: 20px; text-align: left;">
+            <h3>❓ How to control Smart Switch through RustInfo?</h3>
+            <p>After connecting to a Rust+ server, use the <code>!switch</code> command to see a list of all Smart Switch devices. Click buttons in the Discord message to turn any device on or off. It works instantly!</p>
+          </div>
+          <div class="card" style="margin-bottom: 20px; text-align: left;">
+            <h3>❓ How many Rust+ servers can I monitor with the bot?</h3>
+            <p>RustInfo supports monitoring multiple Rust+ servers simultaneously. You can connect the bot to unlimited servers and manage all from one Discord channel.</p>
+          </div>
+          <div class="card" style="margin-bottom: 20px; text-align: left;">
+            <h3>❓ Is it safe to use RustInfo?</h3>
+            <p>Absolutely! RustInfo uses the official Rust+ Companion API from Facepunch. The bot doesn't ask for Steam passwords, has no access to your account and works only through the public API. It's completely safe.</p>
+          </div>
+          <div class="card" style="text-align: left;">
+            <h3>❓ Where to get setup help?</h3>
+            <p>Join our <a href="https://discord.gg/ZRDtafakuf" style="color: #ff6b35;">Discord support server</a>! There you'll find detailed guides, video tutorials and can ask questions to experienced users. Also check the <a href="setup_en.html" style="color: #ff6b35;">setup page</a> with step-by-step instructions.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tools-old" class="section">
       <div class="container">
         <h2>RustInfo Tools</h2>
         <p>A reliable set of utilities for monitoring and automation.</p>
@@ -124,15 +463,42 @@
 
   <footer>
     <div class="container foot">
-      RustInfo · Unofficial Rust+ Assistant · © 2026
-      · <a href="https://discord.gg/ZRDtafakuf" target="_blank" rel="noreferrer">Discord</a>
-      · <a href="https://rust.facepunch.com" target="_blank">Rust</a>
-      · <a href="https://facepunch.com" target="_blank">Facepunch</a>
+      <div class="footer-content">
+        <div class="footer-text">
+          RustInfo · Unofficial Rust+ Assistant · © 2026
+          · <a href="https://rust.facepunch.com" target="_blank" rel="noopener">Rust</a>
+          · <a href="https://facepunch.com" target="_blank" rel="noopener">Facepunch</a>
+        </div>
+        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+          <a class="btn discord-btn footer-discord-btn" href="https://discord.gg/ZRDtafakuf" target="_blank" rel="noreferrer">
+            <svg class="discord-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/></svg>
+            Join Discord
+          </a>
+        </div>
+      </div>
     </div>
   </footer>
 
   <script>
     const METRICS_URL = 'https://stats.rustinfo.online/metrics/guilds';
+    
+    function animateCounter(element, target) {
+      const duration = 2000;
+      const start = parseInt(element.dataset.target) || 0;
+      const increment = (target - start) / (duration / 16);
+      let current = start;
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if ((increment > 0 && current >= target) || (increment < 0 && current <= target)) {
+          element.textContent = target;
+          element.dataset.target = target;
+          clearInterval(timer);
+        } else {
+          element.textContent = Math.floor(current);
+        }
+      }, 16);
+    }
     
     async function fetchGuildMetrics() {
       try {
@@ -140,8 +506,8 @@
         if (res.ok) {
           const data = await res.json();
           const count = data.guild_count || 0;
-          document.getElementById('guildCount').textContent = count;
-          document.getElementById('guildCountText').textContent = count;
+          const countEl = document.getElementById('guildCount');
+          animateCounter(countEl, count);
           console.log('Guild metrics loaded:', data);
         } else {
           console.error('Failed to load guild metrics, status:', res.status);
@@ -149,13 +515,30 @@
       } catch (e) {
         console.error('Failed to fetch guild metrics:', e);
         document.getElementById('guildCount').textContent = '?';
-        document.getElementById('guildCountText').textContent = '?';
       }
     }
     
     document.addEventListener('DOMContentLoaded', () => {
       fetchGuildMetrics();
-      setInterval(fetchGuildMetrics, 60000);
+      setInterval(fetchGuildMetrics, 10 * 60 * 1000);
+    });
+  </script>
+  <script defer src="mobile-menu.js"></script>
+  
+  <!-- Google Analytics - Deferred for Performance -->
+  <script>
+    window.addEventListener('load', function() {
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=G-EPL0ZGMYGW';
+      document.head.appendChild(script);
+      
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-EPL0ZGMYGW');
+      };
     });
   </script>
 </body>

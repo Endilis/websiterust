@@ -15,21 +15,112 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
+  
+  <!-- Preconnect for Speed -->
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="dns-prefetch" href="https://discord.com">
+  <link rel="dns-prefetch" href="https://chromewebstore.google.com">
+  
+  <!-- Favicons -->
   <link rel="icon" type="image/png" href="/images/icon.png" />
   <link rel="shortcut icon" type="image/png" href="/images/icon.png" />
   <link rel="apple-touch-icon" href="/images/icon.png" />
+  
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#ff6b35">
+  <meta name="msapplication-TileColor" content="#ff6b35">
+  <meta name="msapplication-TileImage" content="/images/icon.png">
+  
   <!-- SEO Meta Tags -->
-  <title>RustInfo Setup — Quick Discord Bot Configuration for Rust+</title>
-  <meta name="description" content="⚙️ Connect RustInfo bot to Discord in 2 minutes! Step-by-step guide for Rust+ server monitoring setup. Easy integration with Rust Companion." />
-  <meta name="keywords" content="rustinfo setup, rust bot setup, discord bot installation, rust+ pairing, rust companion setup" />
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <title>⚙️ RustInfo Setup — Quick Discord Bot Configuration for Rust+ in 2 Minutes</title>
+  <meta name="description" content="⚙️ Connect RustInfo bot to Discord in 2 minutes! Step-by-step guide for Rust+ server monitoring setup. Easy integration with Rust Companion. Video guide included." />
+  <meta name="keywords" content="rustinfo setup, rust bot setup, discord bot installation, rust+ pairing, rust companion setup, how to install rust bot" />
+  <meta name="author" content="RustInfo Team">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   <link rel="canonical" href="https://rustinfo.online/setup_en.html" />
-  <meta property="og:title" content="RustInfo Setup — Quick Configuration" />
-  <meta property="og:description" content="Connect RustInfo bot in 2 minutes" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://rustinfo.online/setup_en.html" />
+  <meta property="og:site_name" content="RustInfo" />
+  <meta property="og:title" content="⚙️ RustInfo Setup — Quick Configuration in 2 Minutes" />
+  <meta property="og:description" content="Step-by-step guide for connecting RustInfo bot to Discord and setting up Rust+ monitoring" />
+  <meta property="og:image" content="https://rustinfo.online/images/icon.png" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale:alternate" content="ru_RU" />
+  <meta property="og:locale:alternate" content="uk_UA" />
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@RustInfo" />
+  <meta name="twitter:title" content="⚙️ RustInfo Setup — Quick Configuration" />
+  <meta name="twitter:description" content="Connect RustInfo bot in 2 minutes! Complete guide." />
+  <meta name="twitter:image" content="https://rustinfo.online/images/icon.png" />
+  
+  <!-- Alternate Languages -->
   <link rel="alternate" hreflang="en" href="https://rustinfo.online/setup_en.html" />
   <link rel="alternate" hreflang="ru" href="https://rustinfo.online/setup.html" />
   <link rel="alternate" hreflang="uk" href="https://rustinfo.online/setup_ua.html" />
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="alternate" hreflang="x-default" href="https://rustinfo.online/setup_en.html" />
+  
+  <link rel="stylesheet" href="style.css?v=17">
+  
+  <!-- Schema.org Structured Data - HowTo -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to connect RustInfo Discord bot for Rust+ monitoring",
+    "description": "Step-by-step guide for installing and configuring RustInfo bot for Discord with Rust+ Companion integration",
+    "image": "https://rustinfo.online/images/icon.png",
+    "totalTime": "PT2M",
+    "estimatedCost": {
+      "@type": "MonetaryAmount",
+      "currency": "USD",
+      "value": "0"
+    },
+    "tool": [
+      {
+        "@type": "HowToTool",
+        "name": "Google Chrome browser"
+      },
+      {
+        "@type": "HowToTool",
+        "name": "Rust+ Companion extension"
+      }
+    ],
+    "step": [
+      {
+        "@type": "HowToStep",
+        "position": 1,
+        "name": "Add bot to Discord",
+        "text": "Add RustInfo bot to your Discord server via official invitation link",
+        "url": "https://discord.com/oauth2/authorize?client_id=1334943377124495421&permissions=8&integration_type=0&scope=bot"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 2,
+        "name": "Run !setup command",
+        "text": "Type !setup command in any channel of your Discord server to begin configuration"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 3,
+        "name": "Install Google Chrome",
+        "text": "Install Google Chrome browser if you don't have it on your computer"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 4,
+        "name": "Install Rust+ extension",
+        "text": "Install Rust+py Link Companion extension from Chrome Web Store",
+        "url": "https://chromewebstore.google.com/detail/rustpluspy-link-companion/gojhnmnggbnflhdcpcemeahejhcimnlf"
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <header aria-label="Navigation">
@@ -75,6 +166,12 @@
           <a href="https://discord.com/oauth2/authorize?client_id=1334943377124495421&permissions=8&integration_type=0&scope=bot" target="_blank" rel="noreferrer">
             Add Bot to Server →
           </a>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">1.2</div>
+          <h4>Start Using the Bot</h4>
+          <p>Type the <strong>!setup</strong> command in any channel of your Discord server to start using the bot.</p>
         </div>
 
         <div class="step-card">
@@ -151,5 +248,6 @@
       </div>
     </div>
   </footer>
+  <script src="mobile-menu.js"></script>
 </body>
 </html>
