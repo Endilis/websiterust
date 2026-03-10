@@ -1,0 +1,124 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- Before/After Comparison Style -->
+  <defs>
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#450a0a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1c1917;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#052e16;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1c1917;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="dropshadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="4" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.5"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Split Background -->
+  <rect x="0" y="0" width="640" height="720" fill="url(#redGrad)"/>
+  <rect x="640" y="0" width="640" height="720" fill="url(#greenGrad)"/>
+  
+  <!-- Center divider -->
+  <rect x="636" y="0" width="8" height="720" fill="#fbbf24"/>
+  
+  <!-- TOP BAR -->
+  <rect x="0" y="0" width="1280" height="100" fill="rgba(0,0,0,0.8)"/>
+  <text x="640" y="65" font-family="Impact, Arial Black, sans-serif" font-size="52" 
+        font-weight="900" fill="white" text-anchor="middle" letter-spacing="3">
+    WITHOUT vs WITH RUSTINFO
+  </text>
+  
+  <!-- LEFT SIDE - BEFORE (Red/Negative) -->
+  <g transform="translate(320, 280)">
+    <!-- X Icon -->
+    <circle cx="0" cy="0" r="60" fill="#dc2626" opacity="0.3"/>
+    <line x1="-30" y1="-30" x2="30" y2="30" stroke="#ef4444" stroke-width="8" stroke-linecap="round"/>
+    <line x1="30" y1="-30" x2="-30" y2="30" stroke="#ef4444" stroke-width="8" stroke-linecap="round"/>
+    
+    <!-- Text -->
+    <text x="0" y="120" font-family="Arial, sans-serif" font-size="36" 
+          font-weight="900" fill="#ef4444" text-anchor="middle">
+      BEFORE
+    </text>
+    
+    <text x="0" y="180" font-family="Arial, sans-serif" font-size="24" 
+          font-weight="600" fill="#fca5a5" text-anchor="middle">
+      Running home
+    </text>
+    <text x="0" y="215" font-family="Arial, sans-serif" font-size="24" 
+          font-weight="600" fill="#fca5a5" text-anchor="middle">
+      every 5 minutes
+    </text>
+    
+    <text x="0" y="270" font-family="Arial, sans-serif" font-size="24" 
+          font-weight="600" fill="#fca5a5" text-anchor="middle">
+      Missing raids
+    </text>
+    
+    <text x="0" y="325" font-family="Arial, sans-serif" font-size="24" 
+          font-weight="600" fill="#fca5a5" text-anchor="middle">
+      Manual checks
+    </text>
+    
+    <text x="0" y="380" font-family="Arial, sans-serif" font-size="24" 
+          font-weight="600" fill="#fca5a5" text-anchor="middle">
+      😫 Stressed
+    </text>
+  </g>
+  
+  <!-- RIGHT SIDE - AFTER (Green/Positive) -->
+  <g transform="translate(960, 280)">
+    <!-- Check Icon -->
+    <circle cx="0" cy="0" r="60" fill="#16a34a" opacity="0.3"/>
+    <path d="M -25 0 L -10 20 L 30 -20" stroke="#22c55e" stroke-width="8" 
+          stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    
+    <!-- Text -->
+    <text x="0" y="120" font-family="Arial, sans-serif" font-size="36" 
+          font-weight="900" fill="#22c55e" text-anchor="middle">
+      AFTER
+    </text>
+    
+    <text x="0" y="180" font-family="Arial, sans-serif" font-size="24" 
+          font-weight="600" fill="#86efac" text-anchor="middle">
+      ✓ Remote control
+    </text>
+    <text x="0" y="215" font-family="Arial, sans-serif" font-size="24" 
+          font-weight="600" fill="#86efac" text-anchor="middle">
+      from anywhere
+    </text>
+    
+    <text x="0" y="270" font-family="Arial, sans-serif" font-size="24" 
+          font-weight="600" fill="#86efac" text-anchor="middle">
+      ✓ Instant alerts
+    </text>
+    
+    <text x="0" y="325" font-family="Arial, sans-serif" font-size="24" 
+          font-weight="600" fill="#86efac" text-anchor="middle">
+      ✓ Auto monitoring
+    </text>
+    
+    <text x="0" y="380" font-family="Arial, sans-serif" font-size="24" 
+          font-weight="600" fill="#86efac" text-anchor="middle">
+      😎 Relaxed
+    </text>
+  </g>
+  
+  <!-- BOTTOM CTA -->
+  <rect x="0" y="620" width="1280" height="100" fill="rgba(0,0,0,0.9)"/>
+  <rect x="400" y="645" width="480" height="50" rx="25" fill="#ff6b35" filter="url(#dropshadow)"/>
+  <text x="640" y="680" font-family="Impact, Arial Black, sans-serif" font-size="32" 
+        font-weight="900" fill="white" text-anchor="middle" letter-spacing="2">
+    ⚡ SETUP IN 2 MINUTES → RUSTINFO.ONLINE
+  </text>
+</svg>
