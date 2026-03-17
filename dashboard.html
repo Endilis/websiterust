@@ -136,6 +136,19 @@
     .discord-tag { color: var(--text2); font-size: 0.88rem; }
 
     #dashboard { display: none; }
+
+    /* Server card with header_image background */
+    #server-card { position: relative; overflow: hidden; min-height: 180px; }
+    .server-card-bg {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      opacity: 0.35;
+    }
+    .server-card-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 30%, var(--bg2) 85%);
+    }
+    .server-card-content { position: relative; z-index: 1; }
   </style>
 </head>
 <body>
@@ -161,8 +174,8 @@
 
   <!-- NOT LOGGED IN -->
   <div id="error-block">
-    <h2 style="margin-bottom:12px">Необходима авторизация</h2>
-    <p style="color:var(--text2);margin-bottom:24px">Войдите через Discord чтобы открыть панель управления.</p>
+    <h2 style="margin-bottom:12px" id="error-title">Необходима авторизация</h2>
+    <p style="color:var(--text2);margin-bottom:24px;white-space:pre-wrap" id="error-text">Войдите через Discord чтобы открыть панель управления.</p>
     <a id="btn-login-big" href="#" class="btn btn-accent">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
       Войти через Discord
@@ -173,6 +186,12 @@
   <div id="dashboard">
     <h1>Панель управления</h1>
     <p class="subtitle">Управляйте подключением Rust+ и настройками бота</p>
+
+    <div id="guild-selector" style="display:none;margin-bottom:24px">
+      <label class="info-label" style="display:block;margin-bottom:8px">Сервер Discord</label>
+      <select id="guild-select" style="background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:0.95rem;min-width:240px">
+      </select>
+    </div>
 
     <div class="cards">
 
@@ -190,6 +209,27 @@
           </div>
         </div>
         <span class="badge badge-green">✓ Авторизован</span>
+      </div>
+
+      <!-- Сервер Rust+ -->
+      <div class="card full-card" id="server-card" style="display:none">
+        <div class="server-card-bg" id="server-card-bg"></div>
+        <div class="server-card-content">
+        <div class="card-header">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v8H4z"/><path d="M4 14h16"/><circle cx="6" cy="17" r="1"/><circle cx="10" cy="17" r="1"/></svg>
+          Сервер
+        </div>
+        <div id="server-content">
+          <div class="info-row"><span class="info-label">Название</span><span class="info-value" id="server-name">—</span></div>
+          <div class="info-row"><span class="info-label">Адрес</span><span class="info-value" id="server-address">—</span></div>
+          <div class="info-row"><span class="info-label">Игроки</span><span class="info-value" id="server-players">—</span></div>
+          <div class="info-row"><span class="info-label">Размер карты</span><span class="info-value" id="server-size">—</span></div>
+          <div id="server-team-block" style="display:none;margin-top:12px">
+            <div class="info-label" style="margin-bottom:8px">Команда</div>
+            <ul id="server-team-list" style="list-style:none;padding:0"></ul>
+          </div>
+        </div>
+        </div>
       </div>
 
       <!-- Rust+ статус -->
@@ -210,11 +250,9 @@
           <p style="color:var(--text2);font-size:0.88rem;margin-bottom:16px">
             Нажмите кнопку ниже — расширение RustInfo Bot автоматически перехватит ваш Rust+ токен после входа через Steam.
           </p>
-          <a href="https://companion-rust.facepunch.com/" target="_blank" class="btn btn-accent" style="margin-bottom:10px;width:100%;justify-content:center">
+          <a href="#" id="btn-facepunch-link" class="btn btn-accent" style="margin-bottom:10px;width:100%;justify-content:center">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
             Авторизоваться через Facepunch
-          </a>
-          <!-- ссылка обновлена на /login -->
           </a>
           <a href="setup.html" class="btn btn-secondary" style="font-size:0.85rem;padding:8px 16px">
             Инструкция по подключению →
@@ -254,9 +292,10 @@
 
 <script>
   const DISCORD_CLIENT_ID = '1334943377124495421';
-  const REDIRECT_URI = 'https://bot.rustinfo.online/discord/callback';
-  const API_BASE = 'https://bot.rustinfo.online';
-  const OAUTH_URL = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify`;
+  const isLocal = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  const REDIRECT_URI = isLocal ? 'http://localhost:8080/discord/callback' : 'https://bot.rustinfo.online/discord/callback';
+  const API_BASE = isLocal ? 'http://localhost:8080' : 'https://bot.rustinfo.online';
+  const OAUTH_URL = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify%20guilds`;
 
   document.querySelectorAll('#btn-login-big, #btn-login-nav').forEach(el => {
     el.href = OAUTH_URL;
@@ -286,9 +325,16 @@
     return `https://cdn.discordapp.com/avatars/${id}/${hash}.png?size=80`;
   }
 
+  const FACEPUNCH_LOGIN = 'https://companion-rust.facepunch.com/login';
+
   function showDashboard(data, session) {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
+
+    const linkBtn = document.getElementById('btn-facepunch-link');
+    if (linkBtn) {
+      linkBtn.href = `${API_BASE}/link?session=${encodeURIComponent(session)}&next=${encodeURIComponent(FACEPUNCH_LOGIN)}`;
+    }
 
     const av = avatarUrl(data.discord_id, data.avatar);
     document.getElementById('profile-avatar').src = av;
@@ -305,19 +351,87 @@
       document.getElementById('steam-id-val').textContent = data.steam_id;
       document.getElementById('extension-steps-card').style.display = 'none';
     }
+
+    const guildSelect = document.getElementById('guild-select');
+    const guildSelector = document.getElementById('guild-selector');
+    if (data.guilds && data.guilds.length > 0) {
+      guildSelector.style.display = 'block';
+      guildSelect.innerHTML = data.guilds.map(g => 
+        `<option value="${g.id}" ${g.id === String(data.guild_id) ? 'selected' : ''}>${escapeHtml(g.name)}</option>`
+      ).join('');
+      guildSelect.onchange = () => {
+        fetch(`${API_BASE}/me/guild?session=${encodeURIComponent(session)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ guild_id: guildSelect.value })
+        }).then(() => loadDashboard(session));
+      };
+    } else {
+      guildSelector.style.display = 'none';
+    }
+
+    const serverCard = document.getElementById('server-card');
+    const server = data.server;
+    if (server) {
+      serverCard.style.display = 'block';
+      const bgEl = document.getElementById('server-card-bg');
+      if (bgEl) {
+        bgEl.style.backgroundImage = server.header_image ? `url(${JSON.stringify(server.header_image)})` : 'none';
+      }
+      document.getElementById('server-name').textContent = server.name || '—';
+      document.getElementById('server-address').textContent = server.address || '—';
+      const p = server.players, m = server.max_players, q = server.queued_players;
+      document.getElementById('server-players').textContent = 
+        (p != null && m != null) ? `${p}/${m}` + (q != null && q > 0 ? ` (очередь: ${q})` : '') : '—';
+      document.getElementById('server-size').textContent = server.size || '—';
+      const teamBlock = document.getElementById('server-team-block');
+      const teamList = document.getElementById('server-team-list');
+      if (server.team && server.team.length > 0) {
+        teamBlock.style.display = 'block';
+        teamList.innerHTML = server.team.map(t => 
+          `<li style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+            <span>${escapeHtml(t.name || '?')}</span>
+            <span class="badge ${t.is_online ? 'badge-green' : 'badge-gray'}">${t.is_online ? 'онлайн' : 'офлайн'}</span>
+          </li>`
+        ).join('');
+      } else {
+        teamBlock.style.display = 'none';
+      }
+    } else {
+      serverCard.style.display = 'none';
+    }
   }
 
-  function showError() {
+  function escapeHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function showError(oauthMsg) {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('error-block').style.display = 'block';
     document.getElementById('btn-login-big').href = OAUTH_URL;
+    if (oauthMsg) {
+      document.getElementById('error-title').textContent = 'Ошибка OAuth2';
+      document.getElementById('error-text').textContent = oauthMsg;
+    } else {
+      document.getElementById('error-title').textContent = 'Необходима авторизация';
+      document.getElementById('error-text').textContent = 'Войдите через Discord чтобы открыть панель управления.';
+    }
   }
 
   // Init
   const params = new URLSearchParams(window.location.search);
   const sessionFromUrl = params.get('session');
+  const oauthError = params.get('error');
+  const oauthMsg = params.get('msg');
+
   if (sessionFromUrl) {
     localStorage.setItem('ri_session', sessionFromUrl);
+    window.history.replaceState({}, '', 'dashboard.html');
+  } else if (oauthError === 'oauth' && oauthMsg) {
     window.history.replaceState({}, '', 'dashboard.html');
   }
 
@@ -325,7 +439,7 @@
   if (session) {
     loadDashboard(session);
   } else {
-    showError();
+    showError(oauthError === 'oauth' ? (oauthMsg || '') : null);
   }
 </script>
 

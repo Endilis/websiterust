@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="/images/icon.png" />
+  <meta name="theme-color" content="#ff6b35" />
+  <title>Terms of Use — RustInfo</title>
+  <meta name="description" content="RustInfo Terms of Use: rules for using the website, bot, and Rust+ integrations." />
+  <link rel="canonical" href="https://rustinfo.online/terms_en.html" />
+  <link rel="alternate" hreflang="ru" href="https://rustinfo.online/terms.html" />
+  <link rel="alternate" hreflang="en" href="https://rustinfo.online/terms_en.html" />
+  <link rel="alternate" hreflang="uk" href="https://rustinfo.online/terms_ua.html" />
+  <style>
+    :root { --bg:#0d1117; --bg2:#161b22; --bg3:#1c2330; --border:rgba(255,255,255,.08); --text:#e6edf3; --text2:#8b949e; --accent:#ff6b35; --nav-h:64px; --max:1100px; }
+    [data-theme="light"] { --bg:#fff; --bg2:#f6f8fa; --bg3:#eaeef2; --border:rgba(0,0,0,.1); --text:#1c2330; --text2:#57606a; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif; background:var(--bg); color:var(--text); line-height:1.65; min-height:100vh; }
+    a { color:inherit; text-decoration:none; }
+    .yn-nav { position:sticky; top:0; z-index:100; height:var(--nav-h); background:rgba(13,17,23,.85); backdrop-filter:blur(16px); border-bottom:1px solid var(--border); display:flex; align-items:center; }
+    [data-theme="light"] .yn-nav { background:rgba(255,255,255,.88); }
+    .yn-nav-inner { width:100%; max-width:var(--max); margin:0 auto; padding:0 24px; display:flex; align-items:center; gap:32px; }
+    .yn-brand { display:flex; align-items:center; gap:10px; font-weight:800; font-size:1.1rem; }
+    .yn-brand-icon { width:34px; height:34px; border-radius:8px; background:linear-gradient(135deg,var(--accent),#ff3c00); display:flex; align-items:center; justify-content:center; font-size:18px; }
+    .yn-links { display:flex; align-items:center; gap:6px; margin-left:auto; }
+    .yn-links a { padding:6px 12px; border-radius:8px; color:var(--text2); font-size:.9rem; }
+    .yn-links a:hover, .yn-links a.active { background:var(--bg2); color:var(--text); }
+    .yn-nav-right { display:flex; align-items:center; gap:10px; margin-left:8px; }
+    .yn-lang { display:flex; gap:4px; }
+    .yn-lang a { padding:4px 8px; border-radius:6px; color:var(--text2); }
+    .yn-lang a.active, .yn-lang a:hover { background:var(--bg2); color:var(--text); }
+    .yn-theme-btn { width:36px; height:36px; border:1px solid var(--border); border-radius:8px; background:var(--bg2); cursor:pointer; }
+    .yn-cta-btn { padding:8px 14px; border-radius:9px; background:var(--accent); color:#fff; font-size:.86rem; font-weight:600; }
+    .legal-wrap { max-width:840px; margin:0 auto; padding:42px 24px 80px; }
+    .legal-card { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:30px; }
+    .back-link { color:var(--text2); font-size:.9rem; display:inline-block; margin-bottom:16px; }
+    h1 { font-size:2rem; margin-bottom:8px; }
+    .updated { color:var(--text2); margin-bottom:24px; font-size:.92rem; }
+    h2 { margin:26px 0 10px; font-size:1.15rem; }
+    p, li { color:var(--text2); margin-bottom:10px; }
+    ul { padding-left:20px; }
+    .yn-footer { padding:34px 24px; border-top:1px solid var(--border); }
+    .yn-footer-inner { max-width:var(--max); margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px; }
+    .yn-footer-text, .yn-footer-links a { color:var(--text2); font-size:.86rem; }
+    .yn-footer-links { display:flex; gap:10px; flex-wrap:wrap; }
+    @media (max-width:860px) { .yn-links, .yn-cta-btn { display:none; } .legal-card { padding:22px; } }
+  </style>
+</head>
+<body>
+  <nav class="yn-nav" aria-label="Navigation">
+    <div class="yn-nav-inner">
+      <a class="yn-brand" href="index_en.html"><div class="yn-brand-icon">⚡</div>RustInfo</a>
+      <div class="yn-links">
+        <a href="docs_en.html">Documentation</a>
+        <a href="setup_en.html">Connection</a>
+        <a href="binds.html">Binds</a>
+        <a href="index_en.html#faq">FAQ</a>
+      </div>
+      <div class="yn-nav-right">
+        <div class="yn-lang">
+          <a href="terms.html">🇷🇺</a>
+          <a href="terms_en.html" class="active">🇬🇧</a>
+          <a href="terms_ua.html">🇺🇦</a>
+        </div>
+        <button class="yn-theme-btn" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme">🌙</button>
+        <a class="yn-cta-btn" href="https://discord.com/oauth2/authorize?client_id=1334943377124495421&permissions=8&integration_type=0&scope=bot" target="_blank" rel="noreferrer">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.59 7.58L10 16.17l-2.59-2.58L6 15l4 4 8-8z"/></svg>
+          Add bot
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="legal-wrap">
+    <div class="legal-card">
+      <a href="index_en.html" class="back-link">← Back to home</a>
+      <h1>Terms of Use</h1>
+      <p class="updated">Last updated: March 2026</p>
+
+      <p>These Terms govern your use of the RustInfo website, Discord bot, and related integrations. By using RustInfo, you agree to these Terms.</p>
+
+      <h2>1. Service description</h2>
+      <p>RustInfo is an unofficial service for Rust+ monitoring through Discord and web tools. We use the official Rust+ Companion API, but RustInfo is not affiliated with Facepunch Studios or Discord Inc.</p>
+
+      <h2>2. Acceptance of terms</h2>
+      <p>Using the website, signing in via Discord OAuth, installing extensions, or interacting with the bot means you accept the current version of these Terms.</p>
+
+      <h2>3. Acceptable use</h2>
+      <p>You agree to:</p>
+      <ul>
+        <li>use the service lawfully and in line with Discord, Steam, and Facepunch policies;</li>
+        <li>avoid attempts to bypass security or gain unauthorized access;</li>
+        <li>not use RustInfo for spam, fraud, or abusive behavior;</li>
+        <li>remain responsible for actions performed through your account.</li>
+      </ul>
+
+      <h2>4. Limitation of liability</h2>
+      <p>The service is provided “as is.” We do not guarantee uninterrupted availability or complete data accuracy. RustInfo is not liable for indirect damages, lost profits, or data loss.</p>
+
+      <h2>5. Intellectual property</h2>
+      <p>Rust, Rust+, and related trademarks belong to Facepunch Studios. Discord and related trademarks belong to Discord Inc. RustInfo references these brands only for compatibility and integration purposes.</p>
+
+      <h2>6. Suspension and termination</h2>
+      <p>We may suspend or terminate access if these Terms are violated, security is at risk, or legal requirements apply.</p>
+
+      <h2>7. Changes to terms</h2>
+      <p>We may update these Terms as the service evolves. Continued use after updates are posted means you accept the revised version.</p>
+
+      <h2>8. Contact</h2>
+      <p>For legal or terms-related questions, contact us via our <a href="https://discord.gg/zTdZq9fQ5k" target="_blank" rel="noreferrer">Discord support server</a>.</p>
+    </div>
+  </main>
+
+  <footer class="yn-footer">
+    <div class="yn-footer-inner">
+      <div class="yn-footer-text">RustInfo · © 2026 · <a href="terms_en.html">Terms of Use</a> · <a href="privacy_en.html">Privacy Policy</a></div>
+      <div class="yn-footer-links">
+        <a href="index_en.html">Home</a>
+        <a href="docs.html">Docs</a>
+        <a href="setup.html">Connection</a>
+        <a href="https://discord.gg/zTdZq9fQ5k" target="_blank" rel="noreferrer">Discord</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const themeBtn = document.querySelector('.yn-theme-btn');
+    function applyTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      localStorage.setItem('theme', t);
+      themeBtn.textContent = t === 'dark' ? '🌙' : '☀️';
+    }
+    function toggleTheme() {
+      applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+    applyTheme(localStorage.getItem('theme') || 'dark');
+  </script>
+  <script>(function(){ var b=document.getElementById('ynMobileBtn'), n=document.querySelector('.yn-nav'); if(b&&n) b.addEventListener('click',function(){ n.classList.toggle('open'); }); })();</script>
+</body>
+</html>

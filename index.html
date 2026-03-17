@@ -622,13 +622,14 @@
   <!-- ── NAVBAR ── -->
   <nav class="yn-nav" aria-label="Навигация">
     <div class="yn-nav-inner">
-      <a class="yn-brand" href="/">
+      <a class="yn-brand" href="index.html">
         <div class="yn-brand-icon">⚡</div>
         RustInfo
       </a>
+      <button class="yn-mobile-btn" id="ynMobileBtn" type="button" aria-label="Меню" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
       <div class="yn-links">
-        <a href="#features">Возможности</a>
-        <a href="#steps">Установка</a>
         <a href="docs.html">Документация</a>
         <a href="setup.html">Подключение</a>
         <a href="binds.html">Бинды</a>
@@ -695,8 +696,8 @@
             <div class="yn-stat-label">Discord серверов</div>
           </div>
           <div class="yn-stat">
-            <span class="yn-stat-num"><span>60</span>+</span>
-            <div class="yn-stat-label">Rust+ серверов</div>
+            <span class="yn-stat-num"><span id="playersInGame" data-target="0">—</span></span>
+            <div class="yn-stat-label">Пользователей в игре</div>
           </div>
           <div class="yn-stat">
             <span class="yn-stat-num">3</span>
@@ -969,6 +970,8 @@
         <a href="docs.html">Документация</a>
         <a href="setup.html">Подключение</a>
         <a href="binds.html">Бинды</a>
+        <a href="terms.html">Условия</a>
+        <a href="privacy.html">Конфиденциальность</a>
         <a href="#faq">FAQ</a>
         <a href="https://discord.gg/zTdZq9fQ5k" target="_blank" rel="noreferrer">Discord</a>
       </div>
@@ -994,9 +997,10 @@
       item.classList.toggle('open');
     }
 
-    /* ── Guild counter ── */
-    const METRICS_URL = 'https://stats.rustinfo.online/metrics/guilds';
+    /* ── Stats: с туннеля бота (bot.rustinfo.online/metrics) ── */
+    const METRICS_URL = 'https://bot.rustinfo.online/metrics';
     function animateCounter(el, target) {
+      if (!el) return;
       const dur = 2000, start = 0, step = target / (dur / 16);
       let cur = start;
       const t = setInterval(() => {
@@ -1010,15 +1014,35 @@
         const res = await fetch(METRICS_URL);
         if (res.ok) {
           const data = await res.json();
-          animateCounter(document.getElementById('guildCount'), data.guild_count || 0);
+          const guildEl = document.getElementById('guildCount');
+          const playersEl = document.getElementById('playersInGame');
+          if (guildEl) animateCounter(guildEl, data.guild_count ?? 0);
+          if (playersEl) animateCounter(playersEl, data.players_in_game ?? 0);
         }
       } catch (e) {
-        document.getElementById('guildCount').textContent = '?';
+        const guildEl = document.getElementById('guildCount');
+        const playersEl = document.getElementById('playersInGame');
+        if (guildEl) guildEl.textContent = '?';
+        if (playersEl) playersEl.textContent = '?';
       }
     }
     document.addEventListener('DOMContentLoaded', () => {
       fetchGuildMetrics();
       setInterval(fetchGuildMetrics, 10 * 60 * 1000);
+      var mobileBtn = document.getElementById('ynMobileBtn');
+      var nav = document.querySelector('.yn-nav');
+      if (mobileBtn && nav) {
+        mobileBtn.addEventListener('click', function() {
+          nav.classList.toggle('open');
+          mobileBtn.setAttribute('aria-expanded', nav.classList.contains('open'));
+        });
+      }
+      if (location.protocol === 'file:') {
+        var warn = document.createElement('div');
+        warn.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#b91c1c;color:#fff;padding:12px 24px;text-align:center;z-index:9999;font-size:14px;';
+        warn.innerHTML = 'Откройте сайт через сервер: <strong><a href="http://localhost:3000/index.html" style="color:#fff;text-decoration:underline;">http://localhost:3000/index.html</a></strong> (запустите в папке website: python -m http.server 3000)';
+        document.body.insertBefore(warn, document.body.firstChild);
+      }
     });
   </script>
 

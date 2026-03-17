@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="/images/icon.png" />
+  <meta name="theme-color" content="#ff6b35" />
+  <title>Політика конфіденційності — RustInfo</title>
+  <meta name="description" content="Політика конфіденційності RustInfo: які дані ми збираємо, як використовуємо та як ви можете керувати своїми даними." />
+  <link rel="canonical" href="https://rustinfo.online/privacy_ua.html" />
+  <link rel="alternate" hreflang="ru" href="https://rustinfo.online/privacy.html" />
+  <link rel="alternate" hreflang="en" href="https://rustinfo.online/privacy_en.html" />
+  <link rel="alternate" hreflang="uk" href="https://rustinfo.online/privacy_ua.html" />
+  <style>
+    :root { --bg:#0d1117; --bg2:#161b22; --bg3:#1c2330; --border:rgba(255,255,255,.08); --text:#e6edf3; --text2:#8b949e; --accent:#ff6b35; --nav-h:64px; --max:1100px; }
+    [data-theme="light"] { --bg:#fff; --bg2:#f6f8fa; --bg3:#eaeef2; --border:rgba(0,0,0,.1); --text:#1c2330; --text2:#57606a; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif; background:var(--bg); color:var(--text); line-height:1.65; min-height:100vh; }
+    a { color:inherit; text-decoration:none; }
+    .yn-nav { position:sticky; top:0; z-index:100; height:var(--nav-h); background:rgba(13,17,23,.85); backdrop-filter:blur(16px); border-bottom:1px solid var(--border); display:flex; align-items:center; }
+    [data-theme="light"] .yn-nav { background:rgba(255,255,255,.88); }
+    .yn-nav-inner { width:100%; max-width:var(--max); margin:0 auto; padding:0 24px; display:flex; align-items:center; gap:32px; }
+    .yn-brand { display:flex; align-items:center; gap:10px; font-weight:800; font-size:1.1rem; }
+    .yn-brand-icon { width:34px; height:34px; border-radius:8px; background:linear-gradient(135deg,var(--accent),#ff3c00); display:flex; align-items:center; justify-content:center; font-size:18px; }
+    .yn-links { display:flex; align-items:center; gap:6px; margin-left:auto; }
+    .yn-links a { padding:6px 12px; border-radius:8px; color:var(--text2); font-size:.9rem; }
+    .yn-links a:hover, .yn-links a.active { background:var(--bg2); color:var(--text); }
+    .yn-nav-right { display:flex; align-items:center; gap:10px; margin-left:8px; }
+    .yn-lang { display:flex; gap:4px; }
+    .yn-lang a { padding:4px 8px; border-radius:6px; color:var(--text2); }
+    .yn-lang a.active, .yn-lang a:hover { background:var(--bg2); color:var(--text); }
+    .yn-theme-btn { width:36px; height:36px; border:1px solid var(--border); border-radius:8px; background:var(--bg2); cursor:pointer; }
+    .yn-cta-btn { padding:8px 14px; border-radius:9px; background:var(--accent); color:#fff; font-size:.86rem; font-weight:600; }
+    .legal-wrap { max-width:840px; margin:0 auto; padding:42px 24px 80px; }
+    .legal-card { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:30px; }
+    .back-link { color:var(--text2); font-size:.9rem; display:inline-block; margin-bottom:16px; }
+    h1 { font-size:2rem; margin-bottom:8px; }
+    .updated { color:var(--text2); margin-bottom:24px; font-size:.92rem; }
+    h2 { margin:26px 0 10px; font-size:1.15rem; }
+    p, li { color:var(--text2); margin-bottom:10px; }
+    ul { padding-left:20px; }
+    .yn-footer { padding:34px 24px; border-top:1px solid var(--border); }
+    .yn-footer-inner { max-width:var(--max); margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px; }
+    .yn-footer-text, .yn-footer-links a { color:var(--text2); font-size:.86rem; }
+    .yn-footer-links { display:flex; gap:10px; flex-wrap:wrap; }
+    @media (max-width:860px) { .yn-links, .yn-cta-btn { display:none; } .legal-card { padding:22px; } }
+  </style>
+</head>
+<body>
+  <nav class="yn-nav" aria-label="Навігація">
+    <div class="yn-nav-inner">
+      <a class="yn-brand" href="index_ua.html"><div class="yn-brand-icon">⚡</div>RustInfo</a>
+      <div class="yn-links">
+        <a href="docs_ua.html">Документація</a>
+        <a href="setup_ua.html">Підключення</a>
+        <a href="binds.html">Бінди</a>
+        <a href="index_ua.html#faq">FAQ</a>
+      </div>
+      <div class="yn-nav-right">
+        <div class="yn-lang">
+          <a href="privacy.html">🇷🇺</a>
+          <a href="privacy_en.html">🇬🇧</a>
+          <a href="privacy_ua.html" class="active">🇺🇦</a>
+        </div>
+        <button class="yn-theme-btn" onclick="toggleTheme()" title="Перемкнути тему" aria-label="Перемкнути тему">🌙</button>
+        <a class="yn-cta-btn" href="https://discord.com/oauth2/authorize?client_id=1334943377124495421&permissions=8&integration_type=0&scope=bot" target="_blank" rel="noreferrer">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.59 7.58L10 16.17l-2.59-2.58L6 15l4 4 8-8z"/></svg>
+          Додати бота
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="legal-wrap">
+    <div class="legal-card">
+      <a href="index_ua.html" class="back-link">← На головну</a>
+      <h1>Політика конфіденційності</h1>
+      <p class="updated">Останнє оновлення: березень 2026</p>
+
+      <p>У цьому документі пояснюється, які дані RustInfo збирає, навіщо це потрібно та як ви можете керувати своїми даними під час використання сайту, бота та повʼязаних сервісів.</p>
+
+      <h2>1. Які дані ми збираємо</h2>
+      <p><strong>Через Discord OAuth:</strong></p>
+      <ul>
+        <li>Discord ID, імʼя профілю, аватар і список серверів, де у вас є права керування.</li>
+      </ul>
+      <p><strong>Під час підключення Rust+:</strong></p>
+      <ul>
+        <li>Steam ID для ідентифікації вашого акаунта в Rust+;</li>
+        <li>Rust+ JWT-токен (Facepunch) для реєстрації push-сповіщень;</li>
+        <li>FCM / Expo токени для доставки сповіщень про події.</li>
+      </ul>
+      <p><strong>Технічні дані:</strong></p>
+      <ul>
+        <li>IP-адреса та User-Agent для безпеки й діагностики;</li>
+        <li>знеособлена аналітика відвідувань сайту (Google Analytics).</li>
+      </ul>
+
+      <h2>2. Як ми використовуємо дані</h2>
+      <ul>
+        <li>Для роботи основних функцій RustInfo: моніторинг, сповіщення, керування пристроями;</li>
+        <li>для привʼязки Discord-акаунта до серверів і Steam ID;</li>
+        <li>для захисту від зловживань та порушення правил;</li>
+        <li>для покращення якості сервісу та інтерфейсу.</li>
+      </ul>
+
+      <h2>3. Передача третім сторонам</h2>
+      <p>Ми не продаємо персональні дані. Передача відбувається лише в межах необхідних інтеграцій:</p>
+      <ul>
+        <li><strong>Discord</strong> — для авторизації та базових даних профілю;</li>
+        <li><strong>Facepunch / Rust+ API</strong> — для роботи інтеграції Rust+;</li>
+        <li><strong>Firebase Cloud Messaging / Expo</strong> — для push-сповіщень;</li>
+        <li><strong>Google Analytics</strong> — для агрегованої веб-аналітики.</li>
+      </ul>
+
+      <h2>4. Термін зберігання</h2>
+      <p>Дані зберігаються лише стільки, скільки потрібно для роботи сервісу. Ви можете подати запит на видалення через наш Discord-сервер підтримки.</p>
+
+      <h2>5. Ваші права</h2>
+      <ul>
+        <li>Відкликати доступ у налаштуваннях Discord;</li>
+        <li>припинити користування сервісом у будь-який момент;</li>
+        <li>запросити видалення ваших збережених даних.</li>
+      </ul>
+
+      <h2>6. Cookies і localStorage</h2>
+      <p>Ми використовуємо cookies і localStorage для сесій входу та збереження налаштувань (наприклад, теми).</p>
+
+      <h2>7. Безпека</h2>
+      <p>Ми застосовуємо стандартні заходи захисту, зокрема HTTPS та контроль доступу. Абсолютної безпеки в інтернеті не існує.</p>
+
+      <h2>8. Оновлення політики</h2>
+      <p>Ми можемо оновлювати політику в міру розвитку сервісу. Актуальна версія завжди доступна на цій сторінці.</p>
+
+      <h2>9. Контакти</h2>
+      <p>З питань конфіденційності звертайтеся в наш <a href="https://discord.gg/zTdZq9fQ5k" target="_blank" rel="noreferrer">Discord-сервер підтримки</a>.</p>
+    </div>
+  </main>
+
+  <footer class="yn-footer">
+    <div class="yn-footer-inner">
+      <div class="yn-footer-text">RustInfo · © 2026 · <a href="terms_ua.html">Умови</a> · <a href="privacy_ua.html">Політика конфіденційності</a></div>
+      <div class="yn-footer-links">
+        <a href="index_ua.html">Головна</a>
+        <a href="docs.html">Документація</a>
+        <a href="setup.html">Підключення</a>
+        <a href="https://discord.gg/zTdZq9fQ5k" target="_blank" rel="noreferrer">Discord</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const themeBtn = document.querySelector('.yn-theme-btn');
+    function applyTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      localStorage.setItem('theme', t);
+      themeBtn.textContent = t === 'dark' ? '🌙' : '☀️';
+    }
+    function toggleTheme() {
+      applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+    applyTheme(localStorage.getItem('theme') || 'dark');
+  </script>
+  <script>(function(){ var b=document.getElementById('ynMobileBtn'), n=document.querySelector('.yn-nav'); if(b&&n) b.addEventListener('click',function(){ n.classList.toggle('open'); }); })();</script>
+</body>
+</html>

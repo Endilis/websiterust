@@ -1756,3 +1756,105 @@ footer::before {
   background: rgba(255, 107, 53, 0.3);
   color: var(--text);
 }
+
+/* ===== Index-style navbar (yn-nav) — same header on all pages ===== */
+.yn-nav {
+  position: sticky; top: 0; z-index: 100;
+  height: 64px;
+  background: rgba(13,17,23,0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex; align-items: center;
+}
+[data-theme="light"] .yn-nav {
+  background: rgba(255,255,255,0.88);
+  border-bottom-color: rgba(0,0,0,0.1);
+}
+.yn-nav-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  width: 100%; display: flex; align-items: center; gap: 32px;
+}
+.yn-brand {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: 1.15rem; letter-spacing: -0.3px;
+  color: #e6edf3; white-space: nowrap;
+}
+[data-theme="light"] .yn-brand { color: #1c2330; }
+.yn-brand-icon {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), #ff3c00);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; line-height: 1; flex-shrink: 0;
+}
+.yn-links {
+  display: flex; align-items: center; gap: 4px; margin-left: auto;
+}
+.yn-links a {
+  padding: 6px 14px; border-radius: 8px;
+  font-size: 0.875rem; font-weight: 500; color: #8b949e;
+  transition: color .2s, background .2s;
+}
+[data-theme="light"] .yn-links a { color: #57606a; }
+.yn-links a:hover, .yn-links a.active { background: #161b22; color: #e6edf3; }
+[data-theme="light"] .yn-links a:hover, [data-theme="light"] .yn-links a.active { background: #f6f8fa; color: #1c2330; }
+.yn-nav-right {
+  display: flex; align-items: center; gap: 10px; margin-left: 16px;
+}
+.yn-theme-btn {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: #161b22; border: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 17px; transition: background .2s;
+}
+[data-theme="light"] .yn-theme-btn { background: #f6f8fa; border-color: rgba(0,0,0,0.1); }
+.yn-theme-btn:hover { background: #1c2330; }
+[data-theme="light"] .yn-theme-btn:hover { background: #eaeef2; }
+.yn-cta-btn {
+  padding: 8px 18px; border-radius: 9px;
+  background: var(--accent); color: #fff;
+  font-size: 0.875rem; font-weight: 600;
+  border: none; cursor: pointer; transition: opacity .2s, transform .15s;
+  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+  text-decoration: none;
+}
+.yn-cta-btn:hover { opacity: .88; transform: translateY(-1px); color: #fff; }
+.yn-lang {
+  display: flex; align-items: center; gap: 4px;
+}
+.yn-lang a {
+  padding: 4px 8px; border-radius: 6px; font-size: 0.85rem;
+  color: #8b949e; transition: background .2s, color .2s;
+}
+[data-theme="light"] .yn-lang a { color: #57606a; }
+.yn-lang a.active, .yn-lang a:hover { background: #161b22; color: #e6edf3; }
+[data-theme="light"] .yn-lang a.active, [data-theme="light"] .yn-lang a:hover { background: #f6f8fa; color: #1c2330; }
+.yn-mobile-btn {
+  display: none;
+  width: 40px; height: 40px;
+  background: #161b22; border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px; cursor: pointer;
+  align-items: center; justify-content: center;
+  flex-direction: column; gap: 5px;
+}
+.yn-mobile-btn span { width: 18px; height: 2px; background: #e6edf3; border-radius: 1px; }
+@media (max-width: 768px) {
+  .yn-links {
+    display: none;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: rgba(13,17,23,0.98);
+    backdrop-filter: blur(16px);
+    flex-direction: column;
+    padding: 16px;
+    gap: 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .yn-nav.open .yn-links { display: flex; }
+  .yn-links a { padding: 12px 14px; }
+  .yn-mobile-btn { display: flex; margin-left: auto; }
+  .yn-nav-inner { position: relative; flex-wrap: wrap; }
+}
+[data-theme="light"] .yn-nav.open .yn-links { background: rgba(255,255,255,0.98); }
+[data-theme="light"] .yn-mobile-btn { background: #f6f8fa; border-color: rgba(0,0,0,0.1); }
+[data-theme="light"] .yn-mobile-btn span { background: #1c2330; }
