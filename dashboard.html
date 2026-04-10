@@ -5,32 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard — RustInfo Bot</title>
   <link rel="icon" href="https://rustinfo.online/favicon.ico"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css?v=18"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg:      #0d0f14;
-      --bg2:     #13161e;
-      --bg3:     #1a1e2a;
-      --border:  #232840;
-      --accent:  #e8442a;
-      --accent2: #ff6b3d;
-      --text:    #eef0f6;
-      --text2:   #9095b0;
-      --green:   #3dd68c;
-      --yellow:  #f5c518;
-      --radius:  14px;
-    }
-    body {
-      background: var(--bg); color: var(--text);
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      min-height: 100vh;
+
+    /* Палитра и типографика как на rustinfo.online (style.css) */
+    body.dashboard-page {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      letter-spacing: 0.01em;
+      --text2: var(--muted, #9ca3af);
+      --bg2: rgba(255, 255, 255, 0.04);
+      --bg3: rgba(255, 255, 255, 0.06);
+      --radius: 14px;
+      --dash-success: #34d399;
+      --dash-warning: #fbbf24;
+      --green: var(--dash-success);
     }
 
     /* NAV */
     nav {
       display: flex; align-items: center; justify-content: space-between;
       padding: 16px 40px;
-      background: var(--bg2); border-bottom: 1px solid var(--border);
+      background: rgba(10, 11, 15, 0.82);
+      backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--border);
     }
     .nav-logo {
       font-size: 1.2rem; font-weight: 800; color: var(--text);
@@ -55,16 +56,253 @@
 
     /* MAIN */
     main {
-      max-width: 860px; margin: 48px auto; padding: 0 20px;
+      max-width: 1180px; margin: 20px auto 32px; padding: 0 20px;
     }
-    h1 { font-size: 1.7rem; font-weight: 800; margin-bottom: 8px; }
-    .subtitle { color: var(--text2); margin-bottom: 36px; }
+    h1 { font-size: 1.55rem; font-weight: 800; margin-bottom: 6px; }
+    .subtitle { color: var(--text2); margin-bottom: 0; font-size: 0.92rem; }
+    .dashboard-header {
+      display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between;
+      gap: 14px; margin-bottom: 18px;
+    }
+    .dashboard-header .header-text { flex: 1; min-width: 200px; }
+
+    /* SHELL: sidebar + panels */
+    .dashboard-body {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+    @media (max-width: 880px) {
+      .dashboard-body { grid-template-columns: 1fr; }
+      .dash-sidebar { position: sticky; top: 0; z-index: 5; background: var(--bg); padding-bottom: 8px; }
+    }
+    .dash-sidebar {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 12px 10px;
+    }
+    .dash-nav { display: flex; flex-direction: column; gap: 4px; }
+    .dash-nav-label {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--text2); padding: 10px 10px 4px;
+    }
+    .dash-nav-btn {
+      width: 100%; text-align: left;
+      padding: 10px 12px; border-radius: 10px; border: 1px solid transparent;
+      background: transparent; color: var(--text2); font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; transition: background .15s, color .15s, border-color .15s;
+    }
+    .dash-nav-btn:hover { background: var(--bg3); color: var(--text); }
+    .dash-nav-btn.active {
+      background: var(--bg3); color: var(--text); border-color: var(--border);
+      box-shadow: inset 0 0 0 1px rgba(232,68,42,.25);
+    }
+    .dash-nav-btn.sub { padding-left: 18px; font-size: 0.85rem; font-weight: 500; }
+
+    .dash-panels {
+      min-width: 0;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      background: var(--surface);
+      padding: 16px;
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+    }
+    @media (max-width: 880px) {
+      .dash-panels { max-height: none; }
+    }
+    .dash-panel { display: none; }
+    .dash-panel.active { display: block; }
+    .dash-panel-inner {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    @media (max-width: 700px) { .dash-panel-inner { grid-template-columns: 1fr; } }
+    .dash-panel-inner .full-card { grid-column: 1 / -1; }
+
+    /* Command cheat sheet */
+    .cmd-grid {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px;
+      font-size: 0.86rem;
+    }
+    @media (max-width: 520px) { .cmd-grid { grid-template-columns: 1fr; } }
+    .cmd-grid div { display: flex; gap: 8px; align-items: baseline; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+    .cmd-grid code { color: var(--accent2); font-size: 0.85rem; min-width: 5.2em; }
+    .cmd-grid span { color: var(--text2); }
+    .cmd-docs-link { margin-top: 14px; display: inline-block; font-size: 0.9rem; font-weight: 600; color: var(--accent); text-decoration: none; }
+    .cmd-docs-link:hover { text-decoration: underline; }
+
+    .muted { color: var(--text2); font-size: 0.88rem; line-height: 1.5; }
+
+    /* Аккаунт: одна поверхность (Linear / Vercel-style settings), без «коробок в коробках» */
+    #panel-account.active { padding: 0; }
+    .account-sheet {
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      backdrop-filter: blur(16px);
+      overflow: hidden;
+    }
+    .account-profile {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 20px;
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--border);
+    }
+    .account-profile-text { flex: 1; min-width: 0; }
+    .account-profile .dash-badge { flex-shrink: 0; margin-left: auto; }
+    .account-avatar-img {
+      width: 72px; height: 72px; border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--border);
+      background: var(--bg3);
+    }
+    .account-name {
+      font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em;
+      color: var(--text); line-height: 1.25; margin: 0 0 4px;
+    }
+    .account-handle { font-size: 0.9rem; color: var(--text2); margin: 0; }
+
+    /* Единая система бейджей */
+    .dash-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 5px 12px; border-radius: 8px;
+      font-size: 0.8125rem; font-weight: 600;
+      font-family: inherit; line-height: 1.2;
+      border: 1px solid transparent;
+    }
+    .dash-badge--ok {
+      color: var(--dash-success);
+      background: rgba(52, 211, 153, 0.1);
+      border-color: rgba(52, 211, 153, 0.28);
+    }
+    .dash-badge--warn {
+      color: var(--dash-warning);
+      background: rgba(251, 191, 36, 0.08);
+      border-color: rgba(251, 191, 36, 0.25);
+    }
+    .dash-badge--neutral {
+      color: var(--text2);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--border);
+    }
+
+    /* Кнопки — один набор */
+    .dash-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px 18px; border-radius: 10px;
+      font-family: inherit; font-size: 0.875rem; font-weight: 600;
+      text-decoration: none; cursor: pointer; border: 1px solid transparent;
+      transition: background .15s, border-color .15s, filter .15s, transform .1s;
+    }
+    .dash-btn:hover { transform: translateY(-1px); }
+    .dash-btn--primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .dash-btn--primary:hover { filter: brightness(1.08); }
+    .dash-btn--ghost {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .dash-btn--ghost:hover { background: rgba(255, 255, 255, 0.06); }
+    .dash-btn--discord { background: #5865f2; color: #fff; }
+    .dash-btn--discord:hover { filter: brightness(1.06); }
+    .dash-btn--block { width: 100%; max-width: 320px; }
+
+    .dash-sep { border: none; height: 1px; background: var(--border); margin: 0; }
+
+    .dash-section { padding: 20px 28px 22px; }
+    .dash-section-title {
+      font-size: 0.6875rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--text2); margin: 0 0 14px;
+    }
+
+    .dash-list { display: flex; flex-direction: column; }
+    .dash-list__row {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 16px; padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .dash-list__row:last-child { border-bottom: none; padding-bottom: 0; }
+    .dash-k { color: var(--text2); font-weight: 500; flex-shrink: 0; max-width: 44%; }
+    .dash-v {
+      text-align: right; font-weight: 600; color: var(--text);
+      font-size: 0.875rem;
+      font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+      word-break: break-all;
+    }
+    .dash-v--plain { font-family: inherit; font-weight: 600; }
+
+    .dash-stack { display: flex; flex-direction: column; gap: 10px; }
+    .dash-inline { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    .dash-muted { color: var(--text2); font-size: 0.875rem; line-height: 1.55; margin: 0; }
+
+    .dash-select {
+      width: 100%; max-width: 420px;
+      padding: 11px 14px; border-radius: 10px;
+      font-family: inherit; font-size: 0.9rem; color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .dash-select:focus {
+      border-color: rgba(255, 107, 53, 0.55);
+      box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.12);
+    }
+    .dash-textarea {
+      width: 100%; max-width: 520px; min-height: 120px; resize: vertical;
+      padding: 12px 14px; border-radius: 10px;
+      font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+      font-size: 0.8125rem; line-height: 1.45;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      outline: none;
+    }
+    .dash-textarea:focus {
+      border-color: rgba(255, 107, 53, 0.55);
+      box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.12);
+    }
+    .guild-select-wrap label {
+      display: block; margin-bottom: 8px;
+      font-size: 0.8125rem; font-weight: 600; color: var(--text2);
+    }
+
+    /* Одна и та же галочка (иконка) */
+    .ui-icon-check {
+      width: 20px; height: 20px; flex-shrink: 0;
+      fill: none;
+    }
+    .ui-icon-check path {
+      stroke: var(--dash-success);
+      stroke-width: 2.25;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+    .dash-bot-ok {
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 8px;
+      font-weight: 600; font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    details.dash-details {
+      margin-top: 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+    details.dash-details summary { cursor: pointer; font-weight: 600; font-size: 0.9rem; color: var(--text); }
 
     /* CARDS */
-    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     @media (max-width: 600px) { .cards { grid-template-columns: 1fr; } }
     .card {
-      background: var(--bg2); border: 1px solid var(--border);
+      background: var(--surface); border: 1px solid var(--border);
       border-radius: var(--radius); padding: 24px;
     }
     .card-header {
@@ -76,9 +314,9 @@
       display: inline-flex; align-items: center; gap: 6px;
       padding: 4px 12px; border-radius: 20px; font-size: 0.82rem; font-weight: 600;
     }
-    .badge-green { background: rgba(61,214,140,.15); color: var(--green); }
-    .badge-yellow { background: rgba(245,197,24,.12); color: var(--yellow); }
-    .badge-gray { background: var(--bg3); color: var(--text2); }
+    .badge-green { background: rgba(52,211,153,.12); color: var(--dash-success); border: 1px solid rgba(52,211,153,.22); }
+    .badge-yellow { background: rgba(251,191,36,.1); color: var(--dash-warning); border: 1px solid rgba(251,191,36,.22); }
+    .badge-gray { background: rgba(255,255,255,.05); color: var(--text2); border: 1px solid var(--border); }
 
     .info-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .info-label { color: var(--text2); font-size: 0.88rem; }
@@ -149,9 +387,37 @@
       background: linear-gradient(to bottom, transparent 30%, var(--bg2) 85%);
     }
     .server-card-content { position: relative; z-index: 1; }
+
+    /* In-game notify toggles */
+    .notify-hint { color: var(--text2); font-size: 0.82rem; line-height: 1.45; margin-bottom: 14px; }
+    .notify-toggle-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .notify-toggle-row:last-child { border-bottom: none; }
+    .notify-switch {
+      position: relative; display: inline-block; width: 46px; height: 26px; flex-shrink: 0;
+    }
+    .notify-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .notify-slider {
+      position: absolute; cursor: pointer; inset: 0;
+      background: var(--bg3); border: 1px solid var(--border); border-radius: 26px;
+      transition: background .2s, border-color .2s;
+    }
+    .notify-slider::before {
+      position: absolute; content: ""; height: 20px; width: 20px; left: 2px; bottom: 2px;
+      background: var(--text2); border-radius: 50%; transition: transform .2s, background .2s;
+    }
+    .notify-switch input:checked + .notify-slider {
+      background: rgba(61,214,140,.25); border-color: var(--green);
+    }
+    .notify-switch input:checked + .notify-slider::before {
+      transform: translateX(20px); background: var(--green);
+    }
+    .notify-switch input:focus-visible + .notify-slider { outline: 2px solid var(--accent); outline-offset: 2px; }
   </style>
 </head>
-<body>
+<body class="dashboard-page">
 
 <nav>
   <a class="nav-logo" href="index.html">
@@ -184,140 +450,355 @@
 
   <!-- DASHBOARD -->
   <div id="dashboard">
-    <h1>Панель управления</h1>
-    <p class="subtitle">Управляйте подключением Rust+ и настройками бота</p>
-
-    <div id="guild-selector" style="display:none;margin-bottom:24px">
-      <label class="info-label" style="display:block;margin-bottom:8px">Сервер Discord</label>
-      <select id="guild-select" style="background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:0.95rem;min-width:240px">
-      </select>
+    <div class="dashboard-header">
+      <div class="header-text">
+        <h1>Панель управления</h1>
+        <p class="subtitle">Аккаунт, Rust+, уведомления и команды — разделы слева</p>
+      </div>
+      <a class="dash-btn dash-btn--discord" href="https://discord.gg/zTdZq9fQ5k" target="_blank" rel="noreferrer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Есть вопросы? Наш Discord
+      </a>
     </div>
 
-    <div class="cards">
+    <div class="dashboard-body">
+      <aside class="dash-sidebar">
+        <nav class="dash-nav" aria-label="Разделы панели">
+          <button type="button" class="dash-nav-btn active" data-panel="account">Аккаунт</button>
+          <button type="button" class="dash-nav-btn" data-panel="rust">Rust+ и сервер</button>
+          <div class="dash-nav-label">Уведомления</div>
+          <button type="button" class="dash-nav-btn sub" data-panel="notify-game">Игра (Rust+)</button>
+          <button type="button" class="dash-nav-btn sub" data-panel="notify-discord">Discord</button>
+          <button type="button" class="dash-nav-btn" data-panel="commands">Команды</button>
+          <button type="button" class="dash-nav-btn" data-panel="admin" id="nav-admin-btn" style="display:none">Админ панель</button>
+        </nav>
+      </aside>
 
-      <!-- Discord профиль -->
-      <div class="card">
-        <div class="card-header">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-          Discord аккаунт
-        </div>
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
-          <img id="profile-avatar" src="" alt="" class="avatar-large"/>
-          <div>
-            <div class="discord-name" id="profile-username"></div>
-            <div class="discord-tag" id="profile-tag"></div>
+      <div class="dash-panels">
+        <!-- PANEL: аккаунт -->
+        <div id="panel-account" class="dash-panel active" role="tabpanel">
+          <div class="account-sheet" id="account-card">
+            <header class="account-profile" aria-label="Профиль">
+              <img id="profile-avatar" src="" alt="" class="account-avatar-img" width="80" height="80"/>
+              <div class="account-profile-text">
+                <p class="account-name" id="profile-username"></p>
+                <p class="account-handle" id="profile-tag"></p>
+              </div>
+              <span class="dash-badge dash-badge--ok">Авторизован</span>
+            </header>
+
+            <section class="dash-section" aria-labelledby="acc-block-discord">
+              <h2 class="dash-section-title" id="acc-block-discord">Профиль Discord</h2>
+              <div class="dash-list">
+                <div class="dash-list__row">
+                  <span class="dash-k">Discord ID</span>
+                  <span class="dash-v" id="profile-discord-id">—</span>
+                </div>
+                <div class="dash-list__row" id="profile-registered-row" style="display:none">
+                  <span class="dash-k">В панели с</span>
+                  <span class="dash-v dash-v--plain" id="profile-registered">—</span>
+                </div>
+              </div>
+            </section>
+
+            <hr class="dash-sep"/>
+
+            <section class="dash-section" aria-labelledby="acc-block-steam">
+              <h2 class="dash-section-title" id="acc-block-steam">Steam / Rust+</h2>
+              <div class="dash-stack">
+                <div class="dash-inline">
+                  <span class="dash-badge dash-badge--neutral" id="token-status-badge">—</span>
+                  <a href="#" id="btn-token-refresh" class="dash-btn dash-btn--ghost" style="display:none">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                    Обновить
+                  </a>
+                </div>
+                <p class="dash-muted" id="token-status-message"></p>
+                <div class="dash-list">
+                  <div class="dash-list__row" id="token-expiry-row" style="display:none">
+                    <span class="dash-k">Истекает</span>
+                    <span class="dash-v dash-v--plain" id="token-expires-val">—</span>
+                  </div>
+                  <div class="dash-list__row" id="token-days-row" style="display:none">
+                    <span class="dash-k">Осталось дней</span>
+                    <span class="dash-v" id="token-days-val">—</span>
+                  </div>
+                </div>
+              </div>
+              <div id="rust-linked-block" style="display:none;margin-top:12px">
+                <div class="dash-list">
+                  <div class="dash-list__row">
+                    <span class="dash-k">Steam ID</span>
+                    <span class="dash-v" id="steam-id-val"></span>
+                  </div>
+                </div>
+              </div>
+              <div id="rust-not-linked-block">
+                <span class="dash-badge dash-badge--warn" style="margin:12px 0 10px;display:inline-flex">Токен не привязан</span>
+                <p class="dash-muted" style="margin-bottom:14px">
+                  Расширение перехватит Rust+ токен после входа через Steam.
+                </p>
+                <div class="dash-stack">
+                  <a href="#" id="btn-facepunch-link" class="dash-btn dash-btn--primary dash-btn--block">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                    Через Facepunch
+                  </a>
+                  <a href="setup.html" class="dash-btn dash-btn--ghost" style="display:inline-flex;width:fit-content">Инструкция →</a>
+                </div>
+              </div>
+
+              <div id="fcm-paste-section" class="dash-stack" style="margin-top:18px;padding-top:18px;border-top:1px solid var(--border)">
+                <h3 class="dash-section-title" style="margin-bottom:8px">Способ 2: вставка JSON (Rustplus.py и др.)</h3>
+                <p class="dash-muted" style="margin-bottom:8px">
+                  Тот же формат, что расширение RustInfo шлёт на сервер в <code>POST /auth/fcm</code> — привязка Steam/Rust+ и FCM для выбранного сервера Discord.
+                  Установите <a href="https://chromewebstore.google.com/detail/rustpluspy-link-companion/gojhnmnggbnflhdcpcemeahejhcimnlf" target="_blank" rel="noreferrer">Rustplus.py Link Companion</a>,
+                  скопируйте JSON из расширения и вставьте ниже. Стороннее расширение со страницы не детектируется — блок доступен всегда.
+                </p>
+                <textarea id="fcm-paste-json" class="dash-textarea" spellcheck="false" placeholder="Вставьте JSON: ExpoPushToken / expo_push_token, fcm_credentials, Token / rustplus_auth_token, SteamId / steam_id…" aria-label="JSON FCM"></textarea>
+                <div class="dash-inline" style="margin-top:4px">
+                  <button type="button" class="dash-btn dash-btn--ghost" id="btn-fcm-copy-template">Скопировать пример формата</button>
+                  <button type="button" class="dash-btn dash-btn--primary" id="btn-fcm-paste-submit">Отправить данные</button>
+                </div>
+                <p id="fcm-paste-msg" class="dash-muted" style="margin:0;font-size:0.85rem"></p>
+              </div>
+
+              <details class="dash-details" id="extension-steps-card">
+                <summary>Как привязать Rust+ токен</summary>
+                <ol class="steps" style="margin-top:12px">
+                  <li>
+                    <div class="step-num">1</div>
+                    <div class="step-text">Установите расширение <strong>RustInfo Bot</strong> в Chrome (Developer mode → Load unpacked)</div>
+                  </li>
+                  <li>
+                    <div class="step-num">2</div>
+                    <div class="step-text">Иконка расширения → <a href="https://companion-rust.facepunch.com/login" target="_blank" rel="noreferrer" style="color:var(--accent);text-decoration:none;font-weight:600">companion-rust.facepunch.com/login</a></div>
+                  </li>
+                  <li>
+                    <div class="step-num">3</div>
+                    <div class="step-text">Войдите через Steam</div>
+                  </li>
+                  <li>
+                    <div class="step-num">4</div>
+                    <div class="step-text">Токен отправится на сервер — вас вернёт в панель</div>
+                  </li>
+                </ol>
+              </details>
+            </section>
+
+            <hr class="dash-sep"/>
+
+            <section class="dash-section" id="account-guild-section" aria-labelledby="acc-block-guild">
+              <h2 class="dash-section-title" id="acc-block-guild">Сервер Discord</h2>
+              <div id="guild-selector" class="guild-select-wrap" style="display:none">
+                <label for="guild-select">Выбор сервера для панели</label>
+                <select id="guild-select" class="dash-select"></select>
+              </div>
+              <p class="dash-muted" id="guild-name-line" style="margin-bottom:10px">Активный сервер: <strong id="guild-name-display">—</strong></p>
+              <div id="bot-guild-card" style="display:none">
+                <div id="bot-guild-need-select" style="display:none">
+                  <p class="dash-muted" style="margin:0">Выберите сервер в списке выше.</p>
+                </div>
+                <div id="bot-guild-ok" class="dash-bot-ok" style="display:none">
+                  <svg class="ui-icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+                  <span>RustInfoBot на сервере</span>
+                </div>
+                <div id="bot-guild-missing" style="display:none">
+                  <p class="dash-muted" style="margin-bottom:12px">Бот не добавлен на этот сервер.</p>
+                  <a id="btn-invite-bot" href="https://discord.com/oauth2/authorize?client_id=1334943377124495421&permissions=8&integration_type=0&scope=bot" target="_blank" rel="noreferrer" class="dash-btn dash-btn--primary dash-btn--block">Пригласить RustInfo</a>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
-        <span class="badge badge-green">✓ Авторизован</span>
-      </div>
 
-      <!-- Сервер Rust+ -->
-      <div class="card full-card" id="server-card" style="display:none">
-        <div class="server-card-bg" id="server-card-bg"></div>
-        <div class="server-card-content">
-        <div class="card-header">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v8H4z"/><path d="M4 14h16"/><circle cx="6" cy="17" r="1"/><circle cx="10" cy="17" r="1"/></svg>
-          Сервер
-        </div>
-        <div id="server-content">
-          <div class="info-row"><span class="info-label">Название</span><span class="info-value" id="server-name">—</span></div>
-          <div class="info-row"><span class="info-label">Адрес</span><span class="info-value" id="server-address">—</span></div>
-          <div class="info-row"><span class="info-label">Игроки</span><span class="info-value" id="server-players">—</span></div>
-          <div class="info-row"><span class="info-label">Размер карты</span><span class="info-value" id="server-size">—</span></div>
-          <div id="server-team-block" style="display:none;margin-top:12px">
-            <div class="info-label" style="margin-bottom:8px">Команда</div>
-            <ul id="server-team-list" style="list-style:none;padding:0"></ul>
+        <!-- PANEL: rust + server -->
+        <div id="panel-rust" class="dash-panel" role="tabpanel">
+          <div class="dash-panel-inner">
+            <div class="card full-card" id="server-card" style="display:none">
+              <div class="server-card-bg" id="server-card-bg"></div>
+              <div class="server-card-content">
+                <div class="card-header">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v8H4z"/><path d="M4 14h16"/><circle cx="6" cy="17" r="1"/><circle cx="10" cy="17" r="1"/></svg>
+                  Сервер Rust
+                </div>
+                <div id="server-content">
+                  <div class="info-row"><span class="info-label">Название</span><span class="info-value" id="server-name">—</span></div>
+                  <div class="info-row"><span class="info-label">Адрес</span><span class="info-value" id="server-address">—</span></div>
+                  <div class="info-row"><span class="info-label">Игроки</span><span class="info-value" id="server-players">—</span></div>
+                  <div class="info-row"><span class="info-label">Размер карты</span><span class="info-value" id="server-size">—</span></div>
+                  <div id="server-team-block" style="display:none;margin-top:12px">
+                    <div class="info-label" style="margin-bottom:8px">Команда</div>
+                    <ul id="server-team-list" style="list-style:none;padding:0"></ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
-        </div>
-      </div>
 
-      <!-- Rust+ статус -->
-      <div class="card">
-        <div class="card-header">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-          Rust+ подключение
-        </div>
-        <div id="rust-linked-block" style="display:none">
-          <div class="info-row">
-            <span class="info-label">Steam ID</span>
-            <span class="info-value" id="steam-id-val"></span>
+        <!-- PANEL: notify in-game -->
+        <div id="panel-notify-game" class="dash-panel" role="tabpanel">
+          <div class="card" id="notify-prefs-card">
+            <div class="card-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              Уведомления в игре (Rust+ team chat)
+            </div>
+            <p class="notify-hint">
+              Сохраняется по вашему Discord. Отключает сообщения бота в игре для типов ниже.
+              Работает, если Steam в панели совпадает с привязкой Rust+ к серверу.
+            </p>
+            <div id="notify-toggles"></div>
           </div>
-          <span class="badge badge-green" style="margin-top:8px">✓ Токен привязан</span>
         </div>
-        <div id="rust-not-linked-block">
-          <span class="badge badge-yellow" style="margin-bottom:14px;display:inline-flex">⚠ Токен не привязан</span>
-          <p style="color:var(--text2);font-size:0.88rem;margin-bottom:16px">
-            Нажмите кнопку ниже — расширение RustInfo Bot автоматически перехватит ваш Rust+ токен после входа через Steam.
-          </p>
-          <a href="#" id="btn-facepunch-link" class="btn btn-accent" style="margin-bottom:10px;width:100%;justify-content:center">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-            Авторизоваться через Facepunch
-          </a>
-          <a href="setup.html" class="btn btn-secondary" style="font-size:0.85rem;padding:8px 16px">
-            Инструкция по подключению →
-          </a>
+
+        <!-- PANEL: notify discord -->
+        <div id="panel-notify-discord" class="dash-panel" role="tabpanel">
+          <div class="card">
+            <div class="card-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              Уведомления в Discord
+            </div>
+            <p class="muted" style="margin-bottom:12px">
+              Сообщения в каналах Discord (алерты, события) настраиваются на самом сервере: кнопки под сообщением бота и команды в каналах.
+              Внутриигровые тумблеры слева относятся только к чату Rust+ в игре.
+            </p>
+            <p class="muted" style="margin-bottom:0">
+              Подробнее: разделы «Мониторинг» и «Discord команды» в документации.
+            </p>
+            <a class="cmd-docs-link" href="docs.html#monitoring">Открыть документацию →</a>
+          </div>
+        </div>
+
+        <!-- PANEL: commands -->
+        <div id="panel-commands" class="dash-panel" role="tabpanel">
+          <div class="card">
+            <div class="card-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              Команды (кратко)
+            </div>
+            <p class="muted" style="margin-bottom:14px">В командном чате Rust+ префикс <strong>.</strong> (точка). Команды в Discord — с <strong>!</strong></p>
+            <p class="info-label" style="margin-bottom:8px">Rust+</p>
+            <div class="cmd-grid" id="cmd-grid-rust">
+              <div><code>.time</code><span>Время на сервере</span></div>
+              <div><code>.pop</code><span>Онлайн / популяция</span></div>
+              <div><code>.help</code><span>Список команд</span></div>
+              <div><code>.events</code><span>Активные события</span></div>
+              <div><code>.add</code><span>Добавить устройство</span></div>
+              <div><code>.sw</code><span>Smart Switch</span></div>
+              <div><code>.afk</code><span>AFK игроки</span></div>
+              <div><code>.cargo</code><span>Карго</span></div>
+            </div>
+            <p class="info-label" style="margin:16px 0 8px">Discord</p>
+            <div class="cmd-grid" id="cmd-grid-discord">
+              <div><code>!map</code><span>Карта сервера</span></div>
+              <div><code>!info</code><span>Информация</span></div>
+            </div>
+            <a class="cmd-docs-link" href="docs.html#rust-plus">Полная документация по всем командам →</a>
+          </div>
+        </div>
+
+        <!-- PANEL: admin -->
+        <div id="panel-admin" class="dash-panel" role="tabpanel">
+          <div class="card">
+            <div class="card-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+              Полная админ панель
+            </div>
+            <p class="muted" id="admin-status">Загрузка данных...</p>
+            <div class="cmd-grid" id="admin-overview"></div>
+            <p class="info-label" style="margin:16px 0 8px">Таблицы БД</p>
+            <pre id="admin-db-counts" style="white-space:pre-wrap;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px;max-height:240px;overflow:auto">—</pre>
+            <p class="info-label" style="margin:16px 0 8px">Гильдии и live Rust+</p>
+            <div style="overflow:auto;max-height:380px;border:1px solid var(--border);border-radius:12px">
+              <table style="width:100%;border-collapse:collapse;font-size:.9rem">
+                <thead>
+                  <tr style="background:rgba(255,255,255,.03)">
+                    <th style="text-align:left;padding:8px">Guild</th>
+                    <th style="text-align:left;padding:8px">ID</th>
+                    <th style="text-align:left;padding:8px">Rust DB</th>
+                    <th style="text-align:left;padding:8px">Live</th>
+                    <th style="text-align:left;padding:8px">Players</th>
+                    <th style="text-align:left;padding:8px">Team</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-guilds-tbody"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
-
-      <!-- Как подключить расширение -->
-      <div class="card full-card" id="extension-steps-card">
-        <div class="card-header">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-          Как привязать Rust+ токен
-        </div>
-        <ol class="steps">
-          <li>
-            <div class="step-num">1</div>
-            <div class="step-text">Установите расширение <strong>RustInfo Bot</strong> в Chrome (Developer mode → Load unpacked)</div>
-          </li>
-          <li>
-            <div class="step-num">2</div>
-            <div class="step-text">Нажмите на иконку расширения — откроется страница входа <a href="https://companion-rust.facepunch.com/login" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600">companion-rust.facepunch.com/login</a></div>
-          </li>
-          <li>
-            <div class="step-num">3</div>
-            <div class="step-text">Войдите через Steam на открывшейся странице</div>
-          </li>
-          <li>
-            <div class="step-num">4</div>
-            <div class="step-text">Расширение автоматически перехватит токен и отправит его на сервер — вы будете перенаправлены обратно на эту страницу</div>
-          </li>
-        </ol>
-      </div>
-
     </div>
   </div>
 </main>
 
 <script>
   const DISCORD_CLIENT_ID = '1334943377124495421';
+  const ADMIN_DISCORD_ID = '348409098640818178';
   const isLocal = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
   const REDIRECT_URI = isLocal ? 'http://localhost:8080/discord/callback' : 'https://bot.rustinfo.online/discord/callback';
   const API_BASE = isLocal ? 'http://localhost:8080' : 'https://bot.rustinfo.online';
   const OAUTH_URL = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify%20guilds`;
 
+  const INVITE_BOT_URL = 'https://discord.com/oauth2/authorize?client_id=1334943377124495421&permissions=8&integration_type=0&scope=bot';
+
+  let _lastDashboardGuildId = null;
+  let _dashSessionRef = null;
+
+  const FCM_JSON_TEMPLATE = `{
+  "expo_push_token": "ExponentPushToken[...]",
+  "fcm_credentials": {
+    "fcm": { "token": "..." },
+    "gcm": { "androidId": "...", "securityToken": "..." }
+  },
+  "rustplus_auth_token": "eyJhbGciOi...",
+  "steam_id": "7656119..."
+}`;
+
   document.querySelectorAll('#btn-login-big, #btn-login-nav').forEach(el => {
     el.href = OAUTH_URL;
   });
+
+  function initDashboardNav() {
+    const buttons = document.querySelectorAll('.dash-nav-btn[data-panel]');
+    const panels = document.querySelectorAll('.dash-panel');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-panel');
+        buttons.forEach(b => b.classList.toggle('active', b === btn));
+        panels.forEach(p => p.classList.toggle('active', p.id === 'panel-' + id));
+      });
+    });
+  }
+  initDashboardNav();
   document.getElementById('btn-logout').addEventListener('click', e => {
     e.preventDefault();
     localStorage.removeItem('ri_session');
     window.location.href = 'index.html';
   });
 
+  /** Параллельные вызовы с тем же session (двойной init, расширения) → один fetch к /me */
+  const _meLoadBySession = new Map();
   async function loadDashboard(session) {
-    try {
-      const resp = await fetch(`${API_BASE}/me?session=${encodeURIComponent(session)}`, {
-        credentials: 'include'
-      });
-      if (!resp.ok) throw new Error('unauthorized');
-      const data = await resp.json();
-      showDashboard(data, session);
-    } catch {
-      localStorage.removeItem('ri_session');
-      showError();
+    if (_meLoadBySession.has(session)) {
+      return _meLoadBySession.get(session);
     }
+    const promise = (async () => {
+      try {
+        const resp = await fetch(`${API_BASE}/me?session=${encodeURIComponent(session)}`, {
+          credentials: 'include'
+        });
+        if (!resp.ok) throw new Error('unauthorized');
+        const data = await resp.json();
+        showDashboard(data, session);
+      } catch {
+        localStorage.removeItem('ri_session');
+        showError();
+      }
+    })();
+    _meLoadBySession.set(session, promise);
+    promise.finally(() => _meLoadBySession.delete(session));
+    return promise;
   }
 
   function avatarUrl(id, hash) {
@@ -327,48 +808,489 @@
 
   const FACEPUNCH_LOGIN = 'https://companion-rust.facepunch.com/login';
 
+  const NOTIFY_LABELS = {
+    cargo: 'Карго (Cargo Ship)',
+    deepsea: 'Глубокое море (Deep Sea)',
+    afk: 'AFK игроков',
+    patrol: 'Патрульный вертолёт',
+    ch47: 'CH47 (Чинук)',
+    oil_small: 'Малая нефтевышка (тяжёлые + таймер locked crate)',
+    oil_large: 'Большая нефтевышка (тяжёлые + таймер locked crate)',
+    crate: 'Locked crate (ящик)',
+    crash: 'Крушение патрульного вертолёта',
+  };
+
+  function defaultNotifyPrefs() {
+    return {
+      cargo: true, deepsea: true, afk: true, patrol: true, ch47: true, crate: true, crash: true,
+      oil_small: true, oil_large: true,
+    };
+  }
+
+  function renderNotifyPrefs(prefs, session) {
+    const box = document.getElementById('notify-toggles');
+    if (!box) return;
+    const p = { ...defaultNotifyPrefs(), ...(prefs || {}) };
+    box.innerHTML = Object.keys(NOTIFY_LABELS).map(key => `
+      <div class="notify-toggle-row">
+        <span style="font-size:0.92rem">${NOTIFY_LABELS[key]}</span>
+        <label class="notify-switch" title="Вкл / Выкл">
+          <input type="checkbox" data-npref="${key}" ${p[key] ? 'checked' : ''}/>
+          <span class="notify-slider"></span>
+        </label>
+      </div>
+    `).join('');
+    box.querySelectorAll('input[data-npref]').forEach(inp => {
+      inp.addEventListener('change', () => saveNotifyPrefs(session));
+    });
+  }
+
+  async function saveNotifyPrefs(session) {
+    const body = {};
+    document.querySelectorAll('#notify-toggles input[data-npref]').forEach(inp => {
+      body[inp.dataset.npref] = inp.checked;
+    });
+    try {
+      const resp = await fetch(`${API_BASE}/me/notify-prefs?session=${encodeURIComponent(session)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(body)
+      });
+      if (!resp.ok) throw new Error('save failed');
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  function facepunchLinkHref(session) {
+    return `${API_BASE}/link?session=${encodeURIComponent(session)}&next=${encodeURIComponent(FACEPUNCH_LOGIN)}`;
+  }
+
+  function renderTokenStatus(ts, session) {
+    const badge = document.getElementById('token-status-badge');
+    const msgEl = document.getElementById('token-status-message');
+    const expRow = document.getElementById('token-expiry-row');
+    const daysRow = document.getElementById('token-days-row');
+    const refreshBtn = document.getElementById('btn-token-refresh');
+    if (!ts) {
+      badge.className = 'dash-badge dash-badge--neutral';
+      badge.textContent = '—';
+      msgEl.textContent = '';
+      expRow.style.display = 'none';
+      daysRow.style.display = 'none';
+      refreshBtn.style.display = 'none';
+      return;
+    }
+    let badgeCls = 'dash-badge--neutral';
+    if (ts.has_token) {
+      if (ts.active) {
+        badgeCls = ts.systems_ok ? 'dash-badge--ok' : 'dash-badge--warn';
+      } else {
+        badgeCls = 'dash-badge--neutral';
+      }
+    } else {
+      badgeCls = 'dash-badge--warn';
+    }
+    badge.className = 'dash-badge ' + badgeCls;
+    badge.textContent = ts.label_active || '—';
+    msgEl.textContent = ts.message || '';
+
+    const expIso = ts.expires_at_iso;
+    const expUnix = ts.expires_at_unix;
+    if (expIso || (expUnix != null && expUnix !== undefined)) {
+      expRow.style.display = 'flex';
+      const d = expIso ? new Date(expIso) : new Date(Number(expUnix) * 1000);
+      document.getElementById('token-expires-val').textContent = d.toLocaleString('ru-RU', {
+        dateStyle: 'long',
+        timeStyle: 'short'
+      });
+    } else {
+      expRow.style.display = 'none';
+    }
+
+    if (ts.days_remaining !== null && ts.days_remaining !== undefined) {
+      daysRow.style.display = 'flex';
+      document.getElementById('token-days-val').textContent = String(ts.days_remaining);
+    } else {
+      daysRow.style.display = 'none';
+    }
+
+    refreshBtn.href = facepunchLinkHref(session);
+    refreshBtn.style.display = 'inline-flex';
+  }
+
+  function updateBotGuildStatus(data) {
+    const card = document.getElementById('bot-guild-card');
+    const needSel = document.getElementById('bot-guild-need-select');
+    const ok = document.getElementById('bot-guild-ok');
+    const missing = document.getElementById('bot-guild-missing');
+    const inviteBtn = document.getElementById('btn-invite-bot');
+    if (!card || !needSel || !ok || !missing) return;
+    if (inviteBtn) inviteBtn.href = INVITE_BOT_URL;
+    const hasGuilds = data.guilds && data.guilds.length > 0;
+    if (!hasGuilds) {
+      card.style.display = 'none';
+      return;
+    }
+    card.style.display = 'block';
+    if (!data.guild_id) {
+      needSel.style.display = 'block';
+      ok.style.display = 'none';
+      missing.style.display = 'none';
+      return;
+    }
+    needSel.style.display = 'none';
+    if (data.bot_in_guild === true) {
+      ok.style.display = 'flex';
+      missing.style.display = 'none';
+    } else {
+      ok.style.display = 'none';
+      missing.style.display = 'block';
+    }
+  }
+
+  /** Discord: discriminator "0" = новая система (не #0). Старые аккаунты — #1234. */
+  function discordProfileSubtitle(data) {
+    const disc = String(data.discriminator != null ? data.discriminator : '0');
+    if (disc !== '0') {
+      return '#' + disc;
+    }
+    const u = data.username;
+    if (data.global_name && u) {
+      return '@' + u;
+    }
+    return '';
+  }
+
+  function extractFcmFields(msg) {
+    if (!msg || typeof msg !== 'object') return null;
+    // Канонический формат успешного POST /auth/fcm: expo_push_token, fcm_credentials, rustplus_auth_token (steam_id в JWT допустим)
+    if (
+      msg.fcm_credentials &&
+      typeof msg.fcm_credentials === 'object' &&
+      (msg.expo_push_token || msg.ExpoPushToken) &&
+      (msg.rustplus_auth_token || msg.Token)
+    ) {
+      const expo0 = msg.expo_push_token || msg.ExpoPushToken;
+      const token0 = msg.rustplus_auth_token || msg.Token;
+      const steam0 =
+        msg.steam_id != null && msg.steam_id !== ''
+          ? msg.steam_id
+          : msg.steamId != null && msg.steamId !== ''
+            ? msg.steamId
+            : msg.SteamId != null && msg.SteamId !== ''
+              ? msg.SteamId
+              : '';
+      return { expo: expo0, fcmCreds: msg.fcm_credentials, token: token0, steamId: steam0 };
+    }
+    let m = msg.data || msg.payload || msg;
+    if (m && typeof m === 'object' && (m.data || m.payload)) m = m.data || m.payload;
+    const expo = (m && m.ExpoPushToken) || (m && m.expo_push_token) || msg.ExpoPushToken || msg.expo_push_token;
+    let fcmCreds = (m && m.fcm_credentials) || msg.fcm_credentials;
+    if (!fcmCreds && m) {
+      const f = (m.fcm_credentials && m.fcm_credentials.fcm) || (m.fcm && m.fcm);
+      const g = (m.fcm_credentials && m.fcm_credentials.gcm) || {};
+      if ((m.fcm_token || (f && f.token)) || (m.gcm_androidId || g.androidId)) {
+        fcmCreds = {
+          fcm: { token: (f && f.token) || m.fcm_token || '' },
+          gcm: {
+            androidId: g.androidId || m.gcm_androidId || '',
+            securityToken: g.securityToken || m.gcm_securityToken || ''
+          }
+        };
+      }
+    }
+    if (!fcmCreds && (msg.fcm_token || msg.gcm_androidId)) {
+      fcmCreds = {
+        fcm: { token: msg.fcm_token || '' },
+        gcm: { androidId: msg.gcm_androidId || '', securityToken: msg.gcm_securityToken || '' }
+      };
+    }
+    const token = (m && m.Token) || (m && m.rustplus_auth_token) || msg.Token || msg.rustplus_auth_token;
+    const steamId = (m && m.SteamId) || (m && m.steam_id) || msg.SteamId || msg.steam_id || '';
+    return { expo: expo, fcmCreds: fcmCreds, token: token, steamId: steamId };
+  }
+
+  /** Как extension/worker.js: buildFcmBody + hasFullFcm */
+  function buildFcmBody(msg) {
+    const x = extractFcmFields(msg);
+    if (!x || !x.token) return null;
+    if (
+      x.expo &&
+      x.fcmCreds &&
+      x.fcmCreds.fcm &&
+      x.fcmCreds.fcm.token &&
+      x.fcmCreds.gcm &&
+      x.fcmCreds.gcm.androidId &&
+      x.fcmCreds.gcm.securityToken
+    ) {
+      return {
+        expo_push_token: x.expo,
+        fcm_credentials: x.fcmCreds,
+        rustplus_auth_token: x.token,
+        steam_id: x.steamId !== '' && x.steamId != null ? String(x.steamId) : ''
+      };
+    }
+    return null;
+  }
+
+  function hasFullFcm(msg) {
+    const x = extractFcmFields(msg);
+    if (!x || !x.token) return false;
+    const c =
+      x.fcmCreds &&
+      x.fcmCreds.fcm &&
+      x.fcmCreds.fcm.token &&
+      x.fcmCreds.gcm &&
+      x.fcmCreds.gcm.androidId &&
+      x.fcmCreds.gcm.securityToken;
+    return !!x.expo && !!c;
+  }
+
+  async function submitFcmPaste() {
+    const session = _dashSessionRef;
+    const msgEl = document.getElementById('fcm-paste-msg');
+    const ta = document.getElementById('fcm-paste-json');
+    if (msgEl) msgEl.textContent = '';
+    if (!session) {
+      if (msgEl) msgEl.textContent = 'Нет сессии';
+      return;
+    }
+    const raw = (ta && ta.value || '').trim();
+    if (!raw) {
+      if (msgEl) msgEl.textContent = 'Вставьте JSON';
+      return;
+    }
+    let obj;
+    try {
+      obj = JSON.parse(raw);
+    } catch (e) {
+      if (msgEl) msgEl.textContent = 'Некорректный JSON';
+      return;
+    }
+    const body = buildFcmBody(obj);
+    const hasFull = body && hasFullFcm(obj);
+    const payload = hasFull ? body : obj;
+    const toSend = Object.assign({}, payload);
+    if (_lastDashboardGuildId) toSend.guildId = _lastDashboardGuildId;
+    try {
+      const resp = await fetch(`${API_BASE}/auth/fcm?session=${encodeURIComponent(session)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(toSend)
+      });
+      if (!resp.ok) {
+        const t = await resp.text();
+        if (msgEl) msgEl.textContent = 'Ошибка ' + resp.status + ': ' + (t.slice(0, 220) || '');
+        return;
+      }
+      if (msgEl) msgEl.textContent = 'Сохранено. Обновляем…';
+      if (ta) ta.value = '';
+      await loadDashboard(session);
+    } catch (e) {
+      if (msgEl) msgEl.textContent = 'Сеть: ' + ((e && e.message) || String(e));
+    }
+  }
+
+  function setupFcmPasteOnce() {
+    if (window._fcmPasteBound) return;
+    window._fcmPasteBound = true;
+    const sub = document.getElementById('btn-fcm-paste-submit');
+    const copy = document.getElementById('btn-fcm-copy-template');
+    if (sub) sub.addEventListener('click', () => submitFcmPaste());
+    if (copy) {
+      copy.addEventListener('click', async () => {
+        const msg = document.getElementById('fcm-paste-msg');
+        try {
+          await navigator.clipboard.writeText(FCM_JSON_TEMPLATE);
+          if (msg) msg.textContent = 'Пример скопирован в буфер обмена';
+        } catch (e) {
+          if (msg) msg.textContent = 'Не удалось скопировать (разрешите доступ к буферу)';
+        }
+      });
+    }
+  }
+
+  async function loadAdminPanel(session, discordId) {
+    const btn = document.getElementById('nav-admin-btn');
+    const panel = document.getElementById('panel-admin');
+    if (String(discordId || '') !== ADMIN_DISCORD_ID) {
+      if (btn) btn.style.display = 'none';
+      if (panel && panel.classList.contains('active')) {
+        document.querySelector('.dash-nav-btn[data-panel="account"]')?.click();
+      }
+      return;
+    }
+
+    if (btn) btn.style.display = '';
+    const statusEl = document.getElementById('admin-status');
+    const overviewEl = document.getElementById('admin-overview');
+    const dbEl = document.getElementById('admin-db-counts');
+    const tbody = document.getElementById('admin-guilds-tbody');
+
+    try {
+      if (statusEl) statusEl.textContent = 'Загрузка...';
+      const resp = await fetch(`${API_BASE}/admin/panel?session=${encodeURIComponent(session)}`, {
+        credentials: 'include'
+      });
+      if (!resp.ok) {
+        const t = await resp.text();
+        throw new Error(`HTTP ${resp.status}: ${t.slice(0, 180)}`);
+      }
+      const data = await resp.json();
+      if (!data || !data.ok) throw new Error('Некорректный ответ API');
+
+      if (statusEl) statusEl.textContent = 'Данные актуальны';
+      if (overviewEl) {
+        overviewEl.innerHTML = `
+          <div><code>Guilds</code><span>${data.discord_guilds_connected ?? '—'}</span></div>
+          <div><code>Active sockets</code><span>${data.active_rust_sockets ?? '—'}</span></div>
+          <div><code>Guild rows</code><span>${Array.isArray(data.guilds) ? data.guilds.length : 0}</span></div>
+        `;
+      }
+      if (dbEl) {
+        const lines = Object.entries(data.db_counts || {}).map(([k, v]) => `${k}: ${v}`);
+        dbEl.textContent = lines.join('\n') || '—';
+      }
+      if (tbody) {
+        const rows = (data.guilds || []).map(g => {
+          const rustDb = g.rust_db ? `${escapeHtml(g.rust_db.ip)}:${escapeHtml(String(g.rust_db.port))}` : '—';
+          const live = g.rust_live?.status || '—';
+          const players = g.rust_live?.players != null && g.rust_live?.max_players != null
+            ? `${g.rust_live.players}/${g.rust_live.max_players}`
+            : '—';
+          const teamCount = Array.isArray(g.rust_live?.team_members) ? g.rust_live.team_members.length : 0;
+          return `
+            <tr style="border-top:1px solid var(--border)">
+              <td style="padding:8px">${escapeHtml(g.guild_name || '—')}</td>
+              <td style="padding:8px"><code>${escapeHtml(String(g.guild_id || '—'))}</code></td>
+              <td style="padding:8px">${rustDb}</td>
+              <td style="padding:8px">${escapeHtml(live)}</td>
+              <td style="padding:8px">${escapeHtml(players)}</td>
+              <td style="padding:8px">${teamCount}</td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = rows.join('') || '<tr><td colspan="6" style="padding:8px">Нет данных</td></tr>';
+      }
+    } catch (e) {
+      if (statusEl) statusEl.textContent = 'Ошибка загрузки: ' + ((e && e.message) || String(e));
+    }
+  }
+
   function showDashboard(data, session) {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
 
+    _lastDashboardGuildId = data.guild_id || null;
+    _dashSessionRef = session;
+    setupFcmPasteOnce();
+
     const linkBtn = document.getElementById('btn-facepunch-link');
     if (linkBtn) {
-      linkBtn.href = `${API_BASE}/link?session=${encodeURIComponent(session)}&next=${encodeURIComponent(FACEPUNCH_LOGIN)}`;
+      linkBtn.href = facepunchLinkHref(session);
+    }
+
+    renderTokenStatus(data.token_status, session);
+
+    renderNotifyPrefs(data.ingame_notify_prefs, session);
+    loadAdminPanel(session, data.discord_id);
+
+    const regRow = document.getElementById('profile-registered-row');
+    if (data.web_user && data.web_user.registered_at != null) {
+      regRow.style.display = 'flex';
+      const rd = new Date(Number(data.web_user.registered_at) * 1000);
+      document.getElementById('profile-registered').textContent = rd.toLocaleString('ru-RU', {
+        dateStyle: 'long',
+        timeStyle: 'short'
+      });
+    } else {
+      regRow.style.display = 'none';
     }
 
     const av = avatarUrl(data.discord_id, data.avatar);
     document.getElementById('profile-avatar').src = av;
-    document.getElementById('profile-username').textContent = data.username;
-    document.getElementById('profile-tag').textContent = `#${data.discriminator || '0'}`;
+    document.getElementById('profile-username').textContent = data.global_name || data.username || '—';
+    const sub = discordProfileSubtitle(data);
+    const tagEl = document.getElementById('profile-tag');
+    tagEl.textContent = sub;
+    tagEl.style.display = sub ? '' : 'none';
+    const didEl = document.getElementById('profile-discord-id');
+    if (didEl) didEl.textContent = data.discord_id != null ? String(data.discord_id) : '—';
 
     document.getElementById('nav-user').style.display = 'flex';
     document.getElementById('nav-avatar').src = av;
-    document.getElementById('nav-username').textContent = data.username;
+    document.getElementById('nav-username').textContent = data.global_name || data.username || '—';
 
     if (data.steam_id) {
       document.getElementById('rust-linked-block').style.display = 'block';
       document.getElementById('rust-not-linked-block').style.display = 'none';
       document.getElementById('steam-id-val').textContent = data.steam_id;
-      document.getElementById('extension-steps-card').style.display = 'none';
+      const extSteps = document.getElementById('extension-steps-card');
+      if (extSteps) extSteps.style.display = 'none';
+    } else {
+      const extSteps = document.getElementById('extension-steps-card');
+      if (extSteps) extSteps.style.display = '';
     }
+
+    updateBotGuildStatus(data);
 
     const guildSelect = document.getElementById('guild-select');
     const guildSelector = document.getElementById('guild-selector');
+    const guildNameLine = document.getElementById('guild-name-line');
+    const guildNameDisplay = document.getElementById('guild-name-display');
     if (data.guilds && data.guilds.length > 0) {
       guildSelector.style.display = 'block';
-      guildSelect.innerHTML = data.guilds.map(g => 
-        `<option value="${g.id}" ${g.id === String(data.guild_id) ? 'selected' : ''}>${escapeHtml(g.name)}</option>`
-      ).join('');
-      guildSelect.onchange = () => {
-        fetch(`${API_BASE}/me/guild?session=${encodeURIComponent(session)}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ guild_id: guildSelect.value })
-        }).then(() => loadDashboard(session));
+      if (guildNameLine) guildNameLine.style.display = '';
+      const curId = data.guild_id != null && data.guild_id !== '' ? String(data.guild_id) : '';
+      guildSelect.innerHTML = data.guilds.map(g => {
+        const gid = String(g.id);
+        const sel = gid === curId ? ' selected' : '';
+        return `<option value="${escapeHtml(gid)}"${sel}>${escapeHtml(g.name)}</option>`;
+      }).join('');
+      if (guildNameDisplay) {
+        const si = guildSelect.selectedIndex;
+        const opt = si >= 0 ? guildSelect.options[si] : null;
+        guildNameDisplay.textContent = (opt && opt.text) ? opt.text : (data.guild_name || '—');
+      }
+      guildSelect.onchange = async () => {
+        const prev = curId;
+        guildSelect.disabled = true;
+        try {
+          const r = await fetch(`${API_BASE}/me/guild?session=${encodeURIComponent(session)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ guild_id: guildSelect.value })
+          });
+          const text = await r.text();
+          let body = {};
+          try {
+            body = text ? JSON.parse(text) : {};
+          } catch (_) {
+            body = { _raw: text };
+          }
+          if (!r.ok) {
+            const msg = body.error || body._raw || text || String(r.status);
+            throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg));
+          }
+          await loadDashboard(session);
+        } catch (err) {
+          console.error('[guild]', err);
+          alert('Не удалось сохранить сервер: ' + (err && err.message ? err.message : err) + '\nЕсли открыта старая вкладка — войдите в панель заново.');
+          try {
+            guildSelect.value = prev || '';
+          } catch (_) {}
+        } finally {
+          guildSelect.disabled = false;
+        }
       };
     } else {
       guildSelector.style.display = 'none';
+      if (guildNameLine) guildNameLine.style.display = 'none';
+      if (guildNameDisplay) guildNameDisplay.textContent = '—';
     }
 
     const serverCard = document.getElementById('server-card');
