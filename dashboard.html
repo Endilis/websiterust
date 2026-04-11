@@ -707,6 +707,23 @@
             </div>
             <p class="muted" id="admin-status">Загрузка данных...</p>
             <div class="cmd-grid" id="admin-overview"></div>
+            <p class="info-label" style="margin:16px 0 8px">Хост (Pi / сервер бота)</p>
+            <pre id="admin-host-metrics" style="white-space:pre-wrap;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px;max-height:220px;overflow:auto;font-size:.85rem">—</pre>
+            <p class="info-label" style="margin:16px 0 8px">Команды в игре (Rust+)</p>
+            <div style="overflow:auto;max-height:280px;border:1px solid var(--border);border-radius:12px">
+              <table style="width:100%;border-collapse:collapse;font-size:.82rem">
+                <thead>
+                  <tr style="background:rgba(255,255,255,.03)">
+                    <th style="text-align:left;padding:8px">Время</th>
+                    <th style="text-align:left;padding:8px">Команда</th>
+                    <th style="text-align:left;padding:8px">Игрок</th>
+                    <th style="text-align:left;padding:8px">Сервер</th>
+                    <th style="text-align:left;padding:8px">Гильдия</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-commands-tbody"></tbody>
+              </table>
+            </div>
             <p class="info-label" style="margin:16px 0 8px">Таблицы БД</p>
             <pre id="admin-db-counts" style="white-space:pre-wrap;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px;max-height:240px;overflow:auto">—</pre>
             <p class="info-label" style="margin:16px 0 8px">Гильдии и live Rust+</p>
@@ -744,6 +761,25 @@
 
   let _lastDashboardGuildId = null;
   let _dashSessionRef = null;
+  let _dashDiscordId = null;
+  let _adminPanelPollTimer = null;
+
+  function clearAdminPanelPoll() {
+    if (_adminPanelPollTimer) {
+      clearInterval(_adminPanelPollTimer);
+      _adminPanelPollTimer = null;
+    }
+  }
+
+  function setupAdminPanelPolling() {
+    clearAdminPanelPoll();
+    if (String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
+    const session = _dashSessionRef;
+    if (!session) return;
+    _adminPanelPollTimer = setInterval(() => {
+      loadAdminPanel(session, _dashDiscordId);
+    }, 5000);
+  }
 
   const FCM_JSON_TEMPLATE = `{
   "expo_push_token": "ExponentPushToken[...]",
@@ -767,12 +803,22 @@
         const id = btn.getAttribute('data-panel');
         buttons.forEach(b => b.classList.toggle('active', b === btn));
         panels.forEach(p => p.classList.toggle('active', p.id === 'panel-' + id));
+        if (id === 'admin') {
+          const session = _dashSessionRef;
+          if (session && String(_dashDiscordId || '') === ADMIN_DISCORD_ID) {
+            loadAdminPanel(session, _dashDiscordId);
+            setupAdminPanelPolling();
+          }
+        } else {
+          clearAdminPanelPoll();
+        }
       });
     });
   }
   initDashboardNav();
   document.getElementById('btn-logout').addEventListener('click', e => {
     e.preventDefault();
+    clearAdminPanelPoll();
     localStorage.removeItem('ri_session');
     window.location.href = 'index.html';
   });
@@ -1127,6 +1173,8 @@
     if (btn) btn.style.display = '';
     const statusEl = document.getElementById('admin-status');
     const overviewEl = document.getElementById('admin-overview');
+    const hostEl = document.getElementById('admin-host-metrics');
+    const cmdTbody = document.getElementById('admin-commands-tbody');
     const dbEl = document.getElementById('admin-db-counts');
     const tbody = document.getElementById('admin-guilds-tbody');
 
@@ -1149,6 +1197,56 @@
           <div><code>Active sockets</code><span>${data.active_rust_sockets ?? '—'}</span></div>
           <div><code>Guild rows</code><span>${Array.isArray(data.guilds) ? data.guilds.length : 0}</span></div>
         `;
+      }
+      if (hostEl) {
+        const h = data.host || {};
+        if (h.error) {
+          hostEl.textContent = 'Метрики: ' + h.error;
+        } else {
+          const lines = [];
+          if (h.hostname) lines.push('Хост: ' + h.hostname);
+          if (h.system || h.machine) lines.push([h.system, h.machine].filter(Boolean).join(' '));
+          if (h.uptime_seconds != null) {
+            const m = Math.floor(h.uptime_seconds / 60);
+            const hr = Math.floor(m / 60);
+            lines.push('Uptime: ' + hr + 'ч ' + (m % 60) + 'м');
+          }
+          if (h.load_avg && h.load_avg['1m'] != null) {
+            const l = h.load_avg;
+            lines.push('Load: ' + l['1m'] + ' / ' + l['5m'] + ' / ' + l['15m']);
+          }
+          if (h.cpu_percent != null) lines.push('CPU: ' + h.cpu_percent + '%');
+          if (Array.isArray(h.cpu_per_core) && h.cpu_per_core.length) {
+            lines.push('Ядра: ' + h.cpu_per_core.map(x => x + '%').join(' '));
+          }
+          if (h.cpu_temp_c != null) lines.push('Темп. CPU: ' + h.cpu_temp_c + '°C');
+          if (h.memory) {
+            lines.push('RAM: ' + h.memory.percent + '% (' + h.memory.used_mb + ' / ' + h.memory.total_mb + ' MiB)');
+          }
+          if (h.swap && h.swap.total_mb > 0) {
+            lines.push('Swap: ' + h.swap.percent + '%');
+          }
+          if (h.disk_root) {
+            lines.push('Диск /: ' + h.disk_root.percent + '% (' + h.disk_root.used_gb + ' / ' + h.disk_root.total_gb + ' GiB)');
+          }
+          hostEl.textContent = lines.length ? lines.join('\n') : '—';
+        }
+      }
+      if (cmdTbody) {
+        const cmds = Array.isArray(data.ingame_commands) ? data.ingame_commands : [];
+        cmdTbody.innerHTML = cmds.map(c => {
+          const t = c.ts != null ? new Date(c.ts * 1000).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
+          const gline = (c.guild_name || '') + (c.guild_id != null ? ' (' + c.guild_id + ')' : '');
+          return `
+            <tr style="border-top:1px solid var(--border)">
+              <td style="padding:6px 8px;white-space:nowrap">${escapeHtml(t)}</td>
+              <td style="padding:6px 8px"><code>${escapeHtml(String(c.command || '—'))}</code></td>
+              <td style="padding:6px 8px">${escapeHtml(String(c.player_name || '—'))}${c.steam_id ? '<br/><span class="muted" style="font-size:.78rem">' + escapeHtml(c.steam_id) + '</span>' : ''}</td>
+              <td style="padding:6px 8px"><code>${escapeHtml(String(c.server || '—'))}</code></td>
+              <td style="padding:6px 8px">${escapeHtml(gline || '—')}</td>
+            </tr>
+          `;
+        }).join('') || '<tr><td colspan="5" style="padding:8px">Пока нет команд</td></tr>';
       }
       if (dbEl) {
         const lines = Object.entries(data.db_counts || {}).map(([k, v]) => `${k}: ${v}`);
@@ -1186,6 +1284,7 @@
 
     _lastDashboardGuildId = data.guild_id || null;
     _dashSessionRef = session;
+    _dashDiscordId = data.discord_id;
     setupFcmPasteOnce();
 
     const linkBtn = document.getElementById('btn-facepunch-link');
