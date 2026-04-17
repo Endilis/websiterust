@@ -758,6 +758,66 @@
       font-size: .72rem;
       color: var(--text2);
     }
+
+    .admin-stat-bar {
+      position: relative;
+      height: 5px; margin-top: 2px;
+      background: rgba(255,255,255,.06);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .admin-stat-bar > i {
+      display: block; height: 100%;
+      background: var(--accent, #ff6b35);
+      border-radius: 3px;
+      transition: width .25s;
+    }
+    .admin-stat--ok    .admin-stat-bar > i { background: #34d399; }
+    .admin-stat--warn  .admin-stat-bar > i { background: #fbbf24; }
+    .admin-stat--bad   .admin-stat-bar > i { background: #ef4444; }
+    .admin-stat--info  .admin-stat-bar > i { background: #60a5fa; }
+    .admin-stat--muted .admin-stat-bar > i { background: #9ca3af; }
+
+    .admin-stat-cores {
+      display: flex; gap: 4px; margin-top: 4px; align-items: flex-end;
+      height: 22px;
+    }
+    .admin-stat-core {
+      flex: 1; min-width: 6px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      background: rgba(255,255,255,.05);
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+    }
+    .admin-stat-core > i {
+      display: block; width: 100%;
+      background: linear-gradient(180deg, #34d399 0%, #34d399 55%, #fbbf24 80%, #ef4444 100%);
+      transition: height .25s;
+    }
+    .admin-stat-cores-labels {
+      display: flex; gap: 4px; margin-top: 3px;
+      font-size: .66rem; color: var(--text2); font-variant-numeric: tabular-nums;
+    }
+    .admin-stat-cores-labels > span { flex: 1; text-align: center; min-width: 6px; }
+
+    .admin-host-header {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 8px;
+      font-size: .82rem; color: var(--text2);
+      padding: 8px 12px; margin-bottom: 8px;
+      background: rgba(255,255,255,.02);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .admin-host-header b { color: var(--text); font-weight: 600; }
+    .admin-host-error {
+      padding: 12px;
+      background: rgba(239,68,68,.08);
+      border: 1px solid rgba(239,68,68,.35);
+      border-radius: 10px;
+      color: #fca5a5; font-size: .85rem;
+    }
   </style>
 </head>
 <body class="dashboard-page">
@@ -1056,7 +1116,7 @@
             </div>
             <div class="cmd-grid" id="admin-overview"></div>
             <p class="info-label" style="margin:16px 0 8px">Хост (Pi / сервер бота)</p>
-            <pre id="admin-host-metrics" style="white-space:pre-wrap;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px;max-height:220px;overflow:auto;font-size:.85rem">—</pre>
+            <div id="admin-host-metrics" style="background:rgba(255,255,255,.015);border:1px solid var(--border);border-radius:12px;padding:12px">—</div>
             <p class="info-label" style="margin:16px 0 8px">Команды в игре (Rust+)</p>
             <div style="overflow:auto;max-height:280px;border:1px solid var(--border);border-radius:12px">
               <table style="width:100%;border-collapse:collapse;font-size:.82rem">
@@ -1647,35 +1707,138 @@
       if (hostEl) {
         const h = data.host || {};
         if (h.error) {
-          hostEl.textContent = 'Метрики: ' + h.error;
+          hostEl.innerHTML = `<div class="admin-host-error">Метрики: ${escapeHtml(String(h.error))}</div>`;
         } else {
-          const lines = [];
-          if (h.hostname) lines.push('Хост: ' + h.hostname);
-          if (h.system || h.machine) lines.push([h.system, h.machine].filter(Boolean).join(' '));
+          const pctCls = (v, warn = 70, bad = 90) => {
+            const n = Number(v);
+            if (!isFinite(n)) return '';
+            if (n >= bad) return 'admin-stat--bad';
+            if (n >= warn) return 'admin-stat--warn';
+            return 'admin-stat--ok';
+          };
+          const tempCls = v => {
+            const n = Number(v);
+            if (!isFinite(n)) return '';
+            if (n >= 80) return 'admin-stat--bad';
+            if (n >= 65) return 'admin-stat--warn';
+            return 'admin-stat--ok';
+          };
+          const bar = (v) => {
+            const n = Math.max(0, Math.min(100, Number(v) || 0));
+            return `<div class="admin-stat-bar"><i style="width:${n}%"></i></div>`;
+          };
+          const tile = (label, value, cls = '', extra = '') => `
+            <div class="admin-stat ${cls}">
+              <div class="admin-stat-label">${label}</div>
+              <div class="admin-stat-value">${value}</div>
+              ${extra}
+            </div>
+          `;
+
+          const tiles = [];
+
           if (h.uptime_seconds != null) {
             const m = Math.floor(h.uptime_seconds / 60);
             const hr = Math.floor(m / 60);
-            lines.push('Uptime: ' + hr + 'ч ' + (m % 60) + 'м');
+            const d = Math.floor(hr / 24);
+            const hint = d > 0 ? `${d}д ${hr % 24}ч` : `${m} мин всего`;
+            tiles.push(tile(
+              '⏱ Uptime',
+              `${hr}ч ${m % 60}м`,
+              'admin-stat--info',
+              `<div class="admin-stat-hint">${hint}</div>`
+            ));
           }
+
           if (h.load_avg && h.load_avg['1m'] != null) {
             const l = h.load_avg;
-            lines.push('Load: ' + l['1m'] + ' / ' + l['5m'] + ' / ' + l['15m']);
+            const fmt = v => (v == null ? '—' : Number(v).toFixed(2));
+            const cores = Number(h.cpu_count) || (Array.isArray(h.cpu_per_core) ? h.cpu_per_core.length : 0);
+            const cls = cores > 0
+              ? pctCls((Number(l['1m']) / cores) * 100, 70, 100)
+              : '';
+            tiles.push(tile(
+              '📈 Load',
+              fmt(l['1m']),
+              cls,
+              `<div class="admin-stat-hint">1м · 5м · 15м → ${fmt(l['1m'])} / ${fmt(l['5m'])} / ${fmt(l['15m'])}</div>`
+            ));
           }
-          if (h.cpu_percent != null) lines.push('CPU: ' + h.cpu_percent + '%');
+
+          if (h.cpu_percent != null) {
+            tiles.push(tile(
+              '🧠 CPU',
+              `${Number(h.cpu_percent).toFixed(1)}%`,
+              pctCls(h.cpu_percent),
+              bar(h.cpu_percent)
+            ));
+          }
+
           if (Array.isArray(h.cpu_per_core) && h.cpu_per_core.length) {
-            lines.push('Ядра: ' + h.cpu_per_core.map(x => x + '%').join(' '));
+            const bars = h.cpu_per_core.map(v => {
+              const n = Math.max(0, Math.min(100, Number(v) || 0));
+              return `<div class="admin-stat-core"><i style="height:${n}%"></i></div>`;
+            }).join('');
+            const labels = h.cpu_per_core.map(v => `<span>${Number(v).toFixed(0)}%</span>`).join('');
+            const max = Math.max(...h.cpu_per_core.map(v => Number(v) || 0));
+            tiles.push(tile(
+              `💠 Ядра × ${h.cpu_per_core.length}`,
+              `max ${max.toFixed(1)}%`,
+              pctCls(max),
+              `<div class="admin-stat-cores">${bars}</div>
+               <div class="admin-stat-cores-labels">${labels}</div>`
+            ));
           }
-          if (h.cpu_temp_c != null) lines.push('Темп. CPU: ' + h.cpu_temp_c + '°C');
+
+          if (h.cpu_temp_c != null) {
+            tiles.push(tile(
+              '🌡 Темп. CPU',
+              `${Number(h.cpu_temp_c).toFixed(1)}°C`,
+              tempCls(h.cpu_temp_c)
+            ));
+          }
+
           if (h.memory) {
-            lines.push('RAM: ' + h.memory.percent + '% (' + h.memory.used_mb + ' / ' + h.memory.total_mb + ' MiB)');
+            const mem = h.memory;
+            tiles.push(tile(
+              '🧮 RAM',
+              `${Number(mem.percent).toFixed(1)}%`,
+              pctCls(mem.percent),
+              `<div class="admin-stat-hint">${mem.used_mb} / ${mem.total_mb} MiB</div>${bar(mem.percent)}`
+            ));
           }
+
           if (h.swap && h.swap.total_mb > 0) {
-            lines.push('Swap: ' + h.swap.percent + '%');
+            tiles.push(tile(
+              '💾 Swap',
+              `${Number(h.swap.percent).toFixed(1)}%`,
+              pctCls(h.swap.percent, 40, 80),
+              `<div class="admin-stat-hint">${h.swap.used_mb ?? 0} / ${h.swap.total_mb} MiB</div>${bar(h.swap.percent)}`
+            ));
+          } else if (h.swap) {
+            tiles.push(tile('💾 Swap', '0%', 'admin-stat--muted'));
           }
+
           if (h.disk_root) {
-            lines.push('Диск /: ' + h.disk_root.percent + '% (' + h.disk_root.used_gb + ' / ' + h.disk_root.total_gb + ' GiB)');
+            const d = h.disk_root;
+            tiles.push(tile(
+              '💽 Диск /',
+              `${Number(d.percent).toFixed(0)}%`,
+              pctCls(d.percent, 80, 95),
+              `<div class="admin-stat-hint">${d.used_gb} / ${d.total_gb} GiB</div>${bar(d.percent)}`
+            ));
           }
-          hostEl.textContent = lines.length ? lines.join('\n') : '—';
+
+          const headerParts = [];
+          if (h.hostname) headerParts.push(`🖥 <b>${escapeHtml(String(h.hostname))}</b>`);
+          if (h.system || h.machine) headerParts.push(`${escapeHtml([h.system, h.machine].filter(Boolean).join(' '))}`);
+          const header = headerParts.length
+            ? `<div class="admin-host-header">${headerParts.join(' · ')}</div>`
+            : '';
+
+          hostEl.innerHTML = tiles.length
+            ? `${header}<div class="admin-stat-grid">${tiles.join('')}</div>`
+            : '—';
         }
       }
       if (cmdTbody) {
