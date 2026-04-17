@@ -1292,15 +1292,48 @@
           const players = g.rust_live?.players != null && g.rust_live?.max_players != null
             ? `${g.rust_live.players}/${g.rust_live.max_players}`
             : '—';
-          const teamCount = Array.isArray(g.rust_live?.team_members) ? g.rust_live.team_members.length : 0;
+          const members = Array.isArray(g.rust_live?.team_members) ? g.rust_live.team_members : [];
+          const teamCount = members.length;
+          const onlineCount = members.filter(m => m && m.is_online).length;
+          const aliveCount = members.filter(m => m && m.is_alive).length;
+          let teamCell = '—';
+          if (teamCount > 0) {
+            const listItems = members.map(m => {
+              const name = escapeHtml(String(m.name || '?'));
+              const sid = escapeHtml(String(m.steam_id || ''));
+              const onlineDot = m.is_online
+                ? '<span title="онлайн" style="color:#34d399">●</span>'
+                : '<span title="офлайн" style="color:#6b7280">●</span>';
+              const aliveIcon = m.is_alive
+                ? '<span title="жив" style="color:#34d399">❤</span>'
+                : '<span title="мёртв" style="color:#ef4444">💀</span>';
+              return `<li style="display:flex;gap:6px;align-items:center;padding:3px 0;font-family:ui-monospace,Consolas,monospace;font-size:.82rem">
+                ${onlineDot}${aliveIcon}
+                <span style="color:var(--text)">${name}</span>
+                ${sid ? `<span style="color:var(--text2);font-size:.72rem">${sid}</span>` : ''}
+              </li>`;
+            }).join('');
+            teamCell = `
+              <details>
+                <summary style="cursor:pointer;user-select:none">
+                  ${teamCount}
+                  <span style="color:var(--text2);font-size:.8rem">
+                    (${onlineCount} онлайн · ${aliveCount} жив)
+                  </span>
+                </summary>
+                <ul style="list-style:none;margin:6px 0 0;padding:0;max-height:220px;overflow:auto">
+                  ${listItems}
+                </ul>
+              </details>`;
+          }
           return `
-            <tr style="border-top:1px solid var(--border)">
+            <tr style="border-top:1px solid var(--border);vertical-align:top">
               <td style="padding:8px">${escapeHtml(g.guild_name || '—')}</td>
               <td style="padding:8px"><code>${escapeHtml(String(g.guild_id || '—'))}</code></td>
               <td style="padding:8px">${rustDb}</td>
               <td style="padding:8px">${escapeHtml(live)}</td>
               <td style="padding:8px">${escapeHtml(players)}</td>
-              <td style="padding:8px">${teamCount}</td>
+              <td style="padding:8px;min-width:220px">${teamCell}</td>
             </tr>
           `;
         });
