@@ -712,6 +712,52 @@
     }
     .sg-singles-wrap { display: flex; flex-direction: column; gap: 10px; }
     .sg-singles-wrap[hidden] { display: none; }
+
+    /* ===== Stat-tiles для «Полной админ-панели» ===== */
+    .admin-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .admin-stat {
+      position: relative;
+      display: flex; flex-direction: column; gap: 4px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .admin-stat::before {
+      content: '';
+      position: absolute; top: 0; bottom: 0; left: 0;
+      width: 3px;
+      background: var(--accent, #ff6b35);
+      opacity: .65;
+    }
+    .admin-stat--ok::before    { background: #34d399; }
+    .admin-stat--warn::before  { background: #fbbf24; }
+    .admin-stat--bad::before   { background: #ef4444; }
+    .admin-stat--info::before  { background: #60a5fa; }
+    .admin-stat--muted::before { background: #6b7280; }
+    .admin-stat-label {
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text2);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .admin-stat-value {
+      font-size: 1.45rem; font-weight: 800;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.15;
+    }
+    .admin-stat-hint {
+      font-size: .72rem;
+      color: var(--text2);
+    }
   </style>
 </head>
 <body class="dashboard-page">
@@ -1042,10 +1088,11 @@
                     placeholder="Поиск по названию, ID, IP, Steam..."
                     style="max-width:280px;padding:8px 12px;font-size:.85rem"
                   />
-                  <select id="guilds-sort" class="dash-select" style="max-width:220px;padding:8px 12px;font-size:.85rem">
+                  <select id="guilds-sort" class="dash-select" style="max-width:240px;padding:8px 12px;font-size:.85rem">
                     <option value="status">Сорт: статус ↓</option>
-                    <option value="players">Сорт: игроки ↓</option>
-                    <option value="team">Сорт: команда ↓</option>
+                    <option value="online">Сорт: онлайн в команде ↓</option>
+                    <option value="players">Сорт: игроки на сервере ↓</option>
+                    <option value="team">Сорт: размер команды ↓</option>
                     <option value="name">Сорт: название A→Z</option>
                     <option value="name_desc">Сорт: название Z→A</option>
                     <option value="guild_id">Сорт: ID ↑</option>
@@ -1549,11 +1596,53 @@
         statusEl.textContent = `Данные актуальны на ${dt.toLocaleTimeString('ru-RU')}`;
       }
       if (overviewEl) {
-        overviewEl.innerHTML = `
-          <div><code>Guilds</code><span>${data.discord_guilds_connected ?? '—'}</span></div>
-          <div><code>Active sockets</code><span>${data.active_rust_sockets ?? '—'}</span></div>
-          <div><code>Guild rows</code><span>${Array.isArray(data.guilds) ? data.guilds.length : 0}</span></div>
+        const guilds = Array.isArray(data.guilds) ? data.guilds : [];
+
+        let fcm = 0;
+        let online = 0, offline = 0;
+        let totalPlayers = 0, onlinePlayers = 0;
+        let serversWithPeople = 0, serversWithoutPeople = 0;
+
+        for (const g of guilds) {
+          if (g.has_fcm_token) fcm++;
+          const st = g.rust_live?.status;
+          if (st === 'connected') online++;
+          else if (g.rust_db) offline++;
+
+          const members = Array.isArray(g.rust_live?.team_members) ? g.rust_live.team_members : [];
+          totalPlayers += members.length;
+          const onlineInTeam = members.filter(m => m?.is_online).length;
+          onlinePlayers += onlineInTeam;
+
+          if (st === 'connected') {
+            if (onlineInTeam > 0) serversWithPeople++;
+            else serversWithoutPeople++;
+          }
+        }
+        const offlinePlayers = Math.max(0, totalPlayers - onlinePlayers);
+
+        const tile = (label, value, cls = '', hint = '') => `
+          <div class="admin-stat ${cls}">
+            <div class="admin-stat-label">${label}</div>
+            <div class="admin-stat-value">${value}</div>
+            ${hint ? `<div class="admin-stat-hint">${hint}</div>` : ''}
+          </div>
         `;
+
+        overviewEl.classList.remove('cmd-grid');
+        overviewEl.classList.add('admin-stat-grid');
+        overviewEl.innerHTML = [
+          tile('🏛 Discord серверов', data.discord_guilds_connected ?? '—', 'admin-stat--info'),
+          tile('🔌 Активных сокетов', data.active_rust_sockets ?? '—', 'admin-stat--ok'),
+          tile('📡 Серверов с FCM', fcm, 'admin-stat--info'),
+          tile('🟢 Онлайн серверов', online, 'admin-stat--ok'),
+          tile('🔴 Оффлайн серверов', offline, 'admin-stat--bad'),
+          tile('👥 Всего игроков', totalPlayers, '', 'во всех командах'),
+          tile('🟢 Онлайн игроков', onlinePlayers, 'admin-stat--ok'),
+          tile('⚫ Оффлайн игроков', offlinePlayers, 'admin-stat--muted'),
+          tile('👣 Серверов с людьми', serversWithPeople, 'admin-stat--ok', 'из подключённых'),
+          tile('🌙 Серверов без людей', serversWithoutPeople, 'admin-stat--muted', 'из подключённых'),
+        ].join('');
       }
       if (hostEl) {
         const h = data.host || {};
@@ -1732,6 +1821,14 @@
         }
         case 'players':
           return num(b.rust_live?.players) - num(a.rust_live?.players);
+        case 'online': {
+          const ma = Array.isArray(a.rust_live?.team_members) ? a.rust_live.team_members : [];
+          const mb = Array.isArray(b.rust_live?.team_members) ? b.rust_live.team_members : [];
+          const oa = ma.filter(m => m?.is_online).length;
+          const ob = mb.filter(m => m?.is_online).length;
+          if (ob !== oa) return ob - oa;
+          return mb.length - ma.length;
+        }
         case 'team': {
           const ta = Array.isArray(a.rust_live?.team_members) ? a.rust_live.team_members.length : 0;
           const tb = Array.isArray(b.rust_live?.team_members) ? b.rust_live.team_members.length : 0;
