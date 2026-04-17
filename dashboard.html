@@ -251,6 +251,18 @@
       border-color: rgba(255, 107, 53, 0.55);
       box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.12);
     }
+    /* Фиксируем тёмный попап со списком option (иначе в части браузеров
+       выпадающий список рендерится белым на белом). */
+    .dash-select option,
+    .dash-select optgroup {
+      background-color: #111318;
+      color: #e5e7eb;
+    }
+    .dash-select option:checked,
+    .dash-select option:hover {
+      background-color: #1f2430;
+      color: #ffffff;
+    }
     .dash-textarea {
       width: 100%; max-width: 520px; min-height: 120px; resize: vertical;
       padding: 12px 14px; border-radius: 10px;
@@ -588,6 +600,92 @@
       grid-column: 1 / -1;
       padding: 40px 20px; text-align: center;
       color: var(--text2); font-size: .9rem;
+    }
+
+    /* ===== Кнопка-тумблер в тулбаре и группировка «одинаковых серверов» ===== */
+    .dash-toggle-btn {
+      padding: 8px 12px; border-radius: 10px;
+      font-family: inherit; font-size: .85rem; font-weight: 600;
+      color: var(--text); background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color .15s, background .15s, color .15s;
+      white-space: nowrap;
+    }
+    .dash-toggle-btn:hover { border-color: rgba(255,107,53,.45); }
+    .dash-toggle-btn.is-active {
+      background: rgba(255,107,53,.12);
+      border-color: rgba(255,107,53,.55);
+      color: #ffb38a;
+    }
+
+    .server-groups {
+      display: flex; flex-direction: column; gap: 12px;
+      padding: 14px;
+      background: rgba(255,255,255,.015);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      max-height: 720px;
+      overflow-y: auto;
+    }
+    .sg-empty {
+      padding: 40px 20px; text-align: center;
+      color: var(--text2); font-size: .9rem;
+    }
+    .sg-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .sg-card--shared { border-color: rgba(255,107,53,.45); }
+    .sg-summary {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+    }
+    .sg-summary::-webkit-details-marker { display: none; }
+    .sg-summary::before {
+      content: '▸';
+      display: inline-block;
+      width: 14px; color: var(--text2);
+      transition: transform .15s;
+    }
+    .sg-card[open] > .sg-summary::before { transform: rotate(90deg); }
+    .sg-title {
+      display: flex; flex-direction: column; min-width: 0; flex: 1;
+    }
+    .sg-name {
+      font-weight: 700; font-size: .95rem; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sg-addr {
+      font-size: .78rem; color: var(--text2);
+      font-family: ui-monospace, Consolas, monospace;
+    }
+    .sg-count {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 3px 10px; border-radius: 999px;
+      font-size: .78rem; font-weight: 700;
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+    }
+    .sg-card--shared .sg-count {
+      background: rgba(255,107,53,.18);
+      color: #ffb38a;
+    }
+    .sg-players {
+      font-size: .78rem; color: var(--text2);
+      font-variant-numeric: tabular-nums;
+    }
+    .sg-body {
+      padding: 0 14px 14px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 10px;
     }
   </style>
 </head>
@@ -937,10 +1035,13 @@
                     <option value="blocked">Blocked</option>
                     <option value="fcm">С FCM</option>
                     <option value="no_rust">Без Rust+</option>
+                    <option value="shared_server">Общий сервер</option>
                   </select>
+                  <button type="button" id="guilds-group-same" class="dash-toggle-btn" title="Группировать гильдии, играющие на одном сервере">🧩 Одинаковые сервера</button>
                 </div>
               </div>
               <div id="admin-guilds-list" class="guild-cards"></div>
+              <div id="admin-guilds-groups" class="server-groups" style="display:none"></div>
             </div>
           </div>
         </div>
@@ -966,6 +1067,7 @@
   let _adminPanelLoading = false;
   let _adminGuildsCache = [];
   let _adminToolbarBound = false;
+  let _groupBySameServer = false;
 
   function clearAdminPanelPoll() {
     if (_adminPanelPollTimer) {
@@ -1505,16 +1607,45 @@
     const search = document.getElementById('guilds-search');
     const sort = document.getElementById('guilds-sort');
     const filter = document.getElementById('guilds-filter');
+    const groupBtn = document.getElementById('guilds-group-same');
     if (!search || !sort || !filter) return;
     const h = () => renderGuildCards();
     search.addEventListener('input', h);
     sort.addEventListener('change', h);
     filter.addEventListener('change', h);
+    if (groupBtn) {
+      groupBtn.addEventListener('click', () => {
+        _groupBySameServer = !_groupBySameServer;
+        groupBtn.classList.toggle('is-active', _groupBySameServer);
+        renderGuildCards();
+      });
+    }
     _adminToolbarBound = true;
+  }
+
+  function serverKeyFor(g) {
+    if (!g || !g.rust_db) return null;
+    const ip = String(g.rust_db.ip || '').trim();
+    const port = String(g.rust_db.port || '').trim();
+    const sid = String(g.rust_db.steam_id || '').trim();
+    if (!ip && !port && !sid) return null;
+    return `${sid}|${ip}:${port}`;
+  }
+
+  function buildSharedServerKeys(items) {
+    const counts = new Map();
+    for (const g of items) {
+      const k = serverKeyFor(g);
+      if (k) counts.set(k, (counts.get(k) || 0) + 1);
+    }
+    const shared = new Set();
+    counts.forEach((n, k) => { if (n > 1) shared.add(k); });
+    return shared;
   }
 
   function renderGuildCards() {
     const listEl = document.getElementById('admin-guilds-list');
+    const groupsEl = document.getElementById('admin-guilds-groups');
     const counterEl = document.getElementById('guilds-counter');
     if (!listEl) return;
 
@@ -1522,6 +1653,7 @@
     const sortKey = document.getElementById('guilds-sort')?.value || 'status';
     const filterKey = document.getElementById('guilds-filter')?.value || 'all';
 
+    const sharedAll = buildSharedServerKeys(_adminGuildsCache);
     let items = _adminGuildsCache.slice();
 
     if (search) {
@@ -1552,6 +1684,10 @@
           case 'blocked': return !!g.blocked;
           case 'fcm': return !!g.has_fcm_token;
           case 'no_rust': return !g.rust_db;
+          case 'shared_server': {
+            const k = serverKeyFor(g);
+            return !!(k && sharedAll.has(k));
+          }
           default: return true;
         }
       });
@@ -1591,10 +1727,32 @@
 
     if (counterEl) {
       const total = _adminGuildsCache.length;
-      counterEl.textContent = items.length === total
+      const sharedGuildCount = _adminGuildsCache.filter(g => {
+        const k = serverKeyFor(g);
+        return k && sharedAll.has(k);
+      }).length;
+      const baseCount = items.length === total
         ? `${total}`
         : `${items.length} / ${total}`;
+      counterEl.textContent = sharedGuildCount > 0
+        ? `${baseCount} · общих: ${sharedGuildCount} в ${sharedAll.size} группах`
+        : baseCount;
     }
+
+    if (_groupBySameServer) {
+      listEl.style.display = 'none';
+      if (groupsEl) {
+        groupsEl.style.display = '';
+        groupsEl.innerHTML = renderServerGroups(items, sharedAll);
+      }
+      return;
+    }
+
+    if (groupsEl) {
+      groupsEl.style.display = 'none';
+      groupsEl.innerHTML = '';
+    }
+    listEl.style.display = '';
 
     if (!items.length) {
       listEl.innerHTML = '<div class="guild-cards-empty">Нет гильдий по заданному фильтру</div>';
@@ -1602,6 +1760,79 @@
     }
 
     listEl.innerHTML = items.map(renderSingleGuildCard).join('');
+  }
+
+  function renderServerGroups(items, sharedSet) {
+    if (!items.length) {
+      return '<div class="sg-empty">Нет гильдий по заданному фильтру</div>';
+    }
+
+    const groups = new Map();
+    const noServer = [];
+    for (const g of items) {
+      const key = serverKeyFor(g);
+      if (!key) {
+        noServer.push(g);
+        continue;
+      }
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(g);
+    }
+
+    const arr = Array.from(groups.entries()).map(([key, gs]) => {
+      const first = gs[0];
+      const live = gs.find(x => x?.rust_live?.server_name)?.rust_live;
+      const name = live?.server_name || first.rust_db?.ip || 'Неизвестный сервер';
+      const addr = first.rust_db ? `${first.rust_db.ip}:${first.rust_db.port}` : '';
+      const steam = first.rust_db?.steam_id || '';
+      const players = live?.players != null && live?.max_players != null
+        ? `${live.players}/${live.max_players}${live.queued_players ? ' +' + live.queued_players : ''}`
+        : '';
+      return { key, guilds: gs, name, addr, steam, players, shared: gs.length > 1 };
+    });
+
+    arr.sort((a, b) => (b.guilds.length - a.guilds.length) || String(a.name).localeCompare(String(b.name), 'ru'));
+
+    const groupHtml = arr.map((gr, idx) => {
+      const cls = gr.shared ? 'sg-card sg-card--shared' : 'sg-card';
+      const open = gr.shared || idx < 3 ? 'open' : '';
+      const cards = gr.guilds
+        .slice()
+        .sort((a, b) => String(a.guild_name || '').localeCompare(String(b.guild_name || ''), 'ru'))
+        .map(renderSingleGuildCard)
+        .join('');
+      const meta = [gr.addr, gr.steam ? `Steam ${gr.steam}` : ''].filter(Boolean).join(' · ');
+      return `
+        <details class="${cls}" ${open}>
+          <summary class="sg-summary">
+            <div class="sg-title">
+              <div class="sg-name" title="${escapeHtml(gr.name)}">${escapeHtml(gr.name)}</div>
+              <div class="sg-addr">${escapeHtml(meta)}</div>
+            </div>
+            ${gr.players ? `<span class="sg-players">👥 ${escapeHtml(gr.players)}</span>` : ''}
+            <span class="sg-count">${gr.guilds.length} ${gr.guilds.length === 1 ? 'гильдия' : 'гильдий'}</span>
+          </summary>
+          <div class="sg-body">${cards}</div>
+        </details>
+      `;
+    }).join('');
+
+    const tailHtml = noServer.length
+      ? `
+        <details class="sg-card">
+          <summary class="sg-summary">
+            <div class="sg-title">
+              <div class="sg-name">Без Rust+ сервера</div>
+              <div class="sg-addr">гильдии без привязки к серверу</div>
+            </div>
+            <span class="sg-count">${noServer.length}</span>
+          </summary>
+          <div class="sg-body">${noServer.map(renderSingleGuildCard).join('')}</div>
+        </details>
+      `
+      : '';
+
+    return groupHtml + tailHtml;
   }
 
   function renderSingleGuildCard(g) {
