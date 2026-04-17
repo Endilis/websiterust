@@ -415,6 +415,180 @@
       transform: translateX(20px); background: var(--green);
     }
     .notify-switch input:focus-visible + .notify-slider { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* ================ ADMIN GUILDS: modern cards ================ */
+    .guilds-section { margin-top: 16px; }
+    .guilds-toolbar {
+      display: flex; flex-wrap: wrap; gap: 12px;
+      align-items: center; justify-content: space-between;
+      padding: 12px 14px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      border-radius: 12px 12px 0 0;
+      border-bottom: none;
+    }
+    .guilds-toolbar-left { display: flex; align-items: center; gap: 10px; }
+    .guilds-toolbar-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .guild-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 12px;
+      padding: 14px;
+      background: rgba(255,255,255,.015);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      max-height: 720px;
+      overflow-y: auto;
+    }
+    .guild-card {
+      position: relative;
+      display: flex; flex-direction: column; gap: 10px;
+      padding: 14px 16px 14px 18px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: border-color .15s, transform .15s, background .15s;
+    }
+    .guild-card:hover { border-color: rgba(255,107,53,.35); transform: translateY(-1px); }
+    .guild-card::before {
+      content: ''; position: absolute; top: 10px; bottom: 10px; left: 0;
+      width: 3px; border-radius: 3px;
+      background: var(--text2);
+    }
+    .guild-card[data-status="connected"]::before { background: #34d399; }
+    .guild-card[data-status="disconnected"]::before { background: #6b7280; }
+    .guild-card[data-status="error"]::before { background: #ef4444; }
+    .guild-card[data-status="empty"]::before { background: #fbbf24; }
+    .guild-card[data-status="no_rust"]::before { background: #4b5563; }
+
+    .gc-head {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 10px;
+    }
+    .gc-title { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+    .gc-name {
+      font-weight: 700; font-size: .98rem; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .gc-id {
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: .72rem; color: var(--text2);
+      margin-top: 2px;
+    }
+    .gc-badges {
+      display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end;
+      max-width: 55%;
+    }
+    .gc-mini-badge {
+      padding: 2px 7px; border-radius: 6px;
+      font-size: .7rem; font-weight: 600;
+      border: 1px solid transparent;
+      line-height: 1.3;
+    }
+    .mb-vip { background: rgba(251,191,36,.12); color: #fbbf24; border-color: rgba(251,191,36,.28); }
+    .mb-blocked { background: rgba(239,68,68,.12); color: #ef4444; border-color: rgba(239,68,68,.28); }
+    .mb-fcm { background: rgba(88,101,242,.15); color: #8b95f7; border-color: rgba(88,101,242,.28); }
+    .mb-lang { background: rgba(255,255,255,.05); color: var(--text2); border-color: var(--border); text-transform: uppercase; }
+    .mb-discord-off { background: rgba(107,114,128,.15); color: #9ca3af; border-color: rgba(107,114,128,.28); }
+
+    .gc-status-row {
+      display: flex; align-items: center; gap: 8px;
+      flex-wrap: wrap;
+    }
+    .gc-status {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 9px; border-radius: 6px;
+      font-size: .75rem; font-weight: 600;
+    }
+    .gc-status--connected { background: rgba(52,211,153,.12); color: #34d399; }
+    .gc-status--disconnected { background: rgba(107,114,128,.15); color: #9ca3af; }
+    .gc-status--error { background: rgba(239,68,68,.12); color: #ef4444; }
+    .gc-status--empty { background: rgba(251,191,36,.12); color: #fbbf24; }
+    .gc-status--no_rust { background: rgba(75,85,99,.2); color: #6b7280; }
+    .gc-status::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: currentColor;
+    }
+
+    .gc-server-name {
+      font-size: .88rem; font-weight: 600; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      min-width: 0;
+    }
+
+    .gc-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 10px;
+      padding: 8px 10px;
+      background: rgba(0,0,0,.18);
+      border-radius: 8px;
+      font-size: .8rem;
+    }
+    .gc-info-item { display: flex; justify-content: space-between; gap: 6px; min-width: 0; }
+    .gc-info-k { color: var(--text2); flex-shrink: 0; }
+    .gc-info-v {
+      color: var(--text); font-weight: 600;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: .77rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      direction: rtl; text-align: left;
+    }
+    .gc-info-v--plain { font-family: inherit; font-size: .8rem; direction: ltr; }
+
+    .gc-team details { border-radius: 8px; }
+    .gc-team summary {
+      list-style: none;
+      cursor: pointer; user-select: none;
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 10px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: .8rem;
+      transition: background .15s;
+    }
+    .gc-team summary::-webkit-details-marker { display: none; }
+    .gc-team summary:hover { background: rgba(255,255,255,.06); }
+    .gc-team summary::after {
+      content: '▸'; margin-left: auto; color: var(--text2);
+      transition: transform .15s;
+    }
+    .gc-team details[open] summary::after { transform: rotate(90deg); }
+    .gc-team-count { font-weight: 700; color: var(--text); }
+    .gc-team-summary { color: var(--text2); font-size: .74rem; }
+    .gc-team-list {
+      list-style: none; margin: 6px 0 0; padding: 8px 10px;
+      background: rgba(0,0,0,.18); border-radius: 8px;
+      max-height: 200px; overflow-y: auto;
+    }
+    .gc-member {
+      display: flex; align-items: center; gap: 8px;
+      padding: 4px 0; font-size: .8rem;
+      border-bottom: 1px dashed rgba(255,255,255,.04);
+    }
+    .gc-member:last-child { border-bottom: none; }
+    .gc-member-name {
+      color: var(--text); font-weight: 500;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      flex: 1; min-width: 0;
+    }
+    .gc-member-sid {
+      color: var(--text2); font-size: .68rem;
+      font-family: ui-monospace, Consolas, monospace;
+      flex-shrink: 0;
+    }
+    .gc-member-online { color: #34d399; }
+    .gc-member-offline { color: #4b5563; }
+    .gc-member-alive { color: #34d399; }
+    .gc-member-dead { color: #ef4444; filter: grayscale(.2); }
+
+    .guild-cards-empty {
+      grid-column: 1 / -1;
+      padding: 40px 20px; text-align: center;
+      color: var(--text2); font-size: .9rem;
+    }
   </style>
 </head>
 <body class="dashboard-page">
@@ -731,21 +905,42 @@
             </div>
             <p class="info-label" style="margin:16px 0 8px">Таблицы БД</p>
             <pre id="admin-db-counts" style="white-space:pre-wrap;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px;max-height:240px;overflow:auto">—</pre>
-            <p class="info-label" style="margin:16px 0 8px">Гильдии и live Rust+</p>
-            <div style="overflow:auto;max-height:380px;border:1px solid var(--border);border-radius:12px">
-              <table style="width:100%;border-collapse:collapse;font-size:.9rem">
-                <thead>
-                  <tr style="background:rgba(255,255,255,.03)">
-                    <th style="text-align:left;padding:8px">Guild</th>
-                    <th style="text-align:left;padding:8px">ID</th>
-                    <th style="text-align:left;padding:8px">Rust DB</th>
-                    <th style="text-align:left;padding:8px">Live</th>
-                    <th style="text-align:left;padding:8px">Players</th>
-                    <th style="text-align:left;padding:8px">Team</th>
-                  </tr>
-                </thead>
-                <tbody id="admin-guilds-tbody"></tbody>
-              </table>
+            <div class="guilds-section">
+              <div class="guilds-toolbar">
+                <div class="guilds-toolbar-left">
+                  <p class="info-label" style="margin:0">Гильдии и live Rust+</p>
+                  <span id="guilds-counter" class="dash-badge dash-badge--neutral">0</span>
+                </div>
+                <div class="guilds-toolbar-right">
+                  <input
+                    type="search"
+                    id="guilds-search"
+                    class="dash-select"
+                    placeholder="Поиск по названию, ID, IP, Steam..."
+                    style="max-width:280px;padding:8px 12px;font-size:.85rem"
+                  />
+                  <select id="guilds-sort" class="dash-select" style="max-width:220px;padding:8px 12px;font-size:.85rem">
+                    <option value="status">Сорт: статус ↓</option>
+                    <option value="players">Сорт: игроки ↓</option>
+                    <option value="team">Сорт: команда ↓</option>
+                    <option value="name">Сорт: название A→Z</option>
+                    <option value="name_desc">Сорт: название Z→A</option>
+                    <option value="guild_id">Сорт: ID ↑</option>
+                    <option value="watched">Сорт: отслеживаемые ↓</option>
+                  </select>
+                  <select id="guilds-filter" class="dash-select" style="max-width:200px;padding:8px 12px;font-size:.85rem">
+                    <option value="all">Фильтр: все</option>
+                    <option value="connected">Только connected</option>
+                    <option value="disconnected">Только disconnected</option>
+                    <option value="error">С ошибкой</option>
+                    <option value="vip">VIP</option>
+                    <option value="blocked">Blocked</option>
+                    <option value="fcm">С FCM</option>
+                    <option value="no_rust">Без Rust+</option>
+                  </select>
+                </div>
+              </div>
+              <div id="admin-guilds-list" class="guild-cards"></div>
             </div>
           </div>
         </div>
@@ -769,6 +964,8 @@
   let _dashDiscordId = null;
   let _adminPanelPollTimer = null;
   let _adminPanelLoading = false;
+  let _adminGuildsCache = [];
+  let _adminToolbarBound = false;
 
   function clearAdminPanelPoll() {
     if (_adminPanelPollTimer) {
@@ -1201,7 +1398,7 @@
     const hostEl = document.getElementById('admin-host-metrics');
     const cmdTbody = document.getElementById('admin-commands-tbody');
     const dbEl = document.getElementById('admin-db-counts');
-    const tbody = document.getElementById('admin-guilds-tbody');
+    const guildsListEl = document.getElementById('admin-guilds-list');
 
     try {
       _adminPanelLoading = true;
@@ -1285,65 +1482,248 @@
         const lines = Object.entries(data.db_counts || {}).map(([k, v]) => `${k}: ${v}`);
         dbEl.textContent = lines.join('\n') || '—';
       }
-      if (tbody) {
-        const rows = (data.guilds || []).map(g => {
-          const rustDb = g.rust_db ? `${escapeHtml(g.rust_db.ip)}:${escapeHtml(String(g.rust_db.port))}` : '—';
-          const live = g.rust_live?.status || '—';
-          const players = g.rust_live?.players != null && g.rust_live?.max_players != null
-            ? `${g.rust_live.players}/${g.rust_live.max_players}`
-            : '—';
-          const members = Array.isArray(g.rust_live?.team_members) ? g.rust_live.team_members : [];
-          const teamCount = members.length;
-          const onlineCount = members.filter(m => m && m.is_online).length;
-          const aliveCount = members.filter(m => m && m.is_alive).length;
-          let teamCell = '—';
-          if (teamCount > 0) {
-            const listItems = members.map(m => {
-              const name = escapeHtml(String(m.name || '?'));
-              const sid = escapeHtml(String(m.steam_id || ''));
-              const onlineDot = m.is_online
-                ? '<span title="онлайн" style="color:#34d399">●</span>'
-                : '<span title="офлайн" style="color:#6b7280">●</span>';
-              const aliveIcon = m.is_alive
-                ? '<span title="жив" style="color:#34d399">❤</span>'
-                : '<span title="мёртв" style="color:#ef4444">💀</span>';
-              return `<li style="display:flex;gap:6px;align-items:center;padding:3px 0;font-family:ui-monospace,Consolas,monospace;font-size:.82rem">
-                ${onlineDot}${aliveIcon}
-                <span style="color:var(--text)">${name}</span>
-                ${sid ? `<span style="color:var(--text2);font-size:.72rem">${sid}</span>` : ''}
-              </li>`;
-            }).join('');
-            teamCell = `
-              <details>
-                <summary style="cursor:pointer;user-select:none">
-                  ${teamCount}
-                  <span style="color:var(--text2);font-size:.8rem">
-                    (${onlineCount} онлайн · ${aliveCount} жив)
-                  </span>
-                </summary>
-                <ul style="list-style:none;margin:6px 0 0;padding:0;max-height:220px;overflow:auto">
-                  ${listItems}
-                </ul>
-              </details>`;
-          }
-          return `
-            <tr style="border-top:1px solid var(--border);vertical-align:top">
-              <td style="padding:8px">${escapeHtml(g.guild_name || '—')}</td>
-              <td style="padding:8px"><code>${escapeHtml(String(g.guild_id || '—'))}</code></td>
-              <td style="padding:8px">${rustDb}</td>
-              <td style="padding:8px">${escapeHtml(live)}</td>
-              <td style="padding:8px">${escapeHtml(players)}</td>
-              <td style="padding:8px;min-width:220px">${teamCell}</td>
-            </tr>
-          `;
-        });
-        tbody.innerHTML = rows.join('') || '<tr><td colspan="6" style="padding:8px">Нет данных</td></tr>';
+      if (guildsListEl) {
+        _adminGuildsCache = Array.isArray(data.guilds) ? data.guilds : [];
+        setupGuildsToolbar();
+        renderGuildCards();
       }
     } catch (e) {
       if (statusEl) statusEl.textContent = 'Ошибка загрузки: ' + ((e && e.message) || String(e));
     } finally {
       _adminPanelLoading = false;
     }
+  }
+
+  function guildEffectiveStatus(g) {
+    if (!g.rust_db) return 'no_rust';
+    const s = g.rust_live?.status || 'disconnected';
+    return s;
+  }
+
+  function setupGuildsToolbar() {
+    if (_adminToolbarBound) return;
+    const search = document.getElementById('guilds-search');
+    const sort = document.getElementById('guilds-sort');
+    const filter = document.getElementById('guilds-filter');
+    if (!search || !sort || !filter) return;
+    const h = () => renderGuildCards();
+    search.addEventListener('input', h);
+    sort.addEventListener('change', h);
+    filter.addEventListener('change', h);
+    _adminToolbarBound = true;
+  }
+
+  function renderGuildCards() {
+    const listEl = document.getElementById('admin-guilds-list');
+    const counterEl = document.getElementById('guilds-counter');
+    if (!listEl) return;
+
+    const search = (document.getElementById('guilds-search')?.value || '').trim().toLowerCase();
+    const sortKey = document.getElementById('guilds-sort')?.value || 'status';
+    const filterKey = document.getElementById('guilds-filter')?.value || 'all';
+
+    let items = _adminGuildsCache.slice();
+
+    if (search) {
+      items = items.filter(g => {
+        const fields = [
+          g.guild_name, g.guild_id,
+          g.rust_db?.ip, g.rust_db?.steam_id,
+          g.rust_live?.server_name, g.rust_live?.leader_steam_id,
+        ].filter(Boolean).map(x => String(x).toLowerCase());
+        if (Array.isArray(g.rust_live?.team_members)) {
+          for (const m of g.rust_live.team_members) {
+            if (m?.name) fields.push(String(m.name).toLowerCase());
+            if (m?.steam_id) fields.push(String(m.steam_id).toLowerCase());
+          }
+        }
+        return fields.some(f => f.includes(search));
+      });
+    }
+
+    if (filterKey !== 'all') {
+      items = items.filter(g => {
+        const st = guildEffectiveStatus(g);
+        switch (filterKey) {
+          case 'connected': return st === 'connected';
+          case 'disconnected': return st === 'disconnected';
+          case 'error': return st === 'error';
+          case 'vip': return !!g.vip;
+          case 'blocked': return !!g.blocked;
+          case 'fcm': return !!g.has_fcm_token;
+          case 'no_rust': return !g.rust_db;
+          default: return true;
+        }
+      });
+    }
+
+    const statusOrder = { connected: 0, empty: 1, error: 2, disconnected: 3, no_rust: 4 };
+    const cmpStr = (a, b) => String(a || '').localeCompare(String(b || ''), 'ru', { sensitivity: 'base' });
+    const num = v => (v == null ? -Infinity : Number(v));
+
+    items.sort((a, b) => {
+      switch (sortKey) {
+        case 'status': {
+          const sa = statusOrder[guildEffectiveStatus(a)] ?? 99;
+          const sb = statusOrder[guildEffectiveStatus(b)] ?? 99;
+          if (sa !== sb) return sa - sb;
+          return num(b.rust_live?.players) - num(a.rust_live?.players);
+        }
+        case 'players':
+          return num(b.rust_live?.players) - num(a.rust_live?.players);
+        case 'team': {
+          const ta = Array.isArray(a.rust_live?.team_members) ? a.rust_live.team_members.length : 0;
+          const tb = Array.isArray(b.rust_live?.team_members) ? b.rust_live.team_members.length : 0;
+          return tb - ta;
+        }
+        case 'name':
+          return cmpStr(a.guild_name, b.guild_name);
+        case 'name_desc':
+          return cmpStr(b.guild_name, a.guild_name);
+        case 'guild_id':
+          return String(a.guild_id || '').localeCompare(String(b.guild_id || ''));
+        case 'watched':
+          return num(b.watched_players_count) - num(a.watched_players_count);
+        default:
+          return 0;
+      }
+    });
+
+    if (counterEl) {
+      const total = _adminGuildsCache.length;
+      counterEl.textContent = items.length === total
+        ? `${total}`
+        : `${items.length} / ${total}`;
+    }
+
+    if (!items.length) {
+      listEl.innerHTML = '<div class="guild-cards-empty">Нет гильдий по заданному фильтру</div>';
+      return;
+    }
+
+    listEl.innerHTML = items.map(renderSingleGuildCard).join('');
+  }
+
+  function renderSingleGuildCard(g) {
+    const status = guildEffectiveStatus(g);
+    const statusLabel = {
+      connected: 'online',
+      disconnected: 'offline',
+      error: 'error',
+      empty: 'no info',
+      no_rust: 'нет Rust+',
+    }[status] || status;
+
+    const badges = [];
+    if (g.vip) badges.push('<span class="gc-mini-badge mb-vip">VIP</span>');
+    if (g.blocked) badges.push('<span class="gc-mini-badge mb-blocked">BAN</span>');
+    if (g.has_fcm_token) badges.push('<span class="gc-mini-badge mb-fcm">FCM</span>');
+    if (g.language) badges.push(`<span class="gc-mini-badge mb-lang">${escapeHtml(g.language)}</span>`);
+    if (g.discord_present === false) badges.push('<span class="gc-mini-badge mb-discord-off">DC ✕</span>');
+
+    const rustDb = g.rust_db
+      ? `${escapeHtml(g.rust_db.ip)}:${escapeHtml(String(g.rust_db.port))}`
+      : '—';
+    const steamId = g.rust_db?.steam_id ? escapeHtml(String(g.rust_db.steam_id)) : '—';
+    const serverName = g.rust_live?.server_name
+      ? escapeHtml(String(g.rust_live.server_name))
+      : (g.rust_db ? '<span style="color:var(--text2)">нет данных</span>' : '—');
+
+    const p = g.rust_live?.players;
+    const mx = g.rust_live?.max_players;
+    const q = g.rust_live?.queued_players;
+    const playersStr = (p != null && mx != null)
+      ? `${p}/${mx}${q ? ` +${q}` : ''}`
+      : '—';
+
+    const errTxt = (status === 'error' && g.rust_live?.error)
+      ? `<div style="color:#ef4444;font-size:.75rem;font-family:ui-monospace,Consolas,monospace;word-break:break-word">${escapeHtml(String(g.rust_live.error).slice(0, 180))}</div>`
+      : '';
+
+    const members = Array.isArray(g.rust_live?.team_members) ? g.rust_live.team_members : [];
+    const teamCount = members.length;
+    const onlineCount = members.filter(m => m?.is_online).length;
+    const aliveCount = members.filter(m => m?.is_alive).length;
+
+    let teamBlock = '';
+    if (teamCount > 0) {
+      const lis = members
+        .slice()
+        .sort((a, b) => (Number(!!b.is_online) - Number(!!a.is_online)) || (Number(!!b.is_alive) - Number(!!a.is_alive)))
+        .map(m => {
+          const name = escapeHtml(String(m.name || '?'));
+          const sid = escapeHtml(String(m.steam_id || ''));
+          const onlineCls = m.is_online ? 'gc-member-online' : 'gc-member-offline';
+          const aliveCls = m.is_alive ? 'gc-member-alive' : 'gc-member-dead';
+          const aliveIcon = m.is_alive ? '❤' : '💀';
+          return `<li class="gc-member">
+            <span class="${onlineCls}" title="${m.is_online ? 'онлайн' : 'офлайн'}">●</span>
+            <span class="${aliveCls}" title="${m.is_alive ? 'жив' : 'мёртв'}">${aliveIcon}</span>
+            <span class="gc-member-name">${name}</span>
+            ${sid ? `<span class="gc-member-sid">${sid}</span>` : ''}
+          </li>`;
+        })
+        .join('');
+      teamBlock = `
+        <div class="gc-team">
+          <details>
+            <summary>
+              <span>👥</span>
+              <span class="gc-team-count">${teamCount}</span>
+              <span class="gc-team-summary">${onlineCount} онлайн · ${aliveCount} жив</span>
+            </summary>
+            <ul class="gc-team-list">${lis}</ul>
+          </details>
+        </div>`;
+    }
+
+    return `
+      <div class="guild-card" data-status="${status}">
+        <div class="gc-head">
+          <div class="gc-title">
+            <div class="gc-name" title="${escapeHtml(g.guild_name || '')}">${escapeHtml(g.guild_name || '—')}</div>
+            <div class="gc-id">${escapeHtml(String(g.guild_id || ''))}</div>
+          </div>
+          <div class="gc-badges">${badges.join('')}</div>
+        </div>
+
+        <div class="gc-status-row">
+          <span class="gc-status gc-status--${status}">${escapeHtml(statusLabel)}</span>
+          <span class="gc-server-name" title="${g.rust_live?.server_name ? escapeHtml(g.rust_live.server_name) : ''}">${serverName}</span>
+        </div>
+
+        ${errTxt}
+
+        <div class="gc-info">
+          <div class="gc-info-item">
+            <span class="gc-info-k">Адрес</span>
+            <span class="gc-info-v" title="${rustDb}">${rustDb}</span>
+          </div>
+          <div class="gc-info-item">
+            <span class="gc-info-k">Игроки</span>
+            <span class="gc-info-v gc-info-v--plain">${escapeHtml(playersStr)}</span>
+          </div>
+          <div class="gc-info-item">
+            <span class="gc-info-k">Steam</span>
+            <span class="gc-info-v" title="${steamId}">${steamId}</span>
+          </div>
+          <div class="gc-info-item">
+            <span class="gc-info-k">Отслеживаемые</span>
+            <span class="gc-info-v gc-info-v--plain">${g.watched_players_count ?? 0}</span>
+          </div>
+          <div class="gc-info-item">
+            <span class="gc-info-k">Устройств</span>
+            <span class="gc-info-v gc-info-v--plain">${g.rust_entities_count ?? 0}</span>
+          </div>
+          <div class="gc-info-item">
+            <span class="gc-info-k">Lang</span>
+            <span class="gc-info-v gc-info-v--plain">${escapeHtml(g.language || '—')}</span>
+          </div>
+        </div>
+
+        ${teamBlock}
+      </div>
+    `;
   }
 
   function showDashboard(data, session) {
