@@ -687,6 +687,31 @@
       grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: 10px;
     }
+
+    .sg-section-title {
+      display: flex; align-items: center; gap: 8px;
+      margin: 4px 2px 2px;
+      font-size: .8rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .04em;
+      color: var(--text2);
+    }
+    .sg-section-title .dash-badge { font-size: .7rem; }
+    .sg-singles-toggle {
+      align-self: flex-start;
+      padding: 8px 12px; border-radius: 10px;
+      font-family: inherit; font-size: .82rem; font-weight: 600;
+      color: var(--text2); background: rgba(255,255,255,.03);
+      border: 1px dashed var(--border);
+      cursor: pointer;
+      transition: color .15s, border-color .15s, background .15s;
+    }
+    .sg-singles-toggle:hover {
+      color: var(--text);
+      border-color: rgba(255,107,53,.45);
+      background: rgba(255,107,53,.08);
+    }
+    .sg-singles-wrap { display: flex; flex-direction: column; gap: 10px; }
+    .sg-singles-wrap[hidden] { display: none; }
   </style>
 </head>
 <body class="dashboard-page">
@@ -1744,6 +1769,20 @@
       if (groupsEl) {
         groupsEl.style.display = '';
         groupsEl.innerHTML = renderServerGroups(items, sharedAll);
+        const singlesBtn = groupsEl.querySelector('[data-sg-toggle="singles"]');
+        const singlesWrap = groupsEl.querySelector('.sg-singles-wrap');
+        if (singlesBtn && singlesWrap) {
+          singlesBtn.addEventListener('click', () => {
+            const isHidden = singlesWrap.hasAttribute('hidden');
+            if (isHidden) {
+              singlesWrap.removeAttribute('hidden');
+              singlesBtn.textContent = singlesBtn.textContent.replace('▾ Показать', '▴ Скрыть');
+            } else {
+              singlesWrap.setAttribute('hidden', '');
+              singlesBtn.textContent = singlesBtn.textContent.replace('▴ Скрыть', '▾ Показать');
+            }
+          });
+        }
       }
       return;
     }
@@ -1793,15 +1832,19 @@
 
     arr.sort((a, b) => (b.guilds.length - a.guilds.length) || String(a.name).localeCompare(String(b.name), 'ru'));
 
-    const groupHtml = arr.map((gr, idx) => {
+    const shared = arr.filter(g => g.shared);
+    const singles = arr.filter(g => !g.shared);
+
+    const renderGroupCard = (gr, forceOpen) => {
       const cls = gr.shared ? 'sg-card sg-card--shared' : 'sg-card';
-      const open = gr.shared || idx < 3 ? 'open' : '';
+      const open = forceOpen ? 'open' : '';
       const cards = gr.guilds
         .slice()
         .sort((a, b) => String(a.guild_name || '').localeCompare(String(b.guild_name || ''), 'ru'))
         .map(renderSingleGuildCard)
         .join('');
       const meta = [gr.addr, gr.steam ? `Steam ${gr.steam}` : ''].filter(Boolean).join(' · ');
+      const word = gr.guilds.length === 1 ? 'гильдия' : (gr.guilds.length < 5 ? 'гильдии' : 'гильдий');
       return `
         <details class="${cls}" ${open}>
           <summary class="sg-summary">
@@ -1810,15 +1853,37 @@
               <div class="sg-addr">${escapeHtml(meta)}</div>
             </div>
             ${gr.players ? `<span class="sg-players">👥 ${escapeHtml(gr.players)}</span>` : ''}
-            <span class="sg-count">${gr.guilds.length} ${gr.guilds.length === 1 ? 'гильдия' : 'гильдий'}</span>
+            <span class="sg-count">${gr.guilds.length} ${word}</span>
           </summary>
           <div class="sg-body">${cards}</div>
         </details>
       `;
-    }).join('');
+    };
 
-    const tailHtml = noServer.length
-      ? `
+    let html = '';
+
+    if (shared.length) {
+      const totalSharedGuilds = shared.reduce((s, g) => s + g.guilds.length, 0);
+      html += `<div class="sg-section-title">🔗 Общие сервера
+        <span class="dash-badge dash-badge--neutral">${shared.length} сервер${shared.length === 1 ? '' : 'ов'} · ${totalSharedGuilds} гильдий</span>
+      </div>`;
+      html += shared.map(gr => renderGroupCard(gr, true)).join('');
+    } else {
+      html += `<div class="sg-empty">Среди отфильтрованных гильдий нет общих серверов</div>`;
+    }
+
+    if (singles.length) {
+      const singlesCards = singles.map(gr => renderGroupCard(gr, false)).join('');
+      html += `
+        <button type="button" class="sg-singles-toggle" data-sg-toggle="singles">
+          ▾ Показать ${singles.length} сервер${singles.length === 1 ? '' : 'ов'} с одной гильдией
+        </button>
+        <div class="sg-singles-wrap" hidden>${singlesCards}</div>
+      `;
+    }
+
+    if (noServer.length) {
+      html += `
         <details class="sg-card">
           <summary class="sg-summary">
             <div class="sg-title">
@@ -1829,10 +1894,10 @@
           </summary>
           <div class="sg-body">${noServer.map(renderSingleGuildCard).join('')}</div>
         </details>
-      `
-      : '';
+      `;
+    }
 
-    return groupHtml + tailHtml;
+    return html;
   }
 
   function renderSingleGuildCard(g) {
