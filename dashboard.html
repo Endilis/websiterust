@@ -1930,13 +1930,15 @@
     return s.toLowerCase();
   }
 
+  // Ключ «это один и тот же Rust-сервер» = ip:port.
+  // steam_id сюда НЕ включаем: в каждой гильдии свой забайнденный бот-аккаунт
+  // (свой player_id), а физический игровой сервер одинаков, когда совпадает ip:port.
   function serverKeyFor(g) {
     if (!g || !g.rust_db) return null;
-    const ip = String(g.rust_db.ip || '').trim();
+    const ip = String(g.rust_db.ip || '').trim().toLowerCase();
     const port = String(g.rust_db.port || '').trim();
-    const sid = String(g.rust_db.steam_id || '').trim();
-    if (!ip && !port && !sid) return null;
-    return `${sid}|${ip}:${port}`;
+    if (!ip && !port) return null;
+    return `${ip}:${port}`;
   }
 
   function buildSharedServerKeys(items) {
@@ -2128,12 +2130,16 @@
       const ip = first.rust_db?.ip || '';
       const port = first.rust_db?.port != null ? String(first.rust_db.port) : '';
       const addr = first.rust_db ? `${ip}:${port}` : '';
-      const steam = first.rust_db?.steam_id || '';
+      // Сколько уникальных paired-аккаунтов (steam_id) привязано к этому серверу
+      const uniqueSteams = new Set(
+        gs.map(x => String(x?.rust_db?.steam_id || '')).filter(Boolean)
+      );
       const players = live?.players != null && live?.max_players != null
         ? `${live.players}/${live.max_players}${live.queued_players ? ' +' + live.queued_players : ''}`
         : '';
       return {
-        key, guilds: gs, name, ip, port, addr, steam, players,
+        key, guilds: gs, name, ip, port, addr, players,
+        steamsCount: uniqueSteams.size,
         _ipKey: ipSortKey(ip),
         _portNum: port === '' ? 0 : (parseInt(port, 10) || 0),
       };
@@ -2157,7 +2163,8 @@
         .sort((a, b) => String(a.guild_name || '').localeCompare(String(b.guild_name || ''), 'ru'))
         .map(renderSingleGuildCard)
         .join('');
-      const meta = [gr.addr, gr.steam ? `Steam ${gr.steam}` : ''].filter(Boolean).join(' · ');
+      const steamsInfo = gr.steamsCount > 1 ? `${gr.steamsCount} аккаунт${gr.steamsCount < 5 ? 'а' : 'ов'}` : '';
+      const meta = [gr.addr, steamsInfo].filter(Boolean).join(' · ');
       const word = gr.guilds.length < 5 ? 'гильдии' : 'гильдий';
       return `
         <details class="sg-card sg-card--shared" open>
@@ -2199,11 +2206,13 @@
       const live = gs.find(x => x?.rust_live?.server_name)?.rust_live;
       const name = live?.server_name || first.rust_db?.ip || 'Неизвестный сервер';
       const addr = first.rust_db ? `${first.rust_db.ip}:${first.rust_db.port}` : '';
-      const steam = first.rust_db?.steam_id || '';
+      const uniqueSteams = new Set(
+        gs.map(x => String(x?.rust_db?.steam_id || '')).filter(Boolean)
+      );
       const players = live?.players != null && live?.max_players != null
         ? `${live.players}/${live.max_players}${live.queued_players ? ' +' + live.queued_players : ''}`
         : '';
-      return { key, guilds: gs, name, addr, steam, players, shared: gs.length > 1 };
+      return { key, guilds: gs, name, addr, steamsCount: uniqueSteams.size, players, shared: gs.length > 1 };
     });
 
     arr.sort((a, b) => (b.guilds.length - a.guilds.length) || String(a.name).localeCompare(String(b.name), 'ru'));
@@ -2219,7 +2228,8 @@
         .sort((a, b) => String(a.guild_name || '').localeCompare(String(b.guild_name || ''), 'ru'))
         .map(renderSingleGuildCard)
         .join('');
-      const meta = [gr.addr, gr.steam ? `Steam ${gr.steam}` : ''].filter(Boolean).join(' · ');
+      const steamsInfo = gr.steamsCount > 1 ? `${gr.steamsCount} аккаунт${gr.steamsCount < 5 ? 'а' : 'ов'}` : '';
+      const meta = [gr.addr, steamsInfo].filter(Boolean).join(' · ');
       const word = gr.guilds.length === 1 ? 'гильдия' : (gr.guilds.length < 5 ? 'гильдии' : 'гильдий');
       return `
         <details class="${cls}" ${open}>
