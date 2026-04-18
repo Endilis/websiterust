@@ -429,7 +429,7 @@
     .notify-switch input:focus-visible + .notify-slider { outline: 2px solid var(--accent); outline-offset: 2px; }
 
     /* ================ ADMIN GUILDS: modern cards ================ */
-    .guilds-section { margin-top: 16px; }
+    .guilds-section { display: flex; flex-direction: column; gap: 0; }
     .guilds-toolbar {
       display: flex; flex-wrap: wrap; gap: 12px;
       align-items: center; justify-content: space-between;
@@ -845,10 +845,9 @@
       display: flex; align-items: center; justify-content: space-between;
       flex-wrap: wrap; gap: 8px;
       font-size: .82rem; color: var(--text2);
-      padding: 8px 12px; margin-bottom: 8px;
-      background: rgba(255,255,255,.02);
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      padding: 6px 2px 10px;
+      margin: 0 0 4px;
+      border-bottom: 1px dashed var(--border);
     }
     .admin-host-header b { color: var(--text); font-weight: 600; }
     .admin-host-error {
@@ -857,6 +856,162 @@
       border: 1px solid rgba(239,68,68,.35);
       border-radius: 10px;
       color: #fca5a5; font-size: .85rem;
+    }
+
+    /* ================================================================
+       ADMIN PANEL · unified section design (no box-in-box).
+       Внешняя рамка — только у .card админ-панели. Внутри: секции с
+       акцентным заголовком-рельсом и «плоским» телом без рамки.
+       ================================================================ */
+    .admin-panel-card { padding: 0; overflow: hidden; }
+    .admin-panel-card > .card-header {
+      padding: 18px 24px 0;
+      margin-bottom: 0;
+    }
+    .admin-panel-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap;
+      padding: 12px 24px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .admin-panel-head p { margin: 0; }
+    .admin-panel-head .dash-btn { padding: 8px 14px; }
+
+    .admin-panel-body {
+      padding: 16px 24px 22px;
+      display: flex; flex-direction: column;
+      gap: 24px;
+    }
+
+    .admin-panel-section { display: flex; flex-direction: column; gap: 12px; }
+    .admin-panel-section__title {
+      display: flex; align-items: center; gap: 10px;
+      margin: 0;
+      font-size: .78rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em;
+      color: var(--text2);
+    }
+    .admin-panel-section__title::before {
+      content: ''; display: inline-block;
+      width: 3px; height: 14px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+    .admin-panel-section__title-text { color: var(--text); letter-spacing: .04em; }
+    .admin-panel-section__title-count {
+      margin-left: auto;
+      font-size: .7rem; font-weight: 600;
+      color: var(--text2); letter-spacing: .02em; text-transform: none;
+    }
+
+    /* Первая секция — overview — статы идут сразу, без заголовка */
+    .admin-panel-section--overview .admin-stat-grid { margin-top: 0; }
+
+    /* Таблица команд — без внешней рамки, только горизонтальные разделители */
+    .admin-panel-table-wrap {
+      max-height: 280px; overflow: auto;
+      border-radius: 10px;
+      background: rgba(255,255,255,.015);
+    }
+    .admin-panel-table {
+      width: 100%; border-collapse: collapse;
+      font-size: .82rem;
+    }
+    .admin-panel-table thead th {
+      position: sticky; top: 0;
+      background: rgba(15,15,20,.96);
+      backdrop-filter: blur(6px);
+      text-align: left; padding: 10px 12px;
+      font-size: .72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .04em;
+      color: var(--text2);
+      border-bottom: 1px solid var(--border);
+    }
+    .admin-panel-table tbody td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      color: var(--text);
+    }
+    .admin-panel-table tbody tr:last-child td { border-bottom: 0; }
+    .admin-panel-table tbody tr:hover td { background: rgba(255,255,255,.02); }
+
+    /* DB-счётчики — плоский блок без рамки */
+    .admin-panel-pre {
+      white-space: pre-wrap;
+      background: rgba(255,255,255,.02);
+      border-radius: 10px;
+      padding: 12px 14px;
+      max-height: 240px; overflow: auto;
+      margin: 0;
+      font-size: .82rem;
+      color: var(--text);
+    }
+
+    /* ================================================================
+       GUILDS GROUP · развёрнутый вид — список-рельс, НЕ сетка карточек.
+       Внутри группы карточки гильдий становятся строками с левой
+       цветовой полосой и разделителями снизу. Никаких «окон в окнах».
+       ================================================================ */
+    .sg-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding: 2px 4px 6px;
+      background: transparent;
+      border-radius: 0;
+      border-left: 1px solid rgba(255,255,255,.04);
+      border-right: 1px solid rgba(255,255,255,.04);
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      border-radius: 0 0 10px 10px;
+    }
+    .sg-body > .guild-card {
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      padding: 12px 14px 14px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      gap: 8px;
+    }
+    .sg-body > .guild-card:last-child { border-bottom: 0; }
+    .sg-body > .guild-card:hover {
+      background: rgba(255,255,255,.022);
+      transform: none;
+      border-color: rgba(255,255,255,.05);
+    }
+    .sg-body > .guild-card::before {
+      top: 14px; bottom: 14px; left: 6px; width: 3px;
+      border-radius: 0 3px 3px 0;
+    }
+    /* Внутри группы .gc-info — просто строка фактов, без собственной коробки */
+    .sg-body > .guild-card > .gc-info {
+      background: transparent;
+      padding: 0;
+      font-size: .78rem;
+      gap: 4px 18px;
+    }
+    .sg-body > .guild-card > .gc-info-item { justify-content: flex-start; gap: 6px; }
+    /* Team summary inside group — упрощённый */
+    .sg-body > .guild-card > .gc-team summary {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,.05);
+      padding: 5px 10px;
+    }
+    .sg-body > .guild-card > .gc-team summary:hover {
+      background: rgba(255,107,53,.06);
+      border-color: rgba(255,107,53,.3);
+    }
+
+    /* Ограничим overflow у корневых списков гильдий, чтобы скролл был виден */
+    .guild-cards::-webkit-scrollbar,
+    .server-groups::-webkit-scrollbar,
+    .admin-panel-table-wrap::-webkit-scrollbar,
+    .admin-panel-pre::-webkit-scrollbar { width: 10px; height: 10px; }
+    .guild-cards::-webkit-scrollbar-thumb,
+    .server-groups::-webkit-scrollbar-thumb,
+    .admin-panel-table-wrap::-webkit-scrollbar-thumb,
+    .admin-panel-pre::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.08);
+      border-radius: 6px;
     }
   </style>
 </head>
@@ -1143,43 +1298,71 @@
 
         <!-- PANEL: admin -->
         <div id="panel-admin" class="dash-panel" role="tabpanel">
-          <div class="card">
+          <div class="card admin-panel-card">
             <div class="card-header">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
-              Полная админ панель
+              Полная админ-панель
             </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-              <p class="muted" id="admin-status" style="margin:0">Загрузка данных...</p>
-              <button type="button" class="dash-btn dash-btn--ghost" id="admin-refresh-btn" style="padding:8px 14px">
+
+            <div class="admin-panel-head">
+              <p class="muted" id="admin-status">Загрузка данных...</p>
+              <button type="button" class="dash-btn dash-btn--ghost" id="admin-refresh-btn">
                 Обновить данные
               </button>
             </div>
-            <div class="cmd-grid" id="admin-overview"></div>
-            <p class="info-label" style="margin:16px 0 8px">Хост (Pi / сервер бота)</p>
-            <div id="admin-host-metrics" style="background:rgba(255,255,255,.015);border:1px solid var(--border);border-radius:12px;padding:12px">—</div>
-            <p class="info-label" style="margin:16px 0 8px">Команды в игре (Rust+)</p>
-            <div style="overflow:auto;max-height:280px;border:1px solid var(--border);border-radius:12px">
-              <table style="width:100%;border-collapse:collapse;font-size:.82rem">
-                <thead>
-                  <tr style="background:rgba(255,255,255,.03)">
-                    <th style="text-align:left;padding:8px">Время</th>
-                    <th style="text-align:left;padding:8px">Команда</th>
-                    <th style="text-align:left;padding:8px">Игрок</th>
-                    <th style="text-align:left;padding:8px">Сервер</th>
-                    <th style="text-align:left;padding:8px">Гильдия</th>
-                  </tr>
-                </thead>
-                <tbody id="admin-commands-tbody"></tbody>
-              </table>
-            </div>
-            <p class="info-label" style="margin:16px 0 8px">Таблицы БД</p>
-            <pre id="admin-db-counts" style="white-space:pre-wrap;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px;max-height:240px;overflow:auto">—</pre>
-            <div class="guilds-section">
-              <div class="guilds-toolbar">
-                <div class="guilds-toolbar-left">
-                  <p class="info-label" style="margin:0">Гильдии и live Rust+</p>
-                  <span id="guilds-counter" class="dash-badge dash-badge--neutral">0</span>
+
+            <div class="admin-panel-body">
+              <section class="admin-panel-section admin-panel-section--overview">
+                <h3 class="admin-panel-section__title">
+                  <span class="admin-panel-section__title-text">Сводка</span>
+                </h3>
+                <div class="cmd-grid" id="admin-overview"></div>
+              </section>
+
+              <section class="admin-panel-section">
+                <h3 class="admin-panel-section__title">
+                  <span class="admin-panel-section__title-text">Хост · Pi / сервер бота</span>
+                </h3>
+                <div id="admin-host-metrics">—</div>
+              </section>
+
+              <section class="admin-panel-section">
+                <h3 class="admin-panel-section__title">
+                  <span class="admin-panel-section__title-text">Команды в игре · Rust+</span>
+                </h3>
+                <div class="admin-panel-table-wrap">
+                  <table class="admin-panel-table">
+                    <thead>
+                      <tr>
+                        <th>Время</th>
+                        <th>Команда</th>
+                        <th>Игрок</th>
+                        <th>Сервер</th>
+                        <th>Гильдия</th>
+                      </tr>
+                    </thead>
+                    <tbody id="admin-commands-tbody"></tbody>
+                  </table>
                 </div>
+              </section>
+
+              <section class="admin-panel-section">
+                <h3 class="admin-panel-section__title">
+                  <span class="admin-panel-section__title-text">Таблицы БД</span>
+                </h3>
+                <pre id="admin-db-counts" class="admin-panel-pre">—</pre>
+              </section>
+
+              <section class="admin-panel-section">
+                <h3 class="admin-panel-section__title">
+                  <span class="admin-panel-section__title-text">Гильдии · live Rust+</span>
+                  <span id="guilds-counter" class="admin-panel-section__title-count">0</span>
+                </h3>
+                <div class="guilds-section">
+                  <div class="guilds-toolbar">
+                    <div class="guilds-toolbar-left">
+                      <span class="muted" style="font-size:.8rem">Фильтр / сортировка / группировка</span>
+                    </div>
                 <div class="guilds-toolbar-right">
                   <input
                     type="search"
@@ -1213,8 +1396,10 @@
                   <button type="button" id="guilds-shared-only" class="dash-toggle-btn" title="Показать только сервера, на которых 2+ гильдий (сортировка по IP сервера)">🔗 Только общие (по IP)</button>
                 </div>
               </div>
-              <div id="admin-guilds-list" class="guild-cards"></div>
-              <div id="admin-guilds-groups" class="server-groups" style="display:none"></div>
+                  <div id="admin-guilds-list" class="guild-cards"></div>
+                  <div id="admin-guilds-groups" class="server-groups" style="display:none"></div>
+                </div>
+              </section>
             </div>
           </div>
         </div>
