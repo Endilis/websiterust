@@ -436,20 +436,19 @@
       padding: 12px 14px;
       background: rgba(255,255,255,.03);
       border: 1px solid var(--border);
-      border-radius: 12px 12px 0 0;
-      border-bottom: none;
+      border-radius: 12px;
     }
     .guilds-toolbar-left { display: flex; align-items: center; gap: 10px; }
     .guilds-toolbar-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    /* Плоский грид: без собственной рамки.
+       Внешняя «коробка» — сама карточка админ-панели (.card).
+       Визуально отделяется от тулбара сверху небольшим отступом. */
     .guild-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: 12px;
-      padding: 14px;
-      background: rgba(255,255,255,.015);
-      border: 1px solid var(--border);
-      border-top: none;
-      border-radius: 0 0 12px 12px;
+      margin-top: 12px;
+      padding: 2px;
       max-height: 720px;
       overflow-y: auto;
     }
@@ -619,13 +618,13 @@
       color: #ffb38a;
     }
 
+    /* Плоский контейнер групп — без собственной рамки и фона.
+       Вся «коробка» — это внешняя .card админ-панели; дальше внутри неё
+       идут только секционные полосы с цветовым акцентом, без вложенных рамок. */
     .server-groups {
-      display: flex; flex-direction: column; gap: 12px;
-      padding: 14px;
-      background: rgba(255,255,255,.015);
-      border: 1px solid var(--border);
-      border-top: none;
-      border-radius: 0 0 12px 12px;
+      display: flex; flex-direction: column; gap: 10px;
+      margin-top: 12px;
+      padding: 2px;
       max-height: 720px;
       overflow-y: auto;
     }
@@ -633,19 +632,25 @@
       padding: 40px 20px; text-align: center;
       color: var(--text2); font-size: .9rem;
     }
-    .sg-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    .sg-card--shared { border-color: rgba(255,107,53,.45); }
+
+    /* Карточка группы — это не прямоугольник, а двухполосный блок:
+       полоса-шапка (кликабельная) + полоса-тело (с контентом).
+       Визуальная связь между ними — одинаковый скруглённый фон и
+       одинаковый левый цветовой «рельс». */
+    .sg-card { background: transparent; border: 0; border-radius: 10px; overflow: hidden; }
     .sg-summary {
+      position: relative;
       display: flex; align-items: center; gap: 10px;
-      padding: 12px 14px;
-      cursor: pointer;
-      list-style: none;
-      user-select: none;
+      padding: 10px 14px 10px 18px;
+      cursor: pointer; list-style: none; user-select: none;
+      background: rgba(255,255,255,.03);
+      border-radius: 10px;
+      transition: background .15s;
+    }
+    .sg-summary:hover { background: rgba(255,255,255,.05); }
+    .sg-card[open] > .sg-summary {
+      background: rgba(255,255,255,.05);
+      border-radius: 10px 10px 0 0;
     }
     .sg-summary::-webkit-details-marker { display: none; }
     .sg-summary::before {
@@ -655,6 +660,14 @@
       transition: transform .15s;
     }
     .sg-card[open] > .sg-summary::before { transform: rotate(90deg); }
+    /* Левая цветовая полоса-маркер: серый для одиночных, оранжевый для shared */
+    .sg-summary::after {
+      content: ''; position: absolute;
+      left: 0; top: 10px; bottom: 10px;
+      width: 3px; border-radius: 0 3px 3px 0;
+      background: #6b7280;
+    }
+    .sg-card--shared .sg-summary::after { background: #ff6b35; }
     .sg-title {
       display: flex; flex-direction: column; min-width: 0; flex: 1;
     }
@@ -663,14 +676,14 @@
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .sg-addr {
-      font-size: .78rem; color: var(--text2);
+      font-size: .76rem; color: var(--text2);
       font-family: ui-monospace, Consolas, monospace;
     }
     .sg-count {
       display: inline-flex; align-items: center; gap: 6px;
       padding: 3px 10px; border-radius: 999px;
-      font-size: .78rem; font-weight: 700;
-      background: rgba(255,255,255,.06);
+      font-size: .76rem; font-weight: 700;
+      background: rgba(255,255,255,.07);
       color: var(--text);
     }
     .sg-card--shared .sg-count {
@@ -682,22 +695,49 @@
       font-variant-numeric: tabular-nums;
     }
     .sg-body {
-      padding: 0 14px 14px;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 10px;
+      padding: 12px 14px 14px;
+      background: rgba(255,255,255,.02);
+      border-radius: 0 0 10px 10px;
+    }
+
+    /* Карточки гильдий внутри группы — плоские, без собственной рамки.
+       Зрительная иерархия держится за счёт фона и левой полосы-статуса. */
+    .sg-body .guild-card {
+      background: rgba(0,0,0,.22);
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 12px 10px 14px;
+      gap: 8px;
+    }
+    .sg-body .guild-card:hover {
+      background: rgba(0,0,0,.3);
+      transform: none;
+      border-color: transparent;
+    }
+    .sg-body .guild-card::before {
+      top: 10px; bottom: 10px; width: 3px; border-radius: 0 3px 3px 0;
+    }
+    /* Внутренние «коробочки» гильдии тоже упрощаем в групповом режиме */
+    .sg-body .gc-info {
+      background: rgba(0,0,0,.18);
+      padding: 6px 8px;
+      font-size: .78rem;
     }
 
     .sg-section-title {
       display: flex; align-items: center; gap: 8px;
-      margin: 4px 2px 2px;
-      font-size: .8rem; font-weight: 700;
+      margin: 2px 2px 4px;
+      font-size: .78rem; font-weight: 700;
       text-transform: uppercase; letter-spacing: .04em;
       color: var(--text2);
     }
     .sg-section-title .dash-badge { font-size: .7rem; }
     .sg-singles-toggle {
       align-self: flex-start;
+      margin-top: 4px;
       padding: 8px 12px; border-radius: 10px;
       font-family: inherit; font-size: .82rem; font-weight: 600;
       color: var(--text2); background: rgba(255,255,255,.03);
