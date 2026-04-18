@@ -1258,6 +1258,51 @@
 
               <section class="admin-panel-section">
                 <h3 class="admin-panel-section__title">
+                  <span class="admin-panel-section__title-text">Новая БД · rust_users / rust_servers</span>
+                </h3>
+                <div class="admin-stat-grid" id="admin-rust-users-summary" style="margin-bottom:14px"></div>
+                <div class="admin-panel-table-wrap">
+                  <table class="admin-panel-table">
+                    <thead>
+                      <tr>
+                        <th>internal_id</th>
+                        <th>Discord</th>
+                        <th>Ник</th>
+                        <th>Steam</th>
+                        <th>FCM</th>
+                        <th>guild_id</th>
+                        <th>Страна</th>
+                        <th>Последний вход</th>
+                      </tr>
+                    </thead>
+                    <tbody id="admin-rust-users-tbody"></tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section class="admin-panel-section">
+                <h3 class="admin-panel-section__title">
+                  <span class="admin-panel-section__title-text">Входы в панель (как команды в Rust+)</span>
+                </h3>
+                <p class="muted" style="margin-bottom:10px;font-size:0.85rem">Уведомления в Discord webhook дублируются при каждом OAuth-входе.</p>
+                <div class="admin-panel-table-wrap">
+                  <table class="admin-panel-table">
+                    <thead>
+                      <tr>
+                        <th>Время</th>
+                        <th>Discord ID</th>
+                        <th>Ник</th>
+                        <th>IP</th>
+                        <th>Страна</th>
+                      </tr>
+                    </thead>
+                    <tbody id="admin-panel-logins-tbody"></tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section class="admin-panel-section">
+                <h3 class="admin-panel-section__title">
                   <span class="admin-panel-section__title-text">Таблицы БД</span>
                 </h3>
                 <pre id="admin-db-counts" class="admin-panel-pre">—</pre>
@@ -1988,6 +2033,56 @@
           `;
         }).join('') || '<tr><td colspan="5" style="padding:8px">Пока нет команд</td></tr>';
       }
+
+      const rustSumEl = document.getElementById('admin-rust-users-summary');
+      const rustTbody = document.getElementById('admin-rust-users-tbody');
+      const loginsTbody = document.getElementById('admin-panel-logins-tbody');
+      if (rustSumEl && data.rust_users_db) {
+        const ru = data.rust_users_db;
+        const tile = (label, value, cls = '') => `
+          <div class="admin-stat ${cls}">
+            <div class="admin-stat-label">${label}</div>
+            <div class="admin-stat-value">${value}</div>
+          </div>`;
+        rustSumEl.classList.add('admin-stat-grid');
+        rustSumEl.innerHTML = [
+          tile('👤 rust_users', ru.users_count ?? '—', 'admin-stat--info'),
+          tile('🗄 строк rust_servers', ru.rust_servers_rows ?? '—', 'admin-stat--info'),
+          tile('✅ FCM OK (пользователей)', ru.fcm_ok_users ?? '—', 'admin-stat--ok'),
+        ].join('');
+      }
+      if (rustTbody) {
+        const rec = (data.rust_users_db && data.rust_users_db.recent_users) || [];
+        rustTbody.innerHTML = rec.length ? rec.map(u => {
+          const t = u.last_login_at != null
+            ? new Date(Number(u.last_login_at) * 1000).toLocaleString('ru-RU')
+            : '—';
+          return `<tr>
+            <td class="mono">${escapeHtml(String(u.internal_id))}</td>
+            <td class="mono">${escapeHtml(String(u.discord_id))}</td>
+            <td>${escapeHtml(String(u.discord_username || '—'))}</td>
+            <td class="mono">${escapeHtml(String(u.steam_id || '—'))}</td>
+            <td>${escapeHtml(String(u.fcm_status || '—'))}</td>
+            <td class="mono">${escapeHtml(String(u.guild_id || '—'))}</td>
+            <td>${escapeHtml(String(u.country || '—'))}</td>
+            <td style="white-space:nowrap;font-size:0.82rem">${t}</td>
+          </tr>`;
+        }).join('') : '<tr><td colspan="8" style="padding:8px">Нет записей rust_users</td></tr>';
+      }
+      if (loginsTbody) {
+        const pl = Array.isArray(data.panel_logins) ? data.panel_logins : [];
+        loginsTbody.innerHTML = pl.length ? pl.map(p => {
+          const ts = p.ts != null ? new Date(Number(p.ts) * 1000).toLocaleString('ru-RU') : '—';
+          return `<tr>
+            <td style="white-space:nowrap;font-size:0.82rem">${escapeHtml(ts)}</td>
+            <td class="mono">${escapeHtml(String(p.discord_id || ''))}</td>
+            <td>${escapeHtml(String(p.username || '—'))}</td>
+            <td class="mono">${escapeHtml(String(p.ip || '—'))}</td>
+            <td>${escapeHtml(String(p.country || '—'))}</td>
+          </tr>`;
+        }).join('') : '<tr><td colspan="5" style="padding:8px">Пока нет входов (после перезапуска бота буфер пуст)</td></tr>';
+      }
+
       if (dbEl) {
         const lines = Object.entries(data.db_counts || {}).map(([k, v]) => `${k}: ${v}`);
         dbEl.textContent = lines.join('\n') || '—';
