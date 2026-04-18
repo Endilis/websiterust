@@ -1170,6 +1170,7 @@
                     <option value="shared_server">Общий сервер</option>
                   </select>
                   <button type="button" id="guilds-group-same" class="dash-toggle-btn" title="Группировать гильдии, играющие на одном сервере">🧩 Одинаковые сервера</button>
+                  <button type="button" id="guilds-shared-only" class="dash-toggle-btn" title="Показать только сервера, на которых 2+ гильдий (сортировка по IP сервера)">🔗 Только общие (по IP)</button>
                 </div>
               </div>
               <div id="admin-guilds-list" class="guild-cards"></div>
@@ -1200,6 +1201,7 @@
   let _adminGuildsCache = [];
   let _adminToolbarBound = false;
   let _groupBySameServer = false;
+  let _sharedOnlyByIp = false;
 
   function clearAdminPanelPoll() {
     if (_adminPanelPollTimer) {
@@ -1885,6 +1887,7 @@
     const sort = document.getElementById('guilds-sort');
     const filter = document.getElementById('guilds-filter');
     const groupBtn = document.getElementById('guilds-group-same');
+    const sharedBtn = document.getElementById('guilds-shared-only');
     if (!search || !sort || !filter) return;
     const h = () => renderGuildCards();
     search.addEventListener('input', h);
@@ -1893,11 +1896,38 @@
     if (groupBtn) {
       groupBtn.addEventListener('click', () => {
         _groupBySameServer = !_groupBySameServer;
+        if (_groupBySameServer) {
+          _sharedOnlyByIp = false;
+          if (sharedBtn) sharedBtn.classList.remove('is-active');
+        }
         groupBtn.classList.toggle('is-active', _groupBySameServer);
         renderGuildCards();
       });
     }
+    if (sharedBtn) {
+      sharedBtn.addEventListener('click', () => {
+        _sharedOnlyByIp = !_sharedOnlyByIp;
+        if (_sharedOnlyByIp) {
+          _groupBySameServer = false;
+          if (groupBtn) groupBtn.classList.remove('is-active');
+        }
+        sharedBtn.classList.toggle('is-active', _sharedOnlyByIp);
+        renderGuildCards();
+      });
+    }
     _adminToolbarBound = true;
+  }
+
+  // Числовой ключ сортировки по IP: "10.2.3.4" → "010.002.003.004".
+  // Для не-IPv4 (например, доменных имён) возвращаем исходную строку
+  // в нижнем регистре, чтобы localeCompare работал предсказуемо.
+  function ipSortKey(ip) {
+    const s = String(ip || '').trim();
+    const parts = s.split('.');
+    if (parts.length === 4 && parts.every(p => /^\d+$/.test(p))) {
+      return parts.map(p => p.padStart(3, '0')).join('.');
+    }
+    return s.toLowerCase();
   }
 
   function serverKeyFor(g) {
@@ -2024,6 +2054,15 @@
         : baseCount;
     }
 
+    if (_sharedOnlyByIp) {
+      listEl.style.display = 'none';
+      if (groupsEl) {
+        groupsEl.style.display = '';
+        groupsEl.innerHTML = renderSharedServersByIp(items, sharedAll);
+      }
+      return;
+    }
+
     if (_groupBySameServer) {
       listEl.style.display = 'none';
       if (groupsEl) {
@@ -2059,6 +2098,83 @@
     }
 
     listEl.innerHTML = items.map(renderSingleGuildCard).join('');
+  }
+
+  // Режим «🔗 Только общие (по IP)»: показываем исключительно сервера,
+  // на которых играет 2+ гильдий, отсортированные по IP сервера
+  // (с числовой сортировкой октетов IPv4). Каждая группа раскрыта по умолчанию,
+  // гильдии внутри — по алфавиту имени.
+  function renderSharedServersByIp(items, sharedSet) {
+    if (!items.length) {
+      return '<div class="sg-empty">Нет гильдий по заданному фильтру</div>';
+    }
+
+    const groups = new Map();
+    for (const g of items) {
+      const key = serverKeyFor(g);
+      if (!key || !sharedSet.has(key)) continue;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(g);
+    }
+
+    if (!groups.size) {
+      return '<div class="sg-empty">Среди отфильтрованных гильдий нет общих серверов</div>';
+    }
+
+    const arr = Array.from(groups.entries()).map(([key, gs]) => {
+      const first = gs[0];
+      const live = gs.find(x => x?.rust_live?.server_name)?.rust_live;
+      const name = live?.server_name || first.rust_db?.ip || 'Неизвестный сервер';
+      const ip = first.rust_db?.ip || '';
+      const port = first.rust_db?.port != null ? String(first.rust_db.port) : '';
+      const addr = first.rust_db ? `${ip}:${port}` : '';
+      const steam = first.rust_db?.steam_id || '';
+      const players = live?.players != null && live?.max_players != null
+        ? `${live.players}/${live.max_players}${live.queued_players ? ' +' + live.queued_players : ''}`
+        : '';
+      return {
+        key, guilds: gs, name, ip, port, addr, steam, players,
+        _ipKey: ipSortKey(ip),
+        _portNum: port === '' ? 0 : (parseInt(port, 10) || 0),
+      };
+    });
+
+    arr.sort((a, b) => {
+      const c = a._ipKey.localeCompare(b._ipKey);
+      if (c !== 0) return c;
+      if (a._portNum !== b._portNum) return a._portNum - b._portNum;
+      return String(a.name).localeCompare(String(b.name), 'ru');
+    });
+
+    const totalSharedGuilds = arr.reduce((s, g) => s + g.guilds.length, 0);
+    let html = `<div class="sg-section-title">🔗 Общие сервера (по IP)
+      <span class="dash-badge dash-badge--neutral">${arr.length} сервер${arr.length === 1 ? '' : 'ов'} · ${totalSharedGuilds} гильдий</span>
+    </div>`;
+
+    html += arr.map(gr => {
+      const cards = gr.guilds
+        .slice()
+        .sort((a, b) => String(a.guild_name || '').localeCompare(String(b.guild_name || ''), 'ru'))
+        .map(renderSingleGuildCard)
+        .join('');
+      const meta = [gr.addr, gr.steam ? `Steam ${gr.steam}` : ''].filter(Boolean).join(' · ');
+      const word = gr.guilds.length < 5 ? 'гильдии' : 'гильдий';
+      return `
+        <details class="sg-card sg-card--shared" open>
+          <summary class="sg-summary">
+            <div class="sg-title">
+              <div class="sg-name" title="${escapeHtml(gr.name)}">${escapeHtml(gr.name)}</div>
+              <div class="sg-addr">${escapeHtml(meta)}</div>
+            </div>
+            ${gr.players ? `<span class="sg-players">👥 ${escapeHtml(gr.players)}</span>` : ''}
+            <span class="sg-count">${gr.guilds.length} ${word}</span>
+          </summary>
+          <div class="sg-body">${cards}</div>
+        </details>
+      `;
+    }).join('');
+
+    return html;
   }
 
   function renderServerGroups(items, sharedSet) {
