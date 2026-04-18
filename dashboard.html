@@ -440,17 +440,15 @@
     }
     .guilds-toolbar-left { display: flex; align-items: center; gap: 10px; }
     .guilds-toolbar-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-    /* Плоский грид: без собственной рамки.
-       Внешняя «коробка» — сама карточка админ-панели (.card).
-       Визуально отделяется от тулбара сверху небольшим отступом. */
+    /* Плоский грид: без собственной рамки и БЕЗ внутреннего скролла.
+       Длинный список скроллится естественным скроллом страницы,
+       а не «окном в окне». */
     .guild-cards {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: 12px;
       margin-top: 12px;
       padding: 2px;
-      max-height: 720px;
-      overflow-y: auto;
     }
     .guild-card {
       position: relative;
@@ -618,15 +616,12 @@
       color: #ffb38a;
     }
 
-    /* Плоский контейнер групп — без собственной рамки и фона.
-       Вся «коробка» — это внешняя .card админ-панели; дальше внутри неё
-       идут только секционные полосы с цветовым акцентом, без вложенных рамок. */
+    /* Плоский контейнер групп — без собственной рамки, фона и внутреннего
+       скролла. Длинные списки скроллятся естественным скроллом страницы. */
     .server-groups {
       display: flex; flex-direction: column; gap: 10px;
       margin-top: 12px;
       padding: 2px;
-      max-height: 720px;
-      overflow-y: auto;
     }
     .sg-empty {
       padding: 40px 20px; text-align: center;
@@ -981,13 +976,9 @@
       border-color: rgba(255,107,53,.3);
     }
 
-    /* Ограничим overflow у корневых списков гильдий, чтобы скролл был виден */
-    .guild-cards::-webkit-scrollbar,
-    .server-groups::-webkit-scrollbar,
+    /* Кастомные скроллбары для оставшихся внутренних скролл-зон */
     .admin-panel-table-wrap::-webkit-scrollbar,
     .admin-panel-pre::-webkit-scrollbar { width: 10px; height: 10px; }
-    .guild-cards::-webkit-scrollbar-thumb,
-    .server-groups::-webkit-scrollbar-thumb,
     .admin-panel-table-wrap::-webkit-scrollbar-thumb,
     .admin-panel-pre::-webkit-scrollbar-thumb {
       background: rgba(255,255,255,.08);
