@@ -1,0 +1,30 @@
+{
+   "action": {
+      "default_icon": "icons/rustinfo_256.png",
+      "default_title": "LOGIN to rustInfo.online"
+   },
+   "background": {
+      "service_worker": "background.js"
+   },
+   "content_scripts": [ {
+      "js": [ "addon.js" ],
+      "matches": [ "https://companion-rust.facepunch.com/*" ]
+   } ],
+   "icons": {
+      "128": "icons/rustinfo_128.png",
+      "16": "icons/rustinfo_16.png",
+      "256": "icons/rustinfo_256.png",
+      "32": "icons/rustinfo_32.png",
+      "48": "icons/rustinfo_48.png",
+      "64": "icons/rustinfo_64.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsEMiYHlJOauE2GAluIh1r4dG5JuXl93hfMje6JVYDamqmfIvflzzn9enYtOsU/GPU2Oe3/z4tMlBaWZTXAt1fgLnpM0BEnDti8TC6A7B1Fg9gm0xXFIniygz1xVUnd5TwC6YTr2llpANysf4BETVpBOO2h1HAEWtlATpPC1PLmLD1jPdF6awKiXnSUOTdawX1byBpEYvJtoTkgweDb0ePI4GhIxDHpmHLaVsl0kSYPZYhxmiFTiGMiGkbjj8odEpy5QxilHlNOINSoMqmaOwx9iaxmDXYbzaa64Zprp5uKd/XoGOPSZfvyx6XUf+QYm7fIwy3nn5FLgWL3u77qYNiQIDAQAB",
+   "manifest_version": 3,
+   "name": "RustInfo Bot",
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "1.0",
+   "web_accessible_resources": [ {
+      "matches": [ "https://companion-rust.facepunch.com/*" ],
+      "resources": [ "worker.js" ]
+   } ]
+}
