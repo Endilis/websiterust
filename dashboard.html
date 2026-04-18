@@ -428,7 +428,15 @@
     }
     .notify-switch input:focus-visible + .notify-slider { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-    /* ================ ADMIN GUILDS: modern cards ================ */
+    /* =====================================================================
+       ADMIN · SERVER DIRECTORY
+       Единое представление: гильдии автоматически группируются по
+       физическому Rust-серверу (ip:port). Без тумблеров, без «режимов».
+       - Solo-сервер (1 гильдия) — карточка-строка без раскрытия.
+       - Shared-сервер (2+ гильдий) — раскрывающаяся карточка с оранжевым
+         акцентом; все гильдии на нём видны в виде плоского списка строк.
+       ===================================================================== */
+
     .guilds-section { display: flex; flex-direction: column; gap: 0; }
     .guilds-toolbar {
       display: flex; flex-wrap: wrap; gap: 12px;
@@ -440,55 +448,8 @@
     }
     .guilds-toolbar-left { display: flex; align-items: center; gap: 10px; }
     .guilds-toolbar-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-    /* Плоский грид: без собственной рамки и БЕЗ внутреннего скролла.
-       Длинный список скроллится естественным скроллом страницы,
-       а не «окном в окне». */
-    .guild-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 12px;
-      margin-top: 12px;
-      padding: 2px;
-    }
-    .guild-card {
-      position: relative;
-      display: flex; flex-direction: column; gap: 10px;
-      padding: 14px 16px 14px 18px;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      transition: border-color .15s, transform .15s, background .15s;
-    }
-    .guild-card:hover { border-color: rgba(255,107,53,.35); transform: translateY(-1px); }
-    .guild-card::before {
-      content: ''; position: absolute; top: 10px; bottom: 10px; left: 0;
-      width: 3px; border-radius: 3px;
-      background: var(--text2);
-    }
-    .guild-card[data-status="connected"]::before { background: #34d399; }
-    .guild-card[data-status="disconnected"]::before { background: #6b7280; }
-    .guild-card[data-status="error"]::before { background: #ef4444; }
-    .guild-card[data-status="empty"]::before { background: #fbbf24; }
-    .guild-card[data-status="no_rust"]::before { background: #4b5563; }
 
-    .gc-head {
-      display: flex; align-items: flex-start; justify-content: space-between;
-      gap: 10px;
-    }
-    .gc-title { display: flex; flex-direction: column; min-width: 0; flex: 1; }
-    .gc-name {
-      font-weight: 700; font-size: .98rem; color: var(--text);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .gc-id {
-      font-family: ui-monospace, Consolas, monospace;
-      font-size: .72rem; color: var(--text2);
-      margin-top: 2px;
-    }
-    .gc-badges {
-      display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end;
-      max-width: 55%;
-    }
+    /* Badges and team member atoms (reused as compact inline primitives) */
     .gc-mini-badge {
       padding: 2px 7px; border-radius: 6px;
       font-size: .7rem; font-weight: 600;
@@ -500,84 +461,10 @@
     .mb-fcm { background: rgba(88,101,242,.15); color: #8b95f7; border-color: rgba(88,101,242,.28); }
     .mb-lang { background: rgba(255,255,255,.05); color: var(--text2); border-color: var(--border); text-transform: uppercase; }
     .mb-discord-off { background: rgba(107,114,128,.15); color: #9ca3af; border-color: rgba(107,114,128,.28); }
-
-    .gc-status-row {
-      display: flex; align-items: center; gap: 8px;
-      flex-wrap: wrap;
-    }
-    .gc-status {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 3px 9px; border-radius: 6px;
-      font-size: .75rem; font-weight: 600;
-    }
-    .gc-status--connected { background: rgba(52,211,153,.12); color: #34d399; }
-    .gc-status--disconnected { background: rgba(107,114,128,.15); color: #9ca3af; }
-    .gc-status--error { background: rgba(239,68,68,.12); color: #ef4444; }
-    .gc-status--empty { background: rgba(251,191,36,.12); color: #fbbf24; }
-    .gc-status--no_rust { background: rgba(75,85,99,.2); color: #6b7280; }
-    .gc-status::before {
-      content: ''; width: 6px; height: 6px; border-radius: 50%;
-      background: currentColor;
-    }
-
-    .gc-server-name {
-      font-size: .88rem; font-weight: 600; color: var(--text);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      min-width: 0;
-    }
-
-    .gc-info {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px 10px;
-      padding: 8px 10px;
-      background: rgba(0,0,0,.18);
-      border-radius: 8px;
-      font-size: .8rem;
-    }
-    .gc-info-item { display: flex; justify-content: space-between; gap: 6px; min-width: 0; }
-    .gc-info-k { color: var(--text2); flex-shrink: 0; }
-    .gc-info-v {
-      color: var(--text); font-weight: 600;
-      font-family: ui-monospace, Consolas, monospace;
-      font-size: .77rem;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      direction: rtl; text-align: left;
-    }
-    .gc-info-v--plain { font-family: inherit; font-size: .8rem; direction: ltr; }
-
-    .gc-team details { border-radius: 8px; }
-    .gc-team summary {
-      list-style: none;
-      cursor: pointer; user-select: none;
-      display: flex; align-items: center; gap: 8px;
-      padding: 6px 10px;
-      background: rgba(255,255,255,.03);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: .8rem;
-      transition: background .15s;
-    }
-    .gc-team summary::-webkit-details-marker { display: none; }
-    .gc-team summary:hover { background: rgba(255,255,255,.06); }
-    .gc-team summary::after {
-      content: '▸'; margin-left: auto; color: var(--text2);
-      transition: transform .15s;
-    }
-    .gc-team details[open] summary::after { transform: rotate(90deg); }
-    .gc-team-count { font-weight: 700; color: var(--text); }
-    .gc-team-summary { color: var(--text2); font-size: .74rem; }
-    .gc-team-list {
-      list-style: none; margin: 6px 0 0; padding: 8px 10px;
-      background: rgba(0,0,0,.18); border-radius: 8px;
-      max-height: 200px; overflow-y: auto;
-    }
-    .gc-member {
-      display: flex; align-items: center; gap: 8px;
-      padding: 4px 0; font-size: .8rem;
-      border-bottom: 1px dashed rgba(255,255,255,.04);
-    }
-    .gc-member:last-child { border-bottom: none; }
+    .gc-member-online { color: #34d399; }
+    .gc-member-offline { color: #4b5563; }
+    .gc-member-alive { color: #34d399; }
+    .gc-member-dead { color: #ef4444; filter: grayscale(.2); }
     .gc-member-name {
       color: var(--text); font-weight: 500;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -588,187 +475,218 @@
       font-family: ui-monospace, Consolas, monospace;
       flex-shrink: 0;
     }
-    .gc-member-online { color: #34d399; }
-    .gc-member-offline { color: #4b5563; }
-    .gc-member-alive { color: #34d399; }
-    .gc-member-dead { color: #ef4444; filter: grayscale(.2); }
 
-    .guild-cards-empty {
-      grid-column: 1 / -1;
-      padding: 40px 20px; text-align: center;
-      color: var(--text2); font-size: .9rem;
-    }
-
-    /* ===== Кнопка-тумблер в тулбаре и группировка «одинаковых серверов» ===== */
-    .dash-toggle-btn {
-      padding: 8px 12px; border-radius: 10px;
-      font-family: inherit; font-size: .85rem; font-weight: 600;
-      color: var(--text); background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      cursor: pointer;
-      transition: border-color .15s, background .15s, color .15s;
-      white-space: nowrap;
-    }
-    .dash-toggle-btn:hover { border-color: rgba(255,107,53,.45); }
-    .dash-toggle-btn.is-active {
-      background: rgba(255,107,53,.12);
-      border-color: rgba(255,107,53,.55);
-      color: #ffb38a;
-    }
-
-    /* Плоский контейнер групп — без собственной рамки, фона и внутреннего
-       скролла. Длинные списки скроллятся естественным скроллом страницы. */
-    .server-groups {
-      display: flex; flex-direction: column; gap: 10px;
+    /* Root container: flat vertical list, natural page scroll */
+    .server-dir {
+      display: flex; flex-direction: column;
+      gap: 10px;
       margin-top: 12px;
       padding: 2px;
     }
-    .sg-empty {
+    .srv-empty {
       padding: 40px 20px; text-align: center;
       color: var(--text2); font-size: .9rem;
     }
 
-    /* ================================================================
-       Группа серверов — ЕДИНЫЙ «пояс» (шапка + тело) с общим фоном и
-       сквозным левым цветовым рельсом на всю высоту. Внутри тела —
-       список строк-гильдий, разделённых hairline-бордером. Никаких
-       вложенных карточек и прямоугольников в прямоугольниках.
-       ================================================================ */
-    .sg-card {
+    /* Server card = ОДНА рамка с цветным рельсом слева на всю высоту.
+       Solo и shared — один и тот же визуальный шаблон, меняется только
+       акцент и поведение (раскрытие у shared). */
+    .srv-card {
       position: relative;
-      background: rgba(255,255,255,.025);
-      border: 1px solid rgba(255,255,255,.04);
-      border-radius: 10px;
+      background: rgba(255,255,255,.022);
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: 12px;
       overflow: hidden;
+      transition: border-color .15s, background .15s;
     }
-    .sg-card::before {
-      /* Сквозной левый рельс: виден и в шапке, и в теле группы */
+    .srv-card::before {
       content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 3px;
-      background: #6b7280;
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: #6b7280;
       z-index: 1;
     }
-    .sg-card--shared::before { background: #ff6b35; }
-    .sg-card--shared {
+    .srv-card--shared {
       background: rgba(255,107,53,.04);
-      border-color: rgba(255,107,53,.18);
+      border-color: rgba(255,107,53,.22);
     }
+    .srv-card--shared::before { background: #ff6b35; }
+    .srv-card--no-server { opacity: .85; }
 
-    .sg-summary {
-      position: relative;
-      display: flex; align-items: center; gap: 10px;
-      padding: 12px 14px 12px 20px;
-      cursor: pointer; list-style: none; user-select: none;
+    /* Header row (same markup for solo & shared; <summary> for shared) */
+    .srv-head {
+      display: grid;
+      grid-template-columns: 16px minmax(0, 1fr) auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 18px 14px 22px;
+      list-style: none;
+      user-select: none;
       transition: background .15s;
     }
-    .sg-summary:hover { background: rgba(255,255,255,.025); }
-    .sg-card[open] > .sg-summary {
-      border-bottom: 1px solid rgba(255,255,255,.06);
-    }
-    .sg-card--shared[open] > .sg-summary {
-      border-bottom-color: rgba(255,107,53,.18);
-    }
-    .sg-summary::-webkit-details-marker { display: none; }
-    .sg-summary::before {
-      content: '▸';
-      display: inline-block;
-      width: 14px; color: var(--text2);
-      transition: transform .15s;
-    }
-    .sg-card[open] > .sg-summary::before { transform: rotate(90deg); }
+    .srv-head::-webkit-details-marker { display: none; }
+    .srv-card--shared > .srv-head { cursor: pointer; }
+    .srv-card--shared > .srv-head:hover { background: rgba(255,107,53,.06); }
+    .srv-card--solo > .srv-head { cursor: default; }
 
-    .sg-title { display: flex; flex-direction: column; min-width: 0; flex: 1; }
-    .sg-name {
-      font-weight: 700; font-size: .95rem; color: var(--text);
+    .srv-head__caret {
+      color: var(--text2);
+      font-size: 1em;
+      transition: transform .18s ease;
+      line-height: 1;
+      text-align: center;
+    }
+    .srv-card--solo .srv-head__caret { visibility: hidden; }
+    .srv-card[open] > .srv-head .srv-head__caret { transform: rotate(90deg); }
+
+    .srv-head__title { min-width: 0; }
+    .srv-head__name {
+      font-weight: 700; font-size: .98rem; color: var(--text);
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .sg-addr {
+    .srv-head__addr {
       font-size: .76rem; color: var(--text2);
       font-family: ui-monospace, Consolas, monospace;
+      margin-top: 3px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .sg-count {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 3px 10px; border-radius: 999px;
-      font-size: .76rem; font-weight: 700;
+    .srv-head__players {
+      font-size: .82rem; color: var(--text2);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .srv-head__guilds {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 11px; border-radius: 999px;
+      font-size: .74rem; font-weight: 700;
       background: rgba(255,255,255,.07);
       color: var(--text);
+      white-space: nowrap;
     }
-    .sg-card--shared .sg-count {
+    .srv-card--shared .srv-head__guilds {
       background: rgba(255,107,53,.18);
       color: #ffb38a;
     }
-    .sg-players {
-      font-size: .78rem; color: var(--text2);
-      font-variant-numeric: tabular-nums;
-    }
 
-    /* Тело группы — продолжение шапки: тот же фон (через .sg-card),
-       без собственной рамки/скруглений. Просто вертикальный список. */
-    .sg-body {
-      display: flex !important;
-      flex-direction: column;
-      gap: 0;
-      padding: 0;
-      background: transparent;
-      border: 0;
-      border-radius: 0;
+    /* Body: vertical list of guild rows, divided only by hairlines */
+    .srv-body {
+      display: flex; flex-direction: column;
+      border-top: 1px solid rgba(255,255,255,.06);
     }
+    .srv-card--shared > .srv-body { border-top-color: rgba(255,107,53,.15); }
+    /* For solo server cards <details> is not used; body always visible */
 
-    /* Строки-гильдии внутри группы. Никаких собственных «коробок» —
-       только hairline-разделители снизу и hover-подсветка. */
-    .sg-body > .guild-card {
-      background: transparent;
-      border: 0;
-      border-radius: 0;
-      padding: 12px 16px 12px 20px;
-      border-bottom: 1px solid rgba(255,255,255,.04);
-      gap: 8px;
+    /* Guild row — полностью плоская, НЕТ собственной рамки или фона.
+       Делится только hairline-бордером сверху. */
+    .srv-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr) auto;
+      gap: 8px 14px;
+      align-items: center;
+      padding: 11px 18px 11px 22px;
+      border-top: 1px solid rgba(255,255,255,.04);
+      font-size: .85rem;
+      transition: background .15s;
     }
-    .sg-body > .guild-card:last-child { border-bottom: 0; }
-    .sg-body > .guild-card:hover {
-      background: rgba(255,255,255,.025);
-      transform: none;
-      border-color: rgba(255,255,255,.04);
-    }
-    /* Убираем персональный левый рельс у карточки внутри группы —
-       статус уже виден по пилюле .gc-status, а групповой рельс на .sg-card */
-    .sg-body > .guild-card::before { display: none; }
+    .srv-row:first-child { border-top: 0; }
+    .srv-row:hover { background: rgba(255,255,255,.02); }
 
-    /* Факты внутри строки-гильдии — без «коробки», просто inline-сетка */
-    .sg-body > .guild-card > .gc-info {
-      background: transparent;
-      padding: 0;
-      font-size: .78rem;
-      gap: 3px 20px;
+    .srv-row__status {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 9px; border-radius: 6px;
+      font-size: .72rem; font-weight: 600;
+      white-space: nowrap;
+      justify-self: start;
     }
+    .srv-row__status::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: currentColor;
+    }
+    .srv-row__status--connected    { background: rgba(52,211,153,.12); color: #34d399; }
+    .srv-row__status--disconnected { background: rgba(107,114,128,.15); color: #9ca3af; }
+    .srv-row__status--error        { background: rgba(239,68,68,.12);  color: #ef4444; }
+    .srv-row__status--empty        { background: rgba(251,191,36,.12); color: #fbbf24; }
+    .srv-row__status--no_rust      { background: rgba(75,85,99,.2);    color: #6b7280; }
 
-    .sg-section-title {
-      display: flex; align-items: center; gap: 8px;
-      margin: 2px 2px 4px;
-      font-size: .78rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: .04em;
+    .srv-row__title { min-width: 0; }
+    .srv-row__name {
+      font-weight: 600; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .srv-row__meta {
+      font-size: .72rem; color: var(--text2);
+      margin-top: 2px;
+      display: flex; flex-wrap: wrap; gap: 2px 12px;
+    }
+    .srv-row__meta code,
+    .srv-row__meta .mono {
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: .72rem;
       color: var(--text2);
     }
-    .sg-section-title .dash-badge { font-size: .7rem; }
-    .sg-singles-toggle {
-      align-self: flex-start;
-      margin-top: 4px;
-      padding: 8px 12px; border-radius: 10px;
-      font-family: inherit; font-size: .82rem; font-weight: 600;
-      color: var(--text2); background: rgba(255,255,255,.03);
-      border: 1px dashed var(--border);
+
+    .srv-row__aside {
+      display: flex; align-items: center; gap: 8px;
+      flex-wrap: wrap; justify-content: flex-end;
+    }
+    .srv-row__team {
+      font-size: .74rem; color: var(--text2);
+      white-space: nowrap;
+    }
+    .srv-row__team b { color: var(--text); font-weight: 700; }
+    .srv-row__badges {
+      display: flex; flex-wrap: wrap; gap: 4px;
+      justify-content: flex-end;
+    }
+
+    /* Team members disclosure (per-row) */
+    .srv-row__team-wrap { grid-column: 1 / -1; margin-top: 2px; }
+    .srv-row__team-details { display: block; }
+    .srv-row__team-details summary {
+      list-style: none;
       cursor: pointer;
-      transition: color .15s, border-color .15s, background .15s;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 3px 10px; border-radius: 6px;
+      font-size: .74rem;
+      color: var(--text2);
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
+      transition: background .15s, border-color .15s, color .15s;
     }
-    .sg-singles-toggle:hover {
+    .srv-row__team-details summary::-webkit-details-marker { display: none; }
+    .srv-row__team-details summary::before {
+      content: '▸'; color: var(--text2);
+      transition: transform .15s;
+    }
+    .srv-row__team-details[open] summary::before { transform: rotate(90deg); }
+    .srv-row__team-details summary:hover {
+      background: rgba(255,107,53,.06);
+      border-color: rgba(255,107,53,.3);
       color: var(--text);
-      border-color: rgba(255,107,53,.45);
-      background: rgba(255,107,53,.08);
     }
-    .sg-singles-wrap { display: flex; flex-direction: column; gap: 10px; }
-    .sg-singles-wrap[hidden] { display: none; }
+    .srv-row__team-members {
+      list-style: none;
+      margin: 6px 0 0;
+      padding: 8px 12px;
+      background: rgba(0,0,0,.22);
+      border-radius: 8px;
+      max-height: 220px; overflow-y: auto;
+    }
+    .srv-row__team-member {
+      display: flex; align-items: center; gap: 8px;
+      padding: 4px 0; font-size: .78rem;
+      border-bottom: 1px dashed rgba(255,255,255,.04);
+    }
+    .srv-row__team-member:last-child { border-bottom: 0; }
+
+    .srv-row__error {
+      grid-column: 1 / -1;
+      font-size: .74rem;
+      color: #fca5a5;
+      font-family: ui-monospace, Consolas, monospace;
+      padding-top: 4px;
+      word-break: break-word;
+    }
 
     /* ===== Stat-tiles для «Полной админ-панели» ===== */
     .admin-stat-grid {
@@ -962,18 +880,6 @@
       margin: 0;
       font-size: .82rem;
       color: var(--text);
-    }
-
-    /* Tight info-row + team summary inside group-list rows */
-    .sg-body > .guild-card > .gc-info-item { justify-content: flex-start; gap: 6px; }
-    .sg-body > .guild-card > .gc-team summary {
-      background: transparent;
-      border: 1px solid rgba(255,255,255,.05);
-      padding: 5px 10px;
-    }
-    .sg-body > .guild-card > .gc-team summary:hover {
-      background: rgba(255,107,53,.06);
-      border-color: rgba(255,107,53,.3);
     }
 
     /* Кастомные скроллбары для оставшихся внутренних скролл-зон */
@@ -1342,14 +1248,14 @@
                     placeholder="Поиск по названию, ID, IP, Steam..."
                     style="max-width:280px;padding:8px 12px;font-size:.85rem"
                   />
-                  <select id="guilds-sort" class="dash-select" style="max-width:240px;padding:8px 12px;font-size:.85rem">
-                    <option value="status">Сорт: статус ↓</option>
-                    <option value="online">Сорт: онлайн в команде ↓</option>
+                  <select id="guilds-sort" class="dash-select" style="max-width:260px;padding:8px 12px;font-size:.85rem">
+                    <option value="shared">Сорт: сначала общие ↓</option>
                     <option value="players">Сорт: игроки на сервере ↓</option>
-                    <option value="team">Сорт: размер команды ↓</option>
+                    <option value="online">Сорт: онлайн в командах ↓</option>
+                    <option value="team">Сорт: размер команд ↓</option>
+                    <option value="status">Сорт: статус ↓</option>
                     <option value="name">Сорт: название A→Z</option>
                     <option value="name_desc">Сорт: название Z→A</option>
-                    <option value="guild_id">Сорт: ID ↑</option>
                     <option value="watched">Сорт: отслеживаемые ↓</option>
                   </select>
                   <select id="guilds-filter" class="dash-select" style="max-width:200px;padding:8px 12px;font-size:.85rem">
@@ -1361,15 +1267,11 @@
                     <option value="blocked">Blocked</option>
                     <option value="fcm">С FCM</option>
                     <option value="no_rust">Без Rust+</option>
-                    <option value="shared_server">Общий сервер</option>
                   </select>
-                  <button type="button" id="guilds-group-same" class="dash-toggle-btn" title="Группировать гильдии, играющие на одном сервере">🧩 Одинаковые сервера</button>
-                  <button type="button" id="guilds-shared-only" class="dash-toggle-btn" title="Показать только сервера, на которых 2+ гильдий (сортировка по IP сервера)">🔗 Только общие (по IP)</button>
                 </div>
               </div>
-                  <div id="admin-guilds-list" class="guild-cards"></div>
-                  <div id="admin-guilds-groups" class="server-groups" style="display:none"></div>
-                </div>
+              <div id="admin-guilds-list" class="server-dir"></div>
+            </div>
               </section>
             </div>
           </div>
@@ -1396,8 +1298,6 @@
   let _adminPanelLoading = false;
   let _adminGuildsCache = [];
   let _adminToolbarBound = false;
-  let _groupBySameServer = false;
-  let _sharedOnlyByIp = false;
 
   function clearAdminPanelPoll() {
     if (_adminPanelPollTimer) {
@@ -2082,54 +1982,29 @@
     const search = document.getElementById('guilds-search');
     const sort = document.getElementById('guilds-sort');
     const filter = document.getElementById('guilds-filter');
-    const groupBtn = document.getElementById('guilds-group-same');
-    const sharedBtn = document.getElementById('guilds-shared-only');
     if (!search || !sort || !filter) return;
     const h = () => renderGuildCards();
     search.addEventListener('input', h);
     sort.addEventListener('change', h);
     filter.addEventListener('change', h);
-    if (groupBtn) {
-      groupBtn.addEventListener('click', () => {
-        _groupBySameServer = !_groupBySameServer;
-        if (_groupBySameServer) {
-          _sharedOnlyByIp = false;
-          if (sharedBtn) sharedBtn.classList.remove('is-active');
-        }
-        groupBtn.classList.toggle('is-active', _groupBySameServer);
-        renderGuildCards();
-      });
-    }
-    if (sharedBtn) {
-      sharedBtn.addEventListener('click', () => {
-        _sharedOnlyByIp = !_sharedOnlyByIp;
-        if (_sharedOnlyByIp) {
-          _groupBySameServer = false;
-          if (groupBtn) groupBtn.classList.remove('is-active');
-        }
-        sharedBtn.classList.toggle('is-active', _sharedOnlyByIp);
-        renderGuildCards();
-      });
-    }
     _adminToolbarBound = true;
   }
 
-  // Числовой ключ сортировки по IP: "10.2.3.4" → "010.002.003.004".
-  // Для не-IPv4 (например, доменных имён) возвращаем исходную строку
-  // в нижнем регистре, чтобы localeCompare работал предсказуемо.
-  function ipSortKey(ip) {
-    const s = String(ip || '').trim();
-    const parts = s.split('.');
-    if (parts.length === 4 && parts.every(p => /^\d+$/.test(p))) {
-      return parts.map(p => p.padStart(3, '0')).join('.');
-    }
-    return s.toLowerCase();
-  }
+  /* =======================================================================
+     SERVER DIRECTORY · логика рендера
+     Принципы:
+       - Отсутствие «режимов». Гильдии всегда группируются по физическому
+         серверу (ip:port). Никаких тумблеров, никаких скрытых веток.
+       - Solo-сервер → одна строка в карточке без раскрытия.
+       - Shared-сервер → раскрывающаяся карточка с оранжевым акцентом.
+       - Фильтр/поиск применяются к ГИЛЬДИЯМ. Сервер показывается, если
+         после фильтра в нём осталась хотя бы одна гильдия.
+       - Сортировка применяется к СЕРВЕРАМ (по агрегату по гильдиям).
+       - При активном поиске раскрываем совпавшие общие серверы, чтобы
+         сразу видеть, что нашлось.
+     ======================================================================= */
 
-  // Ключ «это один и тот же Rust-сервер» = ip:port.
-  // steam_id сюда НЕ включаем: в каждой гильдии свой забайнденный бот-аккаунт
-  // (свой player_id), а физический игровой сервер одинаков, когда совпадает ip:port.
-  function serverKeyFor(g) {
+  function serverAddrOf(g) {
     if (!g || !g.rust_db) return null;
     const ip = String(g.rust_db.ip || '').trim().toLowerCase();
     const port = String(g.rust_db.port || '').trim();
@@ -2137,28 +2012,88 @@
     return `${ip}:${port}`;
   }
 
-  function buildSharedServerKeys(items) {
-    const counts = new Map();
+  function buildServerGroups(items) {
+    const map = new Map();
+    const noServer = [];
     for (const g of items) {
-      const k = serverKeyFor(g);
-      if (k) counts.set(k, (counts.get(k) || 0) + 1);
+      const key = serverAddrOf(g);
+      if (!key) { noServer.push(g); continue; }
+      if (!map.has(key)) {
+        map.set(key, {
+          key,
+          ip: String(g.rust_db.ip || ''),
+          port: String(g.rust_db.port || ''),
+          addr: `${g.rust_db.ip || '—'}:${g.rust_db.port || '—'}`,
+          guilds: [],
+          live: null,
+          name: '',
+          hasServer: true,
+        });
+      }
+      map.get(key).guilds.push(g);
     }
-    const shared = new Set();
-    counts.forEach((n, k) => { if (n > 1) shared.add(k); });
-    return shared;
+    for (const gr of map.values()) {
+      const withLive = gr.guilds.find(x => x?.rust_live?.server_name);
+      gr.live = withLive?.rust_live || null;
+      gr.name = gr.live?.server_name || gr.addr || 'Неизвестный сервер';
+    }
+    const groups = Array.from(map.values());
+    if (noServer.length) {
+      groups.push({
+        key: '__no_server__',
+        ip: '', port: '', addr: '',
+        guilds: noServer,
+        live: null,
+        name: 'Без Rust+ сервера',
+        hasServer: false,
+      });
+    }
+    return groups;
+  }
+
+  function sortServerGroups(groups, sortKey) {
+    const statusOrder = { connected: 0, empty: 1, error: 2, disconnected: 3, no_rust: 4 };
+    const num = v => (v == null || Number.isNaN(Number(v)) ? -Infinity : Number(v));
+    const cmpStr = (a, b) => String(a || '').localeCompare(String(b || ''), 'ru', { sensitivity: 'base' });
+
+    const teamMembersOf = g => Array.isArray(g.rust_live?.team_members) ? g.rust_live.team_members : [];
+    const aggregate = (gr, key) => {
+      switch (key) {
+        case 'status':  return Math.min(...gr.guilds.map(g => statusOrder[guildEffectiveStatus(g)] ?? 99));
+        case 'players': return num(gr.live?.players);
+        case 'online':  return gr.guilds.reduce((s, g) => s + teamMembersOf(g).filter(m => m?.is_online).length, 0);
+        case 'team':    return gr.guilds.reduce((s, g) => s + teamMembersOf(g).length, 0);
+        case 'watched': return gr.guilds.reduce((s, g) => s + (g.watched_players_count || 0), 0);
+        case 'guilds':  return gr.guilds.length;
+        default:        return 0;
+      }
+    };
+
+    groups.sort((a, b) => {
+      if (sortKey === 'shared') {
+        const da = b.guilds.length - a.guilds.length;
+        if (da !== 0) return da;
+        return cmpStr(a.name, b.name);
+      }
+      const sharedFirst = (b.guilds.length > 1 ? 1 : 0) - (a.guilds.length > 1 ? 1 : 0);
+      if (sharedFirst !== 0) return sharedFirst;
+
+      if (sortKey === 'status')    return aggregate(a, 'status') - aggregate(b, 'status');
+      if (sortKey === 'name')      return cmpStr(a.name, b.name);
+      if (sortKey === 'name_desc') return cmpStr(b.name, a.name);
+      return aggregate(b, sortKey) - aggregate(a, sortKey);
+    });
   }
 
   function renderGuildCards() {
     const listEl = document.getElementById('admin-guilds-list');
-    const groupsEl = document.getElementById('admin-guilds-groups');
     const counterEl = document.getElementById('guilds-counter');
     if (!listEl) return;
 
-    const search = (document.getElementById('guilds-search')?.value || '').trim().toLowerCase();
-    const sortKey = document.getElementById('guilds-sort')?.value || 'status';
+    const search    = (document.getElementById('guilds-search')?.value || '').trim().toLowerCase();
+    const sortKey   = document.getElementById('guilds-sort')?.value || 'shared';
     const filterKey = document.getElementById('guilds-filter')?.value || 'all';
 
-    const sharedAll = buildSharedServerKeys(_adminGuildsCache);
     let items = _adminGuildsCache.slice();
 
     if (search) {
@@ -2170,7 +2105,7 @@
         ].filter(Boolean).map(x => String(x).toLowerCase());
         if (Array.isArray(g.rust_live?.team_members)) {
           for (const m of g.rust_live.team_members) {
-            if (m?.name) fields.push(String(m.name).toLowerCase());
+            if (m?.name)     fields.push(String(m.name).toLowerCase());
             if (m?.steam_id) fields.push(String(m.steam_id).toLowerCase());
           }
         }
@@ -2182,307 +2117,105 @@
       items = items.filter(g => {
         const st = guildEffectiveStatus(g);
         switch (filterKey) {
-          case 'connected': return st === 'connected';
+          case 'connected':    return st === 'connected';
           case 'disconnected': return st === 'disconnected';
-          case 'error': return st === 'error';
-          case 'vip': return !!g.vip;
-          case 'blocked': return !!g.blocked;
-          case 'fcm': return !!g.has_fcm_token;
-          case 'no_rust': return !g.rust_db;
-          case 'shared_server': {
-            const k = serverKeyFor(g);
-            return !!(k && sharedAll.has(k));
-          }
-          default: return true;
+          case 'error':        return st === 'error';
+          case 'vip':          return !!g.vip;
+          case 'blocked':      return !!g.blocked;
+          case 'fcm':          return !!g.has_fcm_token;
+          case 'no_rust':      return !g.rust_db;
+          default:             return true;
         }
       });
     }
 
-    const statusOrder = { connected: 0, empty: 1, error: 2, disconnected: 3, no_rust: 4 };
-    const cmpStr = (a, b) => String(a || '').localeCompare(String(b || ''), 'ru', { sensitivity: 'base' });
-    const num = v => (v == null ? -Infinity : Number(v));
-
-    items.sort((a, b) => {
-      switch (sortKey) {
-        case 'status': {
-          const sa = statusOrder[guildEffectiveStatus(a)] ?? 99;
-          const sb = statusOrder[guildEffectiveStatus(b)] ?? 99;
-          if (sa !== sb) return sa - sb;
-          return num(b.rust_live?.players) - num(a.rust_live?.players);
-        }
-        case 'players':
-          return num(b.rust_live?.players) - num(a.rust_live?.players);
-        case 'online': {
-          const ma = Array.isArray(a.rust_live?.team_members) ? a.rust_live.team_members : [];
-          const mb = Array.isArray(b.rust_live?.team_members) ? b.rust_live.team_members : [];
-          const oa = ma.filter(m => m?.is_online).length;
-          const ob = mb.filter(m => m?.is_online).length;
-          if (ob !== oa) return ob - oa;
-          return mb.length - ma.length;
-        }
-        case 'team': {
-          const ta = Array.isArray(a.rust_live?.team_members) ? a.rust_live.team_members.length : 0;
-          const tb = Array.isArray(b.rust_live?.team_members) ? b.rust_live.team_members.length : 0;
-          return tb - ta;
-        }
-        case 'name':
-          return cmpStr(a.guild_name, b.guild_name);
-        case 'name_desc':
-          return cmpStr(b.guild_name, a.guild_name);
-        case 'guild_id':
-          return String(a.guild_id || '').localeCompare(String(b.guild_id || ''));
-        case 'watched':
-          return num(b.watched_players_count) - num(a.watched_players_count);
-        default:
-          return 0;
-      }
-    });
+    const groups = buildServerGroups(items);
+    sortServerGroups(groups, sortKey);
 
     if (counterEl) {
-      const total = _adminGuildsCache.length;
-      const sharedGuildCount = _adminGuildsCache.filter(g => {
-        const k = serverKeyFor(g);
-        return k && sharedAll.has(k);
-      }).length;
-      const baseCount = items.length === total
-        ? `${total}`
-        : `${items.length} / ${total}`;
-      counterEl.textContent = sharedGuildCount > 0
-        ? `${baseCount} · общих: ${sharedGuildCount} в ${sharedAll.size} группах`
-        : baseCount;
+      const totalGuilds   = _adminGuildsCache.length;
+      const shownGuilds   = items.length;
+      const totalServers  = groups.filter(g => g.hasServer).length;
+      const sharedServers = groups.filter(g => g.hasServer && g.guilds.length > 1).length;
+      const base = shownGuilds === totalGuilds
+        ? `${totalGuilds} гильдий`
+        : `${shownGuilds} / ${totalGuilds} гильдий`;
+      counterEl.textContent = sharedServers > 0
+        ? `${base} · ${totalServers} серверов · ${sharedServers} общих`
+        : `${base} · ${totalServers} серверов`;
     }
 
-    if (_sharedOnlyByIp) {
-      listEl.style.display = 'none';
-      if (groupsEl) {
-        groupsEl.style.display = '';
-        groupsEl.innerHTML = renderSharedServersByIp(items, sharedAll);
-      }
+    if (!groups.length) {
+      listEl.innerHTML = '<div class="srv-empty">Нет гильдий по заданному фильтру</div>';
       return;
     }
 
-    if (_groupBySameServer) {
-      listEl.style.display = 'none';
-      if (groupsEl) {
-        groupsEl.style.display = '';
-        groupsEl.innerHTML = renderServerGroups(items, sharedAll);
-        const singlesBtn = groupsEl.querySelector('[data-sg-toggle="singles"]');
-        const singlesWrap = groupsEl.querySelector('.sg-singles-wrap');
-        if (singlesBtn && singlesWrap) {
-          singlesBtn.addEventListener('click', () => {
-            const isHidden = singlesWrap.hasAttribute('hidden');
-            if (isHidden) {
-              singlesWrap.removeAttribute('hidden');
-              singlesBtn.textContent = singlesBtn.textContent.replace('▾ Показать', '▴ Скрыть');
-            } else {
-              singlesWrap.setAttribute('hidden', '');
-              singlesBtn.textContent = singlesBtn.textContent.replace('▴ Скрыть', '▾ Показать');
-            }
-          });
-        }
-      }
-      return;
-    }
-
-    if (groupsEl) {
-      groupsEl.style.display = 'none';
-      groupsEl.innerHTML = '';
-    }
-    listEl.style.display = '';
-
-    if (!items.length) {
-      listEl.innerHTML = '<div class="guild-cards-empty">Нет гильдий по заданному фильтру</div>';
-      return;
-    }
-
-    listEl.innerHTML = items.map(renderSingleGuildCard).join('');
+    const autoOpenShared = !!search;
+    listEl.innerHTML = groups.map(gr => renderServerCard(gr, autoOpenShared)).join('');
   }
 
-  // Режим «🔗 Только общие (по IP)»: показываем исключительно сервера,
-  // на которых играет 2+ гильдий, отсортированные по IP сервера
-  // (с числовой сортировкой октетов IPv4). Каждая группа раскрыта по умолчанию,
-  // гильдии внутри — по алфавиту имени.
-  function renderSharedServersByIp(items, sharedSet) {
-    if (!items.length) {
-      return '<div class="sg-empty">Нет гильдий по заданному фильтру</div>';
-    }
+  /* ---------- рендер отдельной серверной карточки ---------- */
 
-    const groups = new Map();
-    for (const g of items) {
-      const key = serverKeyFor(g);
-      if (!key || !sharedSet.has(key)) continue;
-      if (!groups.has(key)) groups.set(key, []);
-      groups.get(key).push(g);
-    }
+  function renderServerCard(gr, autoOpenShared) {
+    const shared = gr.guilds.length > 1;
+    const rows = gr.guilds
+      .slice()
+      .sort((a, b) => String(a.guild_name || '').localeCompare(String(b.guild_name || ''), 'ru'))
+      .map(renderServerRow)
+      .join('');
 
-    if (!groups.size) {
-      return '<div class="sg-empty">Среди отфильтрованных гильдий нет общих серверов</div>';
-    }
-
-    const arr = Array.from(groups.entries()).map(([key, gs]) => {
-      const first = gs[0];
-      const live = gs.find(x => x?.rust_live?.server_name)?.rust_live;
-      const name = live?.server_name || first.rust_db?.ip || 'Неизвестный сервер';
-      const ip = first.rust_db?.ip || '';
-      const port = first.rust_db?.port != null ? String(first.rust_db.port) : '';
-      const addr = first.rust_db ? `${ip}:${port}` : '';
-      // Сколько уникальных paired-аккаунтов (steam_id) привязано к этому серверу
-      const uniqueSteams = new Set(
-        gs.map(x => String(x?.rust_db?.steam_id || '')).filter(Boolean)
-      );
-      const players = live?.players != null && live?.max_players != null
-        ? `${live.players}/${live.max_players}${live.queued_players ? ' +' + live.queued_players : ''}`
-        : '';
-      return {
-        key, guilds: gs, name, ip, port, addr, players,
-        steamsCount: uniqueSteams.size,
-        _ipKey: ipSortKey(ip),
-        _portNum: port === '' ? 0 : (parseInt(port, 10) || 0),
-      };
-    });
-
-    arr.sort((a, b) => {
-      const c = a._ipKey.localeCompare(b._ipKey);
-      if (c !== 0) return c;
-      if (a._portNum !== b._portNum) return a._portNum - b._portNum;
-      return String(a.name).localeCompare(String(b.name), 'ru');
-    });
-
-    const totalSharedGuilds = arr.reduce((s, g) => s + g.guilds.length, 0);
-    let html = `<div class="sg-section-title">🔗 Общие сервера (по IP)
-      <span class="dash-badge dash-badge--neutral">${arr.length} сервер${arr.length === 1 ? '' : 'ов'} · ${totalSharedGuilds} гильдий</span>
-    </div>`;
-
-    html += arr.map(gr => {
-      const cards = gr.guilds
-        .slice()
-        .sort((a, b) => String(a.guild_name || '').localeCompare(String(b.guild_name || ''), 'ru'))
-        .map(renderSingleGuildCard)
-        .join('');
-      const steamsInfo = gr.steamsCount > 1 ? `${gr.steamsCount} аккаунт${gr.steamsCount < 5 ? 'а' : 'ов'}` : '';
-      const meta = [gr.addr, steamsInfo].filter(Boolean).join(' · ');
-      const word = gr.guilds.length < 5 ? 'гильдии' : 'гильдий';
+    if (!shared) {
+      const cls = gr.hasServer ? 'srv-card srv-card--solo' : 'srv-card srv-card--solo srv-card--no-server';
       return `
-        <details class="sg-card sg-card--shared" open>
-          <summary class="sg-summary">
-            <div class="sg-title">
-              <div class="sg-name" title="${escapeHtml(gr.name)}">${escapeHtml(gr.name)}</div>
-              <div class="sg-addr">${escapeHtml(meta)}</div>
-            </div>
-            ${gr.players ? `<span class="sg-players">👥 ${escapeHtml(gr.players)}</span>` : ''}
-            <span class="sg-count">${gr.guilds.length} ${word}</span>
-          </summary>
-          <div class="sg-body">${cards}</div>
-        </details>
+        <div class="${cls}">
+          ${renderServerHead(gr, false)}
+          <div class="srv-body">${rows}</div>
+        </div>
       `;
-    }).join('');
+    }
 
-    return html;
+    const openAttr = autoOpenShared ? 'open' : '';
+    return `
+      <details class="srv-card srv-card--shared" ${openAttr}>
+        ${renderServerHead(gr, true)}
+        <div class="srv-body">${rows}</div>
+      </details>
+    `;
   }
 
-  function renderServerGroups(items, sharedSet) {
-    if (!items.length) {
-      return '<div class="sg-empty">Нет гильдий по заданному фильтру</div>';
+  function renderServerHead(gr, isShared) {
+    const playersStr = (gr.live?.players != null && gr.live?.max_players != null)
+      ? `${gr.live.players}/${gr.live.max_players}${gr.live.queued_players ? ' +' + gr.live.queued_players : ''}`
+      : '';
+    const count = gr.guilds.length;
+    const word = count === 1 ? 'гильдия' : (count < 5 ? 'гильдии' : 'гильдий');
+
+    const uniqueSteams = new Set(
+      gr.guilds.map(x => String(x?.rust_db?.steam_id || '')).filter(Boolean)
+    ).size;
+    const steamInfo = uniqueSteams > 1 ? `${uniqueSteams} акк.` : '';
+    const metaPieces = [gr.addr, steamInfo].filter(Boolean);
+    const meta = metaPieces.length ? metaPieces.join(' · ') : 'гильдии без привязки к Rust-серверу';
+
+    const caret = `<span class="srv-head__caret" aria-hidden="true">▸</span>`;
+    const title = `
+      <div class="srv-head__title">
+        <div class="srv-head__name" title="${escapeHtml(gr.name)}">${escapeHtml(gr.name)}</div>
+        <div class="srv-head__addr" title="${escapeHtml(meta)}">${escapeHtml(meta)}</div>
+      </div>
+    `;
+    const players = playersStr
+      ? `<span class="srv-head__players" title="players / max (+queue)">👥 ${escapeHtml(playersStr)}</span>`
+      : `<span class="srv-head__players" aria-hidden="true"></span>`;
+    const guilds = `<span class="srv-head__guilds">${count} ${word}</span>`;
+
+    if (isShared) {
+      return `<summary class="srv-head">${caret}${title}${players}${guilds}</summary>`;
     }
-
-    const groups = new Map();
-    const noServer = [];
-    for (const g of items) {
-      const key = serverKeyFor(g);
-      if (!key) {
-        noServer.push(g);
-        continue;
-      }
-      if (!groups.has(key)) groups.set(key, []);
-      groups.get(key).push(g);
-    }
-
-    const arr = Array.from(groups.entries()).map(([key, gs]) => {
-      const first = gs[0];
-      const live = gs.find(x => x?.rust_live?.server_name)?.rust_live;
-      const name = live?.server_name || first.rust_db?.ip || 'Неизвестный сервер';
-      const addr = first.rust_db ? `${first.rust_db.ip}:${first.rust_db.port}` : '';
-      const uniqueSteams = new Set(
-        gs.map(x => String(x?.rust_db?.steam_id || '')).filter(Boolean)
-      );
-      const players = live?.players != null && live?.max_players != null
-        ? `${live.players}/${live.max_players}${live.queued_players ? ' +' + live.queued_players : ''}`
-        : '';
-      return { key, guilds: gs, name, addr, steamsCount: uniqueSteams.size, players, shared: gs.length > 1 };
-    });
-
-    arr.sort((a, b) => (b.guilds.length - a.guilds.length) || String(a.name).localeCompare(String(b.name), 'ru'));
-
-    const shared = arr.filter(g => g.shared);
-    const singles = arr.filter(g => !g.shared);
-
-    const renderGroupCard = (gr, forceOpen) => {
-      const cls = gr.shared ? 'sg-card sg-card--shared' : 'sg-card';
-      const open = forceOpen ? 'open' : '';
-      const cards = gr.guilds
-        .slice()
-        .sort((a, b) => String(a.guild_name || '').localeCompare(String(b.guild_name || ''), 'ru'))
-        .map(renderSingleGuildCard)
-        .join('');
-      const steamsInfo = gr.steamsCount > 1 ? `${gr.steamsCount} аккаунт${gr.steamsCount < 5 ? 'а' : 'ов'}` : '';
-      const meta = [gr.addr, steamsInfo].filter(Boolean).join(' · ');
-      const word = gr.guilds.length === 1 ? 'гильдия' : (gr.guilds.length < 5 ? 'гильдии' : 'гильдий');
-      return `
-        <details class="${cls}" ${open}>
-          <summary class="sg-summary">
-            <div class="sg-title">
-              <div class="sg-name" title="${escapeHtml(gr.name)}">${escapeHtml(gr.name)}</div>
-              <div class="sg-addr">${escapeHtml(meta)}</div>
-            </div>
-            ${gr.players ? `<span class="sg-players">👥 ${escapeHtml(gr.players)}</span>` : ''}
-            <span class="sg-count">${gr.guilds.length} ${word}</span>
-          </summary>
-          <div class="sg-body">${cards}</div>
-        </details>
-      `;
-    };
-
-    let html = '';
-
-    if (shared.length) {
-      const totalSharedGuilds = shared.reduce((s, g) => s + g.guilds.length, 0);
-      html += `<div class="sg-section-title">🔗 Общие сервера
-        <span class="dash-badge dash-badge--neutral">${shared.length} сервер${shared.length === 1 ? '' : 'ов'} · ${totalSharedGuilds} гильдий</span>
-      </div>`;
-      html += shared.map(gr => renderGroupCard(gr, true)).join('');
-    } else {
-      html += `<div class="sg-empty">Среди отфильтрованных гильдий нет общих серверов</div>`;
-    }
-
-    if (singles.length) {
-      const singlesCards = singles.map(gr => renderGroupCard(gr, false)).join('');
-      html += `
-        <button type="button" class="sg-singles-toggle" data-sg-toggle="singles">
-          ▾ Показать ${singles.length} сервер${singles.length === 1 ? '' : 'ов'} с одной гильдией
-        </button>
-        <div class="sg-singles-wrap" hidden>${singlesCards}</div>
-      `;
-    }
-
-    if (noServer.length) {
-      html += `
-        <details class="sg-card">
-          <summary class="sg-summary">
-            <div class="sg-title">
-              <div class="sg-name">Без Rust+ сервера</div>
-              <div class="sg-addr">гильдии без привязки к серверу</div>
-            </div>
-            <span class="sg-count">${noServer.length}</span>
-          </summary>
-          <div class="sg-body">${noServer.map(renderSingleGuildCard).join('')}</div>
-        </details>
-      `;
-    }
-
-    return html;
+    return `<div class="srv-head">${caret}${title}${players}${guilds}</div>`;
   }
 
-  function renderSingleGuildCard(g) {
+  function renderServerRow(g) {
     const status = guildEffectiveStatus(g);
     const statusLabel = {
       connected: 'online',
@@ -2493,35 +2226,16 @@
     }[status] || status;
 
     const badges = [];
-    if (g.vip) badges.push('<span class="gc-mini-badge mb-vip">VIP</span>');
-    if (g.blocked) badges.push('<span class="gc-mini-badge mb-blocked">BAN</span>');
-    if (g.has_fcm_token) badges.push('<span class="gc-mini-badge mb-fcm">FCM</span>');
-    if (g.language) badges.push(`<span class="gc-mini-badge mb-lang">${escapeHtml(g.language)}</span>`);
+    if (g.vip)                     badges.push('<span class="gc-mini-badge mb-vip">VIP</span>');
+    if (g.blocked)                 badges.push('<span class="gc-mini-badge mb-blocked">BAN</span>');
+    if (g.has_fcm_token)           badges.push('<span class="gc-mini-badge mb-fcm">FCM</span>');
+    if (g.language)                badges.push(`<span class="gc-mini-badge mb-lang">${escapeHtml(g.language)}</span>`);
     if (g.discord_present === false) badges.push('<span class="gc-mini-badge mb-discord-off">DC ✕</span>');
 
-    const rustDb = g.rust_db
-      ? `${escapeHtml(g.rust_db.ip)}:${escapeHtml(String(g.rust_db.port))}`
-      : '—';
-    const steamId = g.rust_db?.steam_id ? escapeHtml(String(g.rust_db.steam_id)) : '—';
-    const serverName = g.rust_live?.server_name
-      ? escapeHtml(String(g.rust_live.server_name))
-      : (g.rust_db ? '<span style="color:var(--text2)">нет данных</span>' : '—');
-
-    const p = g.rust_live?.players;
-    const mx = g.rust_live?.max_players;
-    const q = g.rust_live?.queued_players;
-    const playersStr = (p != null && mx != null)
-      ? `${p}/${mx}${q ? ` +${q}` : ''}`
-      : '—';
-
-    const errTxt = (status === 'error' && g.rust_live?.error)
-      ? `<div style="color:#ef4444;font-size:.75rem;font-family:ui-monospace,Consolas,monospace;word-break:break-word">${escapeHtml(String(g.rust_live.error).slice(0, 180))}</div>`
-      : '';
-
     const members = Array.isArray(g.rust_live?.team_members) ? g.rust_live.team_members : [];
-    const teamCount = members.length;
+    const teamCount   = members.length;
     const onlineCount = members.filter(m => m?.is_online).length;
-    const aliveCount = members.filter(m => m?.is_alive).length;
+    const aliveCount  = members.filter(m => m?.is_alive).length;
 
     let teamBlock = '';
     if (teamCount > 0) {
@@ -2530,11 +2244,11 @@
         .sort((a, b) => (Number(!!b.is_online) - Number(!!a.is_online)) || (Number(!!b.is_alive) - Number(!!a.is_alive)))
         .map(m => {
           const name = escapeHtml(String(m.name || '?'));
-          const sid = escapeHtml(String(m.steam_id || ''));
+          const sid  = escapeHtml(String(m.steam_id || ''));
           const onlineCls = m.is_online ? 'gc-member-online' : 'gc-member-offline';
-          const aliveCls = m.is_alive ? 'gc-member-alive' : 'gc-member-dead';
-          const aliveIcon = m.is_alive ? '❤' : '💀';
-          return `<li class="gc-member">
+          const aliveCls  = m.is_alive  ? 'gc-member-alive'  : 'gc-member-dead';
+          const aliveIcon = m.is_alive  ? '❤'                : '💀';
+          return `<li class="srv-row__team-member">
             <span class="${onlineCls}" title="${m.is_online ? 'онлайн' : 'офлайн'}">●</span>
             <span class="${aliveCls}" title="${m.is_alive ? 'жив' : 'мёртв'}">${aliveIcon}</span>
             <span class="gc-member-name">${name}</span>
@@ -2543,63 +2257,39 @@
         })
         .join('');
       teamBlock = `
-        <div class="gc-team">
-          <details>
-            <summary>
-              <span>👥</span>
-              <span class="gc-team-count">${teamCount}</span>
-              <span class="gc-team-summary">${onlineCount} онлайн · ${aliveCount} жив</span>
-            </summary>
-            <ul class="gc-team-list">${lis}</ul>
-          </details>
-        </div>`;
+        <details class="srv-row__team-details">
+          <summary><b>${teamCount}</b>&nbsp;·&nbsp;${onlineCount} онлайн&nbsp;·&nbsp;${aliveCount} жив</summary>
+          <ul class="srv-row__team-members">${lis}</ul>
+        </details>
+      `;
+    } else {
+      teamBlock = `<span class="srv-row__team">без команды</span>`;
     }
 
+    const errTxt = (status === 'error' && g.rust_live?.error)
+      ? `<div class="srv-row__error">${escapeHtml(String(g.rust_live.error).slice(0, 240))}</div>`
+      : '';
+
+    const steamId = g.rust_db?.steam_id ? escapeHtml(String(g.rust_db.steam_id)) : '';
+    const metaPieces = [
+      `<span class="mono">ID: ${escapeHtml(String(g.guild_id || ''))}</span>`,
+      steamId ? `<span class="mono">Steam: ${steamId}</span>` : '',
+      `<span>👁 ${g.watched_players_count ?? 0}</span>`,
+      `<span>🔧 ${g.rust_entities_count ?? 0}</span>`,
+    ].filter(Boolean).join('');
+
     return `
-      <div class="guild-card" data-status="${status}">
-        <div class="gc-head">
-          <div class="gc-title">
-            <div class="gc-name" title="${escapeHtml(g.guild_name || '')}">${escapeHtml(g.guild_name || '—')}</div>
-            <div class="gc-id">${escapeHtml(String(g.guild_id || ''))}</div>
-          </div>
-          <div class="gc-badges">${badges.join('')}</div>
+      <div class="srv-row" data-status="${status}">
+        <span class="srv-row__status srv-row__status--${status}">${escapeHtml(statusLabel)}</span>
+        <div class="srv-row__title">
+          <div class="srv-row__name" title="${escapeHtml(g.guild_name || '')}">${escapeHtml(g.guild_name || '—')}</div>
+          <div class="srv-row__meta">${metaPieces}</div>
         </div>
-
-        <div class="gc-status-row">
-          <span class="gc-status gc-status--${status}">${escapeHtml(statusLabel)}</span>
-          <span class="gc-server-name" title="${g.rust_live?.server_name ? escapeHtml(g.rust_live.server_name) : ''}">${serverName}</span>
+        <div class="srv-row__aside">
+          ${teamBlock}
+          <div class="srv-row__badges">${badges.join('')}</div>
         </div>
-
         ${errTxt}
-
-        <div class="gc-info">
-          <div class="gc-info-item">
-            <span class="gc-info-k">Адрес</span>
-            <span class="gc-info-v" title="${rustDb}">${rustDb}</span>
-          </div>
-          <div class="gc-info-item">
-            <span class="gc-info-k">Игроки</span>
-            <span class="gc-info-v gc-info-v--plain">${escapeHtml(playersStr)}</span>
-          </div>
-          <div class="gc-info-item">
-            <span class="gc-info-k">Steam</span>
-            <span class="gc-info-v" title="${steamId}">${steamId}</span>
-          </div>
-          <div class="gc-info-item">
-            <span class="gc-info-k">Отслеживаемые</span>
-            <span class="gc-info-v gc-info-v--plain">${g.watched_players_count ?? 0}</span>
-          </div>
-          <div class="gc-info-item">
-            <span class="gc-info-k">Устройств</span>
-            <span class="gc-info-v gc-info-v--plain">${g.rust_entities_count ?? 0}</span>
-          </div>
-          <div class="gc-info-item">
-            <span class="gc-info-k">Lang</span>
-            <span class="gc-info-v gc-info-v--plain">${escapeHtml(g.language || '—')}</span>
-          </div>
-        </div>
-
-        ${teamBlock}
       </div>
     `;
   }
