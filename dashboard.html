@@ -1022,6 +1022,75 @@
     }
     .socket-dot--off { background: #6b7280; box-shadow: none; }
 
+    /* BAN chip in list */
+    .site-db-ban-chip {
+      display: inline-block;
+      padding: 1px 6px;
+      margin-right: 6px;
+      border-radius: 4px;
+      font-size: .66rem;
+      font-weight: 800;
+      letter-spacing: .05em;
+      background: rgba(239,68,68,.18);
+      color: #fca5a5;
+      vertical-align: middle;
+    }
+    .admin-panel-site-db__table tbody tr.site-db-row.is-banned {
+      background: rgba(239,68,68,.05);
+    }
+    .admin-panel-site-db__table tbody tr.site-db-row.is-banned:hover {
+      background: rgba(239,68,68,.09);
+    }
+
+    /* Admin action buttons */
+    .site-db-actions__row {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: 4px;
+    }
+    .site-db-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 11px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      font-size: .8rem; font-weight: 600;
+      cursor: pointer;
+      transition: background .15s, border-color .15s, transform .1s;
+    }
+    .site-db-btn:hover {
+      background: rgba(255,255,255,.08);
+      border-color: rgba(255,255,255,.18);
+    }
+    .site-db-btn:active { transform: translateY(1px); }
+    .site-db-btn:disabled {
+      opacity: .5; cursor: not-allowed;
+    }
+    .site-db-btn--warn {
+      border-color: rgba(251,191,36,.3);
+      color: #fcd34d;
+    }
+    .site-db-btn--warn:hover {
+      background: rgba(251,191,36,.1);
+      border-color: rgba(251,191,36,.5);
+    }
+    .site-db-btn--danger {
+      border-color: rgba(239,68,68,.3);
+      color: #fca5a5;
+    }
+    .site-db-btn--danger:hover {
+      background: rgba(239,68,68,.1);
+      border-color: rgba(239,68,68,.5);
+    }
+    .site-db-btn--ok {
+      border-color: rgba(52,211,153,.3);
+      color: #6ee7b7;
+    }
+    .site-db-btn--ok:hover {
+      background: rgba(52,211,153,.1);
+      border-color: rgba(52,211,153,.5);
+    }
+
     /* ========== Rust+ server tab — картинка + метаданные из pairing ========== */
     .srv-head {
       grid-template-columns: 16px 72px minmax(0, 1fr) auto auto !important;
@@ -2408,6 +2477,7 @@
           tile('🎮 Со Steam', ru.users_with_steam ?? '—', 'admin-stat--info'),
           tile('🔌 С активным сокетом', ru.users_with_active_socket ?? '—', 'admin-stat--ok'),
           tile('🏠 С серверами', ru.users_with_servers ?? '—', 'admin-stat--info'),
+          tile('🚫 Забанено', ru.users_banned ?? 0, (ru.users_banned > 0 ? 'admin-stat--bad' : 'admin-stat--muted')),
           tile('✅ FCM OK', br.ok ?? ru.fcm_ok_users ?? 0, 'admin-stat--ok'),
           tile('⏳ FCM pending', br.pending ?? 0, 'admin-stat--warn'),
           tile('❌ FCM error', br.error ?? 0, 'admin-stat--bad'),
@@ -2531,16 +2601,20 @@
       const socketDot = u.has_active_socket
         ? '<span class="socket-dot" title="Активный Rust+ сокет"></span>'
         : '<span class="socket-dot socket-dot--off" title="Без активного сокета"></span>';
+      const banChip = u.is_banned
+        ? '<span class="site-db-ban-chip" title="Забанен">BAN</span>'
+        : '';
       const activeSrv = u.active_server;
       const serversCell = (u.servers_count > 0)
         ? `${u.servers_count}${activeSrv ? `&nbsp;·&nbsp;<span class="mono" style="font-size:0.78rem">${escapeHtml(String(activeSrv.server_ip || '—'))}:${escapeHtml(String(activeSrv.server_port || '—'))}</span>` : ''}`
         : '<span class="muted">—</span>';
+      const rowExtraCls = u.is_banned ? ' is-banned' : '';
 
       return [
-        `<tr class="site-db-row${open ? ' is-open' : ''}" data-row-id="${escapeHtml(rowId)}">`,
+        `<tr class="site-db-row${open ? ' is-open' : ''}${rowExtraCls}" data-row-id="${escapeHtml(rowId)}">`,
           `<td style="text-align:center"><span class="site-db-caret">▸</span></td>`,
           `<td class="mono">${escapeHtml(String(u.internal_id))}</td>`,
-          `<td>${socketDot}${escapeHtml(String(u.discord_username || '—'))}<br/><span class="muted mono" style="font-size:0.76rem">${escapeHtml(String(u.discord_id || ''))}</span></td>`,
+          `<td>${socketDot}${banChip}${escapeHtml(String(u.discord_username || '—'))}<br/><span class="muted mono" style="font-size:0.76rem">${escapeHtml(String(u.discord_id || ''))}</span></td>`,
           `<td class="mono">${escapeHtml(String(u.steam_id || '—'))}</td>`,
           `<td>${fcmBadgeHtml(u.fcm_status)}</td>`,
           `<td class="mono">${escapeHtml(String(u.guild_id || '—'))}</td>`,
@@ -2557,6 +2631,8 @@
     // Навешиваем хендлер раскрытия один раз через делегирование.
     if (!tbody._bound) {
       tbody.addEventListener('click', (e) => {
+        // Если клик по кнопке действия / ссылке — не трогаем раскрытие.
+        if (e.target.closest('button[data-admin-action], a, input, select, textarea')) return;
         const row = e.target.closest('tr.site-db-row');
         if (!row) return;
         const id = row.getAttribute('data-row-id');
@@ -2572,7 +2648,74 @@
           if (detail) detail.classList.remove('is-hidden');
         }
       });
+      tbody.addEventListener('click', adminActionClickHandler);
       tbody._bound = true;
+    }
+  }
+
+  async function adminActionClickHandler(e) {
+    const btn = e.target.closest('button[data-admin-action]');
+    if (!btn) return;
+    e.stopPropagation();
+    const action = btn.getAttribute('data-admin-action');
+    const iid = parseInt(btn.getAttribute('data-admin-iid') || '0', 10);
+    if (!action || !iid) return;
+
+    const session = _dashSessionRef;
+    if (!session) return;
+
+    const confirmText = {
+      disconnect: 'Закрыть Rust+ сокет и остановить FCM listener для этого юзера?',
+      reconnect: 'Подключиться заново к Rust+ и стартовать FCM listener?',
+      clear_fcm: 'Стереть FCM-токены в БД? Pairing сохранится, но push работать не будет до новой регистрации.',
+      wipe: 'ПОЛНЫЙ СБРОС: закрыть сокет + стереть FCM-токены. Продолжить?',
+      ban: 'Забанить пользователя? /me/* ответит 403, сокет и FCM будут остановлены.',
+      unban: 'Снять бан с пользователя?',
+    }[action];
+    if (confirmText && !confirm(confirmText)) return;
+
+    let reason = null;
+    if (action === 'ban') {
+      reason = prompt('Причина бана (опционально):', '') || null;
+    }
+
+    const origText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '…';
+    try {
+      const resp = await fetch(`${API_BASE}/admin/user/action?session=${encodeURIComponent(session)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ internal_id: iid, action, reason }),
+      });
+      if (!resp.ok) {
+        const txt = await resp.text().catch(() => '');
+        alert(`Ошибка ${resp.status}: ${txt || '—'}`);
+        return;
+      }
+      const data = await resp.json();
+      // Patch cache inline, чтобы не ждать полного reload.
+      if (data && data.user) {
+        const idx = _adminSiteDbCache.findIndex(u => Number(u.internal_id) === Number(data.internal_id));
+        if (idx >= 0) {
+          _adminSiteDbCache[idx] = Object.assign({}, _adminSiteDbCache[idx], {
+            fcm_status: data.user.fcm_status ?? _adminSiteDbCache[idx].fcm_status,
+            is_banned: !!data.user.is_banned,
+            banned_at: data.user.banned_at ?? null,
+            banned_reason: data.user.banned_reason ?? null,
+            has_active_socket: !!data.user.has_active_socket,
+          });
+        }
+      }
+      renderSiteDbUsers();
+      // И параллельно дергаем полный refresh панели, чтобы подтянуть FCM-каунтеры.
+      if (_dashSessionRef) loadAdminPanel(_dashSessionRef, _dashDiscordId);
+    } catch (err) {
+      alert('Сеть: ' + ((err && err.message) || String(err)));
+    } finally {
+      btn.disabled = false;
+      btn.textContent = origText;
     }
   }
 
@@ -2580,6 +2723,37 @@
     const kv = (label, value) =>
       `<div><dt>${escapeHtml(label)}</dt> <dd>${value}</dd></div>`;
     const mono = (v) => v ? `<code class="mono">${escapeHtml(String(v))}</code>` : '<span class="muted">—</span>';
+    const iid = String(u.internal_id);
+
+    const banMeta = u.is_banned ? `
+      <div class="site-db-detail-kv" style="grid-column:1/-1">
+        <h4 style="color:#fca5a5">Бан</h4>
+        <dl style="margin:0">
+          ${kv('Забанен', escapeHtml(fmtTs(u.banned_at)))}
+          ${u.banned_reason ? kv('Причина', escapeHtml(String(u.banned_reason))) : ''}
+        </dl>
+      </div>` : '';
+
+    const actions = `
+      <div class="site-db-detail-kv site-db-actions" style="grid-column:1/-1">
+        <h4>Действия</h4>
+        <div class="site-db-actions__row">
+          ${u.has_active_socket
+            ? `<button type="button" class="site-db-btn site-db-btn--warn" data-admin-action="disconnect" data-admin-iid="${escapeHtml(iid)}" title="Закрыть Rust+ сокет + остановить FCM listener">⏻ Отключить</button>`
+            : `<button type="button" class="site-db-btn" data-admin-action="reconnect" data-admin-iid="${escapeHtml(iid)}" title="Поднять Rust+ сокет + стартовать FCM listener" ${u.is_banned ? 'disabled' : ''}>🔌 Подключить</button>`
+          }
+          <button type="button" class="site-db-btn" data-admin-action="clear_fcm" data-admin-iid="${escapeHtml(iid)}" title="Стереть FCM-токены в rust_users (expo/fcm/gcm), pairing сохраняется">🗑 FCM</button>
+          <button type="button" class="site-db-btn site-db-btn--warn" data-admin-action="wipe" data-admin-iid="${escapeHtml(iid)}" title="Сокет + listener + очистка FCM-полей">💥 Полный сброс</button>
+          ${u.is_banned
+            ? `<button type="button" class="site-db-btn site-db-btn--ok" data-admin-action="unban" data-admin-iid="${escapeHtml(iid)}">✅ Разбанить</button>`
+            : `<button type="button" class="site-db-btn site-db-btn--danger" data-admin-action="ban" data-admin-iid="${escapeHtml(iid)}" title="Забанить: /me/* даст 403, сокет и FCM сразу остановятся">🚫 Забанить</button>`
+          }
+        </div>
+        <p class="muted" style="margin:8px 0 0;font-size:.76rem">
+          Действия применяются сразу к боту: закрытие RustSocket, остановка FCM listener,
+          запись в <code>rust_users.is_banned</code>. Пэйринговые записи в <code>rust_servers</code> не удаляются.
+        </p>
+      </div>`;
 
     const fcmMeta = `
       <div class="site-db-detail-kv">
@@ -2590,6 +2764,7 @@
           ${kv('Registered', escapeHtml(fmtTs(u.fcm_registered_at)))}
           ${u.fcm_last_error ? kv('Last error', `<span style="color:#fca5a5">${escapeHtml(u.fcm_last_error)}</span>`) : ''}
           ${kv('Rust+ token', u.has_rustplus_token ? '✅ есть' : '<span class="muted">нет</span>')}
+          ${kv('Сокет сейчас', u.has_active_socket ? '🟢 активен' : '⚫ нет')}
         </dl>
       </div>`;
 
@@ -2616,6 +2791,8 @@
 
     return `
       <div class="site-db-detail">
+        ${actions}
+        ${banMeta}
         ${userMeta}
         ${fcmMeta}
         <div class="site-db-detail-kv" style="grid-column: 1 / -1">
