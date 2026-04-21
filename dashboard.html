@@ -907,6 +907,162 @@
       background: rgba(255,255,255,.08);
       border-radius: 6px;
     }
+
+    /* ========== Site DB (rust_users) — удобный поиск+раскрытие ========== */
+    .admin-panel-site-db { margin-top: 4px; }
+    .admin-panel-site-db__head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap; margin-bottom: 10px;
+    }
+    .admin-panel-search {
+      min-width: 240px; max-width: 320px; flex: 1 1 240px;
+      padding: 7px 10px; border-radius: 8px;
+      background: rgba(255,255,255,.04); color: var(--text);
+      border: 1px solid var(--border);
+      font-size: .82rem; outline: none;
+      transition: border-color .15s, background .15s;
+    }
+    .admin-panel-search:focus {
+      border-color: var(--accent, #ff6b35);
+      background: rgba(255,255,255,.06);
+    }
+    .admin-panel-site-db__wrap { max-height: 520px; }
+    .admin-panel-site-db__table tbody tr.site-db-row {
+      cursor: pointer;
+      transition: background .12s;
+    }
+    .admin-panel-site-db__table tbody tr.site-db-row:hover {
+      background: rgba(255,255,255,.035);
+    }
+    .admin-panel-site-db__table tbody tr.site-db-row.is-open {
+      background: rgba(255,107,53,.06);
+    }
+    .admin-panel-site-db__table .site-db-caret {
+      display: inline-block;
+      transition: transform .18s;
+      color: var(--text2);
+      font-size: .8rem;
+    }
+    .site-db-row.is-open .site-db-caret { transform: rotate(90deg); }
+    .site-db-detail-row > td { padding: 0 !important; background: rgba(0,0,0,.22); }
+    .site-db-detail-row.is-hidden { display: none; }
+    .site-db-detail {
+      padding: 12px 18px 14px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+    .site-db-detail h4 {
+      margin: 0 0 6px; font-size: .78rem;
+      text-transform: uppercase; letter-spacing: .05em;
+      color: var(--text2);
+    }
+    .site-db-detail-kv {
+      font-size: .82rem; line-height: 1.5;
+      color: var(--text);
+    }
+    .site-db-detail-kv dt {
+      display: inline-block; min-width: 108px;
+      color: var(--text2);
+    }
+    .site-db-detail-kv dd { display: inline; margin: 0; }
+    .site-db-servers {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .site-db-server {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      gap: 8px 12px;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(255,255,255,.02);
+      font-size: .82rem;
+      align-items: center;
+    }
+    .site-db-server.is-active {
+      border-color: rgba(255,107,53,.45);
+      background: rgba(255,107,53,.06);
+    }
+    .site-db-server__flag {
+      font-size: .68rem; font-weight: 700;
+      padding: 2px 7px; border-radius: 999px;
+      background: rgba(255,255,255,.07); color: var(--text2);
+      text-transform: uppercase; letter-spacing: .03em;
+      white-space: nowrap;
+    }
+    .site-db-server.is-active .site-db-server__flag { background: #ff6b35; color: #fff; }
+    .site-db-server__online {
+      font-size: .72rem; color: #34d399; font-weight: 700;
+    }
+    .site-db-server__offline {
+      font-size: .72rem; color: var(--text2); font-weight: 700;
+    }
+    .site-db-server__addr { font-family: ui-monospace, Consolas, monospace; color: var(--text); }
+    .site-db-server__name { color: var(--text2); font-size: .78rem; }
+
+    /* FCM status badges */
+    .fcm-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 999px;
+      font-size: .7rem; font-weight: 700;
+      letter-spacing: .03em; text-transform: uppercase;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+    .fcm-badge--ok       { background: rgba(52,211,153,.14); color: #6ee7b7; }
+    .fcm-badge--pending  { background: rgba(251,191,36,.14); color: #fcd34d; }
+    .fcm-badge--error    { background: rgba(239,68,68,.15);  color: #fca5a5; }
+    .fcm-badge--unlinked { background: rgba(107,114,128,.18); color: var(--text2); }
+
+    /* Мини-бейдж для активного сокета (зелёная точка) */
+    .socket-dot {
+      display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+      background: #34d399; box-shadow: 0 0 0 2px rgba(52,211,153,.18);
+      margin-right: 5px; vertical-align: middle;
+    }
+    .socket-dot--off { background: #6b7280; box-shadow: none; }
+
+    /* ========== Rust+ server tab — картинка + метаданные из pairing ========== */
+    .srv-head {
+      grid-template-columns: 16px 72px minmax(0, 1fr) auto auto !important;
+    }
+    .srv-head__logo {
+      width: 60px; height: 60px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .srv-head__logo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .srv-head__logo--empty {
+      font-size: 1.4rem; color: var(--text2); opacity: .35;
+    }
+    .srv-head__banner {
+      grid-column: 1 / -1;
+      width: 100%;
+      max-height: 110px;
+      object-fit: cover;
+      display: block;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .srv-head__meta-extra {
+      font-size: .72rem; color: var(--text2);
+      margin-top: 4px;
+      display: flex; flex-wrap: wrap; gap: 10px;
+    }
+    .srv-head__meta-extra > span {
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .srv-head__meta-extra .srv-head__chip {
+      padding: 1px 7px; border-radius: 999px;
+      background: rgba(255,255,255,.05);
+    }
   </style>
 </head>
 <body class="dashboard-page">
@@ -1261,22 +1417,32 @@
                   <span class="admin-panel-section__title-text">Новая БД · rust_users / rust_servers</span>
                 </h3>
                 <div class="admin-stat-grid" id="admin-rust-users-summary" style="margin-bottom:14px"></div>
-                <div class="admin-panel-table-wrap">
-                  <table class="admin-panel-table">
-                    <thead>
-                      <tr>
-                        <th>internal_id</th>
-                        <th>Discord</th>
-                        <th>Ник</th>
-                        <th>Steam</th>
-                        <th>FCM</th>
-                        <th>guild_id</th>
-                        <th>Страна</th>
-                        <th>Последний вход</th>
-                      </tr>
-                    </thead>
-                    <tbody id="admin-rust-users-tbody"></tbody>
-                  </table>
+                <div class="admin-panel-site-db">
+                  <div class="admin-panel-site-db__head">
+                    <p class="muted" style="margin:0;font-size:0.85rem">
+                      Полный список пользователей сайта. Клик по строке — список всех запэйренных серверов.
+                    </p>
+                    <input type="search" id="admin-site-db-search" class="admin-panel-search"
+                           placeholder="Поиск: ник, discord/steam ID, IP…" autocomplete="off" />
+                  </div>
+                  <div class="admin-panel-table-wrap admin-panel-site-db__wrap">
+                    <table class="admin-panel-table admin-panel-site-db__table">
+                      <thead>
+                        <tr>
+                          <th style="width:30px"></th>
+                          <th>internal_id</th>
+                          <th>Discord</th>
+                          <th>Steam</th>
+                          <th>FCM</th>
+                          <th>guild_id</th>
+                          <th>Страна</th>
+                          <th>Серверы</th>
+                          <th>Последний вход</th>
+                        </tr>
+                      </thead>
+                      <tbody id="admin-rust-users-tbody"></tbody>
+                    </table>
+                  </div>
                 </div>
               </section>
 
@@ -1376,6 +1542,10 @@
   let _adminPanelLoading = false;
   let _adminGuildsCache = [];
   let _adminToolbarBound = false;
+  let _adminSiteDbCache = [];
+  let _adminSiteDbSearch = '';
+  let _adminSiteDbOpenIds = new Set();
+  let _adminSiteDbBound = false;
 
   function clearAdminPanelPoll() {
     if (_adminPanelPollTimer) {
@@ -2058,6 +2228,7 @@
       const loginsTbody = document.getElementById('admin-panel-logins-tbody');
       if (rustSumEl && data.rust_users_db) {
         const ru = data.rust_users_db;
+        const br = ru.fcm_status_breakdown || {};
         const tile = (label, value, cls = '') => `
           <div class="admin-stat ${cls}">
             <div class="admin-stat-label">${label}</div>
@@ -2066,27 +2237,23 @@
         rustSumEl.classList.add('admin-stat-grid');
         rustSumEl.innerHTML = [
           tile('👤 rust_users', ru.users_count ?? '—', 'admin-stat--info'),
-          tile('🗄 строк rust_servers', ru.rust_servers_rows ?? '—', 'admin-stat--info'),
-          tile('✅ FCM OK (пользователей)', ru.fcm_ok_users ?? '—', 'admin-stat--ok'),
+          tile('🗄 rust_servers', ru.rust_servers_rows ?? '—', 'admin-stat--info'),
+          tile('🎮 Со Steam', ru.users_with_steam ?? '—', 'admin-stat--info'),
+          tile('🔌 С активным сокетом', ru.users_with_active_socket ?? '—', 'admin-stat--ok'),
+          tile('🏠 С серверами', ru.users_with_servers ?? '—', 'admin-stat--info'),
+          tile('✅ FCM OK', br.ok ?? ru.fcm_ok_users ?? 0, 'admin-stat--ok'),
+          tile('⏳ FCM pending', br.pending ?? 0, 'admin-stat--warn'),
+          tile('❌ FCM error', br.error ?? 0, 'admin-stat--bad'),
+          tile('⚪ FCM unlinked', br.unlinked ?? 0, 'admin-stat--muted'),
         ].join('');
       }
       if (rustTbody) {
-        const rec = (data.rust_users_db && data.rust_users_db.recent_users) || [];
-        rustTbody.innerHTML = rec.length ? rec.map(u => {
-          const t = u.last_login_at != null
-            ? new Date(Number(u.last_login_at) * 1000).toLocaleString('ru-RU')
-            : '—';
-          return `<tr>
-            <td class="mono">${escapeHtml(String(u.internal_id))}</td>
-            <td class="mono">${escapeHtml(String(u.discord_id))}</td>
-            <td>${escapeHtml(String(u.discord_username || '—'))}</td>
-            <td class="mono">${escapeHtml(String(u.steam_id || '—'))}</td>
-            <td>${escapeHtml(String(u.fcm_status || '—'))}</td>
-            <td class="mono">${escapeHtml(String(u.guild_id || '—'))}</td>
-            <td>${escapeHtml(String(u.country || '—'))}</td>
-            <td style="white-space:nowrap;font-size:0.82rem">${t}</td>
-          </tr>`;
-        }).join('') : '<tr><td colspan="8" style="padding:8px">Нет записей rust_users</td></tr>';
+        // Полный список rust_users с раскрытием по клику (детали + все серверы).
+        _adminSiteDbCache = (data.rust_users_db && Array.isArray(data.rust_users_db.users))
+          ? data.rust_users_db.users
+          : [];
+        renderSiteDbUsers();
+        setupSiteDbSearch();
       }
       if (loginsTbody) {
         const pl = Array.isArray(data.panel_logins) ? data.panel_logins : [];
@@ -2135,6 +2302,182 @@
     sort.addEventListener('change', h);
     filter.addEventListener('change', h);
     _adminToolbarBound = true;
+  }
+
+  /* ================================================================
+     SITE DB (rust_users) — поиск, рендер, раскрытие деталей юзера
+     ================================================================ */
+
+  function setupSiteDbSearch() {
+    if (_adminSiteDbBound) return;
+    const input = document.getElementById('admin-site-db-search');
+    if (!input) return;
+    input.addEventListener('input', (e) => {
+      _adminSiteDbSearch = String(e.target.value || '').trim().toLowerCase();
+      renderSiteDbUsers();
+    });
+    _adminSiteDbBound = true;
+  }
+
+  function fcmBadgeHtml(status) {
+    const cls = {
+      ok: 'fcm-badge--ok',
+      pending: 'fcm-badge--pending',
+      error: 'fcm-badge--error',
+      unlinked: 'fcm-badge--unlinked',
+    }[String(status || 'unlinked')] || 'fcm-badge--unlinked';
+    return `<span class="fcm-badge ${cls}">${escapeHtml(String(status || 'unlinked'))}</span>`;
+  }
+
+  function fmtTs(t) {
+    if (t == null) return '—';
+    try { return new Date(Number(t) * 1000).toLocaleString('ru-RU'); }
+    catch (_) { return '—'; }
+  }
+
+  function siteDbRowMatchesSearch(u, q) {
+    if (!q) return true;
+    const hay = [
+      u.discord_username, u.discord_id, u.steam_id,
+      u.guild_id, u.country, u.last_ip, u.first_ip,
+      String(u.internal_id || ''),
+      ...(Array.isArray(u.servers) ? u.servers.flatMap(s => [s.server_ip, s.server_name]) : []),
+    ].filter(Boolean).map(x => String(x).toLowerCase());
+    return hay.some(x => x.includes(q));
+  }
+
+  function renderSiteDbUsers() {
+    const tbody = document.getElementById('admin-rust-users-tbody');
+    if (!tbody) return;
+    const list = Array.isArray(_adminSiteDbCache) ? _adminSiteDbCache : [];
+    const q = _adminSiteDbSearch;
+    const filtered = q ? list.filter(u => siteDbRowMatchesSearch(u, q)) : list;
+
+    if (!filtered.length) {
+      tbody.innerHTML = `<tr><td colspan="9" style="padding:12px" class="muted">Нет записей rust_users${q ? ' по запросу «' + escapeHtml(q) + '»' : ''}</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(u => {
+      const rowId = 'site-db-' + String(u.internal_id);
+      const open = _adminSiteDbOpenIds.has(rowId);
+      const socketDot = u.has_active_socket
+        ? '<span class="socket-dot" title="Активный Rust+ сокет"></span>'
+        : '<span class="socket-dot socket-dot--off" title="Без активного сокета"></span>';
+      const activeSrv = u.active_server;
+      const serversCell = (u.servers_count > 0)
+        ? `${u.servers_count}${activeSrv ? `&nbsp;·&nbsp;<span class="mono" style="font-size:0.78rem">${escapeHtml(String(activeSrv.server_ip || '—'))}:${escapeHtml(String(activeSrv.server_port || '—'))}</span>` : ''}`
+        : '<span class="muted">—</span>';
+
+      return [
+        `<tr class="site-db-row${open ? ' is-open' : ''}" data-row-id="${escapeHtml(rowId)}">`,
+          `<td style="text-align:center"><span class="site-db-caret">▸</span></td>`,
+          `<td class="mono">${escapeHtml(String(u.internal_id))}</td>`,
+          `<td>${socketDot}${escapeHtml(String(u.discord_username || '—'))}<br/><span class="muted mono" style="font-size:0.76rem">${escapeHtml(String(u.discord_id || ''))}</span></td>`,
+          `<td class="mono">${escapeHtml(String(u.steam_id || '—'))}</td>`,
+          `<td>${fcmBadgeHtml(u.fcm_status)}</td>`,
+          `<td class="mono">${escapeHtml(String(u.guild_id || '—'))}</td>`,
+          `<td>${escapeHtml(String(u.country || '—'))}</td>`,
+          `<td>${serversCell}</td>`,
+          `<td style="white-space:nowrap;font-size:0.82rem">${escapeHtml(fmtTs(u.last_login_at))}</td>`,
+        `</tr>`,
+        `<tr class="site-db-detail-row${open ? '' : ' is-hidden'}" data-row-id="${escapeHtml(rowId)}">`,
+          `<td colspan="9">${renderSiteDbDetail(u)}</td>`,
+        `</tr>`,
+      ].join('');
+    }).join('');
+
+    // Навешиваем хендлер раскрытия один раз через делегирование.
+    if (!tbody._bound) {
+      tbody.addEventListener('click', (e) => {
+        const row = e.target.closest('tr.site-db-row');
+        if (!row) return;
+        const id = row.getAttribute('data-row-id');
+        if (!id) return;
+        const detail = tbody.querySelector(`tr.site-db-detail-row[data-row-id="${CSS.escape(id)}"]`);
+        if (_adminSiteDbOpenIds.has(id)) {
+          _adminSiteDbOpenIds.delete(id);
+          row.classList.remove('is-open');
+          if (detail) detail.classList.add('is-hidden');
+        } else {
+          _adminSiteDbOpenIds.add(id);
+          row.classList.add('is-open');
+          if (detail) detail.classList.remove('is-hidden');
+        }
+      });
+      tbody._bound = true;
+    }
+  }
+
+  function renderSiteDbDetail(u) {
+    const kv = (label, value) =>
+      `<div><dt>${escapeHtml(label)}</dt> <dd>${value}</dd></div>`;
+    const mono = (v) => v ? `<code class="mono">${escapeHtml(String(v))}</code>` : '<span class="muted">—</span>';
+
+    const fcmMeta = `
+      <div class="site-db-detail-kv">
+        <h4>FCM</h4>
+        <dl style="margin:0">
+          ${kv('Статус', fcmBadgeHtml(u.fcm_status))}
+          ${kv('Retry count', String(u.fcm_retry_count ?? 0))}
+          ${kv('Registered', escapeHtml(fmtTs(u.fcm_registered_at)))}
+          ${u.fcm_last_error ? kv('Last error', `<span style="color:#fca5a5">${escapeHtml(u.fcm_last_error)}</span>`) : ''}
+          ${kv('Rust+ token', u.has_rustplus_token ? '✅ есть' : '<span class="muted">нет</span>')}
+        </dl>
+      </div>`;
+
+    const userMeta = `
+      <div class="site-db-detail-kv">
+        <h4>Профиль</h4>
+        <dl style="margin:0">
+          ${kv('Discord ID', mono(u.discord_id))}
+          ${kv('Steam ID', mono(u.steam_id))}
+          ${kv('Guild ID', mono(u.guild_id))}
+          ${kv('Страна', escapeHtml(String(u.country || '—')))}
+          ${kv('Last IP', mono(u.last_ip))}
+          ${kv('First IP', mono(u.first_ip))}
+          ${kv('Создан', escapeHtml(fmtTs(u.created_at)))}
+          ${kv('Linked', escapeHtml(fmtTs(u.rustplus_linked_at)))}
+          ${kv('Updated', escapeHtml(fmtTs(u.updated_at)))}
+        </dl>
+      </div>`;
+
+    const servers = Array.isArray(u.servers) ? u.servers : [];
+    const serversBlock = servers.length
+      ? `<div class="site-db-servers">${servers.map(renderSiteDbServer).join('')}</div>`
+      : '<span class="muted">Запэйренных серверов нет</span>';
+
+    return `
+      <div class="site-db-detail">
+        ${userMeta}
+        ${fcmMeta}
+        <div class="site-db-detail-kv" style="grid-column: 1 / -1">
+          <h4>rust_servers (${servers.length})</h4>
+          ${serversBlock}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderSiteDbServer(s) {
+    const addr = `${escapeHtml(String(s.server_ip || '—'))}:${escapeHtml(String(s.server_port || '—'))}`;
+    const name = s.server_name ? `<div class="site-db-server__name">${escapeHtml(s.server_name)}</div>` : '';
+    const onl = s.is_online
+      ? '<span class="site-db-server__online">● онлайн</span>'
+      : '<span class="site-db-server__offline">○ оффлайн</span>';
+    const flag = `<span class="site-db-server__flag">${s.is_active ? 'активный' : 'pair'}</span>`;
+    const last = s.last_seen_at ? `<span class="muted" style="font-size:.74rem">${escapeHtml(fmtTs(s.last_seen_at))}</span>` : '';
+    return `
+      <div class="site-db-server${s.is_active ? ' is-active' : ''}">
+        ${flag}
+        <div>
+          <div class="site-db-server__addr">${addr}</div>
+          ${name}
+        </div>
+        ${onl}
+        ${last}
+      </div>
+    `;
   }
 
   /* =======================================================================
@@ -2331,8 +2674,9 @@
   }
 
   function renderServerHead(gr, isShared) {
-    const playersStr = (gr.live?.players != null && gr.live?.max_players != null)
-      ? `${gr.live.players}/${gr.live.max_players}${gr.live.queued_players ? ' +' + gr.live.queued_players : ''}`
+    const live = gr.live || {};
+    const playersStr = (live.players != null && live.max_players != null)
+      ? `${live.players}/${live.max_players}${live.queued_players ? ' +' + live.queued_players : ''}`
       : '';
     const count = gr.guilds.length;
     const word = count === 1 ? 'гильдия' : (count < 5 ? 'гильдии' : 'гильдий');
@@ -2345,10 +2689,40 @@
     const meta = metaPieces.length ? metaPieces.join(' · ') : 'гильдии без привязки к Rust-серверу';
 
     const caret = `<span class="srv-head__caret" aria-hidden="true">▸</span>`;
+
+    // Лого сервера (пришло из pairing вместе с header_image/logo_image).
+    const logoUrl = live.logo_image || live.header_image || '';
+    const logo = logoUrl
+      ? `<div class="srv-head__logo"><img src="${escapeHtml(logoUrl)}" alt="" loading="lazy" onerror="this.closest('.srv-head__logo').classList.add('srv-head__logo--empty');this.remove();" /></div>`
+      : `<div class="srv-head__logo srv-head__logo--empty" aria-hidden="true">🎮</div>`;
+
+    // Метаданные Rust+: карта / размер / seed / wipe.
+    const metaExtra = [];
+    if (live.map)  metaExtra.push(`<span class="srv-head__chip" title="Map">🗺 ${escapeHtml(String(live.map))}</span>`);
+    if (live.size) metaExtra.push(`<span class="srv-head__chip" title="World size">📐 ${escapeHtml(String(live.size))}</span>`);
+    if (live.seed != null && live.seed !== 0)
+      metaExtra.push(`<span class="srv-head__chip" title="Seed">🌱 ${escapeHtml(String(live.seed))}</span>`);
+    if (live.wipe_time) {
+      const wt = new Date(Number(live.wipe_time) * 1000);
+      if (!isNaN(wt.getTime())) {
+        metaExtra.push(`<span class="srv-head__chip" title="Last wipe">🧽 ${escapeHtml(wt.toLocaleDateString('ru-RU'))}</span>`);
+      }
+    }
+    const metaExtraHtml = metaExtra.length ? `<div class="srv-head__meta-extra">${metaExtra.join('')}</div>` : '';
+
+    // Имя сервера из pairing предпочтительнее, если есть — иначе собранное имя группы.
+    const displayName = (live.server_name && typeof live.server_name === 'string')
+      ? live.server_name
+      : gr.name;
+    const urlBadge = live.url
+      ? ` <a href="${escapeHtml(live.url)}" target="_blank" rel="noopener" class="srv-head__chip" style="margin-left:6px;font-size:.7rem;text-decoration:none" title="Сайт сервера">↗</a>`
+      : '';
+
     const title = `
       <div class="srv-head__title">
-        <div class="srv-head__name" title="${escapeHtml(gr.name)}">${escapeHtml(gr.name)}</div>
+        <div class="srv-head__name" title="${escapeHtml(displayName)}">${escapeHtml(displayName)}${urlBadge}</div>
         <div class="srv-head__addr" title="${escapeHtml(meta)}">${escapeHtml(meta)}</div>
+        ${metaExtraHtml}
       </div>
     `;
     const players = playersStr
@@ -2357,9 +2731,9 @@
     const guilds = `<span class="srv-head__guilds">${count} ${word}</span>`;
 
     if (isShared) {
-      return `<summary class="srv-head">${caret}${title}${players}${guilds}</summary>`;
+      return `<summary class="srv-head">${caret}${logo}${title}${players}${guilds}</summary>`;
     }
-    return `<div class="srv-head">${caret}${title}${players}${guilds}</div>`;
+    return `<div class="srv-head">${caret}${logo}${title}${players}${guilds}</div>`;
   }
 
   function renderServerRow(g) {
