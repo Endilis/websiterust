@@ -1063,6 +1063,128 @@
       padding: 1px 7px; border-radius: 999px;
       background: rgba(255,255,255,.05);
     }
+
+    /* ========== Вкладка «Команда» — live team status ========== */
+    .team-panel__controls {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: .82rem;
+    }
+    .team-panel__toggle {
+      display: inline-flex; align-items: center; gap: 6px;
+      cursor: pointer; user-select: none;
+      color: var(--text2);
+    }
+    .team-panel__toggle input { accent-color: #ff6b35; }
+    .team-panel__status {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      font-size: .85rem;
+      color: var(--text2);
+      margin-bottom: 14px;
+      display: flex; align-items: center; gap: 10px;
+      flex-wrap: wrap;
+    }
+    .team-panel__status.is-ok       { border-color: rgba(52,211,153,.3); color: #6ee7b7; background: rgba(52,211,153,.06); }
+    .team-panel__status.is-warn     { border-color: rgba(251,191,36,.3); color: #fcd34d; background: rgba(251,191,36,.06); }
+    .team-panel__status.is-err      { border-color: rgba(239,68,68,.3);  color: #fca5a5; background: rgba(239,68,68,.06); }
+
+    .team-panel__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .team-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255,255,255,.025);
+      transition: border-color .15s, background .15s;
+    }
+    .team-card:hover { background: rgba(255,255,255,.04); }
+    .team-card--me {
+      border-color: rgba(96,165,250,.45);
+      background: rgba(96,165,250,.06);
+    }
+    .team-card--offline { opacity: .78; }
+    .team-card--dead    { background: rgba(239,68,68,.04); border-color: rgba(239,68,68,.25); }
+    .team-card--alive   { border-color: rgba(52,211,153,.25); }
+
+    .team-card__avatar {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #374151, #1f2937);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1.05rem;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .team-card__avatar::after {
+      content: '';
+      position: absolute;
+      bottom: 1px; right: 1px;
+      width: 11px; height: 11px;
+      border-radius: 50%;
+      background: #6b7280;
+      border: 2px solid #0e1117;
+    }
+    .team-card--online .team-card__avatar::after { background: #34d399; }
+
+    .team-card__body { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    .team-card__name {
+      font-weight: 700; font-size: 1rem; color: var(--text);
+      display: flex; align-items: center; gap: 6px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .team-card__badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 1px 7px; border-radius: 999px;
+      font-size: .66rem; font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      line-height: 1.5;
+    }
+    .team-card__badge--me     { background: rgba(96,165,250,.18); color: #93c5fd; }
+    .team-card__badge--leader { background: rgba(250,204,21,.18); color: #fcd34d; }
+
+    .team-card__meta {
+      font-size: .78rem; color: var(--text2);
+      display: flex; flex-wrap: wrap; gap: 8px 12px;
+    }
+    .team-card__meta .team-card__chip {
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .team-card__chip--online  { color: #6ee7b7; }
+    .team-card__chip--offline { color: var(--text2); }
+    .team-card__chip--alive   { color: #6ee7b7; }
+    .team-card__chip--dead    { color: #fca5a5; }
+
+    .team-card__sid {
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: .72rem; color: var(--text2);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .team-card__coords {
+      margin-top: 2px;
+      font-size: .74rem; color: var(--text2);
+      font-family: ui-monospace, Consolas, monospace;
+    }
+    .team-panel__empty {
+      grid-column: 1 / -1;
+      padding: 30px 20px;
+      text-align: center;
+      color: var(--text2);
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      font-size: .9rem;
+    }
   </style>
 </head>
 <body class="dashboard-page">
@@ -1114,6 +1236,7 @@
         <nav class="dash-nav" aria-label="Разделы панели">
           <button type="button" class="dash-nav-btn active" data-panel="account">Аккаунт</button>
           <button type="button" class="dash-nav-btn" data-panel="rust">Rust+ и сервер</button>
+          <button type="button" class="dash-nav-btn" data-panel="team">Команда</button>
           <div class="dash-nav-label">Уведомления</div>
           <button type="button" class="dash-nav-btn sub" data-panel="notify-game">Игра (Rust+)</button>
           <button type="button" class="dash-nav-btn sub" data-panel="notify-discord">Discord</button>
@@ -1298,6 +1421,35 @@
               </div>
             </div>
 
+          </div>
+        </div>
+
+        <!-- PANEL: team (live team status from Rust+) -->
+        <div id="panel-team" class="dash-panel" role="tabpanel">
+          <div class="card">
+            <div class="card-header" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+              <span style="display:inline-flex;align-items:center;gap:8px">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Команда Rust+
+              </span>
+              <div class="team-panel__controls">
+                <label class="team-panel__toggle" title="Обновлять каждые 5 секунд">
+                  <input type="checkbox" id="team-auto-refresh"/>
+                  <span>Авто-обновление</span>
+                </label>
+                <button type="button" class="dash-btn dash-btn--ghost" id="btn-team-refresh">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                  Обновить
+                </button>
+              </div>
+            </div>
+            <p class="muted team-panel__hint" id="team-panel-hint" style="margin-bottom:12px">
+              Список товарищей по команде из Rust+ с их состоянием: онлайн/оффлайн, жив/мёртв.
+              Данные приходят от игрового сервера через активное Rust+ подключение бота.
+            </p>
+            <div class="team-panel__status" id="team-panel-status">—</div>
+            <div class="team-panel__grid" id="team-panel-grid"></div>
+            <p class="muted team-panel__footer" id="team-panel-updated" style="margin-top:12px;font-size:0.78rem">—</p>
           </div>
         </div>
 
@@ -1546,6 +1698,10 @@
   let _adminSiteDbSearch = '';
   let _adminSiteDbOpenIds = new Set();
   let _adminSiteDbBound = false;
+  let _teamPanelTimer = null;
+  let _teamPanelBound = false;
+  let _teamPanelLastServer = null;
+  let _teamPanelAutoRefresh = false;
 
   function clearAdminPanelPoll() {
     if (_adminPanelPollTimer) {
@@ -1610,6 +1766,16 @@
         } else {
           clearAdminPanelPoll();
         }
+        if (id === 'team') {
+          setupTeamPanel();
+          renderTeamPanel(_teamPanelLastServer);
+          if (_teamPanelAutoRefresh) startTeamAutoRefresh();
+          // Первый тик — сразу тянем свежие данные (1 ws-вызов).
+          const session = _dashSessionRef;
+          if (session) fetchAndRenderTeam(session).catch(() => {});
+        } else {
+          stopTeamAutoRefresh();
+        }
       });
     });
   }
@@ -1617,6 +1783,7 @@
   document.getElementById('btn-logout').addEventListener('click', e => {
     e.preventDefault();
     clearAdminPanelPoll();
+    stopTeamAutoRefresh();
     localStorage.removeItem('ri_session');
     window.location.href = 'index.html';
   });
@@ -3108,7 +3275,226 @@
       serverCard.style.display = 'none';
     }
 
+    // Кэш для вкладки «Команда» — используется при первом открытии без дополнительного запроса.
+    _teamPanelLastServer = server ? {
+      name: server.name,
+      address: server.address,
+      my_steam_id: server.my_steam_id || null,
+      leader_steam_id: server.leader_steam_id || null,
+      status: 'ok',
+      members: Array.isArray(server.team) ? server.team : [],
+      generated_at_unix: Math.floor(Date.now() / 1000),
+    } : null;
+    if (document.getElementById('panel-team')?.classList.contains('active')) {
+      renderTeamPanel(_teamPanelLastServer);
+    }
+
     loadRustAccountPanels(session);
+  }
+
+  /* ================================================================
+     Вкладка «Команда» — live team status
+     ================================================================ */
+
+  function setupTeamPanel() {
+    if (_teamPanelBound) return;
+    const toggle = document.getElementById('team-auto-refresh');
+    const refreshBtn = document.getElementById('btn-team-refresh');
+    if (toggle) {
+      toggle.addEventListener('change', (e) => {
+        _teamPanelAutoRefresh = !!e.target.checked;
+        if (_teamPanelAutoRefresh) startTeamAutoRefresh();
+        else stopTeamAutoRefresh();
+      });
+    }
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', async () => {
+        const session = _dashSessionRef;
+        if (!session) return;
+        refreshBtn.disabled = true;
+        try { await fetchAndRenderTeam(session); }
+        finally { refreshBtn.disabled = false; }
+      });
+    }
+    _teamPanelBound = true;
+  }
+
+  function startTeamAutoRefresh() {
+    stopTeamAutoRefresh();
+    _teamPanelTimer = setInterval(() => {
+      const panel = document.getElementById('panel-team');
+      if (!panel || !panel.classList.contains('active')) {
+        stopTeamAutoRefresh();
+        return;
+      }
+      const session = _dashSessionRef;
+      if (session) fetchAndRenderTeam(session).catch(() => {});
+    }, 5000);
+  }
+
+  function stopTeamAutoRefresh() {
+    if (_teamPanelTimer) {
+      clearInterval(_teamPanelTimer);
+      _teamPanelTimer = null;
+    }
+  }
+
+  async function fetchAndRenderTeam(session) {
+    const statusEl = document.getElementById('team-panel-status');
+    try {
+      const resp = await fetch(`${API_BASE}/me/team?session=${encodeURIComponent(session)}&_t=${Date.now()}`, {
+        credentials: 'include',
+      });
+      if (!resp.ok) {
+        if (statusEl) {
+          statusEl.className = 'team-panel__status is-err';
+          statusEl.textContent = 'Ошибка запроса /me/team: HTTP ' + resp.status;
+        }
+        return;
+      }
+      const data = await resp.json();
+      _teamPanelLastServer = {
+        name: _teamPanelLastServer?.name || null,
+        address: _teamPanelLastServer?.address || null,
+        my_steam_id: data.my_steam_id || _teamPanelLastServer?.my_steam_id || null,
+        leader_steam_id: data.leader_steam_id || null,
+        status: data.status || 'unknown',
+        error: data.error,
+        members: Array.isArray(data.members) ? data.members : [],
+        generated_at_unix: data.generated_at_unix || Math.floor(Date.now() / 1000),
+      };
+      renderTeamPanel(_teamPanelLastServer);
+    } catch (e) {
+      if (statusEl) {
+        statusEl.className = 'team-panel__status is-err';
+        statusEl.textContent = 'Сеть: ' + ((e && e.message) || String(e));
+      }
+    }
+  }
+
+  function renderTeamPanel(server) {
+    const grid = document.getElementById('team-panel-grid');
+    const statusEl = document.getElementById('team-panel-status');
+    const updEl = document.getElementById('team-panel-updated');
+    if (!grid) return;
+
+    if (!server || server.status === 'no_connection') {
+      if (statusEl) {
+        statusEl.className = 'team-panel__status is-warn';
+        statusEl.textContent = 'Нет активного Rust+ подключения для выбранной гильдии.';
+      }
+      grid.innerHTML = `<div class="team-panel__empty">
+        Выберите гильдию с привязанным Rust-сервером в разделе «Аккаунт», чтобы увидеть команду.
+      </div>`;
+      if (updEl) updEl.textContent = '';
+      return;
+    }
+    if (server.status === 'disconnected') {
+      if (statusEl) {
+        statusEl.className = 'team-panel__status is-warn';
+        statusEl.textContent = 'Сокет Rust+ не подключён — данные команды недоступны.';
+      }
+      grid.innerHTML = `<div class="team-panel__empty">Бот не подключён к игровому серверу прямо сейчас.</div>`;
+      return;
+    }
+    if (server.status === 'error') {
+      if (statusEl) {
+        statusEl.className = 'team-panel__status is-err';
+        statusEl.textContent = 'Ошибка Rust+: ' + escapeHtml(String(server.error || 'unknown'));
+      }
+      grid.innerHTML = `<div class="team-panel__empty">Не удалось получить список команды.</div>`;
+      return;
+    }
+
+    const members = Array.isArray(server.members) ? server.members : [];
+    const mySid = String(server.my_steam_id || '');
+    const serverName = server.name ? ` · ${server.name}` : '';
+    const onlineCount = members.filter(m => m.is_online).length;
+    const aliveCount = members.filter(m => m.is_alive).length;
+    if (statusEl) {
+      statusEl.className = 'team-panel__status is-ok';
+      statusEl.innerHTML = `
+        <b>${members.length}</b> в команде
+        &nbsp;·&nbsp; <span style="color:#6ee7b7">● ${onlineCount} онлайн</span>
+        &nbsp;·&nbsp; <span style="color:#6ee7b7">❤ ${aliveCount} жив</span>
+        &nbsp;·&nbsp; <span style="color:#fca5a5">💀 ${members.length - aliveCount} мёртв</span>
+        <span class="muted" style="margin-left:auto;font-size:.78rem">${escapeHtml(serverName.slice(3))}</span>
+      `;
+    }
+
+    if (!members.length) {
+      grid.innerHTML = `<div class="team-panel__empty">Команда пуста (вы соло либо Rust+ не вернул членов).</div>`;
+    } else {
+      const sorted = members.slice().sort((a, b) => {
+        if (!!b.is_online !== !!a.is_online) return (b.is_online ? 1 : 0) - (a.is_online ? 1 : 0);
+        if (!!b.is_alive !== !!a.is_alive)  return (b.is_alive  ? 1 : 0) - (a.is_alive  ? 1 : 0);
+        return String(a.name || '').localeCompare(String(b.name || ''), 'ru');
+      });
+      grid.innerHTML = sorted.map(m => renderTeamCard(m, mySid)).join('');
+    }
+
+    if (updEl) {
+      const ts = server.generated_at_unix ? new Date(Number(server.generated_at_unix) * 1000) : new Date();
+      updEl.textContent = 'Обновлено: ' + ts.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+  }
+
+  function renderTeamCard(m, mySid) {
+    const name = String(m.name || '?');
+    const initials = name.trim().slice(0, 2).toUpperCase() || '??';
+    const sid = String(m.steam_id || '');
+    const isMe = mySid && sid && sid === mySid;
+    const cls = [
+      'team-card',
+      m.is_online ? 'team-card--online' : 'team-card--offline',
+      m.is_alive  ? 'team-card--alive'  : 'team-card--dead',
+      isMe ? 'team-card--me' : '',
+    ].filter(Boolean).join(' ');
+
+    const badges = [];
+    if (isMe) badges.push('<span class="team-card__badge team-card__badge--me">вы</span>');
+    if (m.is_leader) badges.push('<span class="team-card__badge team-card__badge--leader" title="Лидер команды">👑 лидер</span>');
+
+    const onlineChip = m.is_online
+      ? '<span class="team-card__chip team-card__chip--online">● онлайн</span>'
+      : '<span class="team-card__chip team-card__chip--offline">○ оффлайн</span>';
+
+    const deathAgo = !m.is_alive && m.death_time ? formatAgo(m.death_time) : null;
+    const spawnAgo = m.is_alive && m.spawn_time ? formatAgo(m.spawn_time) : null;
+    const aliveChip = m.is_alive
+      ? `<span class="team-card__chip team-card__chip--alive">❤ жив${spawnAgo ? ' · ' + escapeHtml(spawnAgo) : ''}</span>`
+      : `<span class="team-card__chip team-card__chip--dead">💀 мёртв${deathAgo ? ' · ' + escapeHtml(deathAgo) : ''}</span>`;
+
+    const coords = (m.is_alive && (m.x || m.y))
+      ? `<div class="team-card__coords">🧭 X ${Math.round(m.x)} · Y ${Math.round(m.y)}</div>`
+      : '';
+
+    return `
+      <div class="${cls}">
+        <div class="team-card__avatar">${escapeHtml(initials)}</div>
+        <div class="team-card__body">
+          <div class="team-card__name">
+            <span>${escapeHtml(name)}</span>
+            ${badges.join('')}
+          </div>
+          <div class="team-card__meta">
+            ${onlineChip}
+            ${aliveChip}
+          </div>
+          ${sid ? `<div class="team-card__sid">Steam: ${escapeHtml(sid)}</div>` : ''}
+          ${coords}
+        </div>
+      </div>
+    `;
+  }
+
+  function formatAgo(unixTs) {
+    if (!unixTs) return '';
+    const diffSec = Math.max(0, Math.floor(Date.now() / 1000 - Number(unixTs)));
+    if (diffSec < 60)    return diffSec + 'с назад';
+    if (diffSec < 3600)  return Math.floor(diffSec / 60) + 'м назад';
+    if (diffSec < 86400) return Math.floor(diffSec / 3600) + 'ч назад';
+    return Math.floor(diffSec / 86400) + 'д назад';
   }
 
   function escapeHtml(s) {
