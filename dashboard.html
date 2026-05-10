@@ -237,21 +237,139 @@
     .dash-btn--danger:hover { background: rgba(239, 68, 68, 0.22); color: #fff; border-color: #ef4444; }
     .dash-btn--danger[disabled] { opacity: .55; cursor: progress; }
 
-    .rust-srv-table {
-      width: 100%; border-collapse: collapse; font-size: 0.86rem;
-      margin-top: 4px;
-    }
-    .rust-srv-table th, .rust-srv-table td {
-      padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left;
-    }
+    /* Legacy таблица серверов — оставлена на случай fallback-рендера, но не используется. */
+    .rust-srv-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin-top: 4px; }
+    .rust-srv-table th, .rust-srv-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; }
     .rust-srv-table th { color: var(--text2); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
     .rust-srv-table tr:last-child td { border-bottom: none; }
+
     .rust-guild-card {
       display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
       padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px;
       margin-bottom: 10px; background: rgba(255,255,255,0.03);
+      transition: border-color .15s, background .15s;
+    }
+    .rust-guild-card.is-selected {
+      border-color: rgba(255, 107, 53, 0.55);
+      background: rgba(255, 107, 53, 0.06);
     }
     .rust-guild-card .mono { font-family: ui-monospace, Consolas, monospace; font-size: 0.82rem; color: var(--text2); }
+    .rust-guild-card__name { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .rust-guild-card__name strong { font-size: 0.95rem; color: var(--text); }
+    .rust-guild-card__inactive-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+    /* ---------- Карточный список запэйренных серверов ---------- */
+    .rust-srv-block { margin-top: 4px; }
+    .rust-srv-block__head {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px; margin-bottom: 4px;
+    }
+    .rust-srv-block__title {
+      margin: 0; font-size: 1rem; font-weight: 700; color: var(--text);
+      text-transform: none; letter-spacing: 0;
+    }
+    .rust-srv-block__hint { margin: 0 0 12px; font-size: 0.85rem; }
+
+    .rust-srv-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 10px;
+    }
+    .rust-srv-card {
+      display: flex; flex-direction: column; gap: 6px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      color: var(--text);
+      transition: border-color .15s, background .15s, transform .1s;
+      position: relative;
+      overflow: hidden;
+    }
+    .rust-srv-card:hover:not(.is-disabled) {
+      border-color: rgba(255, 107, 53, 0.45);
+      background: rgba(255, 107, 53, 0.04);
+    }
+    .rust-srv-card:active:not(.is-disabled) { transform: translateY(1px); }
+    .rust-srv-card.is-active {
+      border-color: rgba(255, 107, 53, 0.65);
+      background: rgba(255, 107, 53, 0.08);
+      box-shadow: 0 0 0 1px rgba(255, 107, 53, 0.35) inset;
+    }
+    .rust-srv-card.is-connected::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--dash-success), rgba(52, 211, 153, 0.4));
+    }
+    .rust-srv-card.is-disabled {
+      cursor: not-allowed;
+      opacity: .85;
+    }
+    .rust-srv-card.is-disabled:not(.is-active) { opacity: .55; }
+    .rust-srv-card.is-pending {
+      pointer-events: none;
+      opacity: .7;
+    }
+    .rust-srv-card__top {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px;
+    }
+    .rust-srv-card__name {
+      font-weight: 700; font-size: 0.95rem; color: var(--text);
+      word-break: break-word; line-height: 1.25;
+    }
+    .rust-srv-card__badges { display: flex; flex-wrap: wrap; gap: 4px; }
+    .rust-srv-card__meta {
+      display: flex; flex-wrap: wrap; gap: 4px 10px;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 0.78rem; color: var(--text2);
+    }
+    .rust-srv-card__meta .ip { color: var(--text); }
+
+    /* ---------- Тоггл «Авто-переключение» ---------- */
+    .rust-toggle {
+      display: inline-flex; align-items: center; gap: 8px;
+      cursor: pointer; user-select: none;
+      font-size: 0.85rem; color: var(--text2);
+    }
+    .rust-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+    .rust-toggle__track {
+      position: relative;
+      width: 38px; height: 22px;
+      border-radius: 11px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--border);
+      transition: background .15s, border-color .15s;
+      flex-shrink: 0;
+    }
+    .rust-toggle__thumb {
+      position: absolute; top: 2px; left: 2px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--text);
+      transition: left .18s, background .18s;
+    }
+    .rust-toggle input:checked ~ .rust-toggle__track {
+      background: rgba(255, 107, 53, 0.65);
+      border-color: rgba(255, 107, 53, 0.85);
+    }
+    .rust-toggle input:checked ~ .rust-toggle__track .rust-toggle__thumb {
+      left: 18px; background: #fff;
+    }
+    .rust-toggle input:focus-visible ~ .rust-toggle__track {
+      box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.22);
+    }
+    .rust-toggle__label { font-weight: 600; color: var(--text); }
+    .rust-toggle input:checked ~ .rust-toggle__label { color: var(--text); }
+
+    .fcm-backup-tag {
+      display: inline-block; margin-left: 8px;
+      padding: 1px 8px; border-radius: 6px;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.04em;
+      background: rgba(255,255,255,0.06); color: var(--text2);
+      text-transform: uppercase;
+    }
 
     .dash-sep { border: none; height: 1px; background: var(--border); margin: 0; }
 
@@ -1380,29 +1498,52 @@
 
             <hr class="dash-sep"/>
 
+            <!-- Rust+ · FCM и серверы — основная рабочая зона, на верх. -->
+            <section class="dash-section" id="rust-account-v2" aria-labelledby="acc-block-rust2">
+              <h2 class="dash-section-title" id="acc-block-rust2">Rust+ · FCM и серверы</h2>
+              <p class="dash-muted" id="rust-v2-scope-msg" style="display:none;margin-bottom:10px"></p>
+
+              <div id="rust-v2-fcm-row" class="dash-inline" style="flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px">
+                <span class="dash-badge dash-badge--neutral" id="rust-v2-fcm-badge">—</span>
+                <button type="button" class="dash-btn dash-btn--ghost" id="btn-fcm-retry" style="display:none">Повторить регистрацию FCM</button>
+              </div>
+
+              <!-- Серверы юзера: карточный список с переключателем авто-режима -->
+              <div class="rust-srv-block">
+                <div class="rust-srv-block__head">
+                  <h3 class="rust-srv-block__title">Запэйренные серверы</h3>
+                  <label class="rust-toggle" id="rust-auto-toggle-wrap" title="Автоматически переключать активный сервер на свежезапэйренный из игры">
+                    <input type="checkbox" id="rust-auto-toggle"/>
+                    <span class="rust-toggle__track"><span class="rust-toggle__thumb"></span></span>
+                    <span class="rust-toggle__label">Авто-переключение</span>
+                  </label>
+                </div>
+                <p class="dash-muted rust-srv-block__hint" id="rust-srv-hint">Бот использует сервер, отмеченный как «активный».</p>
+                <div id="rust-v2-servers" class="rust-srv-grid"></div>
+              </div>
+
+              <!-- Discord-гильдии: объединено со старым блоком «Сервер Discord» -->
+              <h3 class="rust-srv-block__title" style="margin-top:22px;margin-bottom:8px">Discord-гильдии</h3>
+              <p class="dash-muted" style="font-size:0.85rem;margin:0 0 12px">
+                Серверы Discord, где у вас есть права администратора. Кнопка «Использовать» привязывает гильдию к боту,
+                «Пригласить» добавляет бота на сервер.
+              </p>
+              <div id="rust-v2-oauth-guilds"></div>
+            </section>
+
+            <hr class="dash-sep"/>
+
+            <!-- Steam / Rust+: упрощено — только статус и Обновить -->
             <section class="dash-section" aria-labelledby="acc-block-steam">
               <h2 class="dash-section-title" id="acc-block-steam">Steam / Rust+</h2>
-              <div class="dash-stack">
-                <div class="dash-inline">
-                  <span class="dash-badge dash-badge--neutral" id="token-status-badge">—</span>
-                  <a href="#" id="btn-token-refresh" class="dash-btn dash-btn--ghost" style="display:none">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-                    Обновить
-                  </a>
-                </div>
-                <p class="dash-muted" id="token-status-message"></p>
-                <div class="dash-list">
-                  <div class="dash-list__row" id="token-expiry-row" style="display:none">
-                    <span class="dash-k">Истекает</span>
-                    <span class="dash-v dash-v--plain" id="token-expires-val">—</span>
-                  </div>
-                  <div class="dash-list__row" id="token-days-row" style="display:none">
-                    <span class="dash-k">Осталось дней</span>
-                    <span class="dash-v" id="token-days-val">—</span>
-                  </div>
-                </div>
+              <div class="dash-inline" style="margin-bottom:10px">
+                <span class="dash-badge dash-badge--neutral" id="token-status-badge">—</span>
+                <a href="#" id="btn-token-refresh" class="dash-btn dash-btn--ghost" style="display:none">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                  Обновить
+                </a>
               </div>
-              <div id="rust-linked-block" style="display:none;margin-top:12px">
+              <div id="rust-linked-block" style="display:none">
                 <div class="dash-list">
                   <div class="dash-list__row">
                     <span class="dash-k">Steam ID</span>
@@ -1411,7 +1552,6 @@
                 </div>
               </div>
               <div id="rust-not-linked-block">
-                <span class="dash-badge dash-badge--warn" style="margin:12px 0 10px;display:inline-flex">Токен не привязан</span>
                 <p class="dash-muted" style="margin-bottom:14px">
                   Расширение перехватит Rust+ токен после входа через Steam.
                 </p>
@@ -1423,23 +1563,40 @@
                   <a href="setup.html" class="dash-btn dash-btn--ghost" style="display:inline-flex;width:fit-content">Инструкция →</a>
                 </div>
               </div>
-
-              <div id="fcm-paste-section" class="dash-stack" style="margin-top:18px;padding-top:18px;border-top:1px solid var(--border)">
-                <h3 class="dash-section-title" style="margin-bottom:8px">Способ 2: вставка JSON (Rustplus.py и др.)</h3>
-                <p class="dash-muted" style="margin-bottom:8px">
-                  Тот же формат, что расширение RustInfo шлёт на сервер в <code>POST /auth/fcm</code> — привязка Steam/Rust+ и FCM для выбранного сервера Discord.
-                  Установите <a href="https://chromewebstore.google.com/detail/rustpluspy-link-companion/gojhnmnggbnflhdcpcemeahejhcimnlf" target="_blank" rel="noreferrer">Rustplus.py Link Companion</a>,
-                  скопируйте JSON из расширения и вставьте ниже. Стороннее расширение со страницы не детектируется — блок доступен всегда.
-                </p>
-                <textarea id="fcm-paste-json" class="dash-textarea" spellcheck="false" placeholder="Вставьте JSON: ExpoPushToken / expo_push_token, fcm_credentials, Token / rustplus_auth_token, SteamId / steam_id…" aria-label="JSON FCM"></textarea>
-                <div class="dash-inline" style="margin-top:4px">
-                  <button type="button" class="dash-btn dash-btn--ghost" id="btn-fcm-copy-template">Скопировать пример формата</button>
-                  <button type="button" class="dash-btn dash-btn--primary" id="btn-fcm-paste-submit">Отправить данные</button>
+              <!-- Скрытый, но используемый в JS токен-сообщение и expires-блок (не показываем подробности по умолчанию) -->
+              <p class="dash-muted" id="token-status-message" style="display:none"></p>
+              <div class="dash-list" style="display:none">
+                <div class="dash-list__row" id="token-expiry-row" style="display:none">
+                  <span class="dash-k">Истекает</span>
+                  <span class="dash-v dash-v--plain" id="token-expires-val">—</span>
                 </div>
-                <p id="fcm-paste-msg" class="dash-muted" style="margin:0;font-size:0.85rem"></p>
+                <div class="dash-list__row" id="token-days-row" style="display:none">
+                  <span class="dash-k">Осталось дней</span>
+                  <span class="dash-v" id="token-days-val">—</span>
+                </div>
               </div>
+            </section>
 
-              <details class="dash-details" id="extension-steps-card">
+            <hr class="dash-sep"/>
+
+            <!-- Запасной вариант: ручная вставка JSON. Сворачиваемый, в самом низу. -->
+            <section class="dash-section" id="fcm-backup-section">
+              <details class="dash-details fcm-backup-details">
+                <summary>Способ 2: вставка JSON вручную <span class="fcm-backup-tag">запасной</span></summary>
+                <p class="dash-muted" style="margin:10px 0">
+                  Если расширение недоступно — вставьте сюда JSON в формате <code>POST /auth/fcm</code>.
+                </p>
+                <textarea id="fcm-paste-json" class="dash-textarea" spellcheck="false"
+                          placeholder='{ "expo_push_token": "...", "fcm_credentials": { "fcm": {"token": "..."}, "gcm": {"androidId": "...", "securityToken": "..."} }, "rustplus_auth_token": "...", "steam_id": "..." }'
+                          aria-label="JSON FCM"></textarea>
+                <div class="dash-inline" style="margin-top:8px">
+                  <button type="button" class="dash-btn dash-btn--ghost" id="btn-fcm-copy-template">Скопировать пример</button>
+                  <button type="button" class="dash-btn dash-btn--primary" id="btn-fcm-paste-submit">Отправить</button>
+                </div>
+                <p id="fcm-paste-msg" class="dash-muted" style="margin:8px 0 0;font-size:0.85rem"></p>
+              </details>
+
+              <details class="dash-details" id="extension-steps-card" style="display:none">
                 <summary>Как привязать Rust+ токен</summary>
                 <ol class="steps" style="margin-top:12px">
                   <li>
@@ -1460,46 +1617,6 @@
                   </li>
                 </ol>
               </details>
-            </section>
-
-            <hr class="dash-sep"/>
-
-            <section class="dash-section" id="account-guild-section" aria-labelledby="acc-block-guild">
-              <h2 class="dash-section-title" id="acc-block-guild">Сервер Discord</h2>
-              <div id="guild-selector" class="guild-select-wrap" style="display:none">
-                <label for="guild-select">Выбор сервера для панели</label>
-                <select id="guild-select" class="dash-select"></select>
-              </div>
-              <p class="dash-muted" id="guild-name-line" style="margin-bottom:10px">Активный сервер: <strong id="guild-name-display">—</strong></p>
-              <div id="bot-guild-card" style="display:none">
-                <div id="bot-guild-need-select" style="display:none">
-                  <p class="dash-muted" style="margin:0">Выберите сервер в списке выше.</p>
-                </div>
-                <div id="bot-guild-ok" class="dash-bot-ok" style="display:none">
-                  <svg class="ui-icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
-                  <span>RustInfoBot на сервере</span>
-                </div>
-                <div id="bot-guild-missing" style="display:none">
-                  <p class="dash-muted" style="margin-bottom:12px">Бот не добавлен на этот сервер.</p>
-                  <a id="btn-invite-bot" href="https://discord.com/oauth2/authorize?client_id=1334943377124495421&permissions=8&integration_type=0&scope=bot" target="_blank" rel="noreferrer" class="dash-btn dash-btn--primary dash-btn--block">Пригласить RustInfo</a>
-                </div>
-              </div>
-            </section>
-
-            <hr class="dash-sep"/>
-
-            <section class="dash-section" id="rust-account-v2" aria-labelledby="acc-block-rust2">
-              <h2 class="dash-section-title" id="acc-block-rust2">Rust+ · FCM и серверы</h2>
-              <p class="dash-muted" id="rust-v2-scope-msg" style="display:none;margin-bottom:10px"></p>
-              <div id="rust-v2-fcm-row" class="dash-inline" style="flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:6px">
-                <span class="dash-badge dash-badge--neutral" id="rust-v2-fcm-badge">—</span>
-                <button type="button" class="dash-btn dash-btn--ghost" id="btn-fcm-retry" style="display:none">Повторить регистрацию FCM</button>
-              </div>
-              <p class="dash-muted" style="font-size:0.85rem;margin:0 0 10px">Список запэйренных серверов из БД; активный использует бот для этой гильдии.</p>
-              <div id="rust-v2-servers"></div>
-              <h3 class="dash-section-title" style="margin-top:18px;margin-bottom:8px;font-size:1rem">Гильдии (OAuth)</h3>
-              <p class="dash-muted" style="font-size:0.85rem;margin:0 0 10px">Только серверы Discord, где у вас есть права администратора. Кнопка «Использовать» привязывает гильдию к аккаунту бота.</p>
-              <div id="rust-v2-oauth-guilds"></div>
             </section>
           </div>
         </div>
@@ -2079,35 +2196,10 @@
     refreshBtn.style.display = 'inline-flex';
   }
 
-  function updateBotGuildStatus(data) {
-    const card = document.getElementById('bot-guild-card');
-    const needSel = document.getElementById('bot-guild-need-select');
-    const ok = document.getElementById('bot-guild-ok');
-    const missing = document.getElementById('bot-guild-missing');
-    const inviteBtn = document.getElementById('btn-invite-bot');
-    if (!card || !needSel || !ok || !missing) return;
-    if (inviteBtn) inviteBtn.href = INVITE_BOT_URL;
-    const hasGuilds = data.guilds && data.guilds.length > 0;
-    if (!hasGuilds) {
-      card.style.display = 'none';
-      return;
-    }
-    card.style.display = 'block';
-    if (!data.guild_id) {
-      needSel.style.display = 'block';
-      ok.style.display = 'none';
-      missing.style.display = 'none';
-      return;
-    }
-    needSel.style.display = 'none';
-    if (data.bot_in_guild === true) {
-      ok.style.display = 'flex';
-      missing.style.display = 'none';
-    } else {
-      ok.style.display = 'none';
-      missing.style.display = 'block';
-    }
-  }
+  // Старый блок «Сервер Discord» с инвайт-кнопкой удалён: вся информация
+  // переехала в карточки `loadRustAccountPanels()` → раздел «Discord-гильдии».
+  // Стаб оставлен на случай вызова из старых хендлеров.
+  function updateBotGuildStatus(_data) { /* no-op */ }
 
   /** Discord: discriminator "0" = новая система (не #0). Старые аккаунты — #1234. */
   function discordProfileSubtitle(data) {
@@ -3298,7 +3390,179 @@
     });
   }
 
-  async function loadRustAccountPanels(session) {
+  // Состояние для оптимистичного UI запэйренных серверов.
+  // Решает: «при клике точка/выделение «откатывается» назад» — мы держим
+  // последнее намерение пользователя и не даём фоновому fetch его перерисовать.
+  let _rustServersState = {
+    servers: [],
+    activeInternalId: null,
+    autoMode: false,
+    connectedAddress: null, // "ip:port" текущего активного сокета (из /me)
+    pendingInternalId: null,
+  };
+
+  function renderRustServerCards() {
+    const wrap = document.getElementById('rust-v2-servers');
+    const hint = document.getElementById('rust-srv-hint');
+    if (!wrap) return;
+    const st = _rustServersState;
+    const auto = !!st.autoMode;
+
+    if (hint) {
+      hint.textContent = auto
+        ? 'Авто-режим: активный сервер выбирается автоматически при паринге через игру. Ручной выбор отключён.'
+        : 'Бот использует сервер, отмеченный как «активный». Нажмите карточку, чтобы переключиться.';
+    }
+
+    if (!st.servers.length) {
+      wrap.innerHTML = '<p class="dash-muted" style="margin:0">Пока нет запэйренных серверов. Откройте Rust+ в игре и выполните pairing.</p>';
+      return;
+    }
+
+    const cards = st.servers.map(s => {
+      const sid = String(s.internal_id);
+      const addr = `${s.server_ip}:${s.server_port}`;
+      const active = (st.activeInternalId != null && String(st.activeInternalId) === sid)
+                  || Number(s.is_active) === 1;
+      const pending = st.pendingInternalId != null && String(st.pendingInternalId) === sid;
+      const connected = !!(st.connectedAddress && st.connectedAddress === addr && active);
+
+      const badges = [];
+      if (active) badges.push('<span class="dash-badge dash-badge--ok">активный</span>');
+      if (connected) badges.push('<span class="dash-badge dash-badge--ok">подключён</span>');
+      else if (active && !auto) badges.push('<span class="dash-badge dash-badge--neutral">ожидает</span>');
+
+      const cls = [
+        'rust-srv-card',
+        active ? 'is-active' : '',
+        connected ? 'is-connected' : '',
+        auto ? 'is-disabled' : '',
+        pending ? 'is-pending' : '',
+      ].filter(Boolean).join(' ');
+
+      return `<button type="button"
+          class="${cls}"
+          data-srv-id="${escapeHtml(sid)}"
+          data-srv-addr="${escapeHtml(addr)}"
+          ${auto ? 'aria-disabled="true"' : ''}
+          ${pending ? 'disabled' : ''}>
+        <div class="rust-srv-card__top">
+          <div class="rust-srv-card__name">${escapeHtml(String(s.server_name || addr))}</div>
+          <div class="rust-srv-card__badges">${badges.join('')}</div>
+        </div>
+        <div class="rust-srv-card__meta">
+          <span class="ip">${escapeHtml(addr)}</span>
+          <span>Steam: ${escapeHtml(String(s.player_id || '—'))}</span>
+        </div>
+      </button>`;
+    });
+    wrap.innerHTML = cards.join('');
+  }
+
+  async function selectActiveServer(session, internalId) {
+    const st = _rustServersState;
+    if (st.autoMode) return;
+    const target = st.servers.find(s => String(s.internal_id) === String(internalId));
+    if (!target) return;
+    const previousActive = st.activeInternalId;
+
+    // Оптимистично переключаем визуально.
+    st.servers.forEach(s => { s.is_active = (String(s.internal_id) === String(internalId)) ? 1 : 0; });
+    st.activeInternalId = String(internalId);
+    st.pendingInternalId = String(internalId);
+    renderRustServerCards();
+
+    try {
+      const r = await fetch(`${API_BASE}/me/active_server?session=${encodeURIComponent(session)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ server_internal_id: internalId }),
+      });
+      const text = await r.text();
+      let body = {};
+      try { body = text ? JSON.parse(text) : {}; } catch (_) { body = { _raw: text }; }
+      if (!r.ok) {
+        // Откат к предыдущему состоянию.
+        st.activeInternalId = previousActive;
+        st.servers.forEach(s => { s.is_active = (String(s.internal_id) === String(previousActive)) ? 1 : 0; });
+        st.pendingInternalId = null;
+        renderRustServerCards();
+        const msg = body.error || body._raw || String(r.status);
+        alert('Не удалось сменить активный сервер: ' + msg);
+        return;
+      }
+      // Успех: обновляем «подключённый сервер» в фоне (не дергая re-render серверной сетки).
+      try { await loadDashboard(session, { force: true }); } catch (_) {}
+    } catch (err) {
+      st.activeInternalId = previousActive;
+      st.servers.forEach(s => { s.is_active = (String(s.internal_id) === String(previousActive)) ? 1 : 0; });
+      renderRustServerCards();
+      alert('Сеть: ' + ((err && err.message) || String(err)));
+    } finally {
+      st.pendingInternalId = null;
+      renderRustServerCards();
+    }
+  }
+
+  function setupRustServerGridOnce() {
+    if (window._rustSrvGridBound) return;
+    const wrap = document.getElementById('rust-v2-servers');
+    if (!wrap) return;
+    window._rustSrvGridBound = true;
+    wrap.addEventListener('click', (ev) => {
+      const card = ev.target.closest('.rust-srv-card');
+      if (!card || card.classList.contains('is-pending') || card.classList.contains('is-disabled')) return;
+      const sid = card.getAttribute('data-srv-id');
+      if (!sid) return;
+      const session = _dashSessionRef;
+      if (!session) return;
+      selectActiveServer(session, sid);
+    });
+  }
+
+  async function setAutoActiveServer(session, enabled) {
+    const toggle = document.getElementById('rust-auto-toggle');
+    try {
+      const r = await fetch(`${API_BASE}/me/auto_active_server?session=${encodeURIComponent(session)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ enabled: !!enabled }),
+      });
+      const text = await r.text();
+      let body = {};
+      try { body = text ? JSON.parse(text) : {}; } catch (_) { body = { _raw: text }; }
+      if (!r.ok) {
+        if (toggle) toggle.checked = !enabled;
+        alert('Не удалось сохранить: ' + (body.error || body._raw || r.status));
+        return;
+      }
+      _rustServersState.autoMode = !!enabled;
+      renderRustServerCards();
+      // При включении сервер мог переключиться (если активного не было) — синхронизируем.
+      if (enabled) {
+        try { await loadDashboard(session, { force: true }); } catch (_) {}
+      }
+    } catch (err) {
+      if (toggle) toggle.checked = !enabled;
+      alert('Сеть: ' + ((err && err.message) || String(err)));
+    }
+  }
+
+  function setupRustAutoToggleOnce() {
+    const toggle = document.getElementById('rust-auto-toggle');
+    if (!toggle || toggle.dataset.bound === '1') return;
+    toggle.dataset.bound = '1';
+    toggle.addEventListener('change', (e) => {
+      const session = _dashSessionRef;
+      if (!session) { e.target.checked = !e.target.checked; return; }
+      setAutoActiveServer(session, !!e.target.checked);
+    });
+  }
+
+  async function loadRustAccountPanels(session, opts) {
+    const dataCtx = (opts && opts.data) || {};
     const scopeMsg = document.getElementById('rust-v2-scope-msg');
     const serversEl = document.getElementById('rust-v2-servers');
     const oauthEl = document.getElementById('rust-v2-oauth-guilds');
@@ -3307,8 +3571,20 @@
     if (!serversEl || !oauthEl || !badge) return;
     if (scopeMsg) scopeMsg.style.display = 'none';
 
+    // Auto-mode тоггл: значение приходит из /me (dataCtx.auto_active_server).
+    const autoToggle = document.getElementById('rust-auto-toggle');
+    if (autoToggle) {
+      autoToggle.checked = !!dataCtx.auto_active_server;
+    }
+    _rustServersState.autoMode = !!dataCtx.auto_active_server;
+    _rustServersState.connectedAddress = (dataCtx.server && dataCtx.server.address) || null;
+    setupRustAutoToggleOnce();
+    setupRustServerGridOnce();
+
     try {
-      const r1 = await fetch(`${API_BASE}/me/rust?session=${encodeURIComponent(session)}`, { credentials: 'include' });
+      const r1 = await fetch(`${API_BASE}/me/rust?session=${encodeURIComponent(session)}&_t=${Date.now()}`, {
+        credentials: 'include', cache: 'no-store',
+      });
       const j1 = r1.ok ? await r1.json() : null;
       if (j1 && j1.user) {
         const st = j1.user.fcm_status || 'unlinked';
@@ -3324,47 +3600,27 @@
         if (retryBtn) {
           retryBtn.style.display = (st === 'error' || st === 'pending') ? 'inline-flex' : 'none';
         }
+        // Если сервер обновил флаг auto_active_server — синхронизируемся.
+        if (j1.user.auto_active_server != null) {
+          _rustServersState.autoMode = !!Number(j1.user.auto_active_server);
+          if (autoToggle) autoToggle.checked = _rustServersState.autoMode;
+        }
       }
-      if (j1 && j1.servers && j1.servers.length) {
-        serversEl.innerHTML =
-          '<table class="rust-srv-table"><thead><tr><th style="width:36px"></th><th>Адрес</th><th>Имя</th><th>Steam игрока</th></tr></thead><tbody>' +
-          j1.servers.map(s => {
-            const active = Number(s.is_active) === 1;
-            const sid = String(s.internal_id);
-            return `<tr><td><input type="radio" name="rust-active-srv" value="${escapeHtml(sid)}" ${active ? 'checked' : ''} aria-label="Активный сервер"/></td><td class="mono">${escapeHtml(String(s.server_ip))}:${escapeHtml(String(s.server_port))}</td><td>${escapeHtml(String(s.server_name || '—'))}</td><td class="mono">${escapeHtml(String(s.player_id))}</td></tr>`;
-          }).join('') +
-          '</tbody></table>';
-        serversEl.querySelectorAll('input[name="rust-active-srv"]').forEach(inp => {
-          inp.addEventListener('change', async () => {
-            if (!inp.checked) return;
-            try {
-              const r = await fetch(`${API_BASE}/me/active_server?session=${encodeURIComponent(session)}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ server_internal_id: inp.value })
-              });
-              if (!r.ok) {
-                alert('Не удалось сменить активный сервер');
-                await loadDashboard(session);
-                return;
-              }
-              await loadDashboard(session);
-            } catch (e) {
-              console.error(e);
-            }
-          });
-        });
-      } else {
-        serversEl.innerHTML = '<p class="dash-muted" style="margin:0">Пока нет записей в <code>rust_servers</code> — откройте Rust+ и выполните pairing с сервером.</p>';
-      }
+      const servers = (j1 && Array.isArray(j1.servers)) ? j1.servers.slice() : [];
+      _rustServersState.servers = servers;
+      const active = servers.find(s => Number(s.is_active) === 1);
+      _rustServersState.activeInternalId = active ? String(active.internal_id) : null;
+      _rustServersState.pendingInternalId = null;
+      renderRustServerCards();
     } catch (e) {
       console.error('[rust panels]', e);
       serversEl.innerHTML = '<p class="dash-muted">Не удалось загрузить <code>/me/rust</code>.</p>';
     }
 
     try {
-      const r2 = await fetch(`${API_BASE}/me/guilds?session=${encodeURIComponent(session)}`, { credentials: 'include' });
+      const r2 = await fetch(`${API_BASE}/me/guilds?session=${encodeURIComponent(session)}&_t=${Date.now()}`, {
+        credentials: 'include', cache: 'no-store',
+      });
       if (r2.status === 403) {
         if (scopeMsg) {
           scopeMsg.textContent = 'Выйдите и войдите через Discord снова с разрешением «guilds», чтобы видеть список гильдий и кнопки ниже.';
@@ -3379,29 +3635,41 @@
         oauthEl.innerHTML = '<p class="dash-muted" style="margin:0">Нет гильдий с правами администратора (или список пуст).</p>';
         return;
       }
+      const selectedId = String(j2.selected_guild_id || '');
+      // Сортировка: выбранная сверху, затем те, где бот есть, затем остальные.
+      list.sort((a, b) => {
+        const av = (String(a.id) === selectedId ? 0 : 0) + (a.has_bot ? 0 : 1) + (String(a.id) === selectedId ? -10 : 0);
+        const bv = (String(b.id) === selectedId ? 0 : 0) + (b.has_bot ? 0 : 1) + (String(b.id) === selectedId ? -10 : 0);
+        if (av !== bv) return av - bv;
+        return String(a.name || '').localeCompare(String(b.name || ''), 'ru');
+      });
       oauthEl.innerHTML = list.map(g => {
         const gid = String(g.id);
+        const isSel = g.is_selected || gid === selectedId;
         const botB = g.has_bot
-          ? '<span class="dash-badge dash-badge--ok">бот</span>'
+          ? '<span class="dash-badge dash-badge--ok">бот добавлен</span>'
           : '<span class="dash-badge dash-badge--warn">нет бота</span>';
-        const selB = g.is_selected ? '<span class="dash-badge dash-badge--ok">выбрано</span>' : '';
-        const useBtn = !g.is_selected
+        const selB = isSel ? '<span class="dash-badge dash-badge--ok">используется</span>' : '';
+        const useBtn = !isSel
           ? `<button type="button" class="dash-btn dash-btn--primary dash-btn--small rust-select-guild" data-gid="${escapeHtml(gid)}">Использовать</button>`
           : '';
         const inv = !g.has_bot
           ? `<a href="${INVITE_BOT_URL}" target="_blank" rel="noreferrer" class="dash-btn dash-btn--ghost dash-btn--small">Пригласить бота</a>`
           : '';
-        return `<div class="rust-guild-card">
-          <div style="flex:1;min-width:0">
+        return `<div class="rust-guild-card ${isSel ? 'is-selected' : ''}">
+          <div style="flex:1;min-width:0" class="rust-guild-card__name">
             <strong>${escapeHtml(g.name || '—')}</strong>
             <span class="mono">${escapeHtml(gid)}</span>
           </div>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">${botB}${selB}${useBtn}${inv}</div>
+          <div class="rust-guild-card__inactive-actions">${botB}${selB}${useBtn}${inv}</div>
         </div>`;
       }).join('');
       oauthEl.querySelectorAll('.rust-select-guild').forEach(btn => {
         btn.addEventListener('click', async () => {
           const gid = btn.getAttribute('data-gid');
+          btn.disabled = true;
+          const old = btn.textContent;
+          btn.textContent = 'Сохраняю…';
           try {
             const r = await fetch(`${API_BASE}/me/select_guild?session=${encodeURIComponent(session)}`, {
               method: 'POST',
@@ -3414,9 +3682,12 @@
               alert('Ошибка: ' + (text.slice(0, 240) || r.status));
               return;
             }
-            await loadDashboard(session);
+            await loadDashboard(session, { force: true });
           } catch (err) {
             alert(err && err.message ? err.message : String(err));
+          } finally {
+            btn.disabled = false;
+            btn.textContent = old;
           }
         });
       });
@@ -3438,7 +3709,7 @@
             alert('Не удалось: ' + (t.slice(0, 200) || r.status));
             return;
           }
-          await loadDashboard(session);
+          await loadDashboard(session, { force: true });
         } catch (err) {
           alert(String(err));
         }
@@ -3502,64 +3773,6 @@
       if (extSteps) extSteps.style.display = '';
     }
 
-    updateBotGuildStatus(data);
-
-    const guildSelect = document.getElementById('guild-select');
-    const guildSelector = document.getElementById('guild-selector');
-    const guildNameLine = document.getElementById('guild-name-line');
-    const guildNameDisplay = document.getElementById('guild-name-display');
-    if (data.guilds && data.guilds.length > 0) {
-      guildSelector.style.display = 'block';
-      if (guildNameLine) guildNameLine.style.display = '';
-      const curId = data.guild_id != null && data.guild_id !== '' ? String(data.guild_id) : '';
-      guildSelect.innerHTML = data.guilds.map(g => {
-        const gid = String(g.id);
-        const sel = gid === curId ? ' selected' : '';
-        return `<option value="${escapeHtml(gid)}"${sel}>${escapeHtml(g.name)}</option>`;
-      }).join('');
-      if (guildNameDisplay) {
-        const si = guildSelect.selectedIndex;
-        const opt = si >= 0 ? guildSelect.options[si] : null;
-        guildNameDisplay.textContent = (opt && opt.text) ? opt.text : (data.guild_name || '—');
-      }
-      guildSelect.onchange = async () => {
-        const prev = curId;
-        guildSelect.disabled = true;
-        try {
-          const r = await fetch(`${API_BASE}/me/select_guild?session=${encodeURIComponent(session)}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ guild_id: guildSelect.value })
-          });
-          const text = await r.text();
-          let body = {};
-          try {
-            body = text ? JSON.parse(text) : {};
-          } catch (_) {
-            body = { _raw: text };
-          }
-          if (!r.ok) {
-            const msg = body.error || body._raw || text || String(r.status);
-            throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg));
-          }
-          await loadDashboard(session);
-        } catch (err) {
-          console.error('[guild]', err);
-          alert('Не удалось сохранить сервер: ' + (err && err.message ? err.message : err) + '\nЕсли открыта старая вкладка — войдите в панель заново.');
-          try {
-            guildSelect.value = prev || '';
-          } catch (_) {}
-        } finally {
-          guildSelect.disabled = false;
-        }
-      };
-    } else {
-      guildSelector.style.display = 'none';
-      if (guildNameLine) guildNameLine.style.display = 'none';
-      if (guildNameDisplay) guildNameDisplay.textContent = '—';
-    }
-
     const serverCard = document.getElementById('server-card');
     const server = data.server;
     if (server) {
@@ -3605,7 +3818,7 @@
       renderTeamPanel(_teamPanelLastServer);
     }
 
-    loadRustAccountPanels(session);
+    loadRustAccountPanels(session, { data: data });
   }
 
   /* ================================================================
