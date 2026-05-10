@@ -204,6 +204,11 @@
       background: rgba(255, 255, 255, 0.05);
       border-color: var(--border);
     }
+    .dash-badge--accent {
+      color: #ff6b35;
+      background: rgba(255, 107, 53, 0.1);
+      border-color: rgba(255, 107, 53, 0.28);
+    }
 
     /* Кнопки — один набор */
     .dash-btn {
@@ -295,13 +300,13 @@
     }
     .rust-srv-card:active:not(.is-disabled) { transform: translateY(1px); }
     .rust-srv-card.is-active {
-      border-color: rgba(255, 107, 53, 0.65);
-      background: rgba(255, 107, 53, 0.08);
-      box-shadow: 0 0 0 1px rgba(255, 107, 53, 0.35) inset;
+      border-color: rgba(255, 107, 53, 0.7);
+      background: rgba(255, 107, 53, 0.07);
+      box-shadow: 0 0 0 1px rgba(255, 107, 53, 0.3) inset;
     }
-    .rust-srv-card.is-connected::before {
-      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, var(--dash-success), rgba(52, 211, 153, 0.4));
+    .rust-srv-card.is-active::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, #ff6b35, rgba(255,107,53,0.4));
     }
     .rust-srv-card.is-disabled {
       cursor: not-allowed;
@@ -1477,24 +1482,11 @@
               <img id="profile-avatar" src="" alt="" class="account-avatar-img" width="80" height="80"/>
               <div class="account-profile-text">
                 <p class="account-name" id="profile-username"></p>
-                <p class="account-handle" id="profile-tag"></p>
+                <p class="account-handle" id="profile-discord-id" style="font-family:ui-monospace,Consolas,monospace;font-size:0.8rem;color:var(--text2);margin:0"></p>
+                <p id="profile-registered-row" style="display:none;font-size:0.75rem;color:var(--text2);margin:2px 0 0">В панели с <span id="profile-registered">—</span></p>
               </div>
               <span class="dash-badge dash-badge--ok">Авторизован</span>
             </header>
-
-            <section class="dash-section" aria-labelledby="acc-block-discord">
-              <h2 class="dash-section-title" id="acc-block-discord">Профиль Discord</h2>
-              <div class="dash-list">
-                <div class="dash-list__row">
-                  <span class="dash-k">Discord ID</span>
-                  <span class="dash-v" id="profile-discord-id">—</span>
-                </div>
-                <div class="dash-list__row" id="profile-registered-row" style="display:none">
-                  <span class="dash-k">В панели с</span>
-                  <span class="dash-v dash-v--plain" id="profile-registered">—</span>
-                </div>
-              </div>
-            </section>
 
             <hr class="dash-sep"/>
 
@@ -1583,8 +1575,13 @@
             <section class="dash-section" id="fcm-backup-section">
               <details class="dash-details fcm-backup-details">
                 <summary>Способ 2: вставка JSON вручную <span class="fcm-backup-tag">запасной</span></summary>
-                <p class="dash-muted" style="margin:10px 0">
-                  Если расширение недоступно — вставьте сюда JSON в формате <code>POST /auth/fcm</code>.
+                <p class="dash-muted" style="margin:10px 0 6px">
+                  Используйте расширение
+                  <a href="https://chromewebstore.google.com/detail/rustpluspy-link-companion/alkbhnaajkfkhnclbhookmbhcomacmcd"
+                     target="_blank" rel="noreferrer"
+                     style="color:var(--accent);text-decoration:none;font-weight:600">Rustplus.py Link Companion</a>
+                  для Chrome, чтобы автоматически получить JSON после входа через Steam.
+                  Или вставьте данные вручную в поле ниже.
                 </p>
                 <textarea id="fcm-paste-json" class="dash-textarea" spellcheck="false"
                           placeholder='{ "expo_push_token": "...", "fcm_credentials": { "fcm": {"token": "..."}, "gcm": {"androidId": "...", "securityToken": "..."} }, "rustplus_auth_token": "...", "steam_id": "..." }'
@@ -3428,8 +3425,8 @@
       const connected = !!(st.connectedAddress && st.connectedAddress === addr && active);
 
       const badges = [];
-      if (active) badges.push('<span class="dash-badge dash-badge--ok">активный</span>');
-      if (connected) badges.push('<span class="dash-badge dash-badge--ok">подключён</span>');
+      if (active) badges.push('<span class="dash-badge dash-badge--accent">активный</span>');
+      if (connected) badges.push('<span class="dash-badge dash-badge--neutral">подключён</span>');
       else if (active && !auto) badges.push('<span class="dash-badge dash-badge--neutral">ожидает</span>');
 
       const cls = [
@@ -3623,77 +3620,77 @@
       });
       if (r2.status === 403) {
         if (scopeMsg) {
-          scopeMsg.textContent = 'Выйдите и войдите через Discord снова с разрешением «guilds», чтобы видеть список гильдий и кнопки ниже.';
+          scopeMsg.textContent = 'Для отображения списка серверов Discord выйдите и войдите заново, разрешив доступ к «guilds».';
           scopeMsg.style.display = 'block';
         }
         oauthEl.innerHTML = '';
-        return;
-      }
-      const j2 = r2.ok ? await r2.json() : { guilds: [] };
-      const list = (j2.guilds || []).filter(g => g.is_admin || g.is_owner);
-      if (!list.length) {
-        oauthEl.innerHTML = '<p class="dash-muted" style="margin:0">Нет гильдий с правами администратора (или список пуст).</p>';
-        return;
-      }
-      const selectedId = String(j2.selected_guild_id || '');
-      // Сортировка: выбранная сверху, затем те, где бот есть, затем остальные.
-      list.sort((a, b) => {
-        const av = (String(a.id) === selectedId ? 0 : 0) + (a.has_bot ? 0 : 1) + (String(a.id) === selectedId ? -10 : 0);
-        const bv = (String(b.id) === selectedId ? 0 : 0) + (b.has_bot ? 0 : 1) + (String(b.id) === selectedId ? -10 : 0);
-        if (av !== bv) return av - bv;
-        return String(a.name || '').localeCompare(String(b.name || ''), 'ru');
-      });
-      oauthEl.innerHTML = list.map(g => {
-        const gid = String(g.id);
-        const isSel = g.is_selected || gid === selectedId;
-        const botB = g.has_bot
-          ? '<span class="dash-badge dash-badge--ok">бот добавлен</span>'
-          : '<span class="dash-badge dash-badge--warn">нет бота</span>';
-        const selB = isSel ? '<span class="dash-badge dash-badge--ok">используется</span>' : '';
-        const useBtn = !isSel
-          ? `<button type="button" class="dash-btn dash-btn--primary dash-btn--small rust-select-guild" data-gid="${escapeHtml(gid)}">Использовать</button>`
-          : '';
-        const inv = !g.has_bot
-          ? `<a href="${INVITE_BOT_URL}" target="_blank" rel="noreferrer" class="dash-btn dash-btn--ghost dash-btn--small">Пригласить бота</a>`
-          : '';
-        return `<div class="rust-guild-card ${isSel ? 'is-selected' : ''}">
-          <div style="flex:1;min-width:0" class="rust-guild-card__name">
-            <strong>${escapeHtml(g.name || '—')}</strong>
-            <span class="mono">${escapeHtml(gid)}</span>
-          </div>
-          <div class="rust-guild-card__inactive-actions">${botB}${selB}${useBtn}${inv}</div>
-        </div>`;
-      }).join('');
-      oauthEl.querySelectorAll('.rust-select-guild').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const gid = btn.getAttribute('data-gid');
-          btn.disabled = true;
-          const old = btn.textContent;
-          btn.textContent = 'Сохраняю…';
-          try {
-            const r = await fetch(`${API_BASE}/me/select_guild?session=${encodeURIComponent(session)}`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
-              body: JSON.stringify({ guild_id: gid })
+      } else if (!r2.ok) {
+        oauthEl.innerHTML = '<p class="dash-muted">Список гильдий временно недоступен.</p>';
+      } else {
+        const j2 = await r2.json();
+        const list = (j2.guilds || []).filter(g => g.is_admin || g.is_owner);
+        if (!list.length) {
+          oauthEl.innerHTML = '<p class="dash-muted" style="margin:0">Нет гильдий с правами администратора (или список пуст).</p>';
+        } else {
+          const selectedId = String(j2.selected_guild_id || '');
+          list.sort((a, b) => {
+            const score = x => (String(x.id) === selectedId ? -10 : 0) + (x.has_bot ? 0 : 1);
+            const d = score(a) - score(b);
+            return d !== 0 ? d : String(a.name || '').localeCompare(String(b.name || ''), 'ru');
+          });
+          oauthEl.innerHTML = list.map(g => {
+            const gid = String(g.id);
+            const isSel = g.is_selected || gid === selectedId;
+            const botB = g.has_bot
+              ? '<span class="dash-badge dash-badge--ok">бот добавлен</span>'
+              : '<span class="dash-badge dash-badge--warn">нет бота</span>';
+            const selB = isSel ? '<span class="dash-badge dash-badge--accent">используется</span>' : '';
+            const useBtn = !isSel
+              ? `<button type="button" class="dash-btn dash-btn--primary dash-btn--small rust-select-guild" data-gid="${escapeHtml(gid)}">Использовать</button>`
+              : '';
+            const inv = !g.has_bot
+              ? `<a href="${INVITE_BOT_URL}" target="_blank" rel="noreferrer" class="dash-btn dash-btn--ghost dash-btn--small">Пригласить бота</a>`
+              : '';
+            return `<div class="rust-guild-card ${isSel ? 'is-selected' : ''}">
+              <div style="flex:1;min-width:0" class="rust-guild-card__name">
+                <strong>${escapeHtml(g.name || '—')}</strong>
+                <span class="mono">${escapeHtml(gid)}</span>
+              </div>
+              <div class="rust-guild-card__inactive-actions">${botB}${selB}${useBtn}${inv}</div>
+            </div>`;
+          }).join('');
+          oauthEl.querySelectorAll('.rust-select-guild').forEach(btn => {
+            btn.addEventListener('click', async () => {
+              const gid = btn.getAttribute('data-gid');
+              btn.disabled = true;
+              const old = btn.textContent;
+              btn.textContent = 'Сохраняю…';
+              try {
+                const r = await fetch(`${API_BASE}/me/select_guild?session=${encodeURIComponent(session)}`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  credentials: 'include',
+                  body: JSON.stringify({ guild_id: gid })
+                });
+                const text = await r.text();
+                if (!r.ok) {
+                  alert('Ошибка: ' + (text.slice(0, 240) || r.status));
+                  return;
+                }
+                await loadDashboard(session, { force: true });
+              } catch (err) {
+                alert(err && err.message ? err.message : String(err));
+              } finally {
+                btn.disabled = false;
+                btn.textContent = old;
+              }
             });
-            const text = await r.text();
-            if (!r.ok) {
-              alert('Ошибка: ' + (text.slice(0, 240) || r.status));
-              return;
-            }
-            await loadDashboard(session, { force: true });
-          } catch (err) {
-            alert(err && err.message ? err.message : String(err));
-          } finally {
-            btn.disabled = false;
-            btn.textContent = old;
-          }
-        });
-      });
+          });
+        }
+      }
     } catch (e) {
-      console.error(e);
-      oauthEl.innerHTML = '<p class="dash-muted">Ошибка загрузки <code>/me/guilds</code>.</p>';
+      console.error('[guilds]', e);
+      oauthEl.innerHTML = '<p class="dash-muted">Список гильдий временно недоступен.</p>';
     }
 
     if (retryBtn && !retryBtn._rustRetryBound) {
@@ -3738,7 +3735,7 @@
 
     const regRow = document.getElementById('profile-registered-row');
     if (data.web_user && data.web_user.registered_at != null) {
-      regRow.style.display = 'flex';
+      regRow.style.display = 'block';
       const rd = new Date(Number(data.web_user.registered_at) * 1000);
       document.getElementById('profile-registered').textContent = rd.toLocaleString('ru-RU', {
         dateStyle: 'long',
@@ -3751,12 +3748,8 @@
     const av = avatarUrl(data.discord_id, data.avatar);
     document.getElementById('profile-avatar').src = av;
     document.getElementById('profile-username').textContent = data.global_name || data.username || '—';
-    const sub = discordProfileSubtitle(data);
-    const tagEl = document.getElementById('profile-tag');
-    tagEl.textContent = sub;
-    tagEl.style.display = sub ? '' : 'none';
     const didEl = document.getElementById('profile-discord-id');
-    if (didEl) didEl.textContent = data.discord_id != null ? String(data.discord_id) : '—';
+    if (didEl) didEl.textContent = data.discord_id != null ? String(data.discord_id) : '';
 
     document.getElementById('nav-user').style.display = 'flex';
     document.getElementById('nav-avatar').src = av;
