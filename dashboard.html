@@ -4761,8 +4761,8 @@
           const bp    = o.is_blueprint ? ' 📘' : '';
           const qty   = o.quantity   ?? 1;
           const cost  = o.cost_per_item ?? '?';
-          const stock = o.amount_in_stock != null
-            ? `<span style="margin-left:auto;color:${o.amount_in_stock > 0 ? '#4ade80' : '#6b7280'};font-size:.68rem">${o.amount_in_stock > 0 ? '×' + o.amount_in_stock : 'нет'}</span>`
+          const stock = (o.amount_in_stock > 0)
+            ? `<span style="margin-left:auto;color:#4ade80;font-size:.68rem">×${o.amount_in_stock}</span>`
             : '';
           return `<div class="map-tooltip-order">${iImg}<span>${escapeHtml(o.item_name||'')}${bp} ×${qty}</span><span class="arrow">→</span>${cImg}<span>${escapeHtml(o.currency_name||'')} ×${cost}</span>${stock}</div>`;
         }).join('');
@@ -4831,9 +4831,9 @@
         const bp    = o.is_blueprint ? ' 📘' : '';
         const qty   = o.quantity   ?? 1;
         const cost  = o.cost_per_item ?? '?';
-        const inStock = o.amount_in_stock ?? null;
-        const stockHtml = inStock != null
-          ? `<span class="vend-stock ${inStock > 0 ? 'vend-stock--ok' : 'vend-stock--empty'}">${inStock > 0 ? inStock + ' шт' : 'нет'}</span>`
+        const inStock = o.amount_in_stock;
+        const stockHtml = (inStock > 0)
+          ? `<span class="vend-stock vend-stock--ok">${inStock} шт</span>`
           : '';
         return `<div class="vend-order-row">
           ${iImg}<span class="vend-item-name" title="${escapeHtml(o.item_name||'')}">×${qty} ${escapeHtml(o.item_name||'')}${bp}</span>
