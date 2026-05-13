@@ -1411,6 +1411,20 @@
     .admin-panel-site-db__table tbody tr.site-db-row.is-banned:hover {
       background: rgba(239,68,68,.09);
     }
+    .admin-panel-site-db__table tbody tr.site-db-row.is-admin-disabled {
+      background: rgba(100,116,139,.07);
+      opacity: .75;
+    }
+    .admin-panel-site-db__table tbody tr.site-db-row.is-admin-disabled:hover {
+      background: rgba(100,116,139,.12);
+      opacity: 1;
+    }
+    .site-db-badge--disabled {
+      display: inline-block; padding: 1px 7px; border-radius: 4px;
+      background: rgba(100,116,139,.25); color: #94a3b8;
+      font-size: .72rem; font-weight: 600; letter-spacing: .03em;
+      vertical-align: middle;
+    }
 
     /* Admin action buttons */
     .site-db-actions__row {
@@ -3045,17 +3059,20 @@
       const banChip = u.is_banned
         ? '<span class="site-db-ban-chip" title="Забанен">BAN</span>'
         : '';
+      const disabledChip = u.admin_disabled
+        ? '<span class="site-db-badge--disabled" title="Авто-восстановление отключено администратором">OFF</span>'
+        : '';
       const activeSrv = u.active_server;
       const serversCell = (u.servers_count > 0)
         ? `${u.servers_count}${activeSrv ? `&nbsp;·&nbsp;<span class="mono" style="font-size:0.78rem">${escapeHtml(String(activeSrv.server_ip || '—'))}:${escapeHtml(String(activeSrv.server_port || '—'))}</span>` : ''}`
         : '<span class="muted">—</span>';
-      const rowExtraCls = u.is_banned ? ' is-banned' : '';
+      const rowExtraCls = (u.is_banned ? ' is-banned' : '') + (u.admin_disabled ? ' is-admin-disabled' : '');
 
       return [
         `<tr class="site-db-row${open ? ' is-open' : ''}${rowExtraCls}" data-row-id="${escapeHtml(rowId)}">`,
           `<td style="text-align:center"><span class="site-db-caret">▸</span></td>`,
           `<td class="mono">${escapeHtml(String(u.internal_id))}</td>`,
-          `<td>${socketDot}${banChip}${escapeHtml(String(u.discord_username || '—'))}<br/><span class="muted mono" style="font-size:0.76rem">${escapeHtml(String(u.discord_id || ''))}</span></td>`,
+          `<td>${socketDot}${banChip}${disabledChip}${escapeHtml(String(u.discord_username || '—'))}<br/><span class="muted mono" style="font-size:0.76rem">${escapeHtml(String(u.discord_id || ''))}</span></td>`,
           `<td class="mono">${escapeHtml(String(u.steam_id || '—'))}</td>`,
           `<td>${fcmBadgeHtml(u.fcm_status)}</td>`,
           `<td class="mono">${escapeHtml(String(u.guild_id || '—'))}</td>`,
@@ -3112,6 +3129,8 @@
       wipe: 'ПОЛНЫЙ СБРОС: закрыть сокет + стереть FCM-токены. Продолжить?',
       ban: 'Забанить пользователя? /me/* ответит 403, сокет и FCM будут остановлены.',
       unban: 'Снять бан с пользователя?',
+      disable: 'Отключить FCM+сокет и заблокировать авто-восстановление? Бот не будет переподключаться после перезапуска.',
+      enable: 'Снять блокировку авто-восстановления? Бот снова сможет подключаться.',
     }[action];
     if (confirmText && !confirm(confirmText)) return;
 
@@ -3145,6 +3164,7 @@
             is_banned: !!data.user.is_banned,
             banned_at: data.user.banned_at ?? null,
             banned_reason: data.user.banned_reason ?? null,
+            admin_disabled: !!data.user.admin_disabled,
             has_active_socket: !!data.user.has_active_socket,
           });
         }
@@ -3181,10 +3201,14 @@
         <div class="site-db-actions__row">
           ${u.has_active_socket
             ? `<button type="button" class="site-db-btn site-db-btn--warn" data-admin-action="disconnect" data-admin-iid="${escapeHtml(iid)}" title="Закрыть Rust+ сокет + остановить FCM listener">⏻ Отключить</button>`
-            : `<button type="button" class="site-db-btn" data-admin-action="reconnect" data-admin-iid="${escapeHtml(iid)}" title="Поднять Rust+ сокет + стартовать FCM listener" ${u.is_banned ? 'disabled' : ''}>🔌 Подключить</button>`
+            : `<button type="button" class="site-db-btn" data-admin-action="reconnect" data-admin-iid="${escapeHtml(iid)}" title="Поднять Rust+ сокет + стартовать FCM listener" ${u.is_banned || u.admin_disabled ? 'disabled' : ''}>🔌 Подключить</button>`
           }
           <button type="button" class="site-db-btn" data-admin-action="clear_fcm" data-admin-iid="${escapeHtml(iid)}" title="Стереть FCM-токены в rust_users (expo/fcm/gcm), pairing сохраняется">🗑 FCM</button>
           <button type="button" class="site-db-btn site-db-btn--warn" data-admin-action="wipe" data-admin-iid="${escapeHtml(iid)}" title="Сокет + listener + очистка FCM-полей">💥 Полный сброс</button>
+          ${u.admin_disabled
+            ? `<button type="button" class="site-db-btn site-db-btn--ok" data-admin-action="enable" data-admin-iid="${escapeHtml(iid)}" title="Снять флаг блокировки — бот снова будет восстанавливать соединение">✅ Включить</button>`
+            : `<button type="button" class="site-db-btn site-db-btn--danger" data-admin-action="disable" data-admin-iid="${escapeHtml(iid)}" title="Отключить FCM+сокет и заблокировать авто-восстановление">🔒 Откл. навсегда</button>`
+          }
           ${u.is_banned
             ? `<button type="button" class="site-db-btn site-db-btn--ok" data-admin-action="unban" data-admin-iid="${escapeHtml(iid)}">✅ Разбанить</button>`
             : `<button type="button" class="site-db-btn site-db-btn--danger" data-admin-action="ban" data-admin-iid="${escapeHtml(iid)}" title="Забанить: /me/* даст 403, сокет и FCM сразу остановятся">🚫 Забанить</button>`
@@ -3192,7 +3216,7 @@
         </div>
         <p class="muted" style="margin:8px 0 0;font-size:.76rem">
           Действия применяются сразу к боту: закрытие RustSocket, остановка FCM listener,
-          запись в <code>rust_users.is_banned</code>. Пэйринговые записи в <code>rust_servers</code> не удаляются.
+          запись в <code>rust_users.is_banned</code> / <code>admin_disabled</code>. Пэйринговые записи в <code>rust_servers</code> не удаляются.
         </p>
       </div>`;
 
@@ -4551,15 +4575,16 @@
         _mapOffsetY = (oh - natH * _mapFitScale) / 2;
         clampOffset();
         applyMapTransform();
+
+        // Маркеры рендерим только после того, как canvas получил реальные размеры
+        renderMapMarkers(data.markers || [], data.team || [], data.server?.size || 4000);
+        renderVendingSearch('');
       });
     };
     imgEl.src = imgUrl;
 
     viewport.classList.add('visible');
     if (placeholder) placeholder.style.display = 'none';
-
-    renderMapMarkers(data.markers || [], data.team || [], data.server?.size || 4000);
-    renderVendingSearch('');
   }
 
   const MARKER_FALLBACK = { 2:'💥', 4:'🚁', 5:'🚢', 6:'📦', 8:'🔫', 3:'🛒', 9:'🚐' };
