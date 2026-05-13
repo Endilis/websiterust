@@ -4554,8 +4554,9 @@
     container.innerHTML = '';
 
     const place = (x, y, typeClass, iconHtml, tooltipHtml) => {
-      const pctX = (x / mapSize) * 100;
-      const pctY = (1 - y / mapSize) * 100;
+      // Rust world: centered at (0,0), range ~[-size/2, +size/2]
+      const pctX = (x / mapSize + 0.5) * 100;
+      const pctY = (0.5 - y / mapSize) * 100;
       const el   = document.createElement('div');
       el.className = 'map-marker';
       el.style.cssText = `left:${pctX}%;top:${pctY}%`;
@@ -4571,12 +4572,15 @@
         const orders = (m.sell_orders || []).slice(0, 4).map(o => {
           const iImg = o.item_img     ? `<img src="${escapeHtml(o.item_img)}" class="map-tooltip-order-img" onerror="this.style.display='none'">` : '';
           const cImg = o.currency_img ? `<img src="${escapeHtml(o.currency_img)}" class="map-tooltip-order-img" onerror="this.style.display='none'">` : '';
-          return `<div class="map-tooltip-order">${iImg}<span>${escapeHtml(o.item_name||'')} ×${o.quantity}</span><span class="arrow">→</span>${cImg}<span>${escapeHtml(o.currency_name||'')} ×${o.cost_per_stack}</span></div>`;
+          const bp = o.is_blueprint ? ' 📘' : '';
+          return `<div class="map-tooltip-order">${iImg}<span>${escapeHtml(o.item_name||'')}${bp} ×${o.quantity}</span><span class="arrow">→</span>${cImg}<span>${escapeHtml(o.currency_name||'')} ×${o.cost_per_item}</span></div>`;
         }).join('');
-        const tip = `<strong>${escapeHtml(m.name || 'Магазин')}</strong>${orders || '<span style="opacity:.5">нет данных</span>'}<div class="map-tip-coords">X ${Math.round(m.x)} · Y ${Math.round(m.y)} · ${coordsToGrid(m.x, m.y, mapSize)}</div>`;
+        const grid = coordsToGrid(m.x, m.y, mapSize);
+        const tip = `<strong>${escapeHtml(m.name || 'Магазин')}</strong>${orders || '<span style="opacity:.5">нет данных</span>'}<div class="map-tip-coords">${grid} · X${Math.round(m.x)} Y${Math.round(m.y)}</div>`;
         place(m.x, m.y, tc, markerIconHtml(m), tip);
       } else {
-        const tip = `<strong>${escapeHtml(m.type_name || String(m.type))}</strong><div class="map-tip-coords">X ${Math.round(m.x)} · Y ${Math.round(m.y)}</div>`;
+        const grid = coordsToGrid(m.x, m.y, mapSize);
+        const tip = `<strong>${escapeHtml(m.type_name || String(m.type))}</strong><div class="map-tip-coords">${grid} · X${Math.round(m.x)} Y${Math.round(m.y)}</div>`;
         place(m.x, m.y, tc, markerIconHtml(m), tip);
       }
     }
@@ -4586,8 +4590,9 @@
       if (member.x == null || member.y == null) continue;
       const alive = member.is_online && member.is_alive;
       const tc    = `type-1${alive ? ' alive' : ''}`;
+      const grid  = coordsToGrid(member.x, member.y, mapSize);
       const status = !member.is_online ? '⚫ офлайн' : alive ? '🟢 живой' : '💀 мёртв';
-      const tip = `<strong>${escapeHtml(member.name || '?')}</strong>${status}<div class="map-tip-coords">X ${Math.round(member.x)} · Y ${Math.round(member.y)}</div>`;
+      const tip = `<strong>${escapeHtml(member.name || '?')}</strong>${status}<div class="map-tip-coords">${grid} · X${Math.round(member.x)} Y${Math.round(member.y)}</div>`;
       place(member.x, member.y, tc, markerIconHtml({ type: 1, name: member.name, avatar_url: member.avatar_url || '' }), tip);
     }
   }
@@ -4622,10 +4627,11 @@
       const ordersHtml = relevantOrders.map(o => {
         const iImg = o.item_img     ? `<img class="vend-item-img" src="${escapeHtml(o.item_img)}"     onerror="this.style.display='none'" alt="">` : '';
         const cImg = o.currency_img ? `<img class="vend-item-img" src="${escapeHtml(o.currency_img)}" onerror="this.style.display='none'" alt="">` : '';
+        const bp = o.is_blueprint ? ' 📘' : '';
         return `<div class="vend-order-row">
-          ${iImg}<span class="vend-item-name" title="${escapeHtml(o.item_name||'')}">×${o.quantity} ${escapeHtml(o.item_name||'')}</span>
+          ${iImg}<span class="vend-item-name" title="${escapeHtml(o.item_name||'')}">×${o.quantity} ${escapeHtml(o.item_name||'')}${bp}</span>
           <span class="vend-arrow">→</span>
-          ${cImg}<span class="vend-cost">×${o.cost_per_stack} ${escapeHtml(o.currency_name||'')}</span>
+          ${cImg}<span class="vend-cost">×${o.cost_per_item} ${escapeHtml(o.currency_name||'')}</span>
         </div>`;
       }).join('');
       const grid = vm.x != null ? coordsToGrid(vm.x, vm.y, mapSize) : '';
@@ -4638,14 +4644,18 @@
   }
 
   function coordsToGrid(x, y, mapSize) {
-    // Стандартная формула Rust+: нормализация к виртуальной сетке 2000×2000, ячейка 80 единиц
-    const nx  = x / mapSize * 2000;
-    const ny  = (mapSize - y) / mapSize * 2000;
-    const col = Math.floor(nx / 80);
-    const row = Math.floor(ny / 80);
-    const letter = col >= 26
-      ? 'A' + String.fromCharCode(65 + col - 26)
-      : String.fromCharCode(65 + col);
+    // Rust world: centered at (0,0). Normalize to [0..1] then to virtual 2000×2000 grid.
+    // GRID_DIAMETER = 146.28... → ~2000/GRID_DIAMETER ≈ 13.67 cells per side for 2000 virtual
+    // rustplus uses GRID_DIAMETER = 146.285 for the physical cell size
+    const GRID_DIAMETER = 146.28571428571428;
+    const nx  = (x / mapSize + 0.5) * mapSize;        // [0..mapSize]
+    const ny  = (0.5 - y / mapSize) * mapSize;         // [0..mapSize], top=0
+    const col = Math.floor(nx / GRID_DIAMETER);
+    const row = Math.floor(ny / GRID_DIAMETER);
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const letter = col < 26
+      ? letters[col]
+      : letters[Math.floor(col / 26) - 1] + letters[col % 26];
     return letter + (row + 1);
   }
 
