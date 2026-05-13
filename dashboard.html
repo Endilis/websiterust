@@ -238,7 +238,10 @@
     }
     #map-img { display: block; width: auto; height: auto; pointer-events: none; user-select: none; }
 
-    /* Markers */
+    /* Markers — overlay поверх canvas, позиция пересчитывается JS, размер не меняется */
+    #map-markers {
+      position: absolute; inset: 0; pointer-events: none; z-index: 10; overflow: visible;
+    }
     .map-marker {
       position: absolute; transform: translate(-50%, -50%);
       pointer-events: auto; cursor: pointer;
@@ -1916,8 +1919,9 @@
                   <div class="map-viewport" id="map-viewport">
                     <div class="map-canvas" id="map-canvas">
                       <img id="map-img" src="" alt="Карта сервера" draggable="false"/>
-                      <div id="map-markers"></div>
                     </div>
+                    <!-- Маркеры вне canvas — фиксированный размер иконок при любом зуме -->
+                    <div id="map-markers"></div>
                   </div>
                   <div class="map-zoom-btns">
                     <button class="map-zoom-btn" id="btn-zoom-in" title="Приблизить">+</button>
@@ -4420,6 +4424,30 @@
   function applyMapTransform() {
     const canvas = document.getElementById('map-canvas');
     if (canvas) canvas.style.transform = `translate(${_mapOffsetX}px,${_mapOffsetY}px) scale(${_mapScale})`;
+    updateMarkerPositions();
+  }
+
+  function updateMarkerPositions() {
+    const canvas = document.getElementById('map-canvas');
+    const container = document.getElementById('map-markers');
+    if (!canvas || !container || !_mapData) return;
+    const mapSize = _mapData.server?.size || 4000;
+    const cw = canvas.offsetWidth;
+    const ch = canvas.offsetHeight;
+    if (!cw || !ch) return;
+    container.querySelectorAll('.map-marker').forEach(el => {
+      const wx = parseFloat(el.dataset.wx);
+      const wy = parseFloat(el.dataset.wy);
+      if (isNaN(wx) || isNaN(wy)) return;
+      // Canvas-pixel coords (unscaled)
+      const cx = (wx / mapSize + 0.5) * cw;
+      const cy = (0.5 - wy / mapSize) * ch;
+      // Apply current transform: same as canvas but only for the marker point
+      const sx = cx * _mapScale + _mapOffsetX;
+      const sy = cy * _mapScale + _mapOffsetY;
+      el.style.left = sx + 'px';
+      el.style.top  = sy + 'px';
+    });
   }
 
   function resetMapView() {
@@ -4512,15 +4540,16 @@
         canvas.style.width  = natW + 'px';
         canvas.style.height = natH + 'px';
 
-        // fitScale = масштаб при котором вся карта помещается по ширине контейнера
         const ow = outer.clientWidth;
         const oh = outer.clientHeight;
-        _mapFitScale = Math.min(ow / natW, oh / natH);
+        // coverScale: карта всегда полностью заполняет контейнер (нет пустых краёв)
+        _mapFitScale = Math.max(ow / natW, oh / natH);
 
-        resetMapView();
-        // Центрируем карту в контейнере при fitScale
+        resetMapView();  // scale = _mapFitScale, offset = 0
+        // Центрируем: при coverScale карта больше контейнера — центрируем по обеим осям
         _mapOffsetX = (ow - natW * _mapFitScale) / 2;
         _mapOffsetY = (oh - natH * _mapFitScale) / 2;
+        clampOffset();
         applyMapTransform();
       });
     };
@@ -4533,19 +4562,26 @@
     renderVendingSearch('');
   }
 
-  // Icon HTML для маркеров событий
+  const MARKER_FALLBACK = { 2:'💥', 4:'🚁', 5:'🚢', 6:'📦', 8:'🔫', 3:'🛒', 9:'🚐' };
+
   function markerIconHtml(m) {
-    if (m.icon_url) {
-      return `<img src="${escapeHtml(m.icon_url)}" onerror="this.style.display='none'" alt=""/>`;
-    }
+    const fallback = MARKER_FALLBACK[m.type] || '📍';
+
     if (m.type === 1) {
-      // Игрок — инициалы или аватар
-      if (m.avatar_url) return `<img src="${escapeHtml(m.avatar_url)}" alt="" style="width:100%;height:100%;object-fit:cover"/>`;
-      const initials = (m.name || '?').slice(0, 2).toUpperCase();
-      return `<span>${escapeHtml(initials)}</span>`;
+      // Игрок — аватар или инициалы
+      if (m.avatar_url)
+        return `<img src="${escapeHtml(m.avatar_url)}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.outerHTML='<span>${(m.name||'?').slice(0,2).toUpperCase()}</span>'"/>`;
+      return `<span>${escapeHtml((m.name || '?').slice(0, 2).toUpperCase())}</span>`;
     }
-    const fallbacks = { 2:'💥', 3:'🛒', 4:'🚁', 5:'🚢', 6:'📦', 8:'🔫' };
-    return `<span style="font-size:15px">${fallbacks[m.type] || '📍'}</span>`;
+
+    if (m.icon_url) {
+      // Иконка с сервера + fallback emoji если не загрузилась
+      return `<img src="${escapeHtml(m.icon_url)}" alt="${fallback}"
+        style="width:22px;height:22px;object-fit:contain"
+        onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${fallback}',style:'font-size:15px'}))"/>`;
+    }
+
+    return `<span style="font-size:15px">${fallback}</span>`;
   }
 
   function renderMapMarkers(markers, team, mapSize) {
@@ -4553,16 +4589,17 @@
     if (!container) return;
     container.innerHTML = '';
 
-    const place = (x, y, typeClass, iconHtml, tooltipHtml) => {
-      // Rust world: centered at (0,0), range ~[-size/2, +size/2]
-      const pctX = (x / mapSize + 0.5) * 100;
-      const pctY = (0.5 - y / mapSize) * 100;
-      const el   = document.createElement('div');
+    // Позиция задаётся через data-wx/wy — updateMarkerPositions() пересчитывает при каждом зуме
+    const place = (wx, wy, typeClass, iconHtml, tooltipHtml) => {
+      const el = document.createElement('div');
       el.className = 'map-marker';
-      el.style.cssText = `left:${pctX}%;top:${pctY}%`;
+      el.dataset.wx = wx;
+      el.dataset.wy = wy;
       el.innerHTML = `<div class="map-marker-icon ${typeClass}">${iconHtml}</div><div class="map-tooltip">${tooltipHtml}</div>`;
       container.appendChild(el);
     };
+
+    let eventCount = 0;
 
     for (const m of markers) {
       if (m.x == null || m.y == null) continue;
@@ -4579,6 +4616,7 @@
         const tip = `<strong>${escapeHtml(m.name || 'Магазин')}</strong>${orders || '<span style="opacity:.5">нет данных</span>'}<div class="map-tip-coords">${grid} · X${Math.round(m.x)} Y${Math.round(m.y)}</div>`;
         place(m.x, m.y, tc, markerIconHtml(m), tip);
       } else {
+        eventCount++;
         const grid = coordsToGrid(m.x, m.y, mapSize);
         const tip = `<strong>${escapeHtml(m.type_name || String(m.type))}</strong><div class="map-tip-coords">${grid} · X${Math.round(m.x)} Y${Math.round(m.y)}</div>`;
         place(m.x, m.y, tc, markerIconHtml(m), tip);
@@ -4594,6 +4632,15 @@
       const status = !member.is_online ? '⚫ офлайн' : alive ? '🟢 живой' : '💀 мёртв';
       const tip = `<strong>${escapeHtml(member.name || '?')}</strong>${status}<div class="map-tip-coords">${grid} · X${Math.round(member.x)} Y${Math.round(member.y)}</div>`;
       place(member.x, member.y, tc, markerIconHtml({ type: 1, name: member.name, avatar_url: member.avatar_url || '' }), tip);
+    }
+
+    // Обновить позиции
+    updateMarkerPositions();
+
+    // Счётчик ивентов в статусе
+    const statusEl = document.getElementById('map-status');
+    if (statusEl && eventCount > 0) {
+      statusEl.textContent += ` · 🔴 Ивентов: ${eventCount}`;
     }
   }
 
