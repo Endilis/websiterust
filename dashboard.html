@@ -403,6 +403,25 @@
     }
     .account-handle { font-size: 0.9rem; color: var(--text2); margin: 0; }
 
+    /* Настройки / inline-edit строка */
+    .setting-row {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-row__label { font-size: .875rem; font-weight: 600; color: var(--text); min-width: 110px; flex-shrink: 0; }
+    .setting-row__value { font-size: .875rem; color: var(--text2); font-family: ui-monospace,Consolas,monospace; flex: 1; min-width: 0; }
+    .setting-row__edit { flex-shrink: 0; }
+    .setting-row__input-wrap { display: none; flex: 1 0 100%; gap: 8px; margin-top: 6px; }
+    .setting-row__input-wrap.open { display: flex; }
+    .setting-row__input {
+      flex: 1; background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 7px 12px; font-size: .875rem; color: var(--text);
+      font-family: ui-monospace,Consolas,monospace; outline: none;
+      transition: border-color .15s;
+    }
+    .setting-row__input:focus { border-color: var(--accent); }
+
     /* Единая система бейджей */
     .dash-badge {
       display: inline-flex; align-items: center; justify-content: center;
@@ -1874,13 +1893,18 @@
                 <div id="rust-v2-servers" class="rust-srv-grid"></div>
               </div>
 
-              <!-- Discord-гильдии: объединено со старым блоком «Сервер Discord» -->
-              <h3 class="rust-srv-block__title" style="margin-top:22px;margin-bottom:8px">Discord-гильдии</h3>
-              <p class="dash-muted" style="font-size:0.85rem;margin:0 0 12px">
-                Серверы Discord, где у вас есть права администратора. Кнопка «Использовать» привязывает гильдию к боту,
-                «Пригласить» добавляет бота на сервер.
-              </p>
-              <div id="rust-v2-oauth-guilds"></div>
+              <!-- Discord-подключение: в разработке -->
+              <div style="margin-top:22px;display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                <h3 class="rust-srv-block__title" style="margin:0">Подключение Discord</h3>
+                <span class="dash-badge" style="background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.3);font-size:.7rem;padding:2px 8px;border-radius:6px">В разработке</span>
+              </div>
+              <div style="opacity:.45;pointer-events:none;user-select:none" aria-disabled="true">
+                <p class="dash-muted" style="font-size:0.85rem;margin:0 0 12px">
+                  Серверы Discord, где у вас есть права администратора. Кнопка «Использовать» привязывает гильдию к боту,
+                  «Пригласить» добавляет бота на сервер.
+                </p>
+                <div id="rust-v2-oauth-guilds"></div>
+              </div>
             </section>
 
             <hr class="dash-sep"/>
@@ -1931,50 +1955,32 @@
 
             <hr class="dash-sep"/>
 
-            <!-- Запасной вариант: ручная вставка JSON. Сворачиваемый, в самом низу. -->
-            <section class="dash-section" id="fcm-backup-section">
-              <details class="dash-details fcm-backup-details">
-                <summary>Способ 2: вставка JSON вручную <span class="fcm-backup-tag">запасной</span></summary>
-                <p class="dash-muted" style="margin:10px 0 6px">
-                  Используйте расширение
-                  <a href="https://chromewebstore.google.com/detail/rustpluspy-link-companion/alkbhnaajkfkhnclbhookmbhcomacmcd"
-                     target="_blank" rel="noreferrer"
-                     style="color:var(--accent);text-decoration:none;font-weight:600">Rustplus.py Link Companion</a>
-                  для Chrome, чтобы автоматически получить JSON после входа через Steam.
-                  Или вставьте данные вручную в поле ниже.
-                </p>
-                <textarea id="fcm-paste-json" class="dash-textarea" spellcheck="false"
-                          placeholder='{ "expo_push_token": "...", "fcm_credentials": { "fcm": {"token": "..."}, "gcm": {"androidId": "...", "securityToken": "..."} }, "rustplus_auth_token": "...", "steam_id": "..." }'
-                          aria-label="JSON FCM"></textarea>
-                <div class="dash-inline" style="margin-top:8px">
-                  <button type="button" class="dash-btn dash-btn--ghost" id="btn-fcm-copy-template">Скопировать пример</button>
-                  <button type="button" class="dash-btn dash-btn--primary" id="btn-fcm-paste-submit">Отправить</button>
-                </div>
-                <p id="fcm-paste-msg" class="dash-muted" style="margin:8px 0 0;font-size:0.85rem"></p>
-              </details>
+            <!-- ═══ НАСТРОЙКИ ═══ -->
+            <section class="dash-section" id="account-settings" aria-labelledby="acc-settings-title">
+              <h2 class="dash-section-title" id="acc-settings-title">Настройки</h2>
+              <p class="dash-muted" style="margin:0 0 14px;font-size:.85rem">
+                Настройки применяются к вашему Discord-серверу. Изменения синхронизируются с ботом в реальном времени.
+              </p>
 
-              <details class="dash-details" id="extension-steps-card" style="display:none">
-                <summary>Как привязать Rust+ токен</summary>
-                <ol class="steps" style="margin-top:12px">
-                  <li>
-                    <div class="step-num">1</div>
-                    <div class="step-text">Установите расширение <strong>RustInfo Bot</strong> в Chrome (Developer mode → Load unpacked)</div>
-                  </li>
-                  <li>
-                    <div class="step-num">2</div>
-                    <div class="step-text">Иконка расширения → <a href="https://companion-rust.facepunch.com/login" target="_blank" rel="noreferrer" style="color:var(--accent);text-decoration:none;font-weight:600">companion-rust.facepunch.com/login</a></div>
-                  </li>
-                  <li>
-                    <div class="step-num">3</div>
-                    <div class="step-text">Войдите через Steam</div>
-                  </li>
-                  <li>
-                    <div class="step-num">4</div>
-                    <div class="step-text">Токен отправится на сервер — вас вернёт в панель</div>
-                  </li>
-                </ol>
-              </details>
+              <div class="setting-row">
+                <span class="setting-row__label">Имя бота</span>
+                <span class="setting-row__value" id="bot-prefix-display">…</span>
+                <button type="button" class="dash-btn dash-btn--ghost setting-row__edit" id="btn-prefix-edit"
+                        style="padding:4px 12px;font-size:.8rem">Изменить</button>
+
+                <div class="setting-row__input-wrap" id="prefix-input-wrap">
+                  <input type="text" id="bot-prefix-input" class="setting-row__input"
+                         placeholder="[rustinfo.online]" maxlength="32"
+                         aria-label="Имя бота (игровой префикс)"/>
+                  <button type="button" class="dash-btn dash-btn--primary" id="btn-prefix-save"
+                          style="padding:5px 14px;font-size:.8rem">Сохранить</button>
+                  <button type="button" class="dash-btn dash-btn--ghost" id="btn-prefix-cancel"
+                          style="padding:5px 12px;font-size:.8rem">Отмена</button>
+                </div>
+                <p class="dash-muted" id="prefix-save-msg" style="flex:1 0 100%;font-size:.8rem;margin:4px 0 0;display:none"></p>
+              </div>
             </section>
+
           </div>
         </div>
 
@@ -2770,6 +2776,86 @@
       await loadDashboard(session);
     } catch (e) {
       if (msgEl) msgEl.textContent = 'Сеть: ' + ((e && e.message) || String(e));
+    }
+  }
+
+  /* ─── Настройки: Имя бота (игровой префикс) ─── */
+  let _prefixInitDone = false;
+  function initPrefixSettings(session) {
+    // Загружаем текущий префикс с сервера
+    const displayEl = document.getElementById('bot-prefix-display');
+    const inputEl   = document.getElementById('bot-prefix-input');
+    const wrapEl    = document.getElementById('prefix-input-wrap');
+    const msgEl     = document.getElementById('prefix-save-msg');
+    const editBtn   = document.getElementById('btn-prefix-edit');
+    const saveBtn   = document.getElementById('btn-prefix-save');
+    const cancelBtn = document.getElementById('btn-prefix-cancel');
+    if (!displayEl || !editBtn) return;
+
+    // Один раз вешаем обработчики
+    if (!_prefixInitDone) {
+      _prefixInitDone = true;
+      editBtn.addEventListener('click', () => {
+        inputEl.value = displayEl.textContent !== '…' ? displayEl.textContent : '';
+        wrapEl.classList.add('open');
+        inputEl.focus();
+        editBtn.style.display = 'none';
+        if (msgEl) { msgEl.style.display = 'none'; msgEl.textContent = ''; }
+      });
+      cancelBtn.addEventListener('click', () => {
+        wrapEl.classList.remove('open');
+        editBtn.style.display = '';
+        if (msgEl) { msgEl.style.display = 'none'; msgEl.textContent = ''; }
+      });
+      saveBtn.addEventListener('click', () => savePrefixSettings(session));
+      inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') savePrefixSettings(session); });
+    }
+
+    // Загрузить текущее значение
+    fetch(`${API_BASE}/me/prefix?session=${encodeURIComponent(session)}`, { credentials: 'include' })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (d?.ok && d.prefix) displayEl.textContent = d.prefix;
+        else displayEl.textContent = '[rustinfo.online]';
+      })
+      .catch(() => { displayEl.textContent = '—'; });
+  }
+
+  async function savePrefixSettings(session) {
+    const inputEl  = document.getElementById('bot-prefix-input');
+    const displayEl= document.getElementById('bot-prefix-display');
+    const wrapEl   = document.getElementById('prefix-input-wrap');
+    const msgEl    = document.getElementById('prefix-save-msg');
+    const editBtn  = document.getElementById('btn-prefix-edit');
+    const saveBtn  = document.getElementById('btn-prefix-save');
+
+    const newPrefix = (inputEl?.value || '').trim();
+    if (!newPrefix) {
+      if (msgEl) { msgEl.textContent = '⚠ Имя не может быть пустым'; msgEl.style.display = 'block'; }
+      return;
+    }
+    if (saveBtn) saveBtn.disabled = true;
+    try {
+      const resp = await fetch(`${API_BASE}/me/prefix?session=${encodeURIComponent(session)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ prefix: newPrefix }),
+      });
+      const d = await resp.json();
+      if (d.ok) {
+        displayEl.textContent = d.prefix;
+        wrapEl.classList.remove('open');
+        editBtn.style.display = '';
+        if (msgEl) { msgEl.textContent = '✅ Сохранено'; msgEl.style.display = 'block'; }
+        setTimeout(() => { if (msgEl) { msgEl.style.display = 'none'; msgEl.textContent = ''; } }, 2500);
+      } else {
+        if (msgEl) { msgEl.textContent = '❌ ' + (d.message || d.error || 'Ошибка'); msgEl.style.display = 'block'; }
+      }
+    } catch (e) {
+      if (msgEl) { msgEl.textContent = '❌ Сетевая ошибка'; msgEl.style.display = 'block'; }
+    } finally {
+      if (saveBtn) saveBtn.disabled = false;
     }
   }
 
@@ -4144,6 +4230,7 @@
     _dashSessionRef = session;
     _dashDiscordId = data.discord_id;
     setupFcmPasteOnce();
+    initPrefixSettings(session);
 
     const linkBtn = document.getElementById('btn-facepunch-link');
     if (linkBtn) {
