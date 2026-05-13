@@ -760,9 +760,13 @@
     #error-block { display: none; }
 
     /* Beta notice banner on login screen */
+    .login-notices {
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+      margin: 0 auto 32px; width: 100%;
+    }
     .beta-notice {
-      display: inline-flex; flex-direction: column; gap: 14px;
-      max-width: 480px; margin: 0 auto 32px;
+      display: flex; flex-direction: column; gap: 14px;
+      width: 100%; max-width: 480px; margin: 0;
       background: linear-gradient(135deg, rgba(88,101,242,.12) 0%, rgba(88,101,242,.04) 100%);
       border: 1px solid rgba(88,101,242,.35);
       border-radius: 14px; padding: 22px 28px; text-align: left;
@@ -807,8 +811,8 @@
 
     /* Team feature notice */
     .team-notice {
-      display: inline-flex; align-items: center; gap: 14px;
-      max-width: 480px; margin: 0 auto 0;
+      display: flex; align-items: center; gap: 14px;
+      width: 100%; max-width: 480px; margin: 0;
       background: rgba(34,197,94,.07); border: 1px solid rgba(34,197,94,.25);
       border-radius: 12px; padding: 14px 20px; text-align: left;
     }
@@ -1752,6 +1756,8 @@
   <!-- NOT LOGGED IN -->
   <div id="error-block">
 
+    <div class="login-notices">
+
     <div class="team-notice">
       <div class="team-notice__icon">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -1784,6 +1790,8 @@
         Присоединиться к Discord
       </a>
     </div>
+
+    </div><!-- /.login-notices -->
 
     <div class="login-divider"><span>после</span></div>
 
