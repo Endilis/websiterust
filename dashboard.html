@@ -1986,8 +1986,7 @@
             <section class="dash-section" id="account-self-disable" style="display:none" aria-labelledby="acc-self-disable-title">
               <h2 class="dash-section-title" id="acc-self-disable-title">Опасная зона</h2>
               <p class="dash-muted" style="margin:0 0 12px;font-size:.85rem;max-width:560px">
-                Отключить FCM и Rust+ сокет и заблокировать автоматическое восстановление после перезапуска бота —
-                то же действие, что кнопка «Откл. навсегда» в админ-панели. Обратно включить может только администратор.
+                Отключить FCM и Rust+ сокет и заблокировать автоматическое восстановление после перезапуска бота.
               </p>
               <button type="button" class="dash-btn dash-btn--danger" id="btn-account-disable-forever">
                 Отключить навсегда
@@ -2807,7 +2806,7 @@
     if (ru.admin_disabled) {
       btn.style.display = 'none';
       note.style.display = 'block';
-      note.textContent = 'Авто-восстановление отключено. Снова включить может только администратор.';
+      note.textContent = 'Авто-восстановление отключено.';
     } else {
       btn.style.display = '';
       btn.disabled = false;
