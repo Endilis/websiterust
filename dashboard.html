@@ -1981,6 +1981,20 @@
               </div>
             </section>
 
+            <hr class="dash-sep"/>
+
+            <section class="dash-section" id="account-self-disable" style="display:none" aria-labelledby="acc-self-disable-title">
+              <h2 class="dash-section-title" id="acc-self-disable-title">Опасная зона</h2>
+              <p class="dash-muted" style="margin:0 0 12px;font-size:.85rem;max-width:560px">
+                Отключить FCM и Rust+ сокет и заблокировать автоматическое восстановление после перезапуска бота —
+                то же действие, что кнопка «Откл. навсегда» в админ-панели. Обратно включить может только администратор.
+              </p>
+              <button type="button" class="dash-btn dash-btn--danger" id="btn-account-disable-forever">
+                Отключить навсегда
+              </button>
+              <p class="dash-muted" id="account-disable-forever-note" style="margin-top:10px;font-size:.85rem;display:none;max-width:560px"></p>
+            </section>
+
           </div>
         </div>
 
@@ -2777,6 +2791,68 @@
     } catch (e) {
       if (msgEl) msgEl.textContent = 'Сеть: ' + ((e && e.message) || String(e));
     }
+  }
+
+  function updateAccountSelfDisableUI(data) {
+    const sec = document.getElementById('account-self-disable');
+    const btn = document.getElementById('btn-account-disable-forever');
+    const note = document.getElementById('account-disable-forever-note');
+    if (!sec || !btn || !note) return;
+    const ru = data.rust_user;
+    if (!ru || ru.internal_id == null) {
+      sec.style.display = 'none';
+      return;
+    }
+    sec.style.display = '';
+    if (ru.admin_disabled) {
+      btn.style.display = 'none';
+      note.style.display = 'block';
+      note.textContent = 'Авто-восстановление отключено. Снова включить может только администратор.';
+    } else {
+      btn.style.display = '';
+      btn.disabled = false;
+      note.style.display = 'none';
+      note.textContent = '';
+    }
+  }
+
+  let _accountDisableForeverBound = false;
+  function setupAccountDisableForeverOnce() {
+    if (_accountDisableForeverBound) return;
+    _accountDisableForeverBound = true;
+    const btn = document.getElementById('btn-account-disable-forever');
+    if (!btn) return;
+    btn.addEventListener('click', async () => {
+      const msg =
+        'Отключить FCM+сокет и заблокировать авто-восстановление? Бот не будет переподключаться после перезапуска.';
+      if (!confirm(msg)) return;
+      const session = _dashSessionRef || localStorage.getItem('ri_session');
+      if (!session) return;
+      btn.disabled = true;
+      try {
+        const resp = await fetch(
+          `${API_BASE}/me/disable_forever?session=${encodeURIComponent(session)}`,
+          { method: 'POST', credentials: 'include' }
+        );
+        let d = {};
+        try {
+          d = await resp.json();
+        } catch (_) {}
+        if (resp.ok && d.ok) {
+          await loadDashboard(session, { force: true });
+          return;
+        }
+        if (resp.status === 409 && d.error === 'already_disabled') {
+          await loadDashboard(session, { force: true });
+          return;
+        }
+        alert(d.message || d.error || `Ошибка ${resp.status}`);
+      } catch (_) {
+        alert('Сетевая ошибка');
+      } finally {
+        btn.disabled = false;
+      }
+    });
   }
 
   /* ─── Настройки: Имя бота (игровой префикс) ─── */
@@ -4231,6 +4307,8 @@
     _dashDiscordId = data.discord_id;
     setupFcmPasteOnce();
     initPrefixSettings(session);
+    setupAccountDisableForeverOnce();
+    updateAccountSelfDisableUI(data);
 
     const linkBtn = document.getElementById('btn-facepunch-link');
     if (linkBtn) {
