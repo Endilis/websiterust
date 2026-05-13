@@ -156,24 +156,42 @@
       color: #fbbf24; border-radius: 20px; padding: 4px 12px; font-size: 0.78rem; font-weight: 600;
     }
 
-    /* MAP PANEL — full-height layout with right sidebar */
-    .dash-panels:has(#panel-map.active) {
+    /* MAP PANEL — full-height layout with right sidebar
+       Когда карта активна: main занимает всё место ниже nav, header скрыт */
+    body:has(#panel-map.active) main {
+      height: calc(100vh - var(--nav-h));
+      padding-top: 0;
+      padding-bottom: 0;
       overflow: hidden;
       display: flex;
       flex-direction: column;
+    }
+    body:has(#panel-map.active) .dashboard-header { display: none; }
+    body:has(#panel-map.active) .dashboard-body {
+      flex: 1;
+      min-height: 0;
+    }
+    body:has(#panel-map.active) .dash-panels {
+      flex: 1;
+      min-height: 0;
+      max-height: none !important;
+      overflow: hidden;
       padding: 0;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
     }
-    #panel-map.active {
+    body:has(#panel-map.active) #panel-map.active {
       flex: 1;
       min-height: 0;
       display: flex;
       flex-direction: column;
     }
-    #panel-map .card {
+    body:has(#panel-map.active) #panel-map.active .card {
       flex: 1;
       min-height: 0;
-      display: flex;
-      flex-direction: column;
       border-radius: 0;
       border: none;
       padding: 12px 16px 0;
@@ -194,7 +212,7 @@
     .map-panel-layout {
       display: flex; gap: 10px; flex: 1; min-height: 0; padding-bottom: 12px;
     }
-    .map-panel-left { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .map-panel-left { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
     .map-panel-right {
       width: 290px; flex-shrink: 0;
       display: flex; flex-direction: column;
@@ -4397,15 +4415,15 @@
   }
 
   function clampOffset() {
-    // Не позволяем прокрутить карту так, чтобы она вышла за пределы outer
-    const outer = document.getElementById('map-outer');
+    const outer  = document.getElementById('map-outer');
     const canvas = document.getElementById('map-canvas');
     if (!outer || !canvas) return;
     const ow = outer.clientWidth,  oh = outer.clientHeight;
-    const cw = ow * _mapScale,     ch = oh * _mapScale;
-    const minX = ow - cw,  minY = oh - ch;
-    _mapOffsetX = Math.min(0, Math.max(minX, _mapOffsetX));
-    _mapOffsetY = Math.min(0, Math.max(minY, _mapOffsetY));
+    // Используем реальные размеры canvas (не outer), т.к. карта — квадрат
+    const cw = canvas.offsetWidth  * _mapScale;
+    const ch = canvas.offsetHeight * _mapScale;
+    _mapOffsetX = Math.min(0, Math.max(ow - cw, _mapOffsetX));
+    _mapOffsetY = Math.min(0, Math.max(oh - ch, _mapOffsetY));
   }
 
   function applyMapTransform() {
@@ -4487,18 +4505,19 @@
     const imgEl       = document.getElementById('map-img');
     if (!viewport || !imgEl) return;
 
-    // Загружаем изображение
+    // Загружаем изображение — после load ждём layout через rAF
     imgEl.onload = () => {
       _mapImgNaturalW = imgEl.naturalWidth;
-      // Устанавливаем размер канваса = размер изображения
-      const canvas = document.getElementById('map-canvas');
-      const outer  = document.getElementById('map-outer');
-      if (canvas && outer) {
-        // canvas fills outer at scale=1
-        canvas.style.width  = outer.clientWidth + 'px';
-        canvas.style.height = outer.clientHeight + 'px';
-      }
-      resetMapView();
+      requestAnimationFrame(() => {
+        const canvas = document.getElementById('map-canvas');
+        const outer  = document.getElementById('map-outer');
+        if (canvas && outer) {
+          // canvas = ширина outer; высота определяется img (aspect-ratio 1:1 для карты Rust)
+          canvas.style.width  = outer.clientWidth + 'px';
+          canvas.style.height = '';  // auto по img
+        }
+        resetMapView();
+      });
     };
     imgEl.src = imgUrl;
 
