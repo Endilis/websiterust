@@ -141,6 +141,126 @@
       box-shadow: inset 0 0 0 1px rgba(232,68,42,.25);
     }
     .dash-nav-btn.sub { padding-left: 18px; font-size: 0.85rem; font-weight: 500; }
+    .dash-nav-btn--wip { opacity: 0.6; }
+    .dash-nav-btn--wip::after { content: ' скоро'; font-size: 0.7rem; opacity: 0.7; }
+
+    /* WIP panel overlay */
+    .wip-overlay {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 200px; gap: 12px; text-align: center; color: var(--text2);
+    }
+    .wip-overlay svg { opacity: 0.4; }
+    .wip-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.3);
+      color: #fbbf24; border-radius: 20px; padding: 4px 12px; font-size: 0.78rem; font-weight: 600;
+    }
+
+    /* MAP PANEL */
+    .map-toolbar {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px;
+    }
+    .map-toolbar select {
+      flex: 1; min-width: 160px; max-width: 320px;
+      background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+      color: var(--text); padding: 7px 10px; font-size: 0.85rem; font-family: inherit;
+    }
+    .map-toolbar select:focus { outline: none; border-color: var(--accent); }
+    .map-status { font-size: 0.8rem; color: var(--text2); margin-left: 4px; }
+    .map-status.err { color: #f87171; }
+
+    .map-outer {
+      position: relative; width: 100%;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: #0a0b0f;
+      overflow: hidden;
+      user-select: none;
+      cursor: grab;
+    }
+    .map-outer.grabbing { cursor: grabbing; }
+    .map-outer .map-placeholder-msg {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 380px; color: var(--text2); font-size: 0.9rem;
+    }
+    .map-viewport {
+      width: 100%; aspect-ratio: 1; display: none;
+    }
+    .map-viewport.visible { display: block; }
+    .map-canvas {
+      position: relative; width: 100%; transform-origin: top left;
+    }
+    #map-img { display: block; width: 100%; height: auto; pointer-events: none; }
+
+    /* Markers */
+    .map-marker {
+      position: absolute; transform: translate(-50%, -50%);
+      pointer-events: auto; cursor: pointer;
+    }
+    .map-marker-icon {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; border: 2px solid rgba(255,255,255,.2);
+      box-shadow: 0 2px 8px rgba(0,0,0,.5);
+    }
+    .map-marker-icon.type-2  { background: #ef4444; }
+    .map-marker-icon.type-4  { background: #3b82f6; }
+    .map-marker-icon.type-5  { background: #0ea5e9; }
+    .map-marker-icon.type-6  { background: #f59e0b; }
+    .map-marker-icon.type-8  { background: #8b5cf6; }
+    .map-marker-icon.type-3  { background: rgba(34,197,94,.9); }
+    .map-marker-icon.type-1  { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.5); }
+    .map-marker-icon.type-1.online { background: rgba(34,197,94,.85); }
+
+    .map-tooltip {
+      position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
+      background: rgba(15,16,22,.95); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 10px; min-width: 160px; max-width: 260px;
+      font-size: 0.78rem; color: var(--text); pointer-events: none;
+      opacity: 0; transition: opacity .15s; white-space: normal; z-index: 100;
+    }
+    .map-marker:hover .map-tooltip { opacity: 1; }
+    .map-tooltip strong { display: block; margin-bottom: 4px; font-size: 0.82rem; }
+    .map-tooltip .sell-row { display: flex; justify-content: space-between; gap: 8px; font-size: 0.74rem; color: var(--text2); margin-top: 3px; }
+    .map-tooltip .sell-row span:first-child { color: var(--text); }
+
+    /* Zoom controls */
+    .map-zoom-btns {
+      position: absolute; bottom: 12px; right: 12px; z-index: 20;
+      display: none; flex-direction: column; gap: 4px;
+    }
+    .map-outer:has(.map-viewport.visible) .map-zoom-btns { display: flex; }
+    .map-zoom-btn {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: rgba(15,16,22,.85); border: 1px solid var(--border);
+      color: var(--text); font-size: 1.1rem; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .map-zoom-btn:hover { background: var(--bg3); }
+
+    /* Vending search */
+    .map-search-wrap { margin-top: 14px; }
+    .map-search-bar {
+      display: flex; gap: 8px; margin-bottom: 10px;
+    }
+    .map-search-bar input {
+      flex: 1; background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); padding: 8px 12px; font-size: 0.85rem;
+      font-family: inherit;
+    }
+    .map-search-bar input:focus { outline: none; border-color: var(--accent); }
+    .map-search-results { display: flex; flex-direction: column; gap: 6px; }
+    .vend-result {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 12px; font-size: 0.82rem;
+    }
+    .vend-result .vend-name { font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .vend-result .vend-orders { display: flex; flex-wrap: wrap; gap: 6px; }
+    .vend-order-tag {
+      background: rgba(34,197,94,.12); border: 1px solid rgba(34,197,94,.25);
+      color: #86efac; border-radius: 6px; padding: 2px 8px; font-size: 0.75rem;
+    }
+    .vend-result .vend-coords { font-size: 0.72rem; color: var(--text2); margin-top: 4px; }
 
     .dash-panels {
       min-width: 0;
@@ -1488,10 +1608,11 @@
           <button type="button" class="dash-nav-btn active" data-panel="account">Аккаунт</button>
           <button type="button" class="dash-nav-btn" data-panel="rust">Rust+ и сервер</button>
           <button type="button" class="dash-nav-btn" data-panel="team">Команда</button>
-          <div class="dash-nav-label">Уведомления</div>
-          <button type="button" class="dash-nav-btn sub" data-panel="notify-game">Игра (Rust+)</button>
-          <button type="button" class="dash-nav-btn sub" data-panel="notify-discord">Discord</button>
           <button type="button" class="dash-nav-btn" data-panel="commands">Команды</button>
+          <div class="dash-nav-label">🚧 В разработке</div>
+          <button type="button" class="dash-nav-btn sub" data-panel="map">🗺️ Карта</button>
+          <button type="button" class="dash-nav-btn sub dash-nav-btn--wip" data-panel="notify-game">🔔 Уведомления</button>
+          <button type="button" class="dash-nav-btn sub dash-nav-btn--wip" data-panel="notify-discord">💬 Discord</button>
           <button type="button" class="dash-nav-btn" data-panel="admin" id="nav-admin-btn" style="display:none">Админ панель</button>
         </nav>
       </aside>
@@ -1696,35 +1817,84 @@
         </div>
 
         <!-- PANEL: notify in-game -->
-        <div id="panel-notify-game" class="dash-panel" role="tabpanel">
-          <div class="card" id="notify-prefs-card">
+        <!-- PANEL: map -->
+        <div id="panel-map" class="dash-panel" role="tabpanel">
+          <div class="card">
             <div class="card-header">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-              Уведомления в игре (Rust+ team chat)
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+              Карта сервера
             </div>
-            <p class="notify-hint">
-              Сохраняется по вашему Discord. Отключает сообщения бота в игре для типов ниже.
-              Работает, если Steam в панели совпадает с привязкой Rust+ к серверу.
-            </p>
-            <div id="notify-toggles"></div>
+
+            <div class="map-toolbar">
+              <select id="map-server-select">
+                <option value="">— выберите сервер —</option>
+              </select>
+              <button type="button" class="btn btn-accent" id="btn-map-load" style="padding:7px 14px;font-size:.85rem">Загрузить</button>
+              <button type="button" class="btn" id="btn-map-refresh" style="padding:7px 14px;font-size:.85rem;display:none" title="Перекачать карту с сервера (игнорировать кеш)">↺ Обновить карту</button>
+              <span class="map-status" id="map-status"></span>
+            </div>
+
+            <div class="map-outer" id="map-outer">
+              <div class="map-placeholder-msg" id="map-placeholder">Выберите сервер и нажмите «Загрузить»</div>
+              <div class="map-viewport" id="map-viewport">
+                <div class="map-canvas" id="map-canvas">
+                  <img id="map-img" src="" alt="Карта сервера"/>
+                  <div id="map-markers"></div>
+                </div>
+              </div>
+              <div class="map-zoom-btns">
+                <button class="map-zoom-btn" id="btn-zoom-in" title="Приблизить">+</button>
+                <button class="map-zoom-btn" id="btn-zoom-out" title="Отдалить">−</button>
+                <button class="map-zoom-btn" id="btn-zoom-reset" title="Сбросить" style="font-size:.75rem">⊡</button>
+              </div>
+            </div>
+
+            <div class="map-legend" id="map-legend" style="display:none; margin-top:10px; flex-wrap:wrap; gap:6px; font-size:.75rem; color:var(--text2)">
+              <span><span style="background:#3b82f6;border-radius:50%;display:inline-block;width:10px;height:10px;margin-right:3px"></span>CH47</span>
+              <span><span style="background:#0ea5e9;border-radius:50%;display:inline-block;width:10px;height:10px;margin-right:3px"></span>CargoShip</span>
+              <span><span style="background:#8b5cf6;border-radius:50%;display:inline-block;width:10px;height:10px;margin-right:3px"></span>Патруль</span>
+              <span><span style="background:#f59e0b;border-radius:50%;display:inline-block;width:10px;height:10px;margin-right:3px"></span>Ящик</span>
+              <span><span style="background:#ef4444;border-radius:50%;display:inline-block;width:10px;height:10px;margin-right:3px"></span>Взрыв</span>
+              <span><span style="background:#22c55e;border-radius:50%;display:inline-block;width:10px;height:10px;margin-right:3px"></span>Магазин</span>
+              <span><span style="background:rgba(255,255,255,.6);border-radius:50%;display:inline-block;width:10px;height:10px;margin-right:3px"></span>Команда</span>
+            </div>
+
+            <div class="map-search-wrap" id="map-search-wrap" style="display:none">
+              <div class="map-search-bar">
+                <input type="text" id="map-search-input" placeholder="🔍 Поиск товаров в магазинах (напр. sulfur, rifle)…" autocomplete="off"/>
+              </div>
+              <div class="map-search-results" id="map-search-results"></div>
+            </div>
           </div>
         </div>
 
-        <!-- PANEL: notify discord -->
-        <div id="panel-notify-discord" class="dash-panel" role="tabpanel">
+        <!-- PANEL: notify game (В разработке) -->
+        <div id="panel-notify-game" class="dash-panel" role="tabpanel">
           <div class="card">
             <div class="card-header">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-              Уведомления в Discord
+              Уведомления в игре
             </div>
-            <p class="muted" style="margin-bottom:12px">
-              Сообщения в каналах Discord (алерты, события) настраиваются на самом сервере: кнопки под сообщением бота и команды в каналах.
-              Внутриигровые тумблеры слева относятся только к чату Rust+ в игре.
-            </p>
-            <p class="muted" style="margin-bottom:0">
-              Подробнее: разделы «Мониторинг» и «Discord команды» в документации.
-            </p>
-            <a class="cmd-docs-link" href="docs.html#monitoring">Открыть документацию →</a>
+            <div class="wip-overlay">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span class="wip-badge">🚧 В разработке</span>
+              <p style="font-size:.85rem;max-width:320px">Тонкая настройка уведомлений в игровой чат Rust+ — скоро в панели.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL: notify discord (В разработке) -->
+        <div id="panel-notify-discord" class="dash-panel" role="tabpanel">
+          <div class="card">
+            <div class="card-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+              Discord интеграция
+            </div>
+            <div class="wip-overlay">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" style="opacity:.25"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+              <span class="wip-badge">🚧 В разработке</span>
+              <p style="font-size:.85rem;max-width:320px">Управление Discord-каналами, алертами и событиями прямо из панели — скоро.</p>
+            </div>
           </div>
         </div>
 
@@ -2013,6 +2183,9 @@
           if (session) fetchAndRenderTeam(session).catch(() => {});
         } else {
           stopTeamAutoRefresh();
+        }
+        if (id === 'map') {
+          initMapPanelOnce();
         }
       });
     });
@@ -4058,6 +4231,293 @@
       document.getElementById('error-title').textContent = 'Необходима авторизация';
       document.getElementById('error-text').textContent = 'Войдите через Discord чтобы открыть панель управления.';
     }
+  }
+
+  /* ================================================================
+     Вкладка «Карта»
+     ================================================================ */
+  let _mapPanelBound = false;
+  let _mapData = null;          // последний ответ /me/map
+  let _mapScale = 1;
+  let _mapOffsetX = 0;
+  let _mapOffsetY = 0;
+  let _mapDragging = false;
+  let _mapDragStartX = 0;
+  let _mapDragStartY = 0;
+  let _mapDragOriginX = 0;
+  let _mapDragOriginY = 0;
+
+  function initMapPanelOnce() {
+    if (_mapPanelBound) {
+      populateMapServerSelect();
+      return;
+    }
+    _mapPanelBound = true;
+
+    const btnLoad    = document.getElementById('btn-map-load');
+    const btnRefresh = document.getElementById('btn-map-refresh');
+    const btnZoomIn  = document.getElementById('btn-zoom-in');
+    const btnZoomOut = document.getElementById('btn-zoom-out');
+    const btnReset   = document.getElementById('btn-zoom-reset');
+    const outer      = document.getElementById('map-outer');
+    const searchInput= document.getElementById('map-search-input');
+
+    btnLoad && btnLoad.addEventListener('click', () => {
+      const sel = document.getElementById('map-server-select');
+      const sid = sel ? sel.value : '';
+      loadMap(sid, false);
+    });
+    btnRefresh && btnRefresh.addEventListener('click', () => {
+      const sel = document.getElementById('map-server-select');
+      const sid = sel ? sel.value : '';
+      loadMap(sid, true);
+    });
+
+    // Zoom buttons
+    btnZoomIn  && btnZoomIn.addEventListener('click',  () => applyMapZoom(1.3));
+    btnZoomOut && btnZoomOut.addEventListener('click', () => applyMapZoom(1/1.3));
+    btnReset   && btnReset.addEventListener('click',   () => resetMapView());
+
+    // Mouse wheel zoom
+    if (outer) {
+      outer.addEventListener('wheel', e => {
+        if (!document.getElementById('map-viewport')?.classList.contains('visible')) return;
+        e.preventDefault();
+        const factor = e.deltaY < 0 ? 1.15 : 1/1.15;
+        applyMapZoom(factor);
+      }, { passive: false });
+
+      // Drag to pan
+      outer.addEventListener('mousedown', e => {
+        if (!document.getElementById('map-viewport')?.classList.contains('visible')) return;
+        if (e.button !== 0) return;
+        _mapDragging = true;
+        outer.classList.add('grabbing');
+        _mapDragStartX = e.clientX;
+        _mapDragStartY = e.clientY;
+        _mapDragOriginX = _mapOffsetX;
+        _mapDragOriginY = _mapOffsetY;
+      });
+      window.addEventListener('mousemove', e => {
+        if (!_mapDragging) return;
+        _mapOffsetX = _mapDragOriginX + (e.clientX - _mapDragStartX);
+        _mapOffsetY = _mapDragOriginY + (e.clientY - _mapDragStartY);
+        applyMapTransform();
+      });
+      window.addEventListener('mouseup', () => {
+        if (_mapDragging) {
+          _mapDragging = false;
+          outer && outer.classList.remove('grabbing');
+        }
+      });
+
+      // Touch support
+      let _touch0 = null;
+      outer.addEventListener('touchstart', e => {
+        if (e.touches.length === 1) {
+          _touch0 = { x: e.touches[0].clientX, y: e.touches[0].clientY, ox: _mapOffsetX, oy: _mapOffsetY };
+        }
+      }, { passive: true });
+      outer.addEventListener('touchmove', e => {
+        if (e.touches.length === 1 && _touch0) {
+          _mapOffsetX = _touch0.ox + (e.touches[0].clientX - _touch0.x);
+          _mapOffsetY = _touch0.oy + (e.touches[0].clientY - _touch0.y);
+          applyMapTransform();
+        }
+      }, { passive: true });
+      outer.addEventListener('touchend', () => { _touch0 = null; });
+    }
+
+    // Vending machine search
+    if (searchInput) {
+      searchInput.addEventListener('input', () => renderVendingSearch(searchInput.value.trim()));
+    }
+
+    populateMapServerSelect();
+  }
+
+  function populateMapServerSelect() {
+    const sel = document.getElementById('map-server-select');
+    if (!sel) return;
+    const servers = (_rustServersState && _rustServersState.servers) ? _rustServersState.servers : [];
+    const prev = sel.value;
+    sel.innerHTML = '<option value="">— выберите сервер —</option>';
+    servers.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = String(s.internal_id);
+      const name = s.server_name || (s.server_ip + ':' + s.server_port);
+      opt.textContent = name + (Number(s.is_active) ? ' ★' : '');
+      sel.appendChild(opt);
+    });
+    // Восстановить выбор или поставить активный
+    if (prev && [...sel.options].some(o => o.value === prev)) {
+      sel.value = prev;
+    } else {
+      const active = servers.find(s => Number(s.is_active) === 1);
+      if (active) sel.value = String(active.internal_id);
+    }
+  }
+
+  function applyMapZoom(factor) {
+    const MIN = 0.3, MAX = 8;
+    _mapScale = Math.min(MAX, Math.max(MIN, _mapScale * factor));
+    applyMapTransform();
+  }
+
+  function applyMapTransform() {
+    const canvas = document.getElementById('map-canvas');
+    if (canvas) {
+      canvas.style.transform = `translate(${_mapOffsetX}px, ${_mapOffsetY}px) scale(${_mapScale})`;
+    }
+  }
+
+  function resetMapView() {
+    _mapScale = 1; _mapOffsetX = 0; _mapOffsetY = 0;
+    applyMapTransform();
+  }
+
+  async function loadMap(serverId, force) {
+    const session = _dashSessionRef;
+    if (!session) return;
+    const statusEl  = document.getElementById('map-status');
+    const btnLoad   = document.getElementById('btn-map-load');
+    const btnRefresh= document.getElementById('btn-map-refresh');
+
+    if (statusEl) { statusEl.className = 'map-status'; statusEl.textContent = '⏳ Загрузка карты…'; }
+    if (btnLoad)    btnLoad.disabled = true;
+    if (btnRefresh) btnRefresh.disabled = true;
+
+    try {
+      let url = `${API_BASE}/me/map?session=${encodeURIComponent(session)}`;
+      if (serverId) url += `&server_id=${encodeURIComponent(serverId)}`;
+      if (force)    url += `&force=1`;
+      const resp = await fetch(url, { credentials: 'include', cache: 'no-store' });
+      const data = await resp.json();
+      if (!data.ok) throw new Error(data.error || 'unknown');
+      _mapData = data;
+      renderMap(data);
+      if (statusEl) {
+        statusEl.textContent = data.image_cached ? '✅ Из кеша (seed ' + (data.server?.seed || '?') + ')' : '✅ Загружено';
+      }
+      if (btnRefresh) btnRefresh.style.display = '';
+    } catch (e) {
+      if (statusEl) { statusEl.className = 'map-status err'; statusEl.textContent = '❌ ' + (e.message || e); }
+    } finally {
+      if (btnLoad)    btnLoad.disabled = false;
+      if (btnRefresh) btnRefresh.disabled = false;
+    }
+  }
+
+  function renderMap(data) {
+    const viewport = document.getElementById('map-viewport');
+    const placeholder = document.getElementById('map-placeholder');
+    const imgEl = document.getElementById('map-img');
+    const legend = document.getElementById('map-legend');
+    const searchWrap = document.getElementById('map-search-wrap');
+
+    if (!viewport || !imgEl) return;
+
+    // Показываем карту
+    imgEl.src = 'data:image/jpeg;base64,' + data.image_b64;
+    viewport.classList.add('visible');
+    if (placeholder) placeholder.style.display = 'none';
+    if (legend) legend.style.display = 'flex';
+    if (searchWrap) searchWrap.style.display = '';
+
+    resetMapView();
+    renderMapMarkers(data.markers || [], data.team || [], data.server?.size || 4000);
+    renderVendingSearch('');
+  }
+
+  const MARKER_EMOJIS = { 2:'💥', 4:'🚁', 5:'🚢', 6:'📦', 8:'🔫', 3:'🛒', 1:'👤' };
+
+  function renderMapMarkers(markers, team, mapSize) {
+    const container = document.getElementById('map-markers');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const placeMarker = (x, y, typeClass, emoji, tooltipHtml) => {
+      const pctX = (x / mapSize) * 100;
+      const pctY = (1 - y / mapSize) * 100;
+      const el = document.createElement('div');
+      el.className = 'map-marker';
+      el.style.left = pctX + '%';
+      el.style.top  = pctY + '%';
+      el.innerHTML = `<div class="map-marker-icon ${typeClass}">${emoji}</div><div class="map-tooltip">${tooltipHtml}</div>`;
+      container.appendChild(el);
+    };
+
+    // Маркеры событий и магазинов
+    for (const m of markers) {
+      const t = m.type;
+      if (m.x == null || m.y == null) continue;
+      const emoji = MARKER_EMOJIS[t] || '📍';
+      const typeClass = `type-${t}`;
+
+      if (t === 3) {  // Vending machine
+        const orders = (m.sell_orders || []).slice(0, 5)
+          .map(o => `<div class="sell-row"><span>${escapeHtml(o.item_name||o.item_id)}</span><span>${o.quantity}×<br>${o.cost_per_stack} ${escapeHtml(o.currency_name||'')}</span></div>`)
+          .join('');
+        const tip = `<strong>${escapeHtml(m.name || 'Магазин')}</strong>${orders || '<span style="color:var(--text2)">нет данных</span>'}`;
+        placeMarker(m.x, m.y, typeClass, emoji, tip);
+      } else {
+        const label = m.type_name || String(t);
+        const tip = `<strong>${escapeHtml(label)}</strong><div class="sell-row"><span>X ${Math.round(m.x)}</span><span>Y ${Math.round(m.y)}</span></div>`;
+        placeMarker(m.x, m.y, typeClass, emoji, tip);
+      }
+    }
+
+    // Позиции команды
+    for (const member of team) {
+      if (member.x == null || member.y == null) continue;
+      const cls = `type-1${member.is_online ? ' online' : ''}`;
+      const status = member.is_online ? (member.is_alive ? '🟢 онлайн' : '💀 мёртв') : '⚫ офлайн';
+      const tip = `<strong>${escapeHtml(member.name || '?')}</strong><div class="sell-row"><span>${status}</span></div><div class="sell-row"><span>X ${Math.round(member.x)}</span><span>Y ${Math.round(member.y)}</span></div>`;
+      placeMarker(member.x, member.y, cls, '👤', tip);
+    }
+  }
+
+  function renderVendingSearch(query) {
+    const resultsEl = document.getElementById('map-search-results');
+    if (!resultsEl || !_mapData) return;
+    const vms = (_mapData.markers || []).filter(m => m.type === 3);
+    if (!query) {
+      resultsEl.innerHTML = `<p style="font-size:.8rem;color:var(--text2)">Найдено ${vms.length} магазин(ов) на карте. Введите название товара для поиска.</p>`;
+      return;
+    }
+    const q = query.toLowerCase();
+    const matched = vms.filter(vm =>
+      (vm.sell_orders || []).some(o =>
+        (o.item_name || '').toLowerCase().includes(q) ||
+        String(o.item_id || '').includes(q)
+      )
+    );
+    if (!matched.length) {
+      resultsEl.innerHTML = `<p style="font-size:.8rem;color:var(--text2)">Ничего не найдено по «${escapeHtml(query)}»</p>`;
+      return;
+    }
+    const mapSize = _mapData.server?.size || 4000;
+    resultsEl.innerHTML = matched.map(vm => {
+      const orders = (vm.sell_orders || [])
+        .filter(o => (o.item_name || '').toLowerCase().includes(q) || String(o.item_id || '').includes(q))
+        .map(o => `<span class="vend-order-tag">${escapeHtml(o.item_name || String(o.item_id))} ×${o.quantity} за ${o.cost_per_stack} ${escapeHtml(o.currency_name||'')}</span>`)
+        .join('');
+      const grid = vm.x != null ? coordsToGrid(vm.x, vm.y, mapSize) : '';
+      return `<div class="vend-result">
+        <div class="vend-name">🛒 ${escapeHtml(vm.name || 'Магазин')}</div>
+        <div class="vend-orders">${orders}</div>
+        ${grid ? `<div class="vend-coords">📍 ${escapeHtml(grid)} · X ${Math.round(vm.x)} Y ${Math.round(vm.y)}</div>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  function coordsToGrid(x, y, mapSize) {
+    const cellSize = 150;
+    const cols = Math.ceil(mapSize / cellSize);
+    const col = Math.floor(x / cellSize);
+    const row = Math.floor((mapSize - y) / cellSize);
+    const letter = String.fromCharCode(65 + col);
+    return letter + (row + 1);
   }
 
   // Init
