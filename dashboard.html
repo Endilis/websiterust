@@ -156,45 +156,33 @@
       color: #fbbf24; border-radius: 20px; padding: 4px 12px; font-size: 0.78rem; font-weight: 600;
     }
 
-    /* MAP PANEL — full-height layout with right sidebar
-       Когда карта активна: main занимает всё место ниже nav, header скрыт */
-    body:has(#panel-map.active) main {
-      height: calc(100vh - var(--nav-h));
-      padding-top: 0;
-      padding-bottom: 0;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-    body:has(#panel-map.active) .dashboard-header { display: none; }
-    body:has(#panel-map.active) .dashboard-body {
-      flex: 1;
-      min-height: 0;
-    }
-    body:has(#panel-map.active) .dash-panels {
-      flex: 1;
-      min-height: 0;
-      max-height: none !important;
-      overflow: hidden;
-      padding: 0;
-      border: none;
-      border-radius: 0;
-      background: transparent;
-      display: flex;
-      flex-direction: column;
-    }
+    /* MAP PANEL — position:fixed, от низа nav до низа экрана */
+    body:has(#panel-map.active) { overflow: hidden; }
+
     body:has(#panel-map.active) #panel-map.active {
-      flex: 1;
-      min-height: 0;
+      position: fixed;
+      top: var(--nav-h);
+      left: var(--sidebar-w);
+      right: 0;
+      bottom: 0;
+      z-index: 30;
       display: flex;
       flex-direction: column;
+      background: var(--bg1, #0f1016);
+      overflow: hidden;
+    }
+    @media (max-width: 880px) {
+      body:has(#panel-map.active) #panel-map.active { left: 0; }
     }
     body:has(#panel-map.active) #panel-map.active .card {
       flex: 1;
       min-height: 0;
+      display: flex;
+      flex-direction: column;
       border-radius: 0;
       border: none;
       padding: 12px 16px 0;
+      background: transparent;
     }
     .map-toolbar {
       display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px; flex-shrink: 0;
@@ -248,7 +236,7 @@
       transform-origin: 0 0;
       will-change: transform;
     }
-    #map-img { display: block; width: 100%; height: auto; pointer-events: none; user-select: none; }
+    #map-img { display: block; width: auto; height: auto; pointer-events: none; user-select: none; }
 
     /* Markers */
     .map-marker {
@@ -4324,16 +4312,15 @@
   let _mapPanelBound = false;
   let _mapData = null;
   let _mapScale = 1;
+  let _mapFitScale = 1;   // масштаб при котором вся карта помещается в контейнер
   let _mapOffsetX = 0;
   let _mapOffsetY = 0;
-  let _mapImgNaturalW = 0;
   let _mapDragging = false;
   let _mapDragStartX = 0;
   let _mapDragStartY = 0;
   let _mapDragOriginX = 0;
   let _mapDragOriginY = 0;
 
-  const MAP_MIN_SCALE = 1.0;
   const MAP_MAX_SCALE = 8.0;
 
   function initMapPanelOnce() {
@@ -4405,7 +4392,7 @@
     const outer = document.getElementById('map-outer');
     if (!outer) return;
     if (cx == null) { cx = outer.clientWidth / 2; cy = outer.clientHeight / 2; }
-    const newScale = Math.min(MAP_MAX_SCALE, Math.max(MAP_MIN_SCALE, _mapScale * factor));
+    const newScale = Math.min(MAP_MAX_SCALE, Math.max(_mapFitScale, _mapScale * factor));
     const ratio = newScale / _mapScale;
     _mapOffsetX = cx * (1 - ratio) + _mapOffsetX * ratio;
     _mapOffsetY = cy * (1 - ratio) + _mapOffsetY * ratio;
@@ -4419,11 +4406,15 @@
     const canvas = document.getElementById('map-canvas');
     if (!outer || !canvas) return;
     const ow = outer.clientWidth,  oh = outer.clientHeight;
-    // Используем реальные размеры canvas (не outer), т.к. карта — квадрат
     const cw = canvas.offsetWidth  * _mapScale;
     const ch = canvas.offsetHeight * _mapScale;
-    _mapOffsetX = Math.min(0, Math.max(ow - cw, _mapOffsetX));
-    _mapOffsetY = Math.min(0, Math.max(oh - ch, _mapOffsetY));
+    // При scale == fitScale карта помещается целиком — разрешаем центрированное положение
+    const minX = Math.min(0, ow - cw);
+    const minY = Math.min(0, oh - ch);
+    const maxX = Math.max(0, ow - cw);
+    const maxY = Math.max(0, oh - ch);
+    _mapOffsetX = Math.min(maxX, Math.max(minX, _mapOffsetX));
+    _mapOffsetY = Math.min(maxY, Math.max(minY, _mapOffsetY));
   }
 
   function applyMapTransform() {
@@ -4432,7 +4423,9 @@
   }
 
   function resetMapView() {
-    _mapScale = MAP_MIN_SCALE; _mapOffsetX = 0; _mapOffsetY = 0;
+    _mapScale = _mapFitScale;
+    _mapOffsetX = 0;
+    _mapOffsetY = 0;
     applyMapTransform();
   }
 
@@ -4505,18 +4498,30 @@
     const imgEl       = document.getElementById('map-img');
     if (!viewport || !imgEl) return;
 
-    // Загружаем изображение — после load ждём layout через rAF
+    // Загружаем изображение — canvas = натуральный размер, scale подстраивается под outer
     imgEl.onload = () => {
-      _mapImgNaturalW = imgEl.naturalWidth;
       requestAnimationFrame(() => {
         const canvas = document.getElementById('map-canvas');
         const outer  = document.getElementById('map-outer');
-        if (canvas && outer) {
-          // canvas = ширина outer; высота определяется img (aspect-ratio 1:1 для карты Rust)
-          canvas.style.width  = outer.clientWidth + 'px';
-          canvas.style.height = '';  // auto по img
-        }
+        if (!canvas || !outer) return;
+
+        const natW = imgEl.naturalWidth  || 2048;
+        const natH = imgEl.naturalHeight || 2048;
+
+        // Устанавливаем canvas в натуральный размер изображения
+        canvas.style.width  = natW + 'px';
+        canvas.style.height = natH + 'px';
+
+        // fitScale = масштаб при котором вся карта помещается по ширине контейнера
+        const ow = outer.clientWidth;
+        const oh = outer.clientHeight;
+        _mapFitScale = Math.min(ow / natW, oh / natH);
+
         resetMapView();
+        // Центрируем карту в контейнере при fitScale
+        _mapOffsetX = (ow - natW * _mapFitScale) / 2;
+        _mapOffsetY = (oh - natH * _mapFitScale) / 2;
+        applyMapTransform();
       });
     };
     imgEl.src = imgUrl;
@@ -4633,10 +4638,15 @@
   }
 
   function coordsToGrid(x, y, mapSize) {
-    const cellSize = 150;
-    const col  = Math.floor(x / cellSize);
-    const row  = Math.floor((mapSize - y) / cellSize);
-    return String.fromCharCode(65 + col) + (row + 1);
+    // Стандартная формула Rust+: нормализация к виртуальной сетке 2000×2000, ячейка 80 единиц
+    const nx  = x / mapSize * 2000;
+    const ny  = (mapSize - y) / mapSize * 2000;
+    const col = Math.floor(nx / 80);
+    const row = Math.floor(ny / 80);
+    const letter = col >= 26
+      ? 'A' + String.fromCharCode(65 + col - 26)
+      : String.fromCharCode(65 + col);
+    return letter + (row + 1);
   }
 
   // Init
