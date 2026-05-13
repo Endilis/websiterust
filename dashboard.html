@@ -156,12 +156,33 @@
       color: #fbbf24; border-radius: 20px; padding: 4px 12px; font-size: 0.78rem; font-weight: 600;
     }
 
-    /* MAP PANEL */
+    /* MAP PANEL — full-height layout with right sidebar */
+    .dash-panels:has(#panel-map.active) {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+    }
+    #panel-map.active {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    #panel-map .card {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      border-radius: 0;
+      border: none;
+      padding: 12px 16px 0;
+    }
     .map-toolbar {
-      display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px; flex-shrink: 0;
     }
     .map-toolbar select {
-      flex: 1; min-width: 160px; max-width: 320px;
+      flex: 1; min-width: 160px; max-width: 300px;
       background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
       color: var(--text); padding: 7px 10px; font-size: 0.85rem; font-family: inherit;
     }
@@ -169,8 +190,24 @@
     .map-status { font-size: 0.8rem; color: var(--text2); margin-left: 4px; }
     .map-status.err { color: #f87171; }
 
+    /* Left + right split */
+    .map-panel-layout {
+      display: flex; gap: 10px; flex: 1; min-height: 0; padding-bottom: 12px;
+    }
+    .map-panel-left { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .map-panel-right {
+      width: 290px; flex-shrink: 0;
+      display: flex; flex-direction: column;
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+      overflow: hidden;
+    }
+    @media (max-width: 900px) {
+      .map-panel-layout { flex-direction: column; }
+      .map-panel-right { width: 100%; max-height: 260px; }
+    }
+
     .map-outer {
-      position: relative; width: 100%;
+      position: relative; flex: 1; min-height: 300px;
       border: 1px solid var(--border); border-radius: 10px;
       background: #0a0b0f;
       overflow: hidden;
@@ -179,17 +216,21 @@
     }
     .map-outer.grabbing { cursor: grabbing; }
     .map-outer .map-placeholder-msg {
+      position: absolute; inset: 0;
       display: flex; align-items: center; justify-content: center;
-      min-height: 380px; color: var(--text2); font-size: 0.9rem;
+      color: var(--text2); font-size: 0.9rem;
     }
     .map-viewport {
-      width: 100%; aspect-ratio: 1; display: none;
+      position: absolute; inset: 0;
+      display: none; overflow: hidden;
     }
     .map-viewport.visible { display: block; }
     .map-canvas {
-      position: relative; width: 100%; transform-origin: top left;
+      position: absolute; top: 0; left: 0;
+      transform-origin: 0 0;
+      will-change: transform;
     }
-    #map-img { display: block; width: 100%; height: auto; pointer-events: none; }
+    #map-img { display: block; width: 100%; height: auto; pointer-events: none; user-select: none; }
 
     /* Markers */
     .map-marker {
@@ -197,31 +238,39 @@
       pointer-events: auto; cursor: pointer;
     }
     .map-marker-icon {
-      width: 28px; height: 28px; border-radius: 50%;
+      width: 32px; height: 32px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 14px; border: 2px solid rgba(255,255,255,.2);
-      box-shadow: 0 2px 8px rgba(0,0,0,.5);
+      border: 2px solid rgba(255,255,255,.25);
+      box-shadow: 0 2px 8px rgba(0,0,0,.6);
+      overflow: hidden; background: #1a1b21;
     }
-    .map-marker-icon.type-2  { background: #ef4444; }
-    .map-marker-icon.type-4  { background: #3b82f6; }
-    .map-marker-icon.type-5  { background: #0ea5e9; }
-    .map-marker-icon.type-6  { background: #f59e0b; }
-    .map-marker-icon.type-8  { background: #8b5cf6; }
-    .map-marker-icon.type-3  { background: rgba(34,197,94,.9); }
-    .map-marker-icon.type-1  { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.5); }
-    .map-marker-icon.type-1.online { background: rgba(34,197,94,.85); }
+    .map-marker-icon img { width: 24px; height: 24px; object-fit: contain; }
+    .map-marker-icon.type-2  { border-color: #ef4444; background: rgba(239,68,68,.25); }
+    .map-marker-icon.type-4  { border-color: #3b82f6; background: rgba(59,130,246,.25); }
+    .map-marker-icon.type-5  { border-color: #0ea5e9; background: rgba(14,165,233,.25); }
+    .map-marker-icon.type-6  { border-color: #f59e0b; background: rgba(245,158,11,.25); }
+    .map-marker-icon.type-8  { border-color: #8b5cf6; background: rgba(139,92,246,.25); }
+    .map-marker-icon.type-3  { border-color: #22c55e; background: rgba(34,197,94,.2); }
+    .map-marker-icon.type-1  { border-color: rgba(255,255,255,.4); background: rgba(255,255,255,.1); font-size: 11px; font-weight: 700; color: var(--text); }
+    .map-marker-icon.type-1.alive { border-color: #22c55e; background: rgba(34,197,94,.3); }
 
     .map-tooltip {
-      position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
-      background: rgba(15,16,22,.95); border: 1px solid var(--border);
-      border-radius: 8px; padding: 8px 10px; min-width: 160px; max-width: 260px;
-      font-size: 0.78rem; color: var(--text); pointer-events: none;
-      opacity: 0; transition: opacity .15s; white-space: normal; z-index: 100;
+      position: absolute; bottom: 115%; left: 50%; transform: translateX(-50%);
+      background: rgba(10,11,15,.97); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 10px; min-width: 170px; max-width: 240px;
+      font-size: 0.76rem; color: var(--text); pointer-events: none;
+      opacity: 0; transition: opacity .12s; white-space: normal; z-index: 200;
     }
     .map-marker:hover .map-tooltip { opacity: 1; }
-    .map-tooltip strong { display: block; margin-bottom: 4px; font-size: 0.82rem; }
-    .map-tooltip .sell-row { display: flex; justify-content: space-between; gap: 8px; font-size: 0.74rem; color: var(--text2); margin-top: 3px; }
-    .map-tooltip .sell-row span:first-child { color: var(--text); }
+    .map-tooltip strong { display: block; margin-bottom: 5px; font-size: 0.8rem; color: var(--text); }
+    .map-tooltip-order {
+      display: flex; align-items: center; gap: 5px;
+      margin-top: 4px; font-size: 0.72rem; color: var(--text2);
+      border-top: 1px solid rgba(255,255,255,.06); padding-top: 4px;
+    }
+    .map-tooltip-order img, .map-tooltip-order-img { width: 18px; height: 18px; object-fit: contain; border-radius: 3px; flex-shrink: 0; }
+    .map-tooltip-order .arrow { color: var(--accent); font-weight: 700; margin: 0 2px; }
+    .map-tip-coords { font-size: 0.7rem; color: var(--text2); margin-top: 4px; }
 
     /* Zoom controls */
     .map-zoom-btns {
@@ -231,36 +280,55 @@
     .map-outer:has(.map-viewport.visible) .map-zoom-btns { display: flex; }
     .map-zoom-btn {
       width: 32px; height: 32px; border-radius: 8px;
-      background: rgba(15,16,22,.85); border: 1px solid var(--border);
+      background: rgba(10,11,15,.85); border: 1px solid var(--border);
       color: var(--text); font-size: 1.1rem; font-weight: 700;
       cursor: pointer; display: flex; align-items: center; justify-content: center;
       transition: background .15s;
     }
     .map-zoom-btn:hover { background: var(--bg3); }
 
-    /* Vending search */
-    .map-search-wrap { margin-top: 14px; }
+    /* Right sidebar: vending search */
+    .map-sidebar-title {
+      padding: 10px 12px 8px; font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .05em; color: var(--text2);
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
     .map-search-bar {
-      display: flex; gap: 8px; margin-bottom: 10px;
+      padding: 8px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0;
     }
     .map-search-bar input {
-      flex: 1; background: var(--bg3); border: 1px solid var(--border);
-      border-radius: 8px; color: var(--text); padding: 8px 12px; font-size: 0.85rem;
-      font-family: inherit;
+      width: 100%; background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); padding: 7px 10px; font-size: 0.82rem;
+      font-family: inherit; box-sizing: border-box;
     }
     .map-search-bar input:focus { outline: none; border-color: var(--accent); }
-    .map-search-results { display: flex; flex-direction: column; gap: 6px; }
+    .map-search-results {
+      flex: 1; overflow-y: auto; padding: 6px 8px; display: flex; flex-direction: column; gap: 6px;
+    }
     .vend-result {
-      background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
-      padding: 10px 12px; font-size: 0.82rem;
+      background: rgba(255,255,255,.03); border: 1px solid var(--border); border-radius: 8px;
+      padding: 8px 10px; font-size: 0.79rem;
     }
-    .vend-result .vend-name { font-weight: 600; color: var(--text); margin-bottom: 4px; }
-    .vend-result .vend-orders { display: flex; flex-wrap: wrap; gap: 6px; }
-    .vend-order-tag {
-      background: rgba(34,197,94,.12); border: 1px solid rgba(34,197,94,.25);
-      color: #86efac; border-radius: 6px; padding: 2px 8px; font-size: 0.75rem;
+    .vend-result .vend-name {
+      font-weight: 600; color: var(--text); margin-bottom: 5px;
+      display: flex; align-items: center; gap: 5px;
     }
-    .vend-result .vend-coords { font-size: 0.72rem; color: var(--text2); margin-top: 4px; }
+    .vend-result .vend-name .vend-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #22c55e; flex-shrink: 0;
+    }
+    .vend-orders { display: flex; flex-direction: column; gap: 3px; }
+    .vend-order-row {
+      display: flex; align-items: center; gap: 4px;
+      background: rgba(255,255,255,.03); border-radius: 6px; padding: 3px 6px;
+    }
+    .vend-item-img {
+      width: 22px; height: 22px; object-fit: contain; border-radius: 3px;
+      background: rgba(255,255,255,.05); flex-shrink: 0;
+    }
+    .vend-item-name { color: var(--text); font-size: 0.76rem; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .vend-arrow { color: var(--accent); font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+    .vend-cost { color: var(--text2); font-size: 0.74rem; white-space: nowrap; }
+    .vend-result .vend-coords { font-size: 0.7rem; color: var(--text2); margin-top: 4px; }
 
     .dash-panels {
       min-width: 0;
@@ -1820,7 +1888,7 @@
         <!-- PANEL: map -->
         <div id="panel-map" class="dash-panel" role="tabpanel">
           <div class="card">
-            <div class="card-header">
+            <div class="card-header" style="flex-shrink:0">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
               Карта сервера
             </div>
@@ -1830,40 +1898,39 @@
                 <option value="">— выберите сервер —</option>
               </select>
               <button type="button" class="btn btn-accent" id="btn-map-load" style="padding:7px 14px;font-size:.85rem">Загрузить</button>
-              <button type="button" class="btn" id="btn-map-refresh" style="padding:7px 14px;font-size:.85rem;display:none" title="Перекачать карту с сервера (игнорировать кеш)">↺ Обновить карту</button>
+              <button type="button" class="btn" id="btn-map-refresh" style="padding:7px 14px;font-size:.85rem;display:none" title="Перекачать с сервера (сбросить кеш)">↺ Обновить</button>
               <span class="map-status" id="map-status"></span>
             </div>
 
-            <div class="map-outer" id="map-outer">
-              <div class="map-placeholder-msg" id="map-placeholder">Выберите сервер и нажмите «Загрузить»</div>
-              <div class="map-viewport" id="map-viewport">
-                <div class="map-canvas" id="map-canvas">
-                  <img id="map-img" src="" alt="Карта сервера"/>
-                  <div id="map-markers"></div>
+            <div class="map-panel-layout">
+              <!-- Карта -->
+              <div class="map-panel-left">
+                <div class="map-outer" id="map-outer">
+                  <div class="map-placeholder-msg" id="map-placeholder">Выберите сервер и нажмите «Загрузить»</div>
+                  <div class="map-viewport" id="map-viewport">
+                    <div class="map-canvas" id="map-canvas">
+                      <img id="map-img" src="" alt="Карта сервера" draggable="false"/>
+                      <div id="map-markers"></div>
+                    </div>
+                  </div>
+                  <div class="map-zoom-btns">
+                    <button class="map-zoom-btn" id="btn-zoom-in" title="Приблизить">+</button>
+                    <button class="map-zoom-btn" id="btn-zoom-out" title="Отдалить">−</button>
+                    <button class="map-zoom-btn" id="btn-zoom-reset" title="Сбросить" style="font-size:.75rem">⊡</button>
+                  </div>
                 </div>
               </div>
-              <div class="map-zoom-btns">
-                <button class="map-zoom-btn" id="btn-zoom-in" title="Приблизить">+</button>
-                <button class="map-zoom-btn" id="btn-zoom-out" title="Отдалить">−</button>
-                <button class="map-zoom-btn" id="btn-zoom-reset" title="Сбросить" style="font-size:.75rem">⊡</button>
-              </div>
-            </div>
 
-            <div class="map-legend" id="map-legend" style="display:none; margin-top:10px; flex-wrap:wrap; gap:6px; font-size:.75rem; color:var(--text2)">
-              <span><span style="background:#3b82f6;border-radius:50%;display:inline-block;width:10px;height:10px;margin-right:3px"></span>CH47</span>
-              <span><span style="background:#0ea5e9;border-radius:50%;display:inline-block;width:10px;height:10px;margin-right:3px"></span>CargoShip</span>
-              <span><span style="background:#8b5cf6;border-radius:50%;display:inline-block;width:10px;height:10px;margin-right:3px"></span>Патруль</span>
-              <span><span style="background:#f59e0b;border-radius:50%;display:inline-block;width:10px;height:10px;margin-right:3px"></span>Ящик</span>
-              <span><span style="background:#ef4444;border-radius:50%;display:inline-block;width:10px;height:10px;margin-right:3px"></span>Взрыв</span>
-              <span><span style="background:#22c55e;border-radius:50%;display:inline-block;width:10px;height:10px;margin-right:3px"></span>Магазин</span>
-              <span><span style="background:rgba(255,255,255,.6);border-radius:50%;display:inline-block;width:10px;height:10px;margin-right:3px"></span>Команда</span>
-            </div>
-
-            <div class="map-search-wrap" id="map-search-wrap" style="display:none">
-              <div class="map-search-bar">
-                <input type="text" id="map-search-input" placeholder="🔍 Поиск товаров в магазинах (напр. sulfur, rifle)…" autocomplete="off"/>
+              <!-- Правая панель: магазины -->
+              <div class="map-panel-right" id="map-panel-right">
+                <div class="map-sidebar-title">🛒 Магазины</div>
+                <div class="map-search-bar">
+                  <input type="text" id="map-search-input" placeholder="Поиск товара…" autocomplete="off"/>
+                </div>
+                <div class="map-search-results" id="map-search-results">
+                  <p style="font-size:.8rem;color:var(--text2);padding:8px 4px">Загрузите карту для поиска</p>
+                </div>
               </div>
-              <div class="map-search-results" id="map-search-results"></div>
             </div>
           </div>
         </div>
@@ -4237,54 +4304,43 @@
      Вкладка «Карта»
      ================================================================ */
   let _mapPanelBound = false;
-  let _mapData = null;          // последний ответ /me/map
+  let _mapData = null;
   let _mapScale = 1;
   let _mapOffsetX = 0;
   let _mapOffsetY = 0;
+  let _mapImgNaturalW = 0;
   let _mapDragging = false;
   let _mapDragStartX = 0;
   let _mapDragStartY = 0;
   let _mapDragOriginX = 0;
   let _mapDragOriginY = 0;
 
+  const MAP_MIN_SCALE = 1.0;
+  const MAP_MAX_SCALE = 8.0;
+
   function initMapPanelOnce() {
-    if (_mapPanelBound) {
-      populateMapServerSelect();
-      return;
-    }
+    if (_mapPanelBound) { populateMapServerSelect(); return; }
     _mapPanelBound = true;
 
     const btnLoad    = document.getElementById('btn-map-load');
     const btnRefresh = document.getElementById('btn-map-refresh');
-    const btnZoomIn  = document.getElementById('btn-zoom-in');
-    const btnZoomOut = document.getElementById('btn-zoom-out');
-    const btnReset   = document.getElementById('btn-zoom-reset');
     const outer      = document.getElementById('map-outer');
     const searchInput= document.getElementById('map-search-input');
 
-    btnLoad && btnLoad.addEventListener('click', () => {
-      const sel = document.getElementById('map-server-select');
-      const sid = sel ? sel.value : '';
-      loadMap(sid, false);
-    });
-    btnRefresh && btnRefresh.addEventListener('click', () => {
-      const sel = document.getElementById('map-server-select');
-      const sid = sel ? sel.value : '';
-      loadMap(sid, true);
-    });
+    btnLoad    && btnLoad.addEventListener('click',    () => { const s = document.getElementById('map-server-select'); loadMap(s?.value || '', false); });
+    btnRefresh && btnRefresh.addEventListener('click', () => { const s = document.getElementById('map-server-select'); loadMap(s?.value || '', true);  });
 
-    // Zoom buttons
-    btnZoomIn  && btnZoomIn.addEventListener('click',  () => applyMapZoom(1.3));
-    btnZoomOut && btnZoomOut.addEventListener('click', () => applyMapZoom(1/1.3));
-    btnReset   && btnReset.addEventListener('click',   () => resetMapView());
+    document.getElementById('btn-zoom-in')    ?.addEventListener('click', () => zoomAt(null, null, 1.3));
+    document.getElementById('btn-zoom-out')   ?.addEventListener('click', () => zoomAt(null, null, 1/1.3));
+    document.getElementById('btn-zoom-reset') ?.addEventListener('click', resetMapView);
 
-    // Mouse wheel zoom
     if (outer) {
+      // Zoom toward cursor
       outer.addEventListener('wheel', e => {
         if (!document.getElementById('map-viewport')?.classList.contains('visible')) return;
         e.preventDefault();
-        const factor = e.deltaY < 0 ? 1.15 : 1/1.15;
-        applyMapZoom(factor);
+        const rect = outer.getBoundingClientRect();
+        zoomAt(e.clientX - rect.left, e.clientY - rect.top, e.deltaY < 0 ? 1.12 : 1/1.12);
       }, { passive: false });
 
       // Drag to pan
@@ -4293,87 +4349,93 @@
         if (e.button !== 0) return;
         _mapDragging = true;
         outer.classList.add('grabbing');
-        _mapDragStartX = e.clientX;
-        _mapDragStartY = e.clientY;
-        _mapDragOriginX = _mapOffsetX;
-        _mapDragOriginY = _mapOffsetY;
+        _mapDragStartX = e.clientX; _mapDragStartY = e.clientY;
+        _mapDragOriginX = _mapOffsetX; _mapDragOriginY = _mapOffsetY;
       });
       window.addEventListener('mousemove', e => {
         if (!_mapDragging) return;
         _mapOffsetX = _mapDragOriginX + (e.clientX - _mapDragStartX);
         _mapOffsetY = _mapDragOriginY + (e.clientY - _mapDragStartY);
+        clampOffset();
         applyMapTransform();
       });
       window.addEventListener('mouseup', () => {
-        if (_mapDragging) {
-          _mapDragging = false;
-          outer && outer.classList.remove('grabbing');
-        }
+        if (_mapDragging) { _mapDragging = false; outer?.classList.remove('grabbing'); }
       });
 
-      // Touch support
+      // Touch pan
       let _touch0 = null;
       outer.addEventListener('touchstart', e => {
-        if (e.touches.length === 1) {
+        if (e.touches.length === 1)
           _touch0 = { x: e.touches[0].clientX, y: e.touches[0].clientY, ox: _mapOffsetX, oy: _mapOffsetY };
-        }
       }, { passive: true });
       outer.addEventListener('touchmove', e => {
         if (e.touches.length === 1 && _touch0) {
           _mapOffsetX = _touch0.ox + (e.touches[0].clientX - _touch0.x);
           _mapOffsetY = _touch0.oy + (e.touches[0].clientY - _touch0.y);
-          applyMapTransform();
+          clampOffset(); applyMapTransform();
         }
       }, { passive: true });
       outer.addEventListener('touchend', () => { _touch0 = null; });
     }
 
-    // Vending machine search
-    if (searchInput) {
-      searchInput.addEventListener('input', () => renderVendingSearch(searchInput.value.trim()));
-    }
-
+    searchInput?.addEventListener('input', () => renderVendingSearch(searchInput.value.trim()));
     populateMapServerSelect();
+  }
+
+  function zoomAt(cx, cy, factor) {
+    const outer = document.getElementById('map-outer');
+    if (!outer) return;
+    if (cx == null) { cx = outer.clientWidth / 2; cy = outer.clientHeight / 2; }
+    const newScale = Math.min(MAP_MAX_SCALE, Math.max(MAP_MIN_SCALE, _mapScale * factor));
+    const ratio = newScale / _mapScale;
+    _mapOffsetX = cx * (1 - ratio) + _mapOffsetX * ratio;
+    _mapOffsetY = cy * (1 - ratio) + _mapOffsetY * ratio;
+    _mapScale = newScale;
+    clampOffset();
+    applyMapTransform();
+  }
+
+  function clampOffset() {
+    // Не позволяем прокрутить карту так, чтобы она вышла за пределы outer
+    const outer = document.getElementById('map-outer');
+    const canvas = document.getElementById('map-canvas');
+    if (!outer || !canvas) return;
+    const ow = outer.clientWidth,  oh = outer.clientHeight;
+    const cw = ow * _mapScale,     ch = oh * _mapScale;
+    const minX = ow - cw,  minY = oh - ch;
+    _mapOffsetX = Math.min(0, Math.max(minX, _mapOffsetX));
+    _mapOffsetY = Math.min(0, Math.max(minY, _mapOffsetY));
+  }
+
+  function applyMapTransform() {
+    const canvas = document.getElementById('map-canvas');
+    if (canvas) canvas.style.transform = `translate(${_mapOffsetX}px,${_mapOffsetY}px) scale(${_mapScale})`;
+  }
+
+  function resetMapView() {
+    _mapScale = MAP_MIN_SCALE; _mapOffsetX = 0; _mapOffsetY = 0;
+    applyMapTransform();
   }
 
   function populateMapServerSelect() {
     const sel = document.getElementById('map-server-select');
     if (!sel) return;
-    const servers = (_rustServersState && _rustServersState.servers) ? _rustServersState.servers : [];
+    const servers = _rustServersState?.servers || [];
     const prev = sel.value;
     sel.innerHTML = '<option value="">— выберите сервер —</option>';
     servers.forEach(s => {
       const opt = document.createElement('option');
       opt.value = String(s.internal_id);
-      const name = s.server_name || (s.server_ip + ':' + s.server_port);
-      opt.textContent = name + (Number(s.is_active) ? ' ★' : '');
+      opt.textContent = (s.server_name || s.server_ip + ':' + s.server_port) + (Number(s.is_active) ? ' ★' : '');
       sel.appendChild(opt);
     });
-    // Восстановить выбор или поставить активный
     if (prev && [...sel.options].some(o => o.value === prev)) {
       sel.value = prev;
     } else {
       const active = servers.find(s => Number(s.is_active) === 1);
       if (active) sel.value = String(active.internal_id);
     }
-  }
-
-  function applyMapZoom(factor) {
-    const MIN = 0.3, MAX = 8;
-    _mapScale = Math.min(MAX, Math.max(MIN, _mapScale * factor));
-    applyMapTransform();
-  }
-
-  function applyMapTransform() {
-    const canvas = document.getElementById('map-canvas');
-    if (canvas) {
-      canvas.style.transform = `translate(${_mapOffsetX}px, ${_mapOffsetY}px) scale(${_mapScale})`;
-    }
-  }
-
-  function resetMapView() {
-    _mapScale = 1; _mapOffsetX = 0; _mapOffsetY = 0;
-    applyMapTransform();
   }
 
   async function loadMap(serverId, force) {
@@ -4383,141 +4445,179 @@
     const btnLoad   = document.getElementById('btn-map-load');
     const btnRefresh= document.getElementById('btn-map-refresh');
 
-    if (statusEl) { statusEl.className = 'map-status'; statusEl.textContent = '⏳ Загрузка карты…'; }
+    statusEl && Object.assign(statusEl, { className: 'map-status', textContent: '⏳ Загрузка…' });
     if (btnLoad)    btnLoad.disabled = true;
     if (btnRefresh) btnRefresh.disabled = true;
 
     try {
-      let url = `${API_BASE}/me/map?session=${encodeURIComponent(session)}`;
-      if (serverId) url += `&server_id=${encodeURIComponent(serverId)}`;
-      if (force)    url += `&force=1`;
-      const resp = await fetch(url, { credentials: 'include', cache: 'no-store' });
+      // 1. JSON: маркеры + мета
+      let metaUrl = `${API_BASE}/me/map?session=${encodeURIComponent(session)}`;
+      if (serverId) metaUrl += `&server_id=${encodeURIComponent(serverId)}`;
+      if (force)    metaUrl += `&force=1`;
+
+      const resp = await fetch(metaUrl, { credentials: 'include', cache: 'no-store' });
       const data = await resp.json();
       if (!data.ok) throw new Error(data.error || 'unknown');
       _mapData = data;
-      renderMap(data);
+
+      // 2. Изображение через отдельный endpoint
+      let imgUrl = `${API_BASE}/me/map/image?session=${encodeURIComponent(session)}`;
+      if (serverId) imgUrl += `&server_id=${encodeURIComponent(serverId)}`;
+      if (force)    imgUrl += `&force=1`;
+
+      renderMap(data, imgUrl);
+
       if (statusEl) {
-        statusEl.textContent = data.image_cached ? '✅ Из кеша (seed ' + (data.server?.seed || '?') + ')' : '✅ Загружено';
+        statusEl.textContent = data.image_cached
+          ? `✅ Кеш · seed ${data.server?.seed ?? '?'} · ${data.server?.size ?? '?'}u`
+          : `✅ Загружено · ${data.server?.name || ''}`;
       }
       if (btnRefresh) btnRefresh.style.display = '';
     } catch (e) {
-      if (statusEl) { statusEl.className = 'map-status err'; statusEl.textContent = '❌ ' + (e.message || e); }
+      statusEl && Object.assign(statusEl, { className: 'map-status err', textContent: '❌ ' + (e.message || e) });
     } finally {
       if (btnLoad)    btnLoad.disabled = false;
       if (btnRefresh) btnRefresh.disabled = false;
     }
   }
 
-  function renderMap(data) {
-    const viewport = document.getElementById('map-viewport');
+  function renderMap(data, imgUrl) {
+    const viewport    = document.getElementById('map-viewport');
     const placeholder = document.getElementById('map-placeholder');
-    const imgEl = document.getElementById('map-img');
-    const legend = document.getElementById('map-legend');
-    const searchWrap = document.getElementById('map-search-wrap');
-
+    const imgEl       = document.getElementById('map-img');
     if (!viewport || !imgEl) return;
 
-    // Показываем карту
-    imgEl.src = 'data:image/jpeg;base64,' + data.image_b64;
+    // Загружаем изображение
+    imgEl.onload = () => {
+      _mapImgNaturalW = imgEl.naturalWidth;
+      // Устанавливаем размер канваса = размер изображения
+      const canvas = document.getElementById('map-canvas');
+      const outer  = document.getElementById('map-outer');
+      if (canvas && outer) {
+        // canvas fills outer at scale=1
+        canvas.style.width  = outer.clientWidth + 'px';
+        canvas.style.height = outer.clientHeight + 'px';
+      }
+      resetMapView();
+    };
+    imgEl.src = imgUrl;
+
     viewport.classList.add('visible');
     if (placeholder) placeholder.style.display = 'none';
-    if (legend) legend.style.display = 'flex';
-    if (searchWrap) searchWrap.style.display = '';
 
-    resetMapView();
     renderMapMarkers(data.markers || [], data.team || [], data.server?.size || 4000);
     renderVendingSearch('');
   }
 
-  const MARKER_EMOJIS = { 2:'💥', 4:'🚁', 5:'🚢', 6:'📦', 8:'🔫', 3:'🛒', 1:'👤' };
+  // Icon HTML для маркеров событий
+  function markerIconHtml(m) {
+    if (m.icon_url) {
+      return `<img src="${escapeHtml(m.icon_url)}" onerror="this.style.display='none'" alt=""/>`;
+    }
+    if (m.type === 1) {
+      // Игрок — инициалы или аватар
+      if (m.avatar_url) return `<img src="${escapeHtml(m.avatar_url)}" alt="" style="width:100%;height:100%;object-fit:cover"/>`;
+      const initials = (m.name || '?').slice(0, 2).toUpperCase();
+      return `<span>${escapeHtml(initials)}</span>`;
+    }
+    const fallbacks = { 2:'💥', 3:'🛒', 4:'🚁', 5:'🚢', 6:'📦', 8:'🔫' };
+    return `<span style="font-size:15px">${fallbacks[m.type] || '📍'}</span>`;
+  }
 
   function renderMapMarkers(markers, team, mapSize) {
     const container = document.getElementById('map-markers');
     if (!container) return;
     container.innerHTML = '';
 
-    const placeMarker = (x, y, typeClass, emoji, tooltipHtml) => {
+    const place = (x, y, typeClass, iconHtml, tooltipHtml) => {
       const pctX = (x / mapSize) * 100;
       const pctY = (1 - y / mapSize) * 100;
-      const el = document.createElement('div');
+      const el   = document.createElement('div');
       el.className = 'map-marker';
-      el.style.left = pctX + '%';
-      el.style.top  = pctY + '%';
-      el.innerHTML = `<div class="map-marker-icon ${typeClass}">${emoji}</div><div class="map-tooltip">${tooltipHtml}</div>`;
+      el.style.cssText = `left:${pctX}%;top:${pctY}%`;
+      el.innerHTML = `<div class="map-marker-icon ${typeClass}">${iconHtml}</div><div class="map-tooltip">${tooltipHtml}</div>`;
       container.appendChild(el);
     };
 
-    // Маркеры событий и магазинов
     for (const m of markers) {
-      const t = m.type;
       if (m.x == null || m.y == null) continue;
-      const emoji = MARKER_EMOJIS[t] || '📍';
-      const typeClass = `type-${t}`;
+      const tc = `type-${m.type}`;
 
-      if (t === 3) {  // Vending machine
-        const orders = (m.sell_orders || []).slice(0, 5)
-          .map(o => `<div class="sell-row"><span>${escapeHtml(o.item_name||o.item_id)}</span><span>${o.quantity}×<br>${o.cost_per_stack} ${escapeHtml(o.currency_name||'')}</span></div>`)
-          .join('');
-        const tip = `<strong>${escapeHtml(m.name || 'Магазин')}</strong>${orders || '<span style="color:var(--text2)">нет данных</span>'}`;
-        placeMarker(m.x, m.y, typeClass, emoji, tip);
+      if (m.type === 3) {
+        const orders = (m.sell_orders || []).slice(0, 4).map(o => {
+          const iImg = o.item_img     ? `<img src="${escapeHtml(o.item_img)}" class="map-tooltip-order-img" onerror="this.style.display='none'">` : '';
+          const cImg = o.currency_img ? `<img src="${escapeHtml(o.currency_img)}" class="map-tooltip-order-img" onerror="this.style.display='none'">` : '';
+          return `<div class="map-tooltip-order">${iImg}<span>${escapeHtml(o.item_name||'')} ×${o.quantity}</span><span class="arrow">→</span>${cImg}<span>${escapeHtml(o.currency_name||'')} ×${o.cost_per_stack}</span></div>`;
+        }).join('');
+        const tip = `<strong>${escapeHtml(m.name || 'Магазин')}</strong>${orders || '<span style="opacity:.5">нет данных</span>'}<div class="map-tip-coords">X ${Math.round(m.x)} · Y ${Math.round(m.y)} · ${coordsToGrid(m.x, m.y, mapSize)}</div>`;
+        place(m.x, m.y, tc, markerIconHtml(m), tip);
       } else {
-        const label = m.type_name || String(t);
-        const tip = `<strong>${escapeHtml(label)}</strong><div class="sell-row"><span>X ${Math.round(m.x)}</span><span>Y ${Math.round(m.y)}</span></div>`;
-        placeMarker(m.x, m.y, typeClass, emoji, tip);
+        const tip = `<strong>${escapeHtml(m.type_name || String(m.type))}</strong><div class="map-tip-coords">X ${Math.round(m.x)} · Y ${Math.round(m.y)}</div>`;
+        place(m.x, m.y, tc, markerIconHtml(m), tip);
       }
     }
 
-    // Позиции команды
-    for (const member of team) {
+    // Команда
+    for (const member of (team || [])) {
       if (member.x == null || member.y == null) continue;
-      const cls = `type-1${member.is_online ? ' online' : ''}`;
-      const status = member.is_online ? (member.is_alive ? '🟢 онлайн' : '💀 мёртв') : '⚫ офлайн';
-      const tip = `<strong>${escapeHtml(member.name || '?')}</strong><div class="sell-row"><span>${status}</span></div><div class="sell-row"><span>X ${Math.round(member.x)}</span><span>Y ${Math.round(member.y)}</span></div>`;
-      placeMarker(member.x, member.y, cls, '👤', tip);
+      const alive = member.is_online && member.is_alive;
+      const tc    = `type-1${alive ? ' alive' : ''}`;
+      const status = !member.is_online ? '⚫ офлайн' : alive ? '🟢 живой' : '💀 мёртв';
+      const tip = `<strong>${escapeHtml(member.name || '?')}</strong>${status}<div class="map-tip-coords">X ${Math.round(member.x)} · Y ${Math.round(member.y)}</div>`;
+      place(member.x, member.y, tc, markerIconHtml({ type: 1, name: member.name, avatar_url: member.avatar_url || '' }), tip);
     }
   }
 
   function renderVendingSearch(query) {
     const resultsEl = document.getElementById('map-search-results');
-    if (!resultsEl || !_mapData) return;
+    if (!resultsEl) return;
+    if (!_mapData) {
+      resultsEl.innerHTML = '<p style="font-size:.8rem;color:var(--text2);padding:6px 4px">Загрузите карту</p>';
+      return;
+    }
     const vms = (_mapData.markers || []).filter(m => m.type === 3);
     if (!query) {
-      resultsEl.innerHTML = `<p style="font-size:.8rem;color:var(--text2)">Найдено ${vms.length} магазин(ов) на карте. Введите название товара для поиска.</p>`;
+      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">Найдено магазинов: ${vms.length}<br>Введите название товара</p>`;
       return;
     }
     const q = query.toLowerCase();
     const matched = vms.filter(vm =>
       (vm.sell_orders || []).some(o =>
-        (o.item_name || '').toLowerCase().includes(q) ||
-        String(o.item_id || '').includes(q)
+        (o.item_name || '').toLowerCase().includes(q) || String(o.item_id || '').includes(q)
       )
     );
     if (!matched.length) {
-      resultsEl.innerHTML = `<p style="font-size:.8rem;color:var(--text2)">Ничего не найдено по «${escapeHtml(query)}»</p>`;
+      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">Не найдено: «${escapeHtml(query)}»</p>`;
       return;
     }
     const mapSize = _mapData.server?.size || 4000;
     resultsEl.innerHTML = matched.map(vm => {
-      const orders = (vm.sell_orders || [])
-        .filter(o => (o.item_name || '').toLowerCase().includes(q) || String(o.item_id || '').includes(q))
-        .map(o => `<span class="vend-order-tag">${escapeHtml(o.item_name || String(o.item_id))} ×${o.quantity} за ${o.cost_per_stack} ${escapeHtml(o.currency_name||'')}</span>`)
-        .join('');
+      const relevantOrders = (vm.sell_orders || []).filter(o =>
+        (o.item_name || '').toLowerCase().includes(q) || String(o.item_id || '').includes(q)
+      );
+      const ordersHtml = relevantOrders.map(o => {
+        const iImg = o.item_img     ? `<img class="vend-item-img" src="${escapeHtml(o.item_img)}"     onerror="this.style.display='none'" alt="">` : '';
+        const cImg = o.currency_img ? `<img class="vend-item-img" src="${escapeHtml(o.currency_img)}" onerror="this.style.display='none'" alt="">` : '';
+        return `<div class="vend-order-row">
+          ${iImg}<span class="vend-item-name" title="${escapeHtml(o.item_name||'')}">×${o.quantity} ${escapeHtml(o.item_name||'')}</span>
+          <span class="vend-arrow">→</span>
+          ${cImg}<span class="vend-cost">×${o.cost_per_stack} ${escapeHtml(o.currency_name||'')}</span>
+        </div>`;
+      }).join('');
       const grid = vm.x != null ? coordsToGrid(vm.x, vm.y, mapSize) : '';
       return `<div class="vend-result">
-        <div class="vend-name">🛒 ${escapeHtml(vm.name || 'Магазин')}</div>
-        <div class="vend-orders">${orders}</div>
-        ${grid ? `<div class="vend-coords">📍 ${escapeHtml(grid)} · X ${Math.round(vm.x)} Y ${Math.round(vm.y)}</div>` : ''}
+        <div class="vend-name"><span class="vend-dot"></span>${escapeHtml(vm.name || 'Магазин')}</div>
+        <div class="vend-orders">${ordersHtml}</div>
+        ${grid ? `<div class="vend-coords">📍 ${escapeHtml(grid)} · X${Math.round(vm.x)} Y${Math.round(vm.y)}</div>` : ''}
       </div>`;
     }).join('');
   }
 
   function coordsToGrid(x, y, mapSize) {
     const cellSize = 150;
-    const cols = Math.ceil(mapSize / cellSize);
-    const col = Math.floor(x / cellSize);
-    const row = Math.floor((mapSize - y) / cellSize);
-    const letter = String.fromCharCode(65 + col);
-    return letter + (row + 1);
+    const col  = Math.floor(x / cellSize);
+    const row  = Math.floor((mapSize - y) / cellSize);
+    return String.fromCharCode(65 + col) + (row + 1);
   }
 
   // Init
