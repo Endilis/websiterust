@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
@@ -52,10 +52,7 @@
       display: flex; align-items: center; gap: 32px;
     }
     .yn-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.1rem; }
-    .yn-brand-icon {
-      width: 34px; height: 34px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), #ff3c00);
-      display: flex; align-items: center; justify-content: center; font-size: 18px;
-    }
+    .yn-brand-icon { width:34px; height:34px; border-radius:8px; object-fit:cover; display:block; flex-shrink:0; }
     .yn-links { display: flex; align-items: center; gap: 6px; margin-left: auto; }
     .yn-links a { padding: 6px 12px; border-radius: 8px; color: var(--text2); font-size: .9rem; }
     .yn-links a:hover, .yn-links a.active { background: var(--bg2); color: var(--text); }
@@ -102,13 +99,13 @@
   <nav class="yn-nav" aria-label="Навигация">
     <div class="yn-nav-inner">
       <a class="yn-brand" href="index.html">
-        <div class="yn-brand-icon">⚡</div>
+        <img class="yn-brand-icon" src="images/icon.png" alt="RustInfo"/>
         RustInfo
       </a>
       <button class="yn-mobile-btn" id="ynMobileBtn" type="button" aria-label="Меню"><span></span><span></span><span></span></button>
       <div class="yn-links">
         <a href="docs.html">Документация</a>
-        <a href="setup.html">Подключение</a>
+        <a href="dashboard.html">Панель</a>
         <a href="binds.html">Бинды</a>
         <a href="index.html#faq">FAQ</a>
       </div>
@@ -201,7 +198,7 @@
       <div class="yn-footer-links">
         <a href="index.html">Главная</a>
         <a href="docs.html">Документация</a>
-        <a href="setup.html">Подключение</a>
+        <a href="dashboard.html">Панель</a>
         <a href="https://discord.gg/zTdZq9fQ5k" target="_blank" rel="noreferrer">Discord</a>
       </div>
     </div>

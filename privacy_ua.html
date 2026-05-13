@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="uk" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
@@ -21,7 +21,7 @@
     [data-theme="light"] .yn-nav { background:rgba(255,255,255,.88); }
     .yn-nav-inner { width:100%; max-width:var(--max); margin:0 auto; padding:0 24px; display:flex; align-items:center; gap:32px; }
     .yn-brand { display:flex; align-items:center; gap:10px; font-weight:800; font-size:1.1rem; }
-    .yn-brand-icon { width:34px; height:34px; border-radius:8px; background:linear-gradient(135deg,var(--accent),#ff3c00); display:flex; align-items:center; justify-content:center; font-size:18px; }
+    .yn-brand-icon { width:34px; height:34px; border-radius:8px; object-fit:cover; display:block; flex-shrink:0; }
     .yn-links { display:flex; align-items:center; gap:6px; margin-left:auto; }
     .yn-links a { padding:6px 12px; border-radius:8px; color:var(--text2); font-size:.9rem; }
     .yn-links a:hover, .yn-links a.active { background:var(--bg2); color:var(--text); }
@@ -49,10 +49,10 @@
 <body>
   <nav class="yn-nav" aria-label="Навігація">
     <div class="yn-nav-inner">
-      <a class="yn-brand" href="index_ua.html"><div class="yn-brand-icon">⚡</div>RustInfo</a>
+      <a class="yn-brand" href="index_ua.html"><img class="yn-brand-icon" src="images/icon.png" alt="RustInfo"/>RustInfo</a>
       <div class="yn-links">
         <a href="docs_ua.html">Документація</a>
-        <a href="setup_ua.html">Підключення</a>
+        <a href="dashboard.html">Панель</a>
         <a href="binds.html">Бінди</a>
         <a href="index_ua.html#faq">FAQ</a>
       </div>
