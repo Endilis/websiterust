@@ -337,6 +337,9 @@
     .vend-item-name { color: var(--text); font-size: 0.76rem; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .vend-arrow { color: var(--accent); font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
     .vend-cost { color: var(--text2); font-size: 0.74rem; white-space: nowrap; }
+    .vend-stock { font-size: 0.69rem; white-space: nowrap; margin-left: auto; flex-shrink: 0; padding: 1px 5px; border-radius: 4px; }
+    .vend-stock--ok    { color: #4ade80; background: rgba(74,222,128,.1); }
+    .vend-stock--empty { color: #6b7280; background: rgba(107,114,128,.1); }
     .vend-result .vend-coords { font-size: 0.7rem; color: var(--text2); margin-top: 4px; }
 
     .dash-panels {
@@ -4578,18 +4581,16 @@
     const canvas = document.getElementById('map-canvas');
     const container = document.getElementById('map-markers');
     if (!canvas || !container || !_mapData) return;
-    const mapSize = _mapData.server?.size || 4000;
-    const cw = canvas.offsetWidth;
     const ch = canvas.offsetHeight;
-    if (!cw || !ch) return;
+    if (!canvas.offsetWidth || !ch) return;
     container.querySelectorAll('.map-marker').forEach(el => {
       const wx = parseFloat(el.dataset.wx);
       const wy = parseFloat(el.dataset.wy);
       if (isNaN(wx) || isNaN(wy)) return;
-      // Canvas-pixel coords (unscaled)
-      const cx = (wx / mapSize + 0.5) * cw;
-      const cy = (0.5 - wy / mapSize) * ch;
-      // Apply current transform: same as canvas but only for the marker point
+      // marker.x/y — прямые пиксельные координаты на PNG-изображении.
+      // x=0 — западный край, y=0 — южный край (y перевёрнут относительно canvas).
+      const cx = wx;
+      const cy = ch - wy;
       const sx = cx * _mapScale + _mapOffsetX;
       const sy = cy * _mapScale + _mapOffsetY;
       el.style.left = sx + 'px';
@@ -4757,8 +4758,13 @@
         const orders = (m.sell_orders || []).slice(0, 4).map(o => {
           const iImg = o.item_img     ? `<img src="${escapeHtml(o.item_img)}" class="map-tooltip-order-img" onerror="this.style.display='none'">` : '';
           const cImg = o.currency_img ? `<img src="${escapeHtml(o.currency_img)}" class="map-tooltip-order-img" onerror="this.style.display='none'">` : '';
-          const bp = o.is_blueprint ? ' 📘' : '';
-          return `<div class="map-tooltip-order">${iImg}<span>${escapeHtml(o.item_name||'')}${bp} ×${o.quantity}</span><span class="arrow">→</span>${cImg}<span>${escapeHtml(o.currency_name||'')} ×${o.cost_per_item}</span></div>`;
+          const bp    = o.is_blueprint ? ' 📘' : '';
+          const qty   = o.quantity   ?? 1;
+          const cost  = o.cost_per_item ?? '?';
+          const stock = o.amount_in_stock != null
+            ? `<span style="margin-left:auto;color:${o.amount_in_stock > 0 ? '#4ade80' : '#6b7280'};font-size:.68rem">${o.amount_in_stock > 0 ? '×' + o.amount_in_stock : 'нет'}</span>`
+            : '';
+          return `<div class="map-tooltip-order">${iImg}<span>${escapeHtml(o.item_name||'')}${bp} ×${qty}</span><span class="arrow">→</span>${cImg}<span>${escapeHtml(o.currency_name||'')} ×${cost}</span>${stock}</div>`;
         }).join('');
         const grid = coordsToGrid(m.x, m.y, mapSize);
         const tip = `<strong>${escapeHtml(m.name || 'Магазин')}</strong>${orders || '<span style="opacity:.5">нет данных</span>'}<div class="map-tip-coords">${grid} · X${Math.round(m.x)} Y${Math.round(m.y)}</div>`;
@@ -4820,13 +4826,20 @@
         (o.item_name || '').toLowerCase().includes(q) || String(o.item_id || '').includes(q)
       );
       const ordersHtml = relevantOrders.map(o => {
-        const iImg = o.item_img     ? `<img class="vend-item-img" src="${escapeHtml(o.item_img)}"     onerror="this.style.display='none'" alt="">` : '';
-        const cImg = o.currency_img ? `<img class="vend-item-img" src="${escapeHtml(o.currency_img)}" onerror="this.style.display='none'" alt="">` : '';
-        const bp = o.is_blueprint ? ' 📘' : '';
+        const iImg  = o.item_img     ? `<img class="vend-item-img" src="${escapeHtml(o.item_img)}"     onerror="this.style.display='none'" alt="">` : '';
+        const cImg  = o.currency_img ? `<img class="vend-item-img" src="${escapeHtml(o.currency_img)}" onerror="this.style.display='none'" alt="">` : '';
+        const bp    = o.is_blueprint ? ' 📘' : '';
+        const qty   = o.quantity   ?? 1;
+        const cost  = o.cost_per_item ?? '?';
+        const inStock = o.amount_in_stock ?? null;
+        const stockHtml = inStock != null
+          ? `<span class="vend-stock ${inStock > 0 ? 'vend-stock--ok' : 'vend-stock--empty'}">${inStock > 0 ? inStock + ' шт' : 'нет'}</span>`
+          : '';
         return `<div class="vend-order-row">
-          ${iImg}<span class="vend-item-name" title="${escapeHtml(o.item_name||'')}">×${o.quantity} ${escapeHtml(o.item_name||'')}${bp}</span>
+          ${iImg}<span class="vend-item-name" title="${escapeHtml(o.item_name||'')}">×${qty} ${escapeHtml(o.item_name||'')}${bp}</span>
           <span class="vend-arrow">→</span>
-          ${cImg}<span class="vend-cost">×${o.cost_per_item} ${escapeHtml(o.currency_name||'')}</span>
+          ${cImg}<span class="vend-cost">×${cost} ${escapeHtml(o.currency_name||'')}</span>
+          ${stockHtml}
         </div>`;
       }).join('');
       const grid = vm.x != null ? coordsToGrid(vm.x, vm.y, mapSize) : '';
@@ -4839,18 +4852,16 @@
   }
 
   function coordsToGrid(x, y, mapSize) {
-    // Rust world: centered at (0,0). Normalize to [0..1] then to virtual 2000×2000 grid.
-    // GRID_DIAMETER = 146.28... → ~2000/GRID_DIAMETER ≈ 13.67 cells per side for 2000 virtual
-    // rustplus uses GRID_DIAMETER = 146.285 for the physical cell size
+    // marker.x/y — прямые пиксельные координаты PNG-изображения (0..mapSize).
+    // x=0 западный край, y=0 южный (перевёрнут). Формула как в rustplus:
+    // col = x // GRID_DIAMETER,  row = (mapSize - y) // GRID_DIAMETER
     const GRID_DIAMETER = 146.28571428571428;
-    const nx  = (x / mapSize + 0.5) * mapSize;        // [0..mapSize]
-    const ny  = (0.5 - y / mapSize) * mapSize;         // [0..mapSize], top=0
-    const col = Math.floor(nx / GRID_DIAMETER);
-    const row = Math.floor(ny / GRID_DIAMETER);
+    const col = Math.max(0, Math.floor(x / GRID_DIAMETER));
+    const row = Math.max(0, Math.floor((mapSize - y) / GRID_DIAMETER));
     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const letter = col < 26
       ? letters[col]
-      : letters[Math.floor(col / 26) - 1] + letters[col % 26];
+      : (letters[Math.floor(col / 26) - 1] || '?') + letters[col % 26];
     return letter + (row + 1);
   }
 
