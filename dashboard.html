@@ -245,6 +245,13 @@
     .map-marker {
       position: absolute; transform: translate(-50%, -50%);
       pointer-events: auto; cursor: pointer;
+      z-index: 5;
+    }
+    .map-marker.map-marker--vend {
+      z-index: 45;
+    }
+    .map-marker.map-marker--vend .map-tooltip {
+      z-index: 400;
     }
     .map-marker-icon {
       width: 32px; height: 32px; border-radius: 50%;
@@ -317,6 +324,14 @@
     .vend-result {
       background: rgba(255,255,255,.03); border: 1px solid var(--border); border-radius: 8px;
       padding: 8px 10px; font-size: 0.79rem;
+    }
+    .vend-result.vend-result--nav {
+      cursor: pointer;
+      transition: background .12s, border-color .12s;
+    }
+    .vend-result.vend-result--nav:hover {
+      background: rgba(255,255,255,.07);
+      border-color: var(--accent);
     }
     .vend-result .vend-name {
       font-weight: 600; color: var(--text); margin-bottom: 5px;
@@ -4642,6 +4657,8 @@
 
   const MAP_MAX_SCALE = 8.0;
   const MAP_GRID_DIAMETER = 146.28571428571428;
+  /** Как в rustplus: output.paste(generate_grid(...), (5, 5), grid) — сетка смещена на 5 px. */
+  const MAP_GRID_PASTE_OFFSET = 5;
 
   function initMapPanelOnce() {
     if (_mapPanelBound) { populateMapServerSelect(); return; }
@@ -4713,6 +4730,24 @@
         tryFocusMapOnGridQuery(q);
       }, 380);
     });
+
+    document.getElementById('map-search-results')?.addEventListener('click', e => {
+      const card = e.target.closest('.vend-result[data-mwx]');
+      if (!card) return;
+      const wx = parseFloat(card.dataset.mwx);
+      const wy = parseFloat(card.dataset.mwy);
+      if (Number.isNaN(wx) || Number.isNaN(wy)) return;
+      if (!document.getElementById('map-viewport')?.classList.contains('visible')) return;
+      focusMapOnWorld(wx, wy, 2.8);
+    });
+
+    document.getElementById('map-search-results')?.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      const card = e.target.closest('.vend-result[data-mwx]');
+      if (!card) return;
+      card.click();
+    });
+
     populateMapServerSelect();
   }
 
@@ -4739,8 +4774,10 @@
     if (col < 0) return null;
     const numCells = Math.max(1, Math.floor(mapSize / MAP_GRID_DIAMETER));
     if (rowIndex < 0 || rowIndex >= numCells || col >= numCells) return null;
-    const x = (col + 0.5) * MAP_GRID_DIAMETER;
-    const y = mapSize - (rowIndex + 0.5) * MAP_GRID_DIAMETER;
+    const ox = MAP_GRID_PASTE_OFFSET;
+    const x = ox + (col + 0.5) * MAP_GRID_DIAMETER;
+    const py = ox + (rowIndex + 0.5) * MAP_GRID_DIAMETER;
+    const y = mapSize - py;
     return { x, y };
   }
 
@@ -4983,9 +5020,9 @@
     container.innerHTML = '';
 
     // Позиция задаётся через data-wx/wy — updateMarkerPositions() пересчитывает при каждом зуме
-    const place = (wx, wy, typeClass, iconHtml, tooltipHtml) => {
+    const place = (wx, wy, typeClass, iconHtml, tooltipHtml, extraCls) => {
       const el = document.createElement('div');
-      el.className = 'map-marker';
+      el.className = 'map-marker' + (extraCls ? ' ' + extraCls : '');
       el.dataset.wx = wx;
       el.dataset.wy = wy;
       el.innerHTML = `<div class="map-marker-icon ${typeClass}">${iconHtml}</div><div class="map-tooltip">${tooltipHtml}</div>`;
@@ -4993,35 +5030,22 @@
     };
 
     let eventCount = 0;
+    const vending = [];
 
     for (const m of markers) {
       if (m.x == null || m.y == null) continue;
-      const tc = `type-${m.type}`;
-
       if (m.type === 3) {
-        const orders = (m.sell_orders || []).slice(0, 4).map(o => {
-          const iImg = o.item_img     ? `<img src="${escapeHtml(o.item_img)}" class="map-tooltip-order-img" onerror="this.style.display='none'">` : '';
-          const cImg = o.currency_img ? `<img src="${escapeHtml(o.currency_img)}" class="map-tooltip-order-img" onerror="this.style.display='none'">` : '';
-          const bp    = o.is_blueprint ? ' 📘' : '';
-          const qty   = o.quantity   ?? 1;
-          const cost  = o.cost_per_item ?? '?';
-          const stock = (o.amount_in_stock > 0)
-            ? `<span style="margin-left:auto;color:#4ade80;font-size:.68rem">×${o.amount_in_stock}</span>`
-            : '';
-          return `<div class="map-tooltip-order">${iImg}<span>${escapeHtml(o.item_name||'')}${bp} ×${qty}</span><span class="arrow">→</span>${cImg}<span>${escapeHtml(o.currency_name||'')} ×${cost}</span>${stock}</div>`;
-        }).join('');
-        const grid = coordsToGrid(m.x, m.y, mapSize);
-        const tip = `<strong>${escapeHtml(m.name || 'Магазин')}</strong>${orders || '<span style="opacity:.5">нет данных</span>'}<div class="map-tip-coords">${grid} · X${Math.round(m.x)} Y${Math.round(m.y)}</div>`;
-        place(m.x, m.y, tc, markerIconHtml(m), tip);
-      } else {
-        eventCount++;
-        const grid = coordsToGrid(m.x, m.y, mapSize);
-        const tip = `<strong>${escapeHtml(m.type_name || String(m.type))}</strong><div class="map-tip-coords">${grid} · X${Math.round(m.x)} Y${Math.round(m.y)}</div>`;
-        place(m.x, m.y, tc, markerIconHtml(m), tip);
+        vending.push(m);
+        continue;
       }
+      const tc = `type-${m.type}`;
+      eventCount++;
+      const grid = coordsToGrid(m.x, m.y, mapSize);
+      const tip = `<strong>${escapeHtml(m.type_name || String(m.type))}</strong><div class="map-tip-coords">${grid} · X${Math.round(m.x)} Y${Math.round(m.y)}</div>`;
+      place(m.x, m.y, tc, markerIconHtml(m), tip, '');
     }
 
-    // Команда
+    // Команда — рисуем перед вендингами; магазины последние в DOM и с большим z-index
     for (const member of (team || [])) {
       if (member.x == null || member.y == null) continue;
       const alive = member.is_online && member.is_alive;
@@ -5029,7 +5053,25 @@
       const grid  = coordsToGrid(member.x, member.y, mapSize);
       const status = !member.is_online ? '⚫ офлайн' : alive ? '🟢 живой' : '💀 мёртв';
       const tip = `<strong>${escapeHtml(member.name || '?')}</strong>${status}<div class="map-tip-coords">${grid} · X${Math.round(member.x)} Y${Math.round(member.y)}</div>`;
-      place(member.x, member.y, tc, markerIconHtml({ type: 1, name: member.name, avatar_url: member.avatar_url || '' }), tip);
+      place(member.x, member.y, tc, markerIconHtml({ type: 1, name: member.name, avatar_url: member.avatar_url || '' }), tip, '');
+    }
+
+    for (const m of vending) {
+      const tc = `type-${m.type}`;
+      const orders = (m.sell_orders || []).slice(0, 4).map(o => {
+        const iImg = o.item_img     ? `<img src="${escapeHtml(o.item_img)}" class="map-tooltip-order-img" onerror="this.style.display='none'">` : '';
+        const cImg = o.currency_img ? `<img src="${escapeHtml(o.currency_img)}" class="map-tooltip-order-img" onerror="this.style.display='none'">` : '';
+        const bp    = o.is_blueprint ? ' 📘' : '';
+        const qty   = o.quantity   ?? 1;
+        const cost  = o.cost_per_item ?? '?';
+        const stock = (o.amount_in_stock > 0)
+          ? `<span style="margin-left:auto;color:#4ade80;font-size:.68rem">×${o.amount_in_stock}</span>`
+          : '';
+        return `<div class="map-tooltip-order">${iImg}<span>${escapeHtml(o.item_name||'')}${bp} ×${qty}</span><span class="arrow">→</span>${cImg}<span>${escapeHtml(o.currency_name||'')} ×${cost}</span>${stock}</div>`;
+      }).join('');
+      const grid = coordsToGrid(m.x, m.y, mapSize);
+      const tip = `<strong>${escapeHtml(m.name || 'Магазин')}</strong>${orders || '<span style="opacity:.5">нет данных</span>'}<div class="map-tip-coords">${grid} · X${Math.round(m.x)} Y${Math.round(m.y)}</div>`;
+      place(m.x, m.y, tc, markerIconHtml(m), tip, 'map-marker--vend');
     }
 
     // Обновить позиции
@@ -5100,7 +5142,10 @@
         </div>`;
       }).join('');
       const grid = vm.x != null ? coordsToGrid(vm.x, vm.y, mapSize) : '';
-      return `<div class="vend-result">
+      const mwx = vm.x != null ? String(vm.x) : '';
+      const mwy = vm.y != null ? String(vm.y) : '';
+      const navCls = mwx && mwy ? ' vend-result--nav' : '';
+      return `<div class="vend-result${navCls}" data-mwx="${escapeHtml(mwx)}" data-mwy="${escapeHtml(mwy)}" role="button" tabindex="0">
         <div class="vend-name"><span class="vend-dot"></span>${escapeHtml(vm.name || 'Магазин')}</div>
         <div class="vend-orders">${ordersHtml}</div>
         ${grid ? `<div class="vend-coords">📍 ${escapeHtml(grid)} · X${Math.round(vm.x)} Y${Math.round(vm.y)}</div>` : ''}
@@ -5109,10 +5154,10 @@
   }
 
   function coordsToGrid(x, y, mapSize) {
-    // Как в rustplus.utils: подпись клетки letters[i] + str(j), без +1 к строке.
-    // j = (mapSize - y) // GRID_DIAMETER — индекс строки с севера (y API — от юга).
-    const col = Math.max(0, Math.floor(x / MAP_GRID_DIAMETER));
-    const row = Math.max(0, Math.floor((mapSize - y) / MAP_GRID_DIAMETER));
+    // Сетка на PNG совпадает с rustplus: paste(grid, (5,5), grid) — учитываем сдвиг.
+    const ox = MAP_GRID_PASTE_OFFSET;
+    const col = Math.max(0, Math.floor((x - ox) / MAP_GRID_DIAMETER));
+    const row = Math.max(0, Math.floor((mapSize - y - ox) / MAP_GRID_DIAMETER));
     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const letter = col < 26
       ? letters[col]
