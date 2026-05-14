@@ -2094,7 +2094,7 @@
               <div class="map-panel-right" id="map-panel-right">
                 <div class="map-sidebar-title">🛒 Магазины</div>
                 <div class="map-search-bar">
-                  <input type="text" id="map-search-input" placeholder="Поиск товара…" autocomplete="off"/>
+                  <input type="text" id="map-search-input" placeholder="Товар или квадрат (например L20)…" autocomplete="off"/>
                 </div>
                 <div class="map-search-results" id="map-search-results">
                   <p style="font-size:.8rem;color:var(--text2);padding:8px 4px">Загрузите карту для поиска</p>
@@ -4638,8 +4638,10 @@
   let _mapDragStartY = 0;
   let _mapDragOriginX = 0;
   let _mapDragOriginY = 0;
+  let _mapGridSearchDebounce = null;
 
   const MAP_MAX_SCALE = 8.0;
+  const MAP_GRID_DIAMETER = 146.28571428571428;
 
   function initMapPanelOnce() {
     if (_mapPanelBound) { populateMapServerSelect(); return; }
@@ -4702,8 +4704,83 @@
       outer.addEventListener('touchend', () => { _touch0 = null; });
     }
 
-    searchInput?.addEventListener('input', () => renderVendingSearch(searchInput.value.trim()));
+    searchInput?.addEventListener('input', () => {
+      const q = searchInput.value.trim();
+      renderVendingSearch(q);
+      if (_mapGridSearchDebounce) clearTimeout(_mapGridSearchDebounce);
+      _mapGridSearchDebounce = setTimeout(() => {
+        _mapGridSearchDebounce = null;
+        tryFocusMapOnGridQuery(q);
+      }, 380);
+    });
     populateMapServerSelect();
+  }
+
+  function lettersToGridCol(letterPart) {
+    const L = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const u = String(letterPart || '').toUpperCase().replace(/\s/g, '');
+    if (!u.length || u.length > 2) return -1;
+    for (let i = 0; i < u.length; i++) if (L.indexOf(u[i]) < 0) return -1;
+    if (u.length === 1) return L.indexOf(u[0]);
+    return (L.indexOf(u[0]) + 1) * 26 + L.indexOf(u[1]);
+  }
+
+  function parseGridSearchQuery(q) {
+    const t = String(q || '').trim();
+    let m = t.match(/^([A-Za-z]{1,2})\s*(\d{1,3})\s*$/);
+    if (m) return { letters: m[1], row: parseInt(m[2], 10) };
+    m = t.match(/^(?:квадрат|square|grid)\s+([A-Za-z]{1,2})\s*(\d{1,3})\s*$/i);
+    if (m) return { letters: m[1], row: parseInt(m[2], 10) };
+    return null;
+  }
+
+  function gridRefToWorldCenter(letters, rowIndex, mapSize) {
+    const col = lettersToGridCol(letters);
+    if (col < 0) return null;
+    const numCells = Math.max(1, Math.floor(mapSize / MAP_GRID_DIAMETER));
+    if (rowIndex < 0 || rowIndex >= numCells || col >= numCells) return null;
+    const x = (col + 0.5) * MAP_GRID_DIAMETER;
+    const y = mapSize - (rowIndex + 0.5) * MAP_GRID_DIAMETER;
+    return { x, y };
+  }
+
+  function isGridRefOnMap(letters, rowIndex, mapSize) {
+    return gridRefToWorldCenter(letters, rowIndex, mapSize) != null;
+  }
+
+  function formatGridLabel(letters, rowIndex) {
+    return lettersToGridCol(letters) < 0 ? '?' : String(letters || '').toUpperCase().replace(/\s/g, '') + rowIndex;
+  }
+
+  function tryFocusMapOnGridQuery(query) {
+    if (!_mapData) return;
+    const g = parseGridSearchQuery(query);
+    if (!g) return;
+    if (!document.getElementById('map-viewport')?.classList.contains('visible')) return;
+    const mapSize = _mapData.server?.size || 4000;
+    const pt = gridRefToWorldCenter(g.letters, g.row, mapSize);
+    if (!pt) return;
+    focusMapOnWorld(pt.x, pt.y, 2.5);
+  }
+
+  function focusMapOnWorld(wx, wy, zoomMul) {
+    const canvas = document.getElementById('map-canvas');
+    const outer = document.getElementById('map-outer');
+    if (!canvas || !outer || !_mapData) return;
+    const ch = canvas.offsetHeight;
+    const cw = canvas.offsetWidth;
+    if (!cw || !ch) return;
+    const cx = wx;
+    const cy = ch - wy;
+    const ow = outer.clientWidth;
+    const oh = outer.clientHeight;
+    const z = zoomMul != null ? zoomMul : 2.4;
+    const targetScale = Math.min(MAP_MAX_SCALE, Math.max(_mapFitScale, _mapFitScale * z));
+    _mapScale = targetScale;
+    _mapOffsetX = ow / 2 - cx * _mapScale;
+    _mapOffsetY = oh / 2 - cy * _mapScale;
+    clampOffset();
+    applyMapTransform();
   }
 
   function zoomAt(cx, cy, factor) {
@@ -4866,7 +4943,10 @@
 
         // Маркеры рендерим только после того, как canvas получил реальные размеры
         renderMapMarkers(data.markers || [], data.team || [], data.server?.size || 4000);
-        renderVendingSearch('');
+        const si = document.getElementById('map-search-input');
+        const q0 = (si && si.value) ? si.value.trim() : '';
+        renderVendingSearch(q0);
+        if (q0) tryFocusMapOnGridQuery(q0);
       });
     };
     imgEl.src = imgUrl;
@@ -4969,22 +5049,35 @@
       resultsEl.innerHTML = '<p style="font-size:.8rem;color:var(--text2);padding:6px 4px">Загрузите карту</p>';
       return;
     }
+    const mapSize = _mapData.server?.size || 4000;
     const vms = (_mapData.markers || []).filter(m => m.type === 3);
-    if (!query) {
-      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">Найдено магазинов: ${vms.length}<br>Введите название товара</p>`;
+    const rawQ = String(query || '').trim();
+    const gridParsed = parseGridSearchQuery(rawQ);
+
+    if (gridParsed) {
+      if (!isGridRefOnMap(gridParsed.letters, gridParsed.row, mapSize)) {
+        resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">Нет квадрата «${escapeHtml(formatGridLabel(gridParsed.letters, gridParsed.row))}» на карте этого размера.</p>`;
+        return;
+      }
+      const gl = formatGridLabel(gridParsed.letters, gridParsed.row);
+      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--accent);padding:6px 4px;font-weight:600">📍 ${escapeHtml(gl)}</p><p style="font-size:.76rem;color:var(--text2);padding:0 4px 6px">Карта отцентрована и увеличена. Магазинов на карте: ${vms.length}. Для поиска товара введите название.</p>`;
       return;
     }
-    const q = query.toLowerCase();
+
+    if (!rawQ) {
+      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">Найдено магазинов: ${vms.length}<br>Введите название товара или квадрат (например L20)</p>`;
+      return;
+    }
+    const q = rawQ.toLowerCase();
     const matched = vms.filter(vm =>
       (vm.sell_orders || []).some(o =>
         (o.item_name || '').toLowerCase().includes(q) || String(o.item_id || '').includes(q)
       )
     );
     if (!matched.length) {
-      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">Не найдено: «${escapeHtml(query)}»</p>`;
+      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">Не найдено: «${escapeHtml(rawQ)}»</p>`;
       return;
     }
-    const mapSize = _mapData.server?.size || 4000;
     resultsEl.innerHTML = matched.map(vm => {
       const relevantOrders = (vm.sell_orders || []).filter(o =>
         (o.item_name || '').toLowerCase().includes(q) || String(o.item_id || '').includes(q)
@@ -5016,17 +5109,15 @@
   }
 
   function coordsToGrid(x, y, mapSize) {
-    // marker.x/y — прямые пиксельные координаты PNG-изображения (0..mapSize).
-    // x=0 западный край, y=0 южный (перевёрнут). Формула как в rustplus:
-    // col = x // GRID_DIAMETER,  row = (mapSize - y) // GRID_DIAMETER
-    const GRID_DIAMETER = 146.28571428571428;
-    const col = Math.max(0, Math.floor(x / GRID_DIAMETER));
-    const row = Math.max(0, Math.floor((mapSize - y) / GRID_DIAMETER));
+    // Как в rustplus.utils: подпись клетки letters[i] + str(j), без +1 к строке.
+    // j = (mapSize - y) // GRID_DIAMETER — индекс строки с севера (y API — от юга).
+    const col = Math.max(0, Math.floor(x / MAP_GRID_DIAMETER));
+    const row = Math.max(0, Math.floor((mapSize - y) / MAP_GRID_DIAMETER));
     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const letter = col < 26
       ? letters[col]
       : (letters[Math.floor(col / 26) - 1] || '?') + letters[col % 26];
-    return letter + (row + 1);
+    return letter + row;
   }
 
   // Init
