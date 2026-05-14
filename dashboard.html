@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard — RustInfo Bot</title>
+  <title>Dashboard вЂ” RustInfo Bot</title>
   <link rel="icon" href="https://rustinfo.online/favicon.ico"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="style.css?v=19"/>
+  <link rel="stylesheet" href="style.css?v=21"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* Палитра и типографика как на rustinfo.online (style.css) */
+    /* РџР°Р»РёС‚СЂР° Рё С‚РёРїРѕРіСЂР°С„РёРєР° РєР°Рє РЅР° rustinfo.online (style.css) */
     body.dashboard-page {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       letter-spacing: 0.01em;
@@ -142,7 +142,7 @@
     }
     .dash-nav-btn.sub { padding-left: 18px; font-size: 0.85rem; font-weight: 500; }
     .dash-nav-btn--wip { opacity: 0.6; }
-    .dash-nav-btn--wip::after { content: ' скоро'; font-size: 0.7rem; opacity: 0.7; }
+    .dash-nav-btn--wip::after { content: ' СЃРєРѕСЂРѕ'; font-size: 0.7rem; opacity: 0.7; }
 
     /* WIP panel overlay */
     .wip-overlay {
@@ -156,7 +156,7 @@
       color: #fbbf24; border-radius: 20px; padding: 4px 12px; font-size: 0.78rem; font-weight: 600;
     }
 
-    /* MAP PANEL — position:fixed, от низа nav до низа экрана */
+    /* MAP PANEL вЂ” position:fixed, РѕС‚ РЅРёР·Р° nav РґРѕ РЅРёР·Р° СЌРєСЂР°РЅР° */
     body:has(#panel-map.active) { overflow: hidden; }
 
     body:has(#panel-map.active) #panel-map.active {
@@ -238,7 +238,7 @@
     }
     #map-img { display: block; width: auto; height: auto; pointer-events: none; user-select: none; }
 
-    /* Markers — overlay поверх canvas, позиция пересчитывается JS, размер не меняется */
+    /* Markers вЂ” overlay РїРѕРІРµСЂС… canvas, РїРѕР·РёС†РёСЏ РїРµСЂРµСЃС‡РёС‚С‹РІР°РµС‚СЃСЏ JS, СЂР°Р·РјРµСЂ РЅРµ РјРµРЅСЏРµС‚СЃСЏ */
     #map-markers {
       position: absolute; inset: 0; pointer-events: none; z-index: 10; overflow: visible;
     }
@@ -390,7 +390,7 @@
 
     .muted { color: var(--text2); font-size: 0.88rem; line-height: 1.5; }
 
-    /* Аккаунт: одна поверхность (Linear / Vercel-style settings), без «коробок в коробках» */
+    /* РђРєРєР°СѓРЅС‚: РѕРґРЅР° РїРѕРІРµСЂС…РЅРѕСЃС‚СЊ (Linear / Vercel-style settings), Р±РµР· В«РєРѕСЂРѕР±РѕРє РІ РєРѕСЂРѕР±РєР°С…В» */
     #panel-account.active { padding: 0; }
     .account-sheet {
       border-radius: 16px;
@@ -418,7 +418,7 @@
     }
     .account-handle { font-size: 0.9rem; color: var(--text2); margin: 0; }
 
-    /* Настройки / inline-edit строка */
+    /* РќР°СЃС‚СЂРѕР№РєРё / inline-edit СЃС‚СЂРѕРєР° */
     .setting-row {
       display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
       padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.05);
@@ -437,7 +437,7 @@
     }
     .setting-row__input:focus { border-color: var(--accent); }
 
-    /* Единая система бейджей */
+    /* Р•РґРёРЅР°СЏ СЃРёСЃС‚РµРјР° Р±РµР№РґР¶РµР№ */
     .dash-badge {
       display: inline-flex; align-items: center; justify-content: center;
       padding: 5px 12px; border-radius: 8px;
@@ -466,7 +466,7 @@
       border-color: rgba(255, 107, 53, 0.28);
     }
 
-    /* Кнопки — один набор */
+    /* РљРЅРѕРїРєРё вЂ” РѕРґРёРЅ РЅР°Р±РѕСЂ */
     .dash-btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       padding: 10px 18px; border-radius: 10px;
@@ -498,7 +498,7 @@
     .dash-btn--danger:hover { background: rgba(239, 68, 68, 0.22); color: #fff; border-color: #ef4444; }
     .dash-btn--danger[disabled] { opacity: .55; cursor: progress; }
 
-    /* Legacy таблица серверов — оставлена на случай fallback-рендера, но не используется. */
+    /* Legacy С‚Р°Р±Р»РёС†Р° СЃРµСЂРІРµСЂРѕРІ вЂ” РѕСЃС‚Р°РІР»РµРЅР° РЅР° СЃР»СѓС‡Р°Р№ fallback-СЂРµРЅРґРµСЂР°, РЅРѕ РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ. */
     .rust-srv-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin-top: 4px; }
     .rust-srv-table th, .rust-srv-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; }
     .rust-srv-table th { color: var(--text2); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
@@ -519,7 +519,7 @@
     .rust-guild-card__name strong { font-size: 0.95rem; color: var(--text); }
     .rust-guild-card__inactive-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 
-    /* ---------- Карточный список запэйренных серверов ---------- */
+    /* ---------- РљР°СЂС‚РѕС‡РЅС‹Р№ СЃРїРёСЃРѕРє Р·Р°РїСЌР№СЂРµРЅРЅС‹С… СЃРµСЂРІРµСЂРѕРІ ---------- */
     .rust-srv-block { margin-top: 4px; }
     .rust-srv-block__head {
       display: flex; align-items: center; justify-content: space-between;
@@ -589,7 +589,7 @@
     }
     .rust-srv-card__meta .ip { color: var(--text); }
 
-    /* ---------- Тоггл «Авто-переключение» ---------- */
+    /* ---------- РўРѕРіРіР» В«РђРІС‚Рѕ-РїРµСЂРµРєР»СЋС‡РµРЅРёРµВ» ---------- */
     .rust-toggle {
       display: inline-flex; align-items: center; gap: 8px;
       cursor: pointer; user-select: none;
@@ -675,8 +675,8 @@
       border-color: rgba(255, 107, 53, 0.55);
       box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.12);
     }
-    /* Фиксируем тёмный попап со списком option (иначе в части браузеров
-       выпадающий список рендерится белым на белом). */
+    /* Р¤РёРєСЃРёСЂСѓРµРј С‚С‘РјРЅС‹Р№ РїРѕРїР°Рї СЃРѕ СЃРїРёСЃРєРѕРј option (РёРЅР°С‡Рµ РІ С‡Р°СЃС‚Рё Р±СЂР°СѓР·РµСЂРѕРІ
+       РІС‹РїР°РґР°СЋС‰РёР№ СЃРїРёСЃРѕРє СЂРµРЅРґРµСЂРёС‚СЃСЏ Р±РµР»С‹Рј РЅР° Р±РµР»РѕРј). */
     .dash-select option,
     .dash-select optgroup {
       background-color: #111318;
@@ -706,7 +706,7 @@
       font-size: 0.8125rem; font-weight: 600; color: var(--text2);
     }
 
-    /* Одна и та же галочка (иконка) */
+    /* РћРґРЅР° Рё С‚Р° Р¶Рµ РіР°Р»РѕС‡РєР° (РёРєРѕРЅРєР°) */
     .ui-icon-check {
       width: 20px; height: 20px; flex-shrink: 0;
       fill: none;
@@ -936,12 +936,12 @@
     .notify-switch input:focus-visible + .notify-slider { outline: 2px solid var(--accent); outline-offset: 2px; }
 
     /* =====================================================================
-       ADMIN · SERVER DIRECTORY
-       Единое представление: гильдии автоматически группируются по
-       физическому Rust-серверу (ip:port). Без тумблеров, без «режимов».
-       - Solo-сервер (1 гильдия) — карточка-строка без раскрытия.
-       - Shared-сервер (2+ гильдий) — раскрывающаяся карточка с оранжевым
-         акцентом; все гильдии на нём видны в виде плоского списка строк.
+       ADMIN В· SERVER DIRECTORY
+       Р•РґРёРЅРѕРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ: РіРёР»СЊРґРёРё Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РіСЂСѓРїРїРёСЂСѓСЋС‚СЃСЏ РїРѕ
+       С„РёР·РёС‡РµСЃРєРѕРјСѓ Rust-СЃРµСЂРІРµСЂСѓ (ip:port). Р‘РµР· С‚СѓРјР±Р»РµСЂРѕРІ, Р±РµР· В«СЂРµР¶РёРјРѕРІВ».
+       - Solo-СЃРµСЂРІРµСЂ (1 РіРёР»СЊРґРёСЏ) вЂ” РєР°СЂС‚РѕС‡РєР°-СЃС‚СЂРѕРєР° Р±РµР· СЂР°СЃРєСЂС‹С‚РёСЏ.
+       - Shared-СЃРµСЂРІРµСЂ (2+ РіРёР»СЊРґРёР№) вЂ” СЂР°СЃРєСЂС‹РІР°СЋС‰Р°СЏСЃСЏ РєР°СЂС‚РѕС‡РєР° СЃ РѕСЂР°РЅР¶РµРІС‹Рј
+         Р°РєС†РµРЅС‚РѕРј; РІСЃРµ РіРёР»СЊРґРёРё РЅР° РЅС‘Рј РІРёРґРЅС‹ РІ РІРёРґРµ РїР»РѕСЃРєРѕРіРѕ СЃРїРёСЃРєР° СЃС‚СЂРѕРє.
        ===================================================================== */
 
     .guilds-section { display: flex; flex-direction: column; gap: 0; }
@@ -995,9 +995,9 @@
       color: var(--text2); font-size: .9rem;
     }
 
-    /* Server card = ОДНА рамка с цветным рельсом слева на всю высоту.
-       Solo и shared — один и тот же визуальный шаблон, меняется только
-       акцент и поведение (раскрытие у shared). */
+    /* Server card = РћР”РќРђ СЂР°РјРєР° СЃ С†РІРµС‚РЅС‹Рј СЂРµР»СЊСЃРѕРј СЃР»РµРІР° РЅР° РІСЃСЋ РІС‹СЃРѕС‚Сѓ.
+       Solo Рё shared вЂ” РѕРґРёРЅ Рё С‚РѕС‚ Р¶Рµ РІРёР·СѓР°Р»СЊРЅС‹Р№ С€Р°Р±Р»РѕРЅ, РјРµРЅСЏРµС‚СЃСЏ С‚РѕР»СЊРєРѕ
+       Р°РєС†РµРЅС‚ Рё РїРѕРІРµРґРµРЅРёРµ (СЂР°СЃРєСЂС‹С‚РёРµ Сѓ shared). */
     .srv-card {
       position: relative;
       background: rgba(255,255,255,.022);
@@ -1082,8 +1082,8 @@
     .srv-card--shared > .srv-body { border-top-color: rgba(255,107,53,.15); }
     /* For solo server cards <details> is not used; body always visible */
 
-    /* Guild row — полностью плоская, НЕТ собственной рамки или фона.
-       Делится только hairline-бордером сверху. */
+    /* Guild row вЂ” РїРѕР»РЅРѕСЃС‚СЊСЋ РїР»РѕСЃРєР°СЏ, РќР•Рў СЃРѕР±СЃС‚РІРµРЅРЅРѕР№ СЂР°РјРєРё РёР»Рё С„РѕРЅР°.
+       Р”РµР»РёС‚СЃСЏ С‚РѕР»СЊРєРѕ hairline-Р±РѕСЂРґРµСЂРѕРј СЃРІРµСЂС…Сѓ. */
     .srv-row {
       position: relative;
       display: grid;
@@ -1162,7 +1162,7 @@
     }
     .srv-row__team-details summary::-webkit-details-marker { display: none; }
     .srv-row__team-details summary::before {
-      content: '?'; color: var(--text2);
+      content: 'в–ё'; color: var(--text2);
       transition: transform .15s;
     }
     .srv-row__team-details[open] summary::before { transform: rotate(90deg); }
@@ -1195,7 +1195,7 @@
       word-break: break-word;
     }
 
-    /* ===== Stat-tiles для «Полной админ-панели» ===== */
+    /* ===== Stat-tiles РґР»СЏ В«РџРѕР»РЅРѕР№ Р°РґРјРёРЅ-РїР°РЅРµР»РёВ» ===== */
     .admin-stat-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -1301,9 +1301,9 @@
     }
 
     /* ================================================================
-       ADMIN PANEL · unified section design (no box-in-box).
-       Внешняя рамка — только у .card админ-панели. Внутри: секции с
-       акцентным заголовком-рельсом и «плоским» телом без рамки.
+       ADMIN PANEL В· unified section design (no box-in-box).
+       Р’РЅРµС€РЅСЏСЏ СЂР°РјРєР° вЂ” С‚РѕР»СЊРєРѕ Сѓ .card Р°РґРјРёРЅ-РїР°РЅРµР»Рё. Р’РЅСѓС‚СЂРё: СЃРµРєС†РёРё СЃ
+       Р°РєС†РµРЅС‚РЅС‹Рј Р·Р°РіРѕР»РѕРІРєРѕРј-СЂРµР»СЊСЃРѕРј Рё В«РїР»РѕСЃРєРёРјВ» С‚РµР»РѕРј Р±РµР· СЂР°РјРєРё.
        ================================================================ */
     .admin-panel-card { padding: 0; overflow: hidden; }
     .admin-panel-card > .card-header {
@@ -1346,10 +1346,10 @@
       color: var(--text2); letter-spacing: .02em; text-transform: none;
     }
 
-    /* Первая секция — overview — статы идут сразу, без заголовка */
+    /* РџРµСЂРІР°СЏ СЃРµРєС†РёСЏ вЂ” overview вЂ” СЃС‚Р°С‚С‹ РёРґСѓС‚ СЃСЂР°Р·Сѓ, Р±РµР· Р·Р°РіРѕР»РѕРІРєР° */
     .admin-panel-section--overview .admin-stat-grid { margin-top: 0; }
 
-    /* Таблица команд — без внешней рамки, только горизонтальные разделители */
+    /* РўР°Р±Р»РёС†Р° РєРѕРјР°РЅРґ вЂ” Р±РµР· РІРЅРµС€РЅРµР№ СЂР°РјРєРё, С‚РѕР»СЊРєРѕ РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅС‹Рµ СЂР°Р·РґРµР»РёС‚РµР»Рё */
     .admin-panel-table-wrap {
       max-height: 280px; overflow: auto;
       border-radius: 10px;
@@ -1377,7 +1377,7 @@
     .admin-panel-table tbody tr:last-child td { border-bottom: 0; }
     .admin-panel-table tbody tr:hover td { background: rgba(255,255,255,.02); }
 
-    /* DB-счётчики — плоский блок без рамки */
+    /* DB-СЃС‡С‘С‚С‡РёРєРё вЂ” РїР»РѕСЃРєРёР№ Р±Р»РѕРє Р±РµР· СЂР°РјРєРё */
     .admin-panel-pre {
       white-space: pre-wrap;
       background: rgba(255,255,255,.02);
@@ -1389,7 +1389,7 @@
       color: var(--text);
     }
 
-    /* Кастомные скроллбары для оставшихся внутренних скролл-зон */
+    /* РљР°СЃС‚РѕРјРЅС‹Рµ СЃРєСЂРѕР»Р»Р±Р°СЂС‹ РґР»СЏ РѕСЃС‚Р°РІС€РёС…СЃСЏ РІРЅСѓС‚СЂРµРЅРЅРёС… СЃРєСЂРѕР»Р»-Р·РѕРЅ */
     .admin-panel-table-wrap::-webkit-scrollbar,
     .admin-panel-pre::-webkit-scrollbar { width: 10px; height: 10px; }
     .admin-panel-table-wrap::-webkit-scrollbar-thumb,
@@ -1398,7 +1398,7 @@
       border-radius: 6px;
     }
 
-    /* ========== Site DB (rust_users) — удобный поиск+раскрытие ========== */
+    /* ========== Site DB (rust_users) вЂ” СѓРґРѕР±РЅС‹Р№ РїРѕРёСЃРє+СЂР°СЃРєСЂС‹С‚РёРµ ========== */
     .admin-panel-site-db { margin-top: 4px; }
     .admin-panel-site-db__head {
       display: flex; align-items: center; justify-content: space-between;
@@ -1504,7 +1504,7 @@
     .fcm-badge--error    { background: rgba(239,68,68,.15);  color: #fca5a5; }
     .fcm-badge--unlinked { background: rgba(107,114,128,.18); color: var(--text2); }
 
-    /* Мини-бейдж для активного сокета (зелёная точка) */
+    /* РњРёРЅРё-Р±РµР№РґР¶ РґР»СЏ Р°РєС‚РёРІРЅРѕРіРѕ СЃРѕРєРµС‚Р° (Р·РµР»С‘РЅР°СЏ С‚РѕС‡РєР°) */
     .socket-dot {
       display: inline-block; width: 7px; height: 7px; border-radius: 50%;
       background: #34d399; box-shadow: 0 0 0 2px rgba(52,211,153,.18);
@@ -1595,7 +1595,7 @@
       border-color: rgba(52,211,153,.5);
     }
 
-    /* ========== Rust+ server tab — картинка + метаданные из pairing ========== */
+    /* ========== Rust+ server tab вЂ” РєР°СЂС‚РёРЅРєР° + РјРµС‚Р°РґР°РЅРЅС‹Рµ РёР· pairing ========== */
     .srv-head {
       grid-template-columns: 16px 72px minmax(0, 1fr) auto auto !important;
     }
@@ -1637,7 +1637,7 @@
       background: rgba(255,255,255,.05);
     }
 
-    /* ========== Вкладка «Команда» — live team status ========== */
+    /* ========== Р’РєР»Р°РґРєР° В«РљРѕРјР°РЅРґР°В» вЂ” live team status ========== */
     .team-panel__controls {
       display: inline-flex; align-items: center; gap: 10px;
       font-size: .82rem;
@@ -1771,15 +1771,15 @@
     <img id="nav-avatar" src="" alt="avatar"/>
     <span id="nav-username"></span>
     <button type="button" class="nav-refresh" id="btn-nav-refresh"
-            title="Обновить данные (без перелогина)">
+            title="РћР±РЅРѕРІРёС‚СЊ РґР°РЅРЅС‹Рµ (Р±РµР· РїРµСЂРµР»РѕРіРёРЅР°)">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M21 12a9 9 0 1 1-3.5-7.1"/>
         <polyline points="21 4 21 10 15 10"/>
       </svg>
-      <span class="nav-refresh__label">Обновить</span>
+      <span class="nav-refresh__label">РћР±РЅРѕРІРёС‚СЊ</span>
     </button>
-    <a class="nav-logout" href="#" id="btn-logout">Выйти</a>
+    <a class="nav-logout" href="#" id="btn-logout">Р’С‹Р№С‚Рё</a>
   </div>
 </nav>
 
@@ -1787,7 +1787,7 @@
   <!-- LOADING -->
   <div id="loading">
     <div class="spinner"></div>
-    <p style="color:var(--text2)">Загрузка...</p>
+    <p style="color:var(--text2)">Р—Р°РіСЂСѓР·РєР°...</p>
   </div>
 
   <!-- NOT LOGGED IN -->
@@ -1800,43 +1800,43 @@
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       </div>
       <div class="team-notice__text">
-        <strong>RustInfo работает для всей вашей команды</strong>
-        <span>1 подключение — для всех тиммейтов сразу</span>
+        <strong>RustInfo СЂР°Р±РѕС‚Р°РµС‚ РґР»СЏ РІСЃРµР№ РІР°С€РµР№ РєРѕРјР°РЅРґС‹</strong>
+        <span>1 РїРѕРґРєР»СЋС‡РµРЅРёРµ вЂ” РґР»СЏ РІСЃРµС… С‚РёРјРјРµР№С‚РѕРІ СЃСЂР°Р·Сѓ</span>
       </div>
     </div>
 
     <div class="beta-notice">
       <div class="beta-notice__header">
-        <span class="beta-notice__badge">? ТЕСТОВЫЙ РЕЖИМ</span>
-        <p class="beta-notice__title">Бот находится в разработке</p>
+        <span class="beta-notice__badge">вљ  РўР•РЎРўРћР’Р«Р™ Р Р•Р–РРњ</span>
+        <p class="beta-notice__title">Р‘РѕС‚ РЅР°С…РѕРґРёС‚СЃСЏ РІ СЂР°Р·СЂР°Р±РѕС‚РєРµ</p>
       </div>
       <p class="beta-notice__body">
-        Часть функционала ещё в разработке и может работать нестабильно.<br>
-        Чтобы начать пользоваться ботом, выполните несколько шагов:
+        Р§Р°СЃС‚СЊ С„СѓРЅРєС†РёРѕРЅР°Р»Р° РµС‰С‘ РІ СЂР°Р·СЂР°Р±РѕС‚РєРµ Рё РјРѕР¶РµС‚ СЂР°Р±РѕС‚Р°С‚СЊ РЅРµСЃС‚Р°Р±РёР»СЊРЅРѕ.<br>
+        Р§С‚РѕР±С‹ РЅР°С‡Р°С‚СЊ РїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ Р±РѕС‚РѕРј, РІС‹РїРѕР»РЅРёС‚Рµ РЅРµСЃРєРѕР»СЊРєРѕ С€Р°РіРѕРІ:
       </p>
       <div class="beta-notice__step">
         <span class="beta-notice__step-num">1</span>
-        <span>Вступите в наше Discord-сообщество по ссылке ниже</span>
+        <span>Р’СЃС‚СѓРїРёС‚Рµ РІ РЅР°С€Рµ Discord-СЃРѕРѕР±С‰РµСЃС‚РІРѕ РїРѕ СЃСЃС‹Р»РєРµ РЅРёР¶Рµ</span>
       </div>
       <div class="beta-notice__step">
         <span class="beta-notice__step-num">2</span>
-        <span>В чате введите команду <code style="background:rgba(88,101,242,.18);padding:1px 7px;border-radius:5px;font-size:.83rem;color:#a5b4fc">!tester</code> — получите роль Тестера и инструкцию по подключению</span>
+        <span>Р’ С‡Р°С‚Рµ РІРІРµРґРёС‚Рµ РєРѕРјР°РЅРґСѓ <code style="background:rgba(88,101,242,.18);padding:1px 7px;border-radius:5px;font-size:.83rem;color:#a5b4fc">!tester</code> вЂ” РїРѕР»СѓС‡РёС‚Рµ СЂРѕР»СЊ РўРµСЃС‚РµСЂР° Рё РёРЅСЃС‚СЂСѓРєС†РёСЋ РїРѕ РїРѕРґРєР»СЋС‡РµРЅРёСЋ</span>
       </div>
       <a class="beta-notice__discord-link" href="https://discord.gg/w32aWRxNxJ" target="_blank" rel="noreferrer" style="align-self:center;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-        Присоединиться к Discord
+        РџСЂРёСЃРѕРµРґРёРЅРёС‚СЊСЃСЏ Рє Discord
       </a>
     </div>
 
     </div><!-- /.login-notices -->
 
-    <div class="login-divider"><span>после</span></div>
+    <div class="login-divider"><span>РїРѕСЃР»Рµ</span></div>
 
-    <h2 style="margin-bottom:12px" id="error-title">Необходима авторизация</h2>
-    <p style="color:var(--text2);margin-bottom:24px;white-space:pre-wrap" id="error-text">Войдите через Discord чтобы открыть панель управления.</p>
+    <h2 style="margin-bottom:12px" id="error-title">РќРµРѕР±С…РѕРґРёРјР° Р°РІС‚РѕСЂРёР·Р°С†РёСЏ</h2>
+    <p style="color:var(--text2);margin-bottom:24px;white-space:pre-wrap" id="error-text">Р’РѕР№РґРёС‚Рµ С‡РµСЂРµР· Discord С‡С‚РѕР±С‹ РѕС‚РєСЂС‹С‚СЊ РїР°РЅРµР»СЊ СѓРїСЂР°РІР»РµРЅРёСЏ.</p>
     <a id="btn-login-big" href="#" class="btn btn-accent">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-      Авторизироваться
+      РђРІС‚РѕСЂРёР·РёСЂРѕРІР°С‚СЊСЃСЏ
     </a>
   </div>
 
@@ -1844,79 +1844,79 @@
   <div id="dashboard">
     <div class="dashboard-header">
       <div class="header-text">
-        <h1>Панель управления</h1>
-        <p class="subtitle">Аккаунт, Rust+, уведомления и команды — разделы слева</p>
+        <h1>РџР°РЅРµР»СЊ СѓРїСЂР°РІР»РµРЅРёСЏ</h1>
+        <p class="subtitle">РђРєРєР°СѓРЅС‚, Rust+, СѓРІРµРґРѕРјР»РµРЅРёСЏ Рё РєРѕРјР°РЅРґС‹ вЂ” СЂР°Р·РґРµР»С‹ СЃР»РµРІР°</p>
       </div>
       <a class="dash-btn dash-btn--discord" href="https://discord.gg/zTdZq9fQ5k" target="_blank" rel="noreferrer">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-        Есть вопросы? Наш Discord
+        Р•СЃС‚СЊ РІРѕРїСЂРѕСЃС‹? РќР°С€ Discord
       </a>
     </div>
 
     <div class="dashboard-body">
       <aside class="dash-sidebar">
-        <nav class="dash-nav" aria-label="Разделы панели">
-          <button type="button" class="dash-nav-btn active" data-panel="account">Аккаунт</button>
-          <button type="button" class="dash-nav-btn" data-panel="rust">Rust+ и сервер</button>
-          <button type="button" class="dash-nav-btn" data-panel="team">Команда</button>
-          <button type="button" class="dash-nav-btn" data-panel="commands">Команды</button>
-          <div class="dash-nav-label">?? В разработке</div>
-          <button type="button" class="dash-nav-btn sub" data-panel="map">??? Карта</button>
-          <button type="button" class="dash-nav-btn sub dash-nav-btn--wip" data-panel="notify-game">?? Уведомления</button>
-          <button type="button" class="dash-nav-btn sub dash-nav-btn--wip" data-panel="notify-discord">?? Discord</button>
-          <button type="button" class="dash-nav-btn" data-panel="admin" id="nav-admin-btn" style="display:none">Админ панель</button>
+        <nav class="dash-nav" aria-label="Р Р°Р·РґРµР»С‹ РїР°РЅРµР»Рё">
+          <button type="button" class="dash-nav-btn active" data-panel="account">РђРєРєР°СѓРЅС‚</button>
+          <button type="button" class="dash-nav-btn" data-panel="rust">Rust+ Рё СЃРµСЂРІРµСЂ</button>
+          <button type="button" class="dash-nav-btn" data-panel="team">РљРѕРјР°РЅРґР°</button>
+          <button type="button" class="dash-nav-btn" data-panel="commands">РљРѕРјР°РЅРґС‹</button>
+          <div class="dash-nav-label">рџљ§ Р’ СЂР°Р·СЂР°Р±РѕС‚РєРµ</div>
+          <button type="button" class="dash-nav-btn sub" data-panel="map">рџ—єпёЏ РљР°СЂС‚Р°</button>
+          <button type="button" class="dash-nav-btn sub dash-nav-btn--wip" data-panel="notify-game">рџ”” РЈРІРµРґРѕРјР»РµРЅРёСЏ</button>
+          <button type="button" class="dash-nav-btn sub dash-nav-btn--wip" data-panel="notify-discord">рџ’¬ Discord</button>
+          <button type="button" class="dash-nav-btn" data-panel="admin" id="nav-admin-btn" style="display:none">РђРґРјРёРЅ РїР°РЅРµР»СЊ</button>
         </nav>
       </aside>
 
       <div class="dash-panels">
-        <!-- PANEL: аккаунт -->
+        <!-- PANEL: Р°РєРєР°СѓРЅС‚ -->
         <div id="panel-account" class="dash-panel active" role="tabpanel">
           <div class="account-sheet" id="account-card">
-            <header class="account-profile" aria-label="Профиль">
+            <header class="account-profile" aria-label="РџСЂРѕС„РёР»СЊ">
               <img id="profile-avatar" src="" alt="" class="account-avatar-img" width="80" height="80"/>
               <div class="account-profile-text">
                 <p class="account-name" id="profile-username"></p>
                 <p class="account-handle" id="profile-discord-id" style="font-family:ui-monospace,Consolas,monospace;font-size:0.8rem;color:var(--text2);margin:0"></p>
-                <p id="profile-registered-row" style="display:none;font-size:0.75rem;color:var(--text2);margin:2px 0 0">В панели с <span id="profile-registered">—</span></p>
+                <p id="profile-registered-row" style="display:none;font-size:0.75rem;color:var(--text2);margin:2px 0 0">Р’ РїР°РЅРµР»Рё СЃ <span id="profile-registered">вЂ”</span></p>
               </div>
-              <span class="dash-badge dash-badge--ok">Авторизован</span>
+              <span class="dash-badge dash-badge--ok">РђРІС‚РѕСЂРёР·РѕРІР°РЅ</span>
             </header>
 
             <hr class="dash-sep"/>
 
-            <!-- Rust+ · FCM и серверы — основная рабочая зона, на верх. -->
+            <!-- Rust+ В· FCM Рё СЃРµСЂРІРµСЂС‹ вЂ” РѕСЃРЅРѕРІРЅР°СЏ СЂР°Р±РѕС‡Р°СЏ Р·РѕРЅР°, РЅР° РІРµСЂС…. -->
             <section class="dash-section" id="rust-account-v2" aria-labelledby="acc-block-rust2">
-              <h2 class="dash-section-title" id="acc-block-rust2">Rust+ · FCM и серверы</h2>
+              <h2 class="dash-section-title" id="acc-block-rust2">Rust+ В· FCM Рё СЃРµСЂРІРµСЂС‹</h2>
               <p class="dash-muted" id="rust-v2-scope-msg" style="display:none;margin-bottom:10px"></p>
 
               <div id="rust-v2-fcm-row" class="dash-inline" style="flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px">
-                <span class="dash-badge dash-badge--neutral" id="rust-v2-fcm-badge">—</span>
-                <button type="button" class="dash-btn dash-btn--ghost" id="btn-fcm-retry" style="display:none">Повторить регистрацию FCM</button>
+                <span class="dash-badge dash-badge--neutral" id="rust-v2-fcm-badge">вЂ”</span>
+                <button type="button" class="dash-btn dash-btn--ghost" id="btn-fcm-retry" style="display:none">РџРѕРІС‚РѕСЂРёС‚СЊ СЂРµРіРёСЃС‚СЂР°С†РёСЋ FCM</button>
               </div>
 
-              <!-- Серверы юзера: карточный список с переключателем авто-режима -->
+              <!-- РЎРµСЂРІРµСЂС‹ СЋР·РµСЂР°: РєР°СЂС‚РѕС‡РЅС‹Р№ СЃРїРёСЃРѕРє СЃ РїРµСЂРµРєР»СЋС‡Р°С‚РµР»РµРј Р°РІС‚Рѕ-СЂРµР¶РёРјР° -->
               <div class="rust-srv-block">
                 <div class="rust-srv-block__head">
-                  <h3 class="rust-srv-block__title">Запэйренные серверы</h3>
-                  <label class="rust-toggle" id="rust-auto-toggle-wrap" title="Автоматически переключать активный сервер на свежезапэйренный из игры">
+                  <h3 class="rust-srv-block__title">Р—Р°РїСЌР№СЂРµРЅРЅС‹Рµ СЃРµСЂРІРµСЂС‹</h3>
+                  <label class="rust-toggle" id="rust-auto-toggle-wrap" title="РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё РїРµСЂРµРєР»СЋС‡Р°С‚СЊ Р°РєС‚РёРІРЅС‹Р№ СЃРµСЂРІРµСЂ РЅР° СЃРІРµР¶РµР·Р°РїСЌР№СЂРµРЅРЅС‹Р№ РёР· РёРіСЂС‹">
                     <input type="checkbox" id="rust-auto-toggle"/>
                     <span class="rust-toggle__track"><span class="rust-toggle__thumb"></span></span>
-                    <span class="rust-toggle__label">Авто-переключение</span>
+                    <span class="rust-toggle__label">РђРІС‚Рѕ-РїРµСЂРµРєР»СЋС‡РµРЅРёРµ</span>
                   </label>
                 </div>
-                <p class="dash-muted rust-srv-block__hint" id="rust-srv-hint">Бот использует сервер, отмеченный как «активный».</p>
+                <p class="dash-muted rust-srv-block__hint" id="rust-srv-hint">Р‘РѕС‚ РёСЃРїРѕР»СЊР·СѓРµС‚ СЃРµСЂРІРµСЂ, РѕС‚РјРµС‡РµРЅРЅС‹Р№ РєР°Рє В«Р°РєС‚РёРІРЅС‹Р№В».</p>
                 <div id="rust-v2-servers" class="rust-srv-grid"></div>
               </div>
 
-              <!-- Discord-подключение: в разработке -->
+              <!-- Discord-РїРѕРґРєР»СЋС‡РµРЅРёРµ: РІ СЂР°Р·СЂР°Р±РѕС‚РєРµ -->
               <div style="margin-top:22px;display:flex;align-items:center;gap:10px;margin-bottom:8px">
-                <h3 class="rust-srv-block__title" style="margin:0">Подключение Discord</h3>
-                <span class="dash-badge" style="background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.3);font-size:.7rem;padding:2px 8px;border-radius:6px">В разработке</span>
+                <h3 class="rust-srv-block__title" style="margin:0">РџРѕРґРєР»СЋС‡РµРЅРёРµ Discord</h3>
+                <span class="dash-badge" style="background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.3);font-size:.7rem;padding:2px 8px;border-radius:6px">Р’ СЂР°Р·СЂР°Р±РѕС‚РєРµ</span>
               </div>
               <div style="opacity:.45;pointer-events:none;user-select:none" aria-disabled="true">
                 <p class="dash-muted" style="font-size:0.85rem;margin:0 0 12px">
-                  Серверы Discord, где у вас есть права администратора. Кнопка «Использовать» привязывает гильдию к боту,
-                  «Пригласить» добавляет бота на сервер.
+                  РЎРµСЂРІРµСЂС‹ Discord, РіРґРµ Сѓ РІР°СЃ РµСЃС‚СЊ РїСЂР°РІР° Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР°. РљРЅРѕРїРєР° В«РСЃРїРѕР»СЊР·РѕРІР°С‚СЊВ» РїСЂРёРІСЏР·С‹РІР°РµС‚ РіРёР»СЊРґРёСЋ Рє Р±РѕС‚Сѓ,
+                  В«РџСЂРёРіР»Р°СЃРёС‚СЊВ» РґРѕР±Р°РІР»СЏРµС‚ Р±РѕС‚Р° РЅР° СЃРµСЂРІРµСЂ.
                 </p>
                 <div id="rust-v2-oauth-guilds"></div>
               </div>
@@ -1924,14 +1924,14 @@
 
             <hr class="dash-sep"/>
 
-            <!-- Steam / Rust+: упрощено — только статус и Обновить -->
+            <!-- Steam / Rust+: СѓРїСЂРѕС‰РµРЅРѕ вЂ” С‚РѕР»СЊРєРѕ СЃС‚Р°С‚СѓСЃ Рё РћР±РЅРѕРІРёС‚СЊ -->
             <section class="dash-section" aria-labelledby="acc-block-steam">
               <h2 class="dash-section-title" id="acc-block-steam">Steam / Rust+</h2>
               <div class="dash-inline" style="margin-bottom:10px">
-                <span class="dash-badge dash-badge--neutral" id="token-status-badge">—</span>
+                <span class="dash-badge dash-badge--neutral" id="token-status-badge">вЂ”</span>
                 <a href="#" id="btn-token-refresh" class="dash-btn dash-btn--ghost" style="display:none">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-                  Обновить
+                  РћР±РЅРѕРІРёС‚СЊ
                 </a>
               </div>
               <div id="rust-linked-block" style="display:none">
@@ -1944,53 +1944,53 @@
               </div>
               <div id="rust-not-linked-block">
                 <p class="dash-muted" style="margin-bottom:14px">
-                  Расширение перехватит Rust+ токен после входа через Steam.
+                  Р Р°СЃС€РёСЂРµРЅРёРµ РїРµСЂРµС…РІР°С‚РёС‚ Rust+ С‚РѕРєРµРЅ РїРѕСЃР»Рµ РІС…РѕРґР° С‡РµСЂРµР· Steam.
                 </p>
                 <div class="dash-stack">
                   <a href="#" id="btn-facepunch-link" class="dash-btn dash-btn--primary dash-btn--block">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-                    Через Facepunch
+                    Р§РµСЂРµР· Facepunch
                   </a>
-                  <a href="setup.html" class="dash-btn dash-btn--ghost" style="display:inline-flex;width:fit-content">Инструкция ></a>
+                  <a href="setup.html" class="dash-btn dash-btn--ghost" style="display:inline-flex;width:fit-content">РРЅСЃС‚СЂСѓРєС†РёСЏ в†’</a>
                 </div>
               </div>
-              <!-- Скрытый, но используемый в JS токен-сообщение и expires-блок (не показываем подробности по умолчанию) -->
+              <!-- РЎРєСЂС‹С‚С‹Р№, РЅРѕ РёСЃРїРѕР»СЊР·СѓРµРјС‹Р№ РІ JS С‚РѕРєРµРЅ-СЃРѕРѕР±С‰РµРЅРёРµ Рё expires-Р±Р»РѕРє (РЅРµ РїРѕРєР°Р·С‹РІР°РµРј РїРѕРґСЂРѕР±РЅРѕСЃС‚Рё РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ) -->
               <p class="dash-muted" id="token-status-message" style="display:none"></p>
               <div class="dash-list" style="display:none">
                 <div class="dash-list__row" id="token-expiry-row" style="display:none">
-                  <span class="dash-k">Истекает</span>
-                  <span class="dash-v dash-v--plain" id="token-expires-val">—</span>
+                  <span class="dash-k">РСЃС‚РµРєР°РµС‚</span>
+                  <span class="dash-v dash-v--plain" id="token-expires-val">вЂ”</span>
                 </div>
                 <div class="dash-list__row" id="token-days-row" style="display:none">
-                  <span class="dash-k">Осталось дней</span>
-                  <span class="dash-v" id="token-days-val">—</span>
+                  <span class="dash-k">РћСЃС‚Р°Р»РѕСЃСЊ РґРЅРµР№</span>
+                  <span class="dash-v" id="token-days-val">вЂ”</span>
                 </div>
               </div>
             </section>
 
             <hr class="dash-sep"/>
 
-            <!-- === НАСТРОЙКИ === -->
+            <!-- в•ђв•ђв•ђ РќРђРЎРўР РћР™РљР в•ђв•ђв•ђ -->
             <section class="dash-section" id="account-settings" aria-labelledby="acc-settings-title">
-              <h2 class="dash-section-title" id="acc-settings-title">Настройки</h2>
+              <h2 class="dash-section-title" id="acc-settings-title">РќР°СЃС‚СЂРѕР№РєРё</h2>
               <p class="dash-muted" style="margin:0 0 14px;font-size:.85rem">
-                Настройки применяются к вашему Discord-серверу. Изменения синхронизируются с ботом в реальном времени.
+                РќР°СЃС‚СЂРѕР№РєРё РїСЂРёРјРµРЅСЏСЋС‚СЃСЏ Рє РІР°С€РµРјСѓ Discord-СЃРµСЂРІРµСЂСѓ. РР·РјРµРЅРµРЅРёСЏ СЃРёРЅС…СЂРѕРЅРёР·РёСЂСѓСЋС‚СЃСЏ СЃ Р±РѕС‚РѕРј РІ СЂРµР°Р»СЊРЅРѕРј РІСЂРµРјРµРЅРё.
               </p>
 
               <div class="setting-row">
-                <span class="setting-row__label">Имя бота</span>
-                <span class="setting-row__value" id="bot-prefix-display">…</span>
+                <span class="setting-row__label">РРјСЏ Р±РѕС‚Р°</span>
+                <span class="setting-row__value" id="bot-prefix-display">вЂ¦</span>
                 <button type="button" class="dash-btn dash-btn--ghost setting-row__edit" id="btn-prefix-edit"
-                        style="padding:4px 12px;font-size:.8rem">Изменить</button>
+                        style="padding:4px 12px;font-size:.8rem">РР·РјРµРЅРёС‚СЊ</button>
 
                 <div class="setting-row__input-wrap" id="prefix-input-wrap">
                   <input type="text" id="bot-prefix-input" class="setting-row__input"
                          placeholder="[rustinfo.online]" maxlength="32"
-                         aria-label="Имя бота (игровой префикс)"/>
+                         aria-label="РРјСЏ Р±РѕС‚Р° (РёРіСЂРѕРІРѕР№ РїСЂРµС„РёРєСЃ)"/>
                   <button type="button" class="dash-btn dash-btn--primary" id="btn-prefix-save"
-                          style="padding:5px 14px;font-size:.8rem">Сохранить</button>
+                          style="padding:5px 14px;font-size:.8rem">РЎРѕС…СЂР°РЅРёС‚СЊ</button>
                   <button type="button" class="dash-btn dash-btn--ghost" id="btn-prefix-cancel"
-                          style="padding:5px 12px;font-size:.8rem">Отмена</button>
+                          style="padding:5px 12px;font-size:.8rem">РћС‚РјРµРЅР°</button>
                 </div>
                 <p class="dash-muted" id="prefix-save-msg" style="flex:1 0 100%;font-size:.8rem;margin:4px 0 0;display:none"></p>
               </div>
@@ -1999,12 +1999,12 @@
             <hr class="dash-sep"/>
 
             <section class="dash-section" id="account-self-disable" style="display:none" aria-labelledby="acc-self-disable-title">
-              <h2 class="dash-section-title" id="acc-self-disable-title">Опасная зона</h2>
+              <h2 class="dash-section-title" id="acc-self-disable-title">РћРїР°СЃРЅР°СЏ Р·РѕРЅР°</h2>
               <p class="dash-muted" style="margin:0 0 12px;font-size:.85rem;max-width:560px">
-                Отключить FCM и Rust+ сокет и заблокировать автоматическое восстановление после перезапуска бота.
+                РћС‚РєР»СЋС‡РёС‚СЊ FCM Рё Rust+ СЃРѕРєРµС‚ Рё Р·Р°Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРµ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ РїРѕСЃР»Рµ РїРµСЂРµР·Р°РїСѓСЃРєР° Р±РѕС‚Р°.
               </p>
               <button type="button" class="dash-btn dash-btn--danger" id="btn-account-disable-forever">
-                Отключить навсегда
+                РћС‚РєР»СЋС‡РёС‚СЊ РЅР°РІСЃРµРіРґР°
               </button>
               <p class="dash-muted" id="account-disable-forever-note" style="margin-top:10px;font-size:.85rem;display:none;max-width:560px"></p>
             </section>
@@ -2020,15 +2020,15 @@
               <div class="server-card-content">
                 <div class="card-header">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v8H4z"/><path d="M4 14h16"/><circle cx="6" cy="17" r="1"/><circle cx="10" cy="17" r="1"/></svg>
-                  Сервер Rust
+                  РЎРµСЂРІРµСЂ Rust
                 </div>
                 <div id="server-content">
-                  <div class="info-row"><span class="info-label">Название</span><span class="info-value" id="server-name">—</span></div>
-                  <div class="info-row"><span class="info-label">Адрес</span><span class="info-value" id="server-address">—</span></div>
-                  <div class="info-row"><span class="info-label">Игроки</span><span class="info-value" id="server-players">—</span></div>
-                  <div class="info-row"><span class="info-label">Размер карты</span><span class="info-value" id="server-size">—</span></div>
+                  <div class="info-row"><span class="info-label">РќР°Р·РІР°РЅРёРµ</span><span class="info-value" id="server-name">вЂ”</span></div>
+                  <div class="info-row"><span class="info-label">РђРґСЂРµСЃ</span><span class="info-value" id="server-address">вЂ”</span></div>
+                  <div class="info-row"><span class="info-label">РРіСЂРѕРєРё</span><span class="info-value" id="server-players">вЂ”</span></div>
+                  <div class="info-row"><span class="info-label">Р Р°Р·РјРµСЂ РєР°СЂС‚С‹</span><span class="info-value" id="server-size">вЂ”</span></div>
                   <div id="server-team-block" style="display:none;margin-top:12px">
-                    <div class="info-label" style="margin-bottom:8px">Команда</div>
+                    <div class="info-label" style="margin-bottom:8px">РљРѕРјР°РЅРґР°</div>
                     <ul id="server-team-list" style="list-style:none;padding:0"></ul>
                   </div>
                 </div>
@@ -2044,26 +2044,26 @@
             <div class="card-header" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
               <span style="display:inline-flex;align-items:center;gap:8px">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                Команда Rust+
+                РљРѕРјР°РЅРґР° Rust+
               </span>
               <div class="team-panel__controls">
-                <label class="team-panel__toggle" title="Обновлять каждые 5 секунд">
+                <label class="team-panel__toggle" title="РћР±РЅРѕРІР»СЏС‚СЊ РєР°Р¶РґС‹Рµ 5 СЃРµРєСѓРЅРґ">
                   <input type="checkbox" id="team-auto-refresh"/>
-                  <span>Авто-обновление</span>
+                  <span>РђРІС‚Рѕ-РѕР±РЅРѕРІР»РµРЅРёРµ</span>
                 </label>
                 <button type="button" class="dash-btn dash-btn--ghost" id="btn-team-refresh">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-                  Обновить
+                  РћР±РЅРѕРІРёС‚СЊ
                 </button>
               </div>
             </div>
             <p class="muted team-panel__hint" id="team-panel-hint" style="margin-bottom:12px">
-              Список товарищей по команде из Rust+ с их состоянием: онлайн/оффлайн, жив/мёртв.
-              Данные приходят от игрового сервера через активное Rust+ подключение бота.
+              РЎРїРёСЃРѕРє С‚РѕРІР°СЂРёС‰РµР№ РїРѕ РєРѕРјР°РЅРґРµ РёР· Rust+ СЃ РёС… СЃРѕСЃС‚РѕСЏРЅРёРµРј: РѕРЅР»Р°Р№РЅ/РѕС„С„Р»Р°Р№РЅ, Р¶РёРІ/РјС‘СЂС‚РІ.
+              Р”Р°РЅРЅС‹Рµ РїСЂРёС…РѕРґСЏС‚ РѕС‚ РёРіСЂРѕРІРѕРіРѕ СЃРµСЂРІРµСЂР° С‡РµСЂРµР· Р°РєС‚РёРІРЅРѕРµ Rust+ РїРѕРґРєР»СЋС‡РµРЅРёРµ Р±РѕС‚Р°.
             </p>
-            <div class="team-panel__status" id="team-panel-status">—</div>
+            <div class="team-panel__status" id="team-panel-status">вЂ”</div>
             <div class="team-panel__grid" id="team-panel-grid"></div>
-            <p class="muted team-panel__footer" id="team-panel-updated" style="margin-top:12px;font-size:0.78rem">—</p>
+            <p class="muted team-panel__footer" id="team-panel-updated" style="margin-top:12px;font-size:0.78rem">вЂ”</p>
           </div>
         </div>
 
@@ -2073,78 +2073,78 @@
           <div class="card">
             <div class="card-header" style="flex-shrink:0">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
-              Карта сервера
+              РљР°СЂС‚Р° СЃРµСЂРІРµСЂР°
             </div>
 
             <div class="map-toolbar">
               <select id="map-server-select">
-                <option value="">— выберите сервер —</option>
+                <option value="">вЂ” РІС‹Р±РµСЂРёС‚Рµ СЃРµСЂРІРµСЂ вЂ”</option>
               </select>
-              <button type="button" class="btn btn-accent" id="btn-map-load" style="padding:7px 14px;font-size:.85rem">Загрузить</button>
-              <button type="button" class="btn" id="btn-map-refresh" style="padding:7px 14px;font-size:.85rem;display:none" title="Перекачать с сервера (сбросить кеш)">? Обновить</button>
+              <button type="button" class="btn btn-accent" id="btn-map-load" style="padding:7px 14px;font-size:.85rem">Р—Р°РіСЂСѓР·РёС‚СЊ</button>
+              <button type="button" class="btn" id="btn-map-refresh" style="padding:7px 14px;font-size:.85rem;display:none" title="РџРµСЂРµРєР°С‡Р°С‚СЊ СЃ СЃРµСЂРІРµСЂР° (СЃР±СЂРѕСЃРёС‚СЊ РєРµС€)">в†є РћР±РЅРѕРІРёС‚СЊ</button>
               <span class="map-status" id="map-status"></span>
             </div>
 
             <div class="map-panel-layout">
-              <!-- Карта -->
+              <!-- РљР°СЂС‚Р° -->
               <div class="map-panel-left">
                 <div class="map-outer" id="map-outer">
-                  <div class="map-placeholder-msg" id="map-placeholder">Выберите сервер и нажмите «Загрузить»</div>
+                  <div class="map-placeholder-msg" id="map-placeholder">Р’С‹Р±РµСЂРёС‚Рµ СЃРµСЂРІРµСЂ Рё РЅР°Р¶РјРёС‚Рµ В«Р—Р°РіСЂСѓР·РёС‚СЊВ»</div>
                   <div class="map-viewport" id="map-viewport">
                     <div class="map-canvas" id="map-canvas">
-                      <img id="map-img" src="" alt="Карта сервера" draggable="false"/>
+                      <img id="map-img" src="" alt="РљР°СЂС‚Р° СЃРµСЂРІРµСЂР°" draggable="false"/>
                     </div>
-                    <!-- Маркеры вне canvas — фиксированный размер иконок при любом зуме -->
+                    <!-- РњР°СЂРєРµСЂС‹ РІРЅРµ canvas вЂ” С„РёРєСЃРёСЂРѕРІР°РЅРЅС‹Р№ СЂР°Р·РјРµСЂ РёРєРѕРЅРѕРє РїСЂРё Р»СЋР±РѕРј Р·СѓРјРµ -->
                     <div id="map-markers"></div>
                   </div>
                   <div class="map-zoom-btns">
-                    <button class="map-zoom-btn" id="btn-zoom-in" title="Приблизить">+</button>
-                    <button class="map-zoom-btn" id="btn-zoom-out" title="Отдалить">?</button>
-                    <button class="map-zoom-btn" id="btn-zoom-reset" title="Сбросить" style="font-size:.75rem">?</button>
+                    <button class="map-zoom-btn" id="btn-zoom-in" title="РџСЂРёР±Р»РёР·РёС‚СЊ">+</button>
+                    <button class="map-zoom-btn" id="btn-zoom-out" title="РћС‚РґР°Р»РёС‚СЊ">в€’</button>
+                    <button class="map-zoom-btn" id="btn-zoom-reset" title="РЎР±СЂРѕСЃРёС‚СЊ" style="font-size:.75rem">вЉЎ</button>
                   </div>
                 </div>
               </div>
 
-              <!-- Правая панель: магазины -->
+              <!-- РџСЂР°РІР°СЏ РїР°РЅРµР»СЊ: РјР°РіР°Р·РёРЅС‹ -->
               <div class="map-panel-right" id="map-panel-right">
-                <div class="map-sidebar-title">?? Магазины</div>
+                <div class="map-sidebar-title">рџ›’ РњР°РіР°Р·РёРЅС‹</div>
                 <div class="map-search-bar">
-                  <input type="text" id="map-search-input" placeholder="Товар или квадрат (например L20)…" autocomplete="off"/>
+                  <input type="text" id="map-search-input" placeholder="РўРѕРІР°СЂ РёР»Рё РєРІР°РґСЂР°С‚ (РЅР°РїСЂРёРјРµСЂ L20)вЂ¦" autocomplete="off"/>
                 </div>
                 <div class="map-search-results" id="map-search-results">
-                  <p style="font-size:.8rem;color:var(--text2);padding:8px 4px">Загрузите карту для поиска</p>
+                  <p style="font-size:.8rem;color:var(--text2);padding:8px 4px">Р—Р°РіСЂСѓР·РёС‚Рµ РєР°СЂС‚Сѓ РґР»СЏ РїРѕРёСЃРєР°</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- PANEL: notify game (В разработке) -->
+        <!-- PANEL: notify game (Р’ СЂР°Р·СЂР°Р±РѕС‚РєРµ) -->
         <div id="panel-notify-game" class="dash-panel" role="tabpanel">
           <div class="card">
             <div class="card-header">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-              Уведомления в игре
+              РЈРІРµРґРѕРјР»РµРЅРёСЏ РІ РёРіСЂРµ
             </div>
             <div class="wip-overlay">
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-              <span class="wip-badge">?? В разработке</span>
-              <p style="font-size:.85rem;max-width:320px">Тонкая настройка уведомлений в игровой чат Rust+ — скоро в панели.</p>
+              <span class="wip-badge">рџљ§ Р’ СЂР°Р·СЂР°Р±РѕС‚РєРµ</span>
+              <p style="font-size:.85rem;max-width:320px">РўРѕРЅРєР°СЏ РЅР°СЃС‚СЂРѕР№РєР° СѓРІРµРґРѕРјР»РµРЅРёР№ РІ РёРіСЂРѕРІРѕР№ С‡Р°С‚ Rust+ вЂ” СЃРєРѕСЂРѕ РІ РїР°РЅРµР»Рё.</p>
             </div>
           </div>
         </div>
 
-        <!-- PANEL: notify discord (В разработке) -->
+        <!-- PANEL: notify discord (Р’ СЂР°Р·СЂР°Р±РѕС‚РєРµ) -->
         <div id="panel-notify-discord" class="dash-panel" role="tabpanel">
           <div class="card">
             <div class="card-header">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-              Discord интеграция
+              Discord РёРЅС‚РµРіСЂР°С†РёСЏ
             </div>
             <div class="wip-overlay">
               <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" style="opacity:.25"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-              <span class="wip-badge">?? В разработке</span>
-              <p style="font-size:.85rem;max-width:320px">Управление Discord-каналами, алертами и событиями прямо из панели — скоро.</p>
+              <span class="wip-badge">рџљ§ Р’ СЂР°Р·СЂР°Р±РѕС‚РєРµ</span>
+              <p style="font-size:.85rem;max-width:320px">РЈРїСЂР°РІР»РµРЅРёРµ Discord-РєР°РЅР°Р»Р°РјРё, Р°Р»РµСЂС‚Р°РјРё Рё СЃРѕР±С‹С‚РёСЏРјРё РїСЂСЏРјРѕ РёР· РїР°РЅРµР»Рё вЂ” СЃРєРѕСЂРѕ.</p>
             </div>
           </div>
         </div>
@@ -2154,26 +2154,26 @@
           <div class="card">
             <div class="card-header">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-              Команды (кратко)
+              РљРѕРјР°РЅРґС‹ (РєСЂР°С‚РєРѕ)
             </div>
-            <p class="muted" style="margin-bottom:14px">В командном чате Rust+ префикс <strong>.</strong> (точка). Команды в Discord — с <strong>!</strong></p>
+            <p class="muted" style="margin-bottom:14px">Р’ РєРѕРјР°РЅРґРЅРѕРј С‡Р°С‚Рµ Rust+ РїСЂРµС„РёРєСЃ <strong>.</strong> (С‚РѕС‡РєР°). РљРѕРјР°РЅРґС‹ РІ Discord вЂ” СЃ <strong>!</strong></p>
             <p class="info-label" style="margin-bottom:8px">Rust+</p>
             <div class="cmd-grid" id="cmd-grid-rust">
-              <div><code>.time</code><span>Время на сервере</span></div>
-              <div><code>.pop</code><span>Онлайн / популяция</span></div>
-              <div><code>.help</code><span>Список команд</span></div>
-              <div><code>.events</code><span>Активные события</span></div>
-              <div><code>.add</code><span>Добавить устройство</span></div>
+              <div><code>.time</code><span>Р’СЂРµРјСЏ РЅР° СЃРµСЂРІРµСЂРµ</span></div>
+              <div><code>.pop</code><span>РћРЅР»Р°Р№РЅ / РїРѕРїСѓР»СЏС†РёСЏ</span></div>
+              <div><code>.help</code><span>РЎРїРёСЃРѕРє РєРѕРјР°РЅРґ</span></div>
+              <div><code>.events</code><span>РђРєС‚РёРІРЅС‹Рµ СЃРѕР±С‹С‚РёСЏ</span></div>
+              <div><code>.add</code><span>Р”РѕР±Р°РІРёС‚СЊ СѓСЃС‚СЂРѕР№СЃС‚РІРѕ</span></div>
               <div><code>.sw</code><span>Smart Switch</span></div>
-              <div><code>.afk</code><span>AFK игроки</span></div>
-              <div><code>.cargo</code><span>Карго</span></div>
+              <div><code>.afk</code><span>AFK РёРіСЂРѕРєРё</span></div>
+              <div><code>.cargo</code><span>РљР°СЂРіРѕ</span></div>
             </div>
             <p class="info-label" style="margin:16px 0 8px">Discord</p>
             <div class="cmd-grid" id="cmd-grid-discord">
-              <div><code>!map</code><span>Карта сервера</span></div>
-              <div><code>!info</code><span>Информация</span></div>
+              <div><code>!map</code><span>РљР°СЂС‚Р° СЃРµСЂРІРµСЂР°</span></div>
+              <div><code>!info</code><span>РРЅС„РѕСЂРјР°С†РёСЏ</span></div>
             </div>
-            <a class="cmd-docs-link" href="docs.html#rust-plus">Полная документация по всем командам ></a>
+            <a class="cmd-docs-link" href="docs.html#rust-plus">РџРѕР»РЅР°СЏ РґРѕРєСѓРјРµРЅС‚Р°С†РёСЏ РїРѕ РІСЃРµРј РєРѕРјР°РЅРґР°Рј в†’</a>
           </div>
         </div>
 
@@ -2182,44 +2182,44 @@
           <div class="card admin-panel-card">
             <div class="card-header">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
-              Полная админ-панель
+              РџРѕР»РЅР°СЏ Р°РґРјРёРЅ-РїР°РЅРµР»СЊ
             </div>
 
             <div class="admin-panel-head">
-              <p class="muted" id="admin-status">Загрузка данных...</p>
+              <p class="muted" id="admin-status">Р—Р°РіСЂСѓР·РєР° РґР°РЅРЅС‹С…...</p>
               <button type="button" class="dash-btn dash-btn--ghost" id="admin-refresh-btn">
-                Обновить данные
+                РћР±РЅРѕРІРёС‚СЊ РґР°РЅРЅС‹Рµ
               </button>
             </div>
 
             <div class="admin-panel-body">
               <section class="admin-panel-section admin-panel-section--overview">
                 <h3 class="admin-panel-section__title">
-                  <span class="admin-panel-section__title-text">Сводка</span>
+                  <span class="admin-panel-section__title-text">РЎРІРѕРґРєР°</span>
                 </h3>
                 <div class="cmd-grid" id="admin-overview"></div>
               </section>
 
               <section class="admin-panel-section">
                 <h3 class="admin-panel-section__title">
-                  <span class="admin-panel-section__title-text">Хост · Pi / сервер бота</span>
+                  <span class="admin-panel-section__title-text">РҐРѕСЃС‚ В· Pi / СЃРµСЂРІРµСЂ Р±РѕС‚Р°</span>
                 </h3>
-                <div id="admin-host-metrics">—</div>
+                <div id="admin-host-metrics">вЂ”</div>
               </section>
 
               <section class="admin-panel-section">
                 <h3 class="admin-panel-section__title">
-                  <span class="admin-panel-section__title-text">Команды в игре · Rust+</span>
+                  <span class="admin-panel-section__title-text">РљРѕРјР°РЅРґС‹ РІ РёРіСЂРµ В· Rust+</span>
                 </h3>
                 <div class="admin-panel-table-wrap">
                   <table class="admin-panel-table">
                     <thead>
                       <tr>
-                        <th>Время</th>
-                        <th>Команда</th>
-                        <th>Игрок</th>
-                        <th>Сервер</th>
-                        <th>Гильдия</th>
+                        <th>Р’СЂРµРјСЏ</th>
+                        <th>РљРѕРјР°РЅРґР°</th>
+                        <th>РРіСЂРѕРє</th>
+                        <th>РЎРµСЂРІРµСЂ</th>
+                        <th>Р“РёР»СЊРґРёСЏ</th>
                       </tr>
                     </thead>
                     <tbody id="admin-commands-tbody"></tbody>
@@ -2229,16 +2229,16 @@
 
               <section class="admin-panel-section">
                 <h3 class="admin-panel-section__title">
-                  <span class="admin-panel-section__title-text">Новая БД · rust_users / rust_servers</span>
+                  <span class="admin-panel-section__title-text">РќРѕРІР°СЏ Р‘Р” В· rust_users / rust_servers</span>
                 </h3>
                 <div class="admin-stat-grid" id="admin-rust-users-summary" style="margin-bottom:14px"></div>
                 <div class="admin-panel-site-db">
                   <div class="admin-panel-site-db__head">
                     <p class="muted" style="margin:0;font-size:0.85rem">
-                      Полный список пользователей сайта. Клик по строке — список всех запэйренных серверов.
+                      РџРѕР»РЅС‹Р№ СЃРїРёСЃРѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ СЃР°Р№С‚Р°. РљР»РёРє РїРѕ СЃС‚СЂРѕРєРµ вЂ” СЃРїРёСЃРѕРє РІСЃРµС… Р·Р°РїСЌР№СЂРµРЅРЅС‹С… СЃРµСЂРІРµСЂРѕРІ.
                     </p>
                     <input type="search" id="admin-site-db-search" class="admin-panel-search"
-                           placeholder="Поиск: ник, discord/steam ID, IP…" autocomplete="off" />
+                           placeholder="РџРѕРёСЃРє: РЅРёРє, discord/steam ID, IPвЂ¦" autocomplete="off" />
                   </div>
                   <div class="admin-panel-table-wrap admin-panel-site-db__wrap">
                     <table class="admin-panel-table admin-panel-site-db__table">
@@ -2250,9 +2250,9 @@
                           <th>Steam</th>
                           <th>FCM</th>
                           <th>guild_id</th>
-                          <th>Страна</th>
-                          <th>Серверы</th>
-                          <th>Последний вход</th>
+                          <th>РЎС‚СЂР°РЅР°</th>
+                          <th>РЎРµСЂРІРµСЂС‹</th>
+                          <th>РџРѕСЃР»РµРґРЅРёР№ РІС…РѕРґ</th>
                         </tr>
                       </thead>
                       <tbody id="admin-rust-users-tbody"></tbody>
@@ -2263,18 +2263,18 @@
 
               <section class="admin-panel-section">
                 <h3 class="admin-panel-section__title">
-                  <span class="admin-panel-section__title-text">Входы в панель (как команды в Rust+)</span>
+                  <span class="admin-panel-section__title-text">Р’С…РѕРґС‹ РІ РїР°РЅРµР»СЊ (РєР°Рє РєРѕРјР°РЅРґС‹ РІ Rust+)</span>
                 </h3>
-                <p class="muted" style="margin-bottom:10px;font-size:0.85rem">Уведомления в Discord webhook дублируются при каждом OAuth-входе.</p>
+                <p class="muted" style="margin-bottom:10px;font-size:0.85rem">РЈРІРµРґРѕРјР»РµРЅРёСЏ РІ Discord webhook РґСѓР±Р»РёСЂСѓСЋС‚СЃСЏ РїСЂРё РєР°Р¶РґРѕРј OAuth-РІС…РѕРґРµ.</p>
                 <div class="admin-panel-table-wrap">
                   <table class="admin-panel-table">
                     <thead>
                       <tr>
-                        <th>Время</th>
+                        <th>Р’СЂРµРјСЏ</th>
                         <th>Discord ID</th>
-                        <th>Ник</th>
+                        <th>РќРёРє</th>
                         <th>IP</th>
-                        <th>Страна</th>
+                        <th>РЎС‚СЂР°РЅР°</th>
                       </tr>
                     </thead>
                     <tbody id="admin-panel-logins-tbody"></tbody>
@@ -2284,48 +2284,48 @@
 
               <section class="admin-panel-section">
                 <h3 class="admin-panel-section__title">
-                  <span class="admin-panel-section__title-text">Таблицы БД</span>
+                  <span class="admin-panel-section__title-text">РўР°Р±Р»РёС†С‹ Р‘Р”</span>
                 </h3>
-                <pre id="admin-db-counts" class="admin-panel-pre">—</pre>
+                <pre id="admin-db-counts" class="admin-panel-pre">вЂ”</pre>
               </section>
 
               <section class="admin-panel-section">
                 <h3 class="admin-panel-section__title">
-                  <span class="admin-panel-section__title-text">Гильдии · live Rust+</span>
+                  <span class="admin-panel-section__title-text">Р“РёР»СЊРґРёРё В· live Rust+</span>
                   <span id="guilds-counter" class="admin-panel-section__title-count">0</span>
                 </h3>
                 <div class="guilds-section">
                   <div class="guilds-toolbar">
                     <div class="guilds-toolbar-left">
-                      <span class="muted" style="font-size:.8rem">Фильтр / сортировка / группировка</span>
+                      <span class="muted" style="font-size:.8rem">Р¤РёР»СЊС‚СЂ / СЃРѕСЂС‚РёСЂРѕРІРєР° / РіСЂСѓРїРїРёСЂРѕРІРєР°</span>
                     </div>
                 <div class="guilds-toolbar-right">
                   <input
                     type="search"
                     id="guilds-search"
                     class="dash-select"
-                    placeholder="Поиск по названию, ID, IP, Steam..."
+                    placeholder="РџРѕРёСЃРє РїРѕ РЅР°Р·РІР°РЅРёСЋ, ID, IP, Steam..."
                     style="max-width:280px;padding:8px 12px;font-size:.85rem"
                   />
                   <select id="guilds-sort" class="dash-select" style="max-width:260px;padding:8px 12px;font-size:.85rem">
-                    <option value="shared">Сорт: сначала общие v</option>
-                    <option value="players">Сорт: игроки на сервере v</option>
-                    <option value="online">Сорт: онлайн в командах v</option>
-                    <option value="team">Сорт: размер команд v</option>
-                    <option value="status">Сорт: статус v</option>
-                    <option value="name">Сорт: название A>Z</option>
-                    <option value="name_desc">Сорт: название Z>A</option>
-                    <option value="watched">Сорт: отслеживаемые v</option>
+                    <option value="shared">РЎРѕСЂС‚: СЃРЅР°С‡Р°Р»Р° РѕР±С‰РёРµ в†“</option>
+                    <option value="players">РЎРѕСЂС‚: РёРіСЂРѕРєРё РЅР° СЃРµСЂРІРµСЂРµ в†“</option>
+                    <option value="online">РЎРѕСЂС‚: РѕРЅР»Р°Р№РЅ РІ РєРѕРјР°РЅРґР°С… в†“</option>
+                    <option value="team">РЎРѕСЂС‚: СЂР°Р·РјРµСЂ РєРѕРјР°РЅРґ в†“</option>
+                    <option value="status">РЎРѕСЂС‚: СЃС‚Р°С‚СѓСЃ в†“</option>
+                    <option value="name">РЎРѕСЂС‚: РЅР°Р·РІР°РЅРёРµ Aв†’Z</option>
+                    <option value="name_desc">РЎРѕСЂС‚: РЅР°Р·РІР°РЅРёРµ Zв†’A</option>
+                    <option value="watched">РЎРѕСЂС‚: РѕС‚СЃР»РµР¶РёРІР°РµРјС‹Рµ в†“</option>
                   </select>
                   <select id="guilds-filter" class="dash-select" style="max-width:200px;padding:8px 12px;font-size:.85rem">
-                    <option value="all">Фильтр: все</option>
-                    <option value="connected">Только connected</option>
-                    <option value="disconnected">Только disconnected</option>
-                    <option value="error">С ошибкой</option>
+                    <option value="all">Р¤РёР»СЊС‚СЂ: РІСЃРµ</option>
+                    <option value="connected">РўРѕР»СЊРєРѕ connected</option>
+                    <option value="disconnected">РўРѕР»СЊРєРѕ disconnected</option>
+                    <option value="error">РЎ РѕС€РёР±РєРѕР№</option>
                     <option value="vip">VIP</option>
                     <option value="blocked">Blocked</option>
-                    <option value="fcm">С FCM</option>
-                    <option value="no_rust">Без Rust+</option>
+                    <option value="fcm">РЎ FCM</option>
+                    <option value="no_rust">Р‘РµР· Rust+</option>
                   </select>
                 </div>
               </div>
@@ -2374,8 +2374,8 @@
   }
 
   function setupAdminPanelPolling() {
-    // Авто-обновление админ-панели отключено по требованию: данные тянутся
-    // только при открытии вкладки и по кнопке «Обновить данные».
+    // РђРІС‚Рѕ-РѕР±РЅРѕРІР»РµРЅРёРµ Р°РґРјРёРЅ-РїР°РЅРµР»Рё РѕС‚РєР»СЋС‡РµРЅРѕ РїРѕ С‚СЂРµР±РѕРІР°РЅРёСЋ: РґР°РЅРЅС‹Рµ С‚СЏРЅСѓС‚СЃСЏ
+    // С‚РѕР»СЊРєРѕ РїСЂРё РѕС‚РєСЂС‹С‚РёРё РІРєР»Р°РґРєРё Рё РїРѕ РєРЅРѕРїРєРµ В«РћР±РЅРѕРІРёС‚СЊ РґР°РЅРЅС‹РµВ».
     clearAdminPanelPoll();
   }
 
@@ -2429,7 +2429,7 @@
           setupTeamPanel();
           renderTeamPanel(_teamPanelLastServer);
           if (_teamPanelAutoRefresh) startTeamAutoRefresh();
-          // Первый тик — сразу тянем свежие данные (1 ws-вызов).
+          // РџРµСЂРІС‹Р№ С‚РёРє вЂ” СЃСЂР°Р·Сѓ С‚СЏРЅРµРј СЃРІРµР¶РёРµ РґР°РЅРЅС‹Рµ (1 ws-РІС‹Р·РѕРІ).
           const session = _dashSessionRef;
           if (session) fetchAndRenderTeam(session).catch(() => {});
         } else {
@@ -2457,7 +2457,7 @@
     });
   }
 
-  /** Параллельные вызовы с тем же session (двойной init, расширения) > один fetch к /me */
+  /** РџР°СЂР°Р»Р»РµР»СЊРЅС‹Рµ РІС‹Р·РѕРІС‹ СЃ С‚РµРј Р¶Рµ session (РґРІРѕР№РЅРѕР№ init, СЂР°СЃС€РёСЂРµРЅРёСЏ) в†’ РѕРґРёРЅ fetch Рє /me */
   const _meLoadBySession = new Map();
   async function loadDashboard(session, opts) {
     const force = !!(opts && opts.force);
@@ -2475,8 +2475,8 @@
         const data = await resp.json();
         showDashboard(data, session);
       } catch {
-        // При force-обновлении не выкидываем юзера в логин из-за разовой сетевой ошибки —
-        // только если стартовый /me провалился.
+        // РџСЂРё force-РѕР±РЅРѕРІР»РµРЅРёРё РЅРµ РІС‹РєРёРґС‹РІР°РµРј СЋР·РµСЂР° РІ Р»РѕРіРёРЅ РёР·-Р·Р° СЂР°Р·РѕРІРѕР№ СЃРµС‚РµРІРѕР№ РѕС€РёР±РєРё вЂ”
+        // С‚РѕР»СЊРєРѕ РµСЃР»Рё СЃС‚Р°СЂС‚РѕРІС‹Р№ /me РїСЂРѕРІР°Р»РёР»СЃСЏ.
         if (!force) {
           localStorage.removeItem('ri_session');
           showError();
@@ -2489,8 +2489,8 @@
   }
 
   /**
-   * Ручной/авто-рефреш данных пользователя без перелогина.
-   * Решает кейс «новый юзер пригласил бота / привязал Rust+ — пришлось логиниться заново».
+   * Р СѓС‡РЅРѕР№/Р°РІС‚Рѕ-СЂРµС„СЂРµС€ РґР°РЅРЅС‹С… РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Р±РµР· РїРµСЂРµР»РѕРіРёРЅР°.
+   * Р РµС€Р°РµС‚ РєРµР№СЃ В«РЅРѕРІС‹Р№ СЋР·РµСЂ РїСЂРёРіР»Р°СЃРёР» Р±РѕС‚Р° / РїСЂРёРІСЏР·Р°Р» Rust+ вЂ” РїСЂРёС€Р»РѕСЃСЊ Р»РѕРіРёРЅРёС‚СЊСЃСЏ Р·Р°РЅРѕРІРѕВ».
    */
   let _navRefreshBusy = false;
   async function refreshUserData(triggerEl) {
@@ -2500,7 +2500,7 @@
     if (triggerEl) triggerEl.classList.add('is-spinning');
     try {
       await loadDashboard(session, { force: true });
-      // Если открыта админ-панель — также подтянем её свежие данные.
+      // Р•СЃР»Рё РѕС‚РєСЂС‹С‚Р° Р°РґРјРёРЅ-РїР°РЅРµР»СЊ вЂ” С‚Р°РєР¶Рµ РїРѕРґС‚СЏРЅРµРј РµС‘ СЃРІРµР¶РёРµ РґР°РЅРЅС‹Рµ.
       const adminPanelActive = document.getElementById('panel-admin')?.classList.contains('active');
       if (adminPanelActive && String(_dashDiscordId || '') === ADMIN_DISCORD_ID) {
         await loadAdminPanel(session, _dashDiscordId, { force: true });
@@ -2511,8 +2511,8 @@
     }
   }
 
-  // Автоматически тянем свежие данные, когда пользователь возвращается во вкладку
-  // (например, после приглашения бота на сервер в соседней вкладке).
+  // РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё С‚СЏРЅРµРј СЃРІРµР¶РёРµ РґР°РЅРЅС‹Рµ, РєРѕРіРґР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РІРѕ РІРєР»Р°РґРєСѓ
+  // (РЅР°РїСЂРёРјРµСЂ, РїРѕСЃР»Рµ РїСЂРёРіР»Р°С€РµРЅРёСЏ Р±РѕС‚Р° РЅР° СЃРµСЂРІРµСЂ РІ СЃРѕСЃРµРґРЅРµР№ РІРєР»Р°РґРєРµ).
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState !== 'visible') return;
     const session = _dashSessionRef || localStorage.getItem('ri_session');
@@ -2528,15 +2528,15 @@
   const FACEPUNCH_LOGIN = 'https://companion-rust.facepunch.com/login';
 
   const NOTIFY_LABELS = {
-    cargo: 'Карго (Cargo Ship)',
-    deepsea: 'Глубокое море (Deep Sea)',
-    afk: 'AFK игроков',
-    patrol: 'Патрульный вертолёт',
-    ch47: 'CH47 (Чинук)',
-    oil_small: 'Малая нефтевышка (тяжёлые + таймер locked crate)',
-    oil_large: 'Большая нефтевышка (тяжёлые + таймер locked crate)',
-    crate: 'Locked crate (ящик)',
-    crash: 'Крушение патрульного вертолёта',
+    cargo: 'РљР°СЂРіРѕ (Cargo Ship)',
+    deepsea: 'Р“Р»СѓР±РѕРєРѕРµ РјРѕСЂРµ (Deep Sea)',
+    afk: 'AFK РёРіСЂРѕРєРѕРІ',
+    patrol: 'РџР°С‚СЂСѓР»СЊРЅС‹Р№ РІРµСЂС‚РѕР»С‘С‚',
+    ch47: 'CH47 (Р§РёРЅСѓРє)',
+    oil_small: 'РњР°Р»Р°СЏ РЅРµС„С‚РµРІС‹С€РєР° (С‚СЏР¶С‘Р»С‹Рµ + С‚Р°Р№РјРµСЂ locked crate)',
+    oil_large: 'Р‘РѕР»СЊС€Р°СЏ РЅРµС„С‚РµРІС‹С€РєР° (С‚СЏР¶С‘Р»С‹Рµ + С‚Р°Р№РјРµСЂ locked crate)',
+    crate: 'Locked crate (СЏС‰РёРє)',
+    crash: 'РљСЂСѓС€РµРЅРёРµ РїР°С‚СЂСѓР»СЊРЅРѕРіРѕ РІРµСЂС‚РѕР»С‘С‚Р°',
   };
 
   function defaultNotifyPrefs() {
@@ -2553,7 +2553,7 @@
     box.innerHTML = Object.keys(NOTIFY_LABELS).map(key => `
       <div class="notify-toggle-row">
         <span style="font-size:0.92rem">${NOTIFY_LABELS[key]}</span>
-        <label class="notify-switch" title="Вкл / Выкл">
+        <label class="notify-switch" title="Р’РєР» / Р’С‹РєР»">
           <input type="checkbox" data-npref="${key}" ${p[key] ? 'checked' : ''}/>
           <span class="notify-slider"></span>
         </label>
@@ -2594,7 +2594,7 @@
     const refreshBtn = document.getElementById('btn-token-refresh');
     if (!ts) {
       badge.className = 'dash-badge dash-badge--neutral';
-      badge.textContent = '—';
+      badge.textContent = 'вЂ”';
       msgEl.textContent = '';
       expRow.style.display = 'none';
       daysRow.style.display = 'none';
@@ -2612,7 +2612,7 @@
       badgeCls = 'dash-badge--warn';
     }
     badge.className = 'dash-badge ' + badgeCls;
-    badge.textContent = ts.label_active || '—';
+    badge.textContent = ts.label_active || 'вЂ”';
     msgEl.textContent = ts.message || '';
 
     const expIso = ts.expires_at_iso;
@@ -2639,12 +2639,12 @@
     refreshBtn.style.display = 'inline-flex';
   }
 
-  // Старый блок «Сервер Discord» с инвайт-кнопкой удалён: вся информация
-  // переехала в карточки `loadRustAccountPanels()` > раздел «Discord-гильдии».
-  // Стаб оставлен на случай вызова из старых хендлеров.
+  // РЎС‚Р°СЂС‹Р№ Р±Р»РѕРє В«РЎРµСЂРІРµСЂ DiscordВ» СЃ РёРЅРІР°Р№С‚-РєРЅРѕРїРєРѕР№ СѓРґР°Р»С‘РЅ: РІСЃСЏ РёРЅС„РѕСЂРјР°С†РёСЏ
+  // РїРµСЂРµРµС…Р°Р»Р° РІ РєР°СЂС‚РѕС‡РєРё `loadRustAccountPanels()` в†’ СЂР°Р·РґРµР» В«Discord-РіРёР»СЊРґРёРёВ».
+  // РЎС‚Р°Р± РѕСЃС‚Р°РІР»РµРЅ РЅР° СЃР»СѓС‡Р°Р№ РІС‹Р·РѕРІР° РёР· СЃС‚Р°СЂС‹С… С…РµРЅРґР»РµСЂРѕРІ.
   function updateBotGuildStatus(_data) { /* no-op */ }
 
-  /** Discord: discriminator "0" = новая система (не #0). Старые аккаунты — #1234. */
+  /** Discord: discriminator "0" = РЅРѕРІР°СЏ СЃРёСЃС‚РµРјР° (РЅРµ #0). РЎС‚Р°СЂС‹Рµ Р°РєРєР°СѓРЅС‚С‹ вЂ” #1234. */
   function discordProfileSubtitle(data) {
     const disc = String(data.discriminator != null ? data.discriminator : '0');
     if (disc !== '0') {
@@ -2659,7 +2659,7 @@
 
   function extractFcmFields(msg) {
     if (!msg || typeof msg !== 'object') return null;
-    // Канонический формат успешного POST /auth/fcm: expo_push_token, fcm_credentials, rustplus_auth_token (steam_id в JWT допустим)
+    // РљР°РЅРѕРЅРёС‡РµСЃРєРёР№ С„РѕСЂРјР°С‚ СѓСЃРїРµС€РЅРѕРіРѕ POST /auth/fcm: expo_push_token, fcm_credentials, rustplus_auth_token (steam_id РІ JWT РґРѕРїСѓСЃС‚РёРј)
     if (
       msg.fcm_credentials &&
       typeof msg.fcm_credentials === 'object' &&
@@ -2706,7 +2706,7 @@
     return { expo: expo, fcmCreds: fcmCreds, token: token, steamId: steamId };
   }
 
-  /** Первая часть rustplus_auth_token (JWT) — JSON с полем steamId. */
+  /** РџРµСЂРІР°СЏ С‡Р°СЃС‚СЊ rustplus_auth_token (JWT) вЂ” JSON СЃ РїРѕР»РµРј steamId. */
   function steamIdFromRustplusJwt(token) {
     if (!token || typeof token !== 'string') return '';
     const parts = token.split('.');
@@ -2723,7 +2723,7 @@
     }
   }
 
-  /** Как extension/worker.js: buildFcmBody + hasFullFcm */
+  /** РљР°Рє extension/worker.js: buildFcmBody + hasFullFcm */
   function buildFcmBody(msg) {
     const x = extractFcmFields(msg);
     if (!x || !x.token) return null;
@@ -2767,19 +2767,19 @@
     const ta = document.getElementById('fcm-paste-json');
     if (msgEl) msgEl.textContent = '';
     if (!session) {
-      if (msgEl) msgEl.textContent = 'Нет сессии';
+      if (msgEl) msgEl.textContent = 'РќРµС‚ СЃРµСЃСЃРёРё';
       return;
     }
     const raw = (ta && ta.value || '').trim();
     if (!raw) {
-      if (msgEl) msgEl.textContent = 'Вставьте JSON';
+      if (msgEl) msgEl.textContent = 'Р’СЃС‚Р°РІСЊС‚Рµ JSON';
       return;
     }
     let obj;
     try {
       obj = JSON.parse(raw);
     } catch (e) {
-      if (msgEl) msgEl.textContent = 'Некорректный JSON';
+      if (msgEl) msgEl.textContent = 'РќРµРєРѕСЂСЂРµРєС‚РЅС‹Р№ JSON';
       return;
     }
     const body = buildFcmBody(obj);
@@ -2796,14 +2796,14 @@
       });
       if (!resp.ok) {
         const t = await resp.text();
-        if (msgEl) msgEl.textContent = 'Ошибка ' + resp.status + ': ' + (t.slice(0, 220) || '');
+        if (msgEl) msgEl.textContent = 'РћС€РёР±РєР° ' + resp.status + ': ' + (t.slice(0, 220) || '');
         return;
       }
-      if (msgEl) msgEl.textContent = 'Сохранено. Обновляем…';
+      if (msgEl) msgEl.textContent = 'РЎРѕС…СЂР°РЅРµРЅРѕ. РћР±РЅРѕРІР»СЏРµРјвЂ¦';
       if (ta) ta.value = '';
       await loadDashboard(session);
     } catch (e) {
-      if (msgEl) msgEl.textContent = 'Сеть: ' + ((e && e.message) || String(e));
+      if (msgEl) msgEl.textContent = 'РЎРµС‚СЊ: ' + ((e && e.message) || String(e));
     }
   }
 
@@ -2821,7 +2821,7 @@
     if (ru.admin_disabled) {
       btn.style.display = 'none';
       note.style.display = 'block';
-      note.textContent = 'Авто-восстановление отключено.';
+      note.textContent = 'РђРІС‚Рѕ-РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ РѕС‚РєР»СЋС‡РµРЅРѕ.';
     } else {
       btn.style.display = '';
       btn.disabled = false;
@@ -2838,7 +2838,7 @@
     if (!btn) return;
     btn.addEventListener('click', async () => {
       const msg =
-        'Отключить FCM+сокет и заблокировать авто-восстановление? Бот не будет переподключаться после перезапуска.';
+        'РћС‚РєР»СЋС‡РёС‚СЊ FCM+СЃРѕРєРµС‚ Рё Р·Р°Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ Р°РІС‚Рѕ-РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ? Р‘РѕС‚ РЅРµ Р±СѓРґРµС‚ РїРµСЂРµРїРѕРґРєР»СЋС‡Р°С‚СЊСЃСЏ РїРѕСЃР»Рµ РїРµСЂРµР·Р°РїСѓСЃРєР°.';
       if (!confirm(msg)) return;
       const session = _dashSessionRef || localStorage.getItem('ri_session');
       if (!session) return;
@@ -2860,19 +2860,19 @@
           await loadDashboard(session, { force: true });
           return;
         }
-        alert(d.message || d.error || `Ошибка ${resp.status}`);
+        alert(d.message || d.error || `РћС€РёР±РєР° ${resp.status}`);
       } catch (_) {
-        alert('Сетевая ошибка');
+        alert('РЎРµС‚РµРІР°СЏ РѕС€РёР±РєР°');
       } finally {
         btn.disabled = false;
       }
     });
   }
 
-  /* --- Настройки: Имя бота (игровой префикс) --- */
+  /* в”Ђв”Ђв”Ђ РќР°СЃС‚СЂРѕР№РєРё: РРјСЏ Р±РѕС‚Р° (РёРіСЂРѕРІРѕР№ РїСЂРµС„РёРєСЃ) в”Ђв”Ђв”Ђ */
   let _prefixInitDone = false;
   function initPrefixSettings(session) {
-    // Загружаем текущий префикс с сервера
+    // Р—Р°РіСЂСѓР¶Р°РµРј С‚РµРєСѓС‰РёР№ РїСЂРµС„РёРєСЃ СЃ СЃРµСЂРІРµСЂР°
     const displayEl = document.getElementById('bot-prefix-display');
     const inputEl   = document.getElementById('bot-prefix-input');
     const wrapEl    = document.getElementById('prefix-input-wrap');
@@ -2882,11 +2882,11 @@
     const cancelBtn = document.getElementById('btn-prefix-cancel');
     if (!displayEl || !editBtn) return;
 
-    // Один раз вешаем обработчики
+    // РћРґРёРЅ СЂР°Р· РІРµС€Р°РµРј РѕР±СЂР°Р±РѕС‚С‡РёРєРё
     if (!_prefixInitDone) {
       _prefixInitDone = true;
       editBtn.addEventListener('click', () => {
-        inputEl.value = displayEl.textContent !== '…' ? displayEl.textContent : '';
+        inputEl.value = displayEl.textContent !== 'вЂ¦' ? displayEl.textContent : '';
         wrapEl.classList.add('open');
         inputEl.focus();
         editBtn.style.display = 'none';
@@ -2901,14 +2901,14 @@
       inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') savePrefixSettings(session); });
     }
 
-    // Загрузить текущее значение
+    // Р—Р°РіСЂСѓР·РёС‚СЊ С‚РµРєСѓС‰РµРµ Р·РЅР°С‡РµРЅРёРµ
     fetch(`${API_BASE}/me/prefix?session=${encodeURIComponent(session)}`, { credentials: 'include' })
       .then(r => r.ok ? r.json() : null)
       .then(d => {
         if (d?.ok && d.prefix) displayEl.textContent = d.prefix;
         else displayEl.textContent = '[rustinfo.online]';
       })
-      .catch(() => { displayEl.textContent = '—'; });
+      .catch(() => { displayEl.textContent = 'вЂ”'; });
   }
 
   async function savePrefixSettings(session) {
@@ -2921,7 +2921,7 @@
 
     const newPrefix = (inputEl?.value || '').trim();
     if (!newPrefix) {
-      if (msgEl) { msgEl.textContent = '? Имя не может быть пустым'; msgEl.style.display = 'block'; }
+      if (msgEl) { msgEl.textContent = 'вљ  РРјСЏ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј'; msgEl.style.display = 'block'; }
       return;
     }
     if (saveBtn) saveBtn.disabled = true;
@@ -2937,13 +2937,13 @@
         displayEl.textContent = d.prefix;
         wrapEl.classList.remove('open');
         editBtn.style.display = '';
-        if (msgEl) { msgEl.textContent = '? Сохранено'; msgEl.style.display = 'block'; }
+        if (msgEl) { msgEl.textContent = 'вњ… РЎРѕС…СЂР°РЅРµРЅРѕ'; msgEl.style.display = 'block'; }
         setTimeout(() => { if (msgEl) { msgEl.style.display = 'none'; msgEl.textContent = ''; } }, 2500);
       } else {
-        if (msgEl) { msgEl.textContent = '? ' + (d.message || d.error || 'Ошибка'); msgEl.style.display = 'block'; }
+        if (msgEl) { msgEl.textContent = 'вќЊ ' + (d.message || d.error || 'РћС€РёР±РєР°'); msgEl.style.display = 'block'; }
       }
     } catch (e) {
-      if (msgEl) { msgEl.textContent = '? Сетевая ошибка'; msgEl.style.display = 'block'; }
+      if (msgEl) { msgEl.textContent = 'вќЊ РЎРµС‚РµРІР°СЏ РѕС€РёР±РєР°'; msgEl.style.display = 'block'; }
     } finally {
       if (saveBtn) saveBtn.disabled = false;
     }
@@ -2960,9 +2960,9 @@
         const msg = document.getElementById('fcm-paste-msg');
         try {
           await navigator.clipboard.writeText(FCM_JSON_TEMPLATE);
-          if (msg) msg.textContent = 'Пример скопирован в буфер обмена';
+          if (msg) msg.textContent = 'РџСЂРёРјРµСЂ СЃРєРѕРїРёСЂРѕРІР°РЅ РІ Р±СѓС„РµСЂ РѕР±РјРµРЅР°';
         } catch (e) {
-          if (msg) msg.textContent = 'Не удалось скопировать (разрешите доступ к буферу)';
+          if (msg) msg.textContent = 'РќРµ СѓРґР°Р»РѕСЃСЊ СЃРєРѕРїРёСЂРѕРІР°С‚СЊ (СЂР°Р·СЂРµС€РёС‚Рµ РґРѕСЃС‚СѓРї Рє Р±СѓС„РµСЂСѓ)';
         }
       });
     }
@@ -2993,7 +2993,7 @@
 
     try {
       _adminPanelLoading = true;
-      if (statusEl) statusEl.textContent = 'Загрузка...';
+      if (statusEl) statusEl.textContent = 'Р—Р°РіСЂСѓР·РєР°...';
       const requestTs = Date.now();
       const resp = await fetch(`${API_BASE}/admin/panel?session=${encodeURIComponent(session)}&_t=${requestTs}`, {
         credentials: 'include',
@@ -3004,13 +3004,13 @@
         throw new Error(`HTTP ${resp.status}: ${t.slice(0, 180)}`);
       }
       const data = await resp.json();
-      if (!data || !data.ok) throw new Error('Некорректный ответ API');
+      if (!data || !data.ok) throw new Error('РќРµРєРѕСЂСЂРµРєС‚РЅС‹Р№ РѕС‚РІРµС‚ API');
 
       if (statusEl) {
         const dt = data.generated_at_unix
           ? new Date(Number(data.generated_at_unix) * 1000)
           : new Date();
-        statusEl.textContent = `Данные актуальны на ${dt.toLocaleTimeString('ru-RU')}`;
+        statusEl.textContent = `Р”Р°РЅРЅС‹Рµ Р°РєС‚СѓР°Р»СЊРЅС‹ РЅР° ${dt.toLocaleTimeString('ru-RU')}`;
       }
       if (overviewEl) {
         const guilds = Array.isArray(data.guilds) ? data.guilds : [];
@@ -3049,22 +3049,22 @@
         overviewEl.classList.remove('cmd-grid');
         overviewEl.classList.add('admin-stat-grid');
         overviewEl.innerHTML = [
-          tile('?? Discord серверов', data.discord_guilds_connected ?? '—', 'admin-stat--info'),
-          tile('?? Активных сокетов', data.active_rust_sockets ?? '—', 'admin-stat--ok'),
-          tile('?? Серверов с FCM', fcm, 'admin-stat--info'),
-          tile('?? Онлайн серверов', online, 'admin-stat--ok'),
-          tile('?? Оффлайн серверов', offline, 'admin-stat--bad'),
-          tile('?? Всего игроков', totalPlayers, '', 'во всех командах'),
-          tile('?? Онлайн игроков', onlinePlayers, 'admin-stat--ok'),
-          tile('? Оффлайн игроков', offlinePlayers, 'admin-stat--muted'),
-          tile('?? Серверов с людьми', serversWithPeople, 'admin-stat--ok', 'из подключённых'),
-          tile('?? Серверов без людей', serversWithoutPeople, 'admin-stat--muted', 'из подключённых'),
+          tile('рџЏ› Discord СЃРµСЂРІРµСЂРѕРІ', data.discord_guilds_connected ?? 'вЂ”', 'admin-stat--info'),
+          tile('рџ”Њ РђРєС‚РёРІРЅС‹С… СЃРѕРєРµС‚РѕРІ', data.active_rust_sockets ?? 'вЂ”', 'admin-stat--ok'),
+          tile('рџ“Ў РЎРµСЂРІРµСЂРѕРІ СЃ FCM', fcm, 'admin-stat--info'),
+          tile('рџџў РћРЅР»Р°Р№РЅ СЃРµСЂРІРµСЂРѕРІ', online, 'admin-stat--ok'),
+          tile('рџ”ґ РћС„С„Р»Р°Р№РЅ СЃРµСЂРІРµСЂРѕРІ', offline, 'admin-stat--bad'),
+          tile('рџ‘Ґ Р’СЃРµРіРѕ РёРіСЂРѕРєРѕРІ', totalPlayers, '', 'РІРѕ РІСЃРµС… РєРѕРјР°РЅРґР°С…'),
+          tile('рџџў РћРЅР»Р°Р№РЅ РёРіСЂРѕРєРѕРІ', onlinePlayers, 'admin-stat--ok'),
+          tile('вљ« РћС„С„Р»Р°Р№РЅ РёРіСЂРѕРєРѕРІ', offlinePlayers, 'admin-stat--muted'),
+          tile('рџ‘Ј РЎРµСЂРІРµСЂРѕРІ СЃ Р»СЋРґСЊРјРё', serversWithPeople, 'admin-stat--ok', 'РёР· РїРѕРґРєР»СЋС‡С‘РЅРЅС‹С…'),
+          tile('рџЊ™ РЎРµСЂРІРµСЂРѕРІ Р±РµР· Р»СЋРґРµР№', serversWithoutPeople, 'admin-stat--muted', 'РёР· РїРѕРґРєР»СЋС‡С‘РЅРЅС‹С…'),
         ].join('');
       }
       if (hostEl) {
         const h = data.host || {};
         if (h.error) {
-          hostEl.innerHTML = `<div class="admin-host-error">Метрики: ${escapeHtml(String(h.error))}</div>`;
+          hostEl.innerHTML = `<div class="admin-host-error">РњРµС‚СЂРёРєРё: ${escapeHtml(String(h.error))}</div>`;
         } else {
           const pctCls = (v, warn = 70, bad = 90) => {
             const n = Number(v);
@@ -3098,10 +3098,10 @@
             const m = Math.floor(h.uptime_seconds / 60);
             const hr = Math.floor(m / 60);
             const d = Math.floor(hr / 24);
-            const hint = d > 0 ? `${d}д ${hr % 24}ч` : `${m} мин всего`;
+            const hint = d > 0 ? `${d}Рґ ${hr % 24}С‡` : `${m} РјРёРЅ РІСЃРµРіРѕ`;
             tiles.push(tile(
-              '? Uptime',
-              `${hr}ч ${m % 60}м`,
+              'вЏ± Uptime',
+              `${hr}С‡ ${m % 60}Рј`,
               'admin-stat--info',
               `<div class="admin-stat-hint">${hint}</div>`
             ));
@@ -3109,22 +3109,22 @@
 
           if (h.load_avg && h.load_avg['1m'] != null) {
             const l = h.load_avg;
-            const fmt = v => (v == null ? '—' : Number(v).toFixed(2));
+            const fmt = v => (v == null ? 'вЂ”' : Number(v).toFixed(2));
             const cores = Number(h.cpu_count) || (Array.isArray(h.cpu_per_core) ? h.cpu_per_core.length : 0);
             const cls = cores > 0
               ? pctCls((Number(l['1m']) / cores) * 100, 70, 100)
               : '';
             tiles.push(tile(
-              '?? Load',
+              'рџ“€ Load',
               fmt(l['1m']),
               cls,
-              `<div class="admin-stat-hint">1м · 5м · 15м > ${fmt(l['1m'])} / ${fmt(l['5m'])} / ${fmt(l['15m'])}</div>`
+              `<div class="admin-stat-hint">1Рј В· 5Рј В· 15Рј в†’ ${fmt(l['1m'])} / ${fmt(l['5m'])} / ${fmt(l['15m'])}</div>`
             ));
           }
 
           if (h.cpu_percent != null) {
             tiles.push(tile(
-              '?? CPU',
+              'рџ§  CPU',
               `${Number(h.cpu_percent).toFixed(1)}%`,
               pctCls(h.cpu_percent),
               bar(h.cpu_percent)
@@ -3139,7 +3139,7 @@
             const labels = h.cpu_per_core.map(v => `<span>${Number(v).toFixed(0)}%</span>`).join('');
             const max = Math.max(...h.cpu_per_core.map(v => Number(v) || 0));
             tiles.push(tile(
-              `?? Ядра ? ${h.cpu_per_core.length}`,
+              `рџ’  РЇРґСЂР° Г— ${h.cpu_per_core.length}`,
               `max ${max.toFixed(1)}%`,
               pctCls(max),
               `<div class="admin-stat-cores">${bars}</div>
@@ -3149,8 +3149,8 @@
 
           if (h.cpu_temp_c != null) {
             tiles.push(tile(
-              '?? Темп. CPU',
-              `${Number(h.cpu_temp_c).toFixed(1)}°C`,
+              'рџЊЎ РўРµРјРї. CPU',
+              `${Number(h.cpu_temp_c).toFixed(1)}В°C`,
               tempCls(h.cpu_temp_c)
             ));
           }
@@ -3158,7 +3158,7 @@
           if (h.memory) {
             const mem = h.memory;
             tiles.push(tile(
-              '?? RAM',
+              'рџ§® RAM',
               `${Number(mem.percent).toFixed(1)}%`,
               pctCls(mem.percent),
               `<div class="admin-stat-hint">${mem.used_mb} / ${mem.total_mb} MiB</div>${bar(mem.percent)}`
@@ -3167,19 +3167,19 @@
 
           if (h.swap && h.swap.total_mb > 0) {
             tiles.push(tile(
-              '?? Swap',
+              'рџ’ѕ Swap',
               `${Number(h.swap.percent).toFixed(1)}%`,
               pctCls(h.swap.percent, 40, 80),
               `<div class="admin-stat-hint">${h.swap.used_mb ?? 0} / ${h.swap.total_mb} MiB</div>${bar(h.swap.percent)}`
             ));
           } else if (h.swap) {
-            tiles.push(tile('?? Swap', '0%', 'admin-stat--muted'));
+            tiles.push(tile('рџ’ѕ Swap', '0%', 'admin-stat--muted'));
           }
 
           if (h.disk_root) {
             const d = h.disk_root;
             tiles.push(tile(
-              '?? Диск /',
+              'рџ’Ѕ Р”РёСЃРє /',
               `${Number(d.percent).toFixed(0)}%`,
               pctCls(d.percent, 80, 95),
               `<div class="admin-stat-hint">${d.used_gb} / ${d.total_gb} GiB</div>${bar(d.percent)}`
@@ -3187,32 +3187,32 @@
           }
 
           const headerParts = [];
-          if (h.hostname) headerParts.push(`?? <b>${escapeHtml(String(h.hostname))}</b>`);
+          if (h.hostname) headerParts.push(`рџ–Ґ <b>${escapeHtml(String(h.hostname))}</b>`);
           if (h.system || h.machine) headerParts.push(`${escapeHtml([h.system, h.machine].filter(Boolean).join(' '))}`);
           const header = headerParts.length
-            ? `<div class="admin-host-header">${headerParts.join(' · ')}</div>`
+            ? `<div class="admin-host-header">${headerParts.join(' В· ')}</div>`
             : '';
 
           hostEl.innerHTML = tiles.length
             ? `${header}<div class="admin-stat-grid">${tiles.join('')}</div>`
-            : '—';
+            : 'вЂ”';
         }
       }
       if (cmdTbody) {
         const cmds = Array.isArray(data.ingame_commands) ? data.ingame_commands : [];
         cmdTbody.innerHTML = cmds.map(c => {
-          const t = c.ts != null ? new Date(c.ts * 1000).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
+          const t = c.ts != null ? new Date(c.ts * 1000).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'вЂ”';
           const gline = (c.guild_name || '') + (c.guild_id != null ? ' (' + c.guild_id + ')' : '');
           return `
             <tr style="border-top:1px solid var(--border)">
               <td style="padding:6px 8px;white-space:nowrap">${escapeHtml(t)}</td>
-              <td style="padding:6px 8px"><code>${escapeHtml(String(c.command || '—'))}</code></td>
-              <td style="padding:6px 8px">${escapeHtml(String(c.player_name || '—'))}${c.steam_id ? '<br/><span class="muted" style="font-size:.78rem">' + escapeHtml(c.steam_id) + '</span>' : ''}</td>
-              <td style="padding:6px 8px"><code>${escapeHtml(String(c.server || '—'))}</code></td>
-              <td style="padding:6px 8px">${escapeHtml(gline || '—')}</td>
+              <td style="padding:6px 8px"><code>${escapeHtml(String(c.command || 'вЂ”'))}</code></td>
+              <td style="padding:6px 8px">${escapeHtml(String(c.player_name || 'вЂ”'))}${c.steam_id ? '<br/><span class="muted" style="font-size:.78rem">' + escapeHtml(c.steam_id) + '</span>' : ''}</td>
+              <td style="padding:6px 8px"><code>${escapeHtml(String(c.server || 'вЂ”'))}</code></td>
+              <td style="padding:6px 8px">${escapeHtml(gline || 'вЂ”')}</td>
             </tr>
           `;
-        }).join('') || '<tr><td colspan="5" style="padding:8px">Пока нет команд</td></tr>';
+        }).join('') || '<tr><td colspan="5" style="padding:8px">РџРѕРєР° РЅРµС‚ РєРѕРјР°РЅРґ</td></tr>';
       }
 
       const rustSumEl = document.getElementById('admin-rust-users-summary');
@@ -3228,20 +3228,20 @@
           </div>`;
         rustSumEl.classList.add('admin-stat-grid');
         rustSumEl.innerHTML = [
-          tile('?? rust_users', ru.users_count ?? '—', 'admin-stat--info'),
-          tile('?? rust_servers', ru.rust_servers_rows ?? '—', 'admin-stat--info'),
-          tile('?? Со Steam', ru.users_with_steam ?? '—', 'admin-stat--info'),
-          tile('?? С активным сокетом', ru.users_with_active_socket ?? '—', 'admin-stat--ok'),
-          tile('?? С серверами', ru.users_with_servers ?? '—', 'admin-stat--info'),
-          tile('?? Забанено', ru.users_banned ?? 0, (ru.users_banned > 0 ? 'admin-stat--bad' : 'admin-stat--muted')),
-          tile('? FCM OK', br.ok ?? ru.fcm_ok_users ?? 0, 'admin-stat--ok'),
-          tile('? FCM pending', br.pending ?? 0, 'admin-stat--warn'),
-          tile('? FCM error', br.error ?? 0, 'admin-stat--bad'),
-          tile('? FCM unlinked', br.unlinked ?? 0, 'admin-stat--muted'),
+          tile('рџ‘¤ rust_users', ru.users_count ?? 'вЂ”', 'admin-stat--info'),
+          tile('рџ—„ rust_servers', ru.rust_servers_rows ?? 'вЂ”', 'admin-stat--info'),
+          tile('рџЋ® РЎРѕ Steam', ru.users_with_steam ?? 'вЂ”', 'admin-stat--info'),
+          tile('рџ”Њ РЎ Р°РєС‚РёРІРЅС‹Рј СЃРѕРєРµС‚РѕРј', ru.users_with_active_socket ?? 'вЂ”', 'admin-stat--ok'),
+          tile('рџЏ  РЎ СЃРµСЂРІРµСЂР°РјРё', ru.users_with_servers ?? 'вЂ”', 'admin-stat--info'),
+          tile('рџљ« Р—Р°Р±Р°РЅРµРЅРѕ', ru.users_banned ?? 0, (ru.users_banned > 0 ? 'admin-stat--bad' : 'admin-stat--muted')),
+          tile('вњ… FCM OK', br.ok ?? ru.fcm_ok_users ?? 0, 'admin-stat--ok'),
+          tile('вЏі FCM pending', br.pending ?? 0, 'admin-stat--warn'),
+          tile('вќЊ FCM error', br.error ?? 0, 'admin-stat--bad'),
+          tile('вљЄ FCM unlinked', br.unlinked ?? 0, 'admin-stat--muted'),
         ].join('');
       }
       if (rustTbody) {
-        // Полный список rust_users с раскрытием по клику (детали + все серверы).
+        // РџРѕР»РЅС‹Р№ СЃРїРёСЃРѕРє rust_users СЃ СЂР°СЃРєСЂС‹С‚РёРµРј РїРѕ РєР»РёРєСѓ (РґРµС‚Р°Р»Рё + РІСЃРµ СЃРµСЂРІРµСЂС‹).
         _adminSiteDbCache = (data.rust_users_db && Array.isArray(data.rust_users_db.users))
           ? data.rust_users_db.users
           : [];
@@ -3251,20 +3251,20 @@
       if (loginsTbody) {
         const pl = Array.isArray(data.panel_logins) ? data.panel_logins : [];
         loginsTbody.innerHTML = pl.length ? pl.map(p => {
-          const ts = p.ts != null ? new Date(Number(p.ts) * 1000).toLocaleString('ru-RU') : '—';
+          const ts = p.ts != null ? new Date(Number(p.ts) * 1000).toLocaleString('ru-RU') : 'вЂ”';
           return `<tr>
             <td style="white-space:nowrap;font-size:0.82rem">${escapeHtml(ts)}</td>
             <td class="mono">${escapeHtml(String(p.discord_id || ''))}</td>
-            <td>${escapeHtml(String(p.username || '—'))}</td>
-            <td class="mono">${escapeHtml(String(p.ip || '—'))}</td>
-            <td>${escapeHtml(String(p.country || '—'))}</td>
+            <td>${escapeHtml(String(p.username || 'вЂ”'))}</td>
+            <td class="mono">${escapeHtml(String(p.ip || 'вЂ”'))}</td>
+            <td>${escapeHtml(String(p.country || 'вЂ”'))}</td>
           </tr>`;
-        }).join('') : '<tr><td colspan="5" style="padding:8px">Пока нет входов (после перезапуска бота буфер пуст)</td></tr>';
+        }).join('') : '<tr><td colspan="5" style="padding:8px">РџРѕРєР° РЅРµС‚ РІС…РѕРґРѕРІ (РїРѕСЃР»Рµ РїРµСЂРµР·Р°РїСѓСЃРєР° Р±РѕС‚Р° Р±СѓС„РµСЂ РїСѓСЃС‚)</td></tr>';
       }
 
       if (dbEl) {
         const lines = Object.entries(data.db_counts || {}).map(([k, v]) => `${k}: ${v}`);
-        dbEl.textContent = lines.join('\n') || '—';
+        dbEl.textContent = lines.join('\n') || 'вЂ”';
       }
       if (guildsListEl) {
         _adminGuildsCache = Array.isArray(data.guilds) ? data.guilds : [];
@@ -3273,7 +3273,7 @@
         setupAdminGuildWipeOnce();
       }
     } catch (e) {
-      if (statusEl) statusEl.textContent = 'Ошибка загрузки: ' + ((e && e.message) || String(e));
+      if (statusEl) statusEl.textContent = 'РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё: ' + ((e && e.message) || String(e));
     } finally {
       _adminPanelLoading = false;
     }
@@ -3299,7 +3299,7 @@
   }
 
   /* ================================================================
-     SITE DB (rust_users) — поиск, рендер, раскрытие деталей юзера
+     SITE DB (rust_users) вЂ” РїРѕРёСЃРє, СЂРµРЅРґРµСЂ, СЂР°СЃРєСЂС‹С‚РёРµ РґРµС‚Р°Р»РµР№ СЋР·РµСЂР°
      ================================================================ */
 
   function setupSiteDbSearch() {
@@ -3324,9 +3324,9 @@
   }
 
   function fmtTs(t) {
-    if (t == null) return '—';
+    if (t == null) return 'вЂ”';
     try { return new Date(Number(t) * 1000).toLocaleString('ru-RU'); }
-    catch (_) { return '—'; }
+    catch (_) { return 'вЂ”'; }
   }
 
   function siteDbRowMatchesSearch(u, q) {
@@ -3348,7 +3348,7 @@
     const filtered = q ? list.filter(u => siteDbRowMatchesSearch(u, q)) : list;
 
     if (!filtered.length) {
-      tbody.innerHTML = `<tr><td colspan="9" style="padding:12px" class="muted">Нет записей rust_users${q ? ' по запросу «' + escapeHtml(q) + '»' : ''}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="9" style="padding:12px" class="muted">РќРµС‚ Р·Р°РїРёСЃРµР№ rust_users${q ? ' РїРѕ Р·Р°РїСЂРѕСЃСѓ В«' + escapeHtml(q) + 'В»' : ''}</td></tr>`;
       return;
     }
 
@@ -3356,29 +3356,29 @@
       const rowId = 'site-db-' + String(u.internal_id);
       const open = _adminSiteDbOpenIds.has(rowId);
       const socketDot = u.has_active_socket
-        ? '<span class="socket-dot" title="Активный Rust+ сокет"></span>'
-        : '<span class="socket-dot socket-dot--off" title="Без активного сокета"></span>';
+        ? '<span class="socket-dot" title="РђРєС‚РёРІРЅС‹Р№ Rust+ СЃРѕРєРµС‚"></span>'
+        : '<span class="socket-dot socket-dot--off" title="Р‘РµР· Р°РєС‚РёРІРЅРѕРіРѕ СЃРѕРєРµС‚Р°"></span>';
       const banChip = u.is_banned
-        ? '<span class="site-db-ban-chip" title="Забанен">BAN</span>'
+        ? '<span class="site-db-ban-chip" title="Р—Р°Р±Р°РЅРµРЅ">BAN</span>'
         : '';
       const disabledChip = u.admin_disabled
-        ? '<span class="site-db-badge--disabled" title="Авто-восстановление отключено администратором">OFF</span>'
+        ? '<span class="site-db-badge--disabled" title="РђРІС‚Рѕ-РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ РѕС‚РєР»СЋС‡РµРЅРѕ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂРѕРј">OFF</span>'
         : '';
       const activeSrv = u.active_server;
       const serversCell = (u.servers_count > 0)
-        ? `${u.servers_count}${activeSrv ? `&nbsp;·&nbsp;<span class="mono" style="font-size:0.78rem">${escapeHtml(String(activeSrv.server_ip || '—'))}:${escapeHtml(String(activeSrv.server_port || '—'))}</span>` : ''}`
-        : '<span class="muted">—</span>';
+        ? `${u.servers_count}${activeSrv ? `&nbsp;В·&nbsp;<span class="mono" style="font-size:0.78rem">${escapeHtml(String(activeSrv.server_ip || 'вЂ”'))}:${escapeHtml(String(activeSrv.server_port || 'вЂ”'))}</span>` : ''}`
+        : '<span class="muted">вЂ”</span>';
       const rowExtraCls = (u.is_banned ? ' is-banned' : '') + (u.admin_disabled ? ' is-admin-disabled' : '');
 
       return [
         `<tr class="site-db-row${open ? ' is-open' : ''}${rowExtraCls}" data-row-id="${escapeHtml(rowId)}">`,
-          `<td style="text-align:center"><span class="site-db-caret">?</span></td>`,
+          `<td style="text-align:center"><span class="site-db-caret">в–ё</span></td>`,
           `<td class="mono">${escapeHtml(String(u.internal_id))}</td>`,
-          `<td>${socketDot}${banChip}${disabledChip}${escapeHtml(String(u.discord_username || '—'))}<br/><span class="muted mono" style="font-size:0.76rem">${escapeHtml(String(u.discord_id || ''))}</span></td>`,
-          `<td class="mono">${escapeHtml(String(u.steam_id || '—'))}</td>`,
+          `<td>${socketDot}${banChip}${disabledChip}${escapeHtml(String(u.discord_username || 'вЂ”'))}<br/><span class="muted mono" style="font-size:0.76rem">${escapeHtml(String(u.discord_id || ''))}</span></td>`,
+          `<td class="mono">${escapeHtml(String(u.steam_id || 'вЂ”'))}</td>`,
           `<td>${fcmBadgeHtml(u.fcm_status)}</td>`,
-          `<td class="mono">${escapeHtml(String(u.guild_id || '—'))}</td>`,
-          `<td>${escapeHtml(String(u.country || '—'))}</td>`,
+          `<td class="mono">${escapeHtml(String(u.guild_id || 'вЂ”'))}</td>`,
+          `<td>${escapeHtml(String(u.country || 'вЂ”'))}</td>`,
           `<td>${serversCell}</td>`,
           `<td style="white-space:nowrap;font-size:0.82rem">${escapeHtml(fmtTs(u.last_login_at))}</td>`,
         `</tr>`,
@@ -3388,10 +3388,10 @@
       ].join('');
     }).join('');
 
-    // Навешиваем хендлер раскрытия один раз через делегирование.
+    // РќР°РІРµС€РёРІР°РµРј С…РµРЅРґР»РµСЂ СЂР°СЃРєСЂС‹С‚РёСЏ РѕРґРёРЅ СЂР°Р· С‡РµСЂРµР· РґРµР»РµРіРёСЂРѕРІР°РЅРёРµ.
     if (!tbody._bound) {
       tbody.addEventListener('click', (e) => {
-        // Если клик по кнопке действия / ссылке — не трогаем раскрытие.
+        // Р•СЃР»Рё РєР»РёРє РїРѕ РєРЅРѕРїРєРµ РґРµР№СЃС‚РІРёСЏ / СЃСЃС‹Р»РєРµ вЂ” РЅРµ С‚СЂРѕРіР°РµРј СЂР°СЃРєСЂС‹С‚РёРµ.
         if (e.target.closest('button[data-admin-action], a, input, select, textarea')) return;
         const row = e.target.closest('tr.site-db-row');
         if (!row) return;
@@ -3425,25 +3425,25 @@
     if (!session) return;
 
     const confirmText = {
-      disconnect: 'Закрыть Rust+ сокет и остановить FCM listener для этого юзера?',
-      reconnect: 'Подключиться заново к Rust+ и стартовать FCM listener?',
-      clear_fcm: 'Стереть FCM-токены в БД? Pairing сохранится, но push работать не будет до новой регистрации.',
-      wipe: 'ПОЛНЫЙ СБРОС: закрыть сокет + стереть FCM-токены. Продолжить?',
-      ban: 'Забанить пользователя? /me/* ответит 403, сокет и FCM будут остановлены.',
-      unban: 'Снять бан с пользователя?',
-      disable: 'Отключить FCM+сокет и заблокировать авто-восстановление? Бот не будет переподключаться после перезапуска.',
-      enable: 'Снять блокировку авто-восстановления? Бот снова сможет подключаться.',
+      disconnect: 'Р—Р°РєСЂС‹С‚СЊ Rust+ СЃРѕРєРµС‚ Рё РѕСЃС‚Р°РЅРѕРІРёС‚СЊ FCM listener РґР»СЏ СЌС‚РѕРіРѕ СЋР·РµСЂР°?',
+      reconnect: 'РџРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ Р·Р°РЅРѕРІРѕ Рє Rust+ Рё СЃС‚Р°СЂС‚РѕРІР°С‚СЊ FCM listener?',
+      clear_fcm: 'РЎС‚РµСЂРµС‚СЊ FCM-С‚РѕРєРµРЅС‹ РІ Р‘Р”? Pairing СЃРѕС…СЂР°РЅРёС‚СЃСЏ, РЅРѕ push СЂР°Р±РѕС‚Р°С‚СЊ РЅРµ Р±СѓРґРµС‚ РґРѕ РЅРѕРІРѕР№ СЂРµРіРёСЃС‚СЂР°С†РёРё.',
+      wipe: 'РџРћР›РќР«Р™ РЎР‘Р РћРЎ: Р·Р°РєСЂС‹С‚СЊ СЃРѕРєРµС‚ + СЃС‚РµСЂРµС‚СЊ FCM-С‚РѕРєРµРЅС‹. РџСЂРѕРґРѕР»Р¶РёС‚СЊ?',
+      ban: 'Р—Р°Р±Р°РЅРёС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ? /me/* РѕС‚РІРµС‚РёС‚ 403, СЃРѕРєРµС‚ Рё FCM Р±СѓРґСѓС‚ РѕСЃС‚Р°РЅРѕРІР»РµРЅС‹.',
+      unban: 'РЎРЅСЏС‚СЊ Р±Р°РЅ СЃ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ?',
+      disable: 'РћС‚РєР»СЋС‡РёС‚СЊ FCM+СЃРѕРєРµС‚ Рё Р·Р°Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ Р°РІС‚Рѕ-РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ? Р‘РѕС‚ РЅРµ Р±СѓРґРµС‚ РїРµСЂРµРїРѕРґРєР»СЋС‡Р°С‚СЊСЃСЏ РїРѕСЃР»Рµ РїРµСЂРµР·Р°РїСѓСЃРєР°.',
+      enable: 'РЎРЅСЏС‚СЊ Р±Р»РѕРєРёСЂРѕРІРєСѓ Р°РІС‚Рѕ-РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ? Р‘РѕС‚ СЃРЅРѕРІР° СЃРјРѕР¶РµС‚ РїРѕРґРєР»СЋС‡Р°С‚СЊСЃСЏ.',
     }[action];
     if (confirmText && !confirm(confirmText)) return;
 
     let reason = null;
     if (action === 'ban') {
-      reason = prompt('Причина бана (опционально):', '') || null;
+      reason = prompt('РџСЂРёС‡РёРЅР° Р±Р°РЅР° (РѕРїС†РёРѕРЅР°Р»СЊРЅРѕ):', '') || null;
     }
 
     const origText = btn.textContent;
     btn.disabled = true;
-    btn.textContent = '…';
+    btn.textContent = 'вЂ¦';
     try {
       const resp = await fetch(`${API_BASE}/admin/user/action?session=${encodeURIComponent(session)}`, {
         method: 'POST',
@@ -3453,11 +3453,11 @@
       });
       if (!resp.ok) {
         const txt = await resp.text().catch(() => '');
-        alert(`Ошибка ${resp.status}: ${txt || '—'}`);
+        alert(`РћС€РёР±РєР° ${resp.status}: ${txt || 'вЂ”'}`);
         return;
       }
       const data = await resp.json();
-      // Patch cache inline, чтобы не ждать полного reload.
+      // Patch cache inline, С‡С‚РѕР±С‹ РЅРµ Р¶РґР°С‚СЊ РїРѕР»РЅРѕРіРѕ reload.
       if (data && data.user) {
         const idx = _adminSiteDbCache.findIndex(u => Number(u.internal_id) === Number(data.internal_id));
         if (idx >= 0) {
@@ -3472,10 +3472,10 @@
         }
       }
       renderSiteDbUsers();
-      // И параллельно дергаем полный refresh панели, чтобы подтянуть FCM-каунтеры.
+      // Р РїР°СЂР°Р»Р»РµР»СЊРЅРѕ РґРµСЂРіР°РµРј РїРѕР»РЅС‹Р№ refresh РїР°РЅРµР»Рё, С‡С‚РѕР±С‹ РїРѕРґС‚СЏРЅСѓС‚СЊ FCM-РєР°СѓРЅС‚РµСЂС‹.
       if (_dashSessionRef) loadAdminPanel(_dashSessionRef, _dashDiscordId);
     } catch (err) {
-      alert('Сеть: ' + ((err && err.message) || String(err)));
+      alert('РЎРµС‚СЊ: ' + ((err && err.message) || String(err)));
     } finally {
       btn.disabled = false;
       btn.textContent = origText;
@@ -3485,40 +3485,40 @@
   function renderSiteDbDetail(u) {
     const kv = (label, value) =>
       `<div><dt>${escapeHtml(label)}</dt> <dd>${value}</dd></div>`;
-    const mono = (v) => v ? `<code class="mono">${escapeHtml(String(v))}</code>` : '<span class="muted">—</span>';
+    const mono = (v) => v ? `<code class="mono">${escapeHtml(String(v))}</code>` : '<span class="muted">вЂ”</span>';
     const iid = String(u.internal_id);
 
     const banMeta = u.is_banned ? `
       <div class="site-db-detail-kv" style="grid-column:1/-1">
-        <h4 style="color:#fca5a5">Бан</h4>
+        <h4 style="color:#fca5a5">Р‘Р°РЅ</h4>
         <dl style="margin:0">
-          ${kv('Забанен', escapeHtml(fmtTs(u.banned_at)))}
-          ${u.banned_reason ? kv('Причина', escapeHtml(String(u.banned_reason))) : ''}
+          ${kv('Р—Р°Р±Р°РЅРµРЅ', escapeHtml(fmtTs(u.banned_at)))}
+          ${u.banned_reason ? kv('РџСЂРёС‡РёРЅР°', escapeHtml(String(u.banned_reason))) : ''}
         </dl>
       </div>` : '';
 
     const actions = `
       <div class="site-db-detail-kv site-db-actions" style="grid-column:1/-1">
-        <h4>Действия</h4>
+        <h4>Р”РµР№СЃС‚РІРёСЏ</h4>
         <div class="site-db-actions__row">
           ${u.has_active_socket
-            ? `<button type="button" class="site-db-btn site-db-btn--warn" data-admin-action="disconnect" data-admin-iid="${escapeHtml(iid)}" title="Закрыть Rust+ сокет + остановить FCM listener">? Отключить</button>`
-            : `<button type="button" class="site-db-btn" data-admin-action="reconnect" data-admin-iid="${escapeHtml(iid)}" title="Поднять Rust+ сокет + стартовать FCM listener" ${u.is_banned || u.admin_disabled ? 'disabled' : ''}>?? Подключить</button>`
+            ? `<button type="button" class="site-db-btn site-db-btn--warn" data-admin-action="disconnect" data-admin-iid="${escapeHtml(iid)}" title="Р—Р°РєСЂС‹С‚СЊ Rust+ СЃРѕРєРµС‚ + РѕСЃС‚Р°РЅРѕРІРёС‚СЊ FCM listener">вЏ» РћС‚РєР»СЋС‡РёС‚СЊ</button>`
+            : `<button type="button" class="site-db-btn" data-admin-action="reconnect" data-admin-iid="${escapeHtml(iid)}" title="РџРѕРґРЅСЏС‚СЊ Rust+ СЃРѕРєРµС‚ + СЃС‚Р°СЂС‚РѕРІР°С‚СЊ FCM listener" ${u.is_banned || u.admin_disabled ? 'disabled' : ''}>рџ”Њ РџРѕРґРєР»СЋС‡РёС‚СЊ</button>`
           }
-          <button type="button" class="site-db-btn" data-admin-action="clear_fcm" data-admin-iid="${escapeHtml(iid)}" title="Стереть FCM-токены в rust_users (expo/fcm/gcm), pairing сохраняется">?? FCM</button>
-          <button type="button" class="site-db-btn site-db-btn--warn" data-admin-action="wipe" data-admin-iid="${escapeHtml(iid)}" title="Сокет + listener + очистка FCM-полей">?? Полный сброс</button>
+          <button type="button" class="site-db-btn" data-admin-action="clear_fcm" data-admin-iid="${escapeHtml(iid)}" title="РЎС‚РµСЂРµС‚СЊ FCM-С‚РѕРєРµРЅС‹ РІ rust_users (expo/fcm/gcm), pairing СЃРѕС…СЂР°РЅСЏРµС‚СЃСЏ">рџ—‘ FCM</button>
+          <button type="button" class="site-db-btn site-db-btn--warn" data-admin-action="wipe" data-admin-iid="${escapeHtml(iid)}" title="РЎРѕРєРµС‚ + listener + РѕС‡РёСЃС‚РєР° FCM-РїРѕР»РµР№">рџ’Ґ РџРѕР»РЅС‹Р№ СЃР±СЂРѕСЃ</button>
           ${u.admin_disabled
-            ? `<button type="button" class="site-db-btn site-db-btn--ok" data-admin-action="enable" data-admin-iid="${escapeHtml(iid)}" title="Снять флаг блокировки — бот снова будет восстанавливать соединение">? Включить</button>`
-            : `<button type="button" class="site-db-btn site-db-btn--danger" data-admin-action="disable" data-admin-iid="${escapeHtml(iid)}" title="Отключить FCM+сокет и заблокировать авто-восстановление">?? Откл. навсегда</button>`
+            ? `<button type="button" class="site-db-btn site-db-btn--ok" data-admin-action="enable" data-admin-iid="${escapeHtml(iid)}" title="РЎРЅСЏС‚СЊ С„Р»Р°Рі Р±Р»РѕРєРёСЂРѕРІРєРё вЂ” Р±РѕС‚ СЃРЅРѕРІР° Р±СѓРґРµС‚ РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°С‚СЊ СЃРѕРµРґРёРЅРµРЅРёРµ">вњ… Р’РєР»СЋС‡РёС‚СЊ</button>`
+            : `<button type="button" class="site-db-btn site-db-btn--danger" data-admin-action="disable" data-admin-iid="${escapeHtml(iid)}" title="РћС‚РєР»СЋС‡РёС‚СЊ FCM+СЃРѕРєРµС‚ Рё Р·Р°Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ Р°РІС‚Рѕ-РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ">рџ”’ РћС‚РєР». РЅР°РІСЃРµРіРґР°</button>`
           }
           ${u.is_banned
-            ? `<button type="button" class="site-db-btn site-db-btn--ok" data-admin-action="unban" data-admin-iid="${escapeHtml(iid)}">? Разбанить</button>`
-            : `<button type="button" class="site-db-btn site-db-btn--danger" data-admin-action="ban" data-admin-iid="${escapeHtml(iid)}" title="Забанить: /me/* даст 403, сокет и FCM сразу остановятся">?? Забанить</button>`
+            ? `<button type="button" class="site-db-btn site-db-btn--ok" data-admin-action="unban" data-admin-iid="${escapeHtml(iid)}">вњ… Р Р°Р·Р±Р°РЅРёС‚СЊ</button>`
+            : `<button type="button" class="site-db-btn site-db-btn--danger" data-admin-action="ban" data-admin-iid="${escapeHtml(iid)}" title="Р—Р°Р±Р°РЅРёС‚СЊ: /me/* РґР°СЃС‚ 403, СЃРѕРєРµС‚ Рё FCM СЃСЂР°Р·Сѓ РѕСЃС‚Р°РЅРѕРІСЏС‚СЃСЏ">рџљ« Р—Р°Р±Р°РЅРёС‚СЊ</button>`
           }
         </div>
         <p class="muted" style="margin:8px 0 0;font-size:.76rem">
-          Действия применяются сразу к боту: закрытие RustSocket, остановка FCM listener,
-          запись в <code>rust_users.is_banned</code> / <code>admin_disabled</code>. Пэйринговые записи в <code>rust_servers</code> не удаляются.
+          Р”РµР№СЃС‚РІРёСЏ РїСЂРёРјРµРЅСЏСЋС‚СЃСЏ СЃСЂР°Р·Сѓ Рє Р±РѕС‚Сѓ: Р·Р°РєСЂС‹С‚РёРµ RustSocket, РѕСЃС‚Р°РЅРѕРІРєР° FCM listener,
+          Р·Р°РїРёСЃСЊ РІ <code>rust_users.is_banned</code> / <code>admin_disabled</code>. РџСЌР№СЂРёРЅРіРѕРІС‹Рµ Р·Р°РїРёСЃРё РІ <code>rust_servers</code> РЅРµ СѓРґР°Р»СЏСЋС‚СЃСЏ.
         </p>
       </div>`;
 
@@ -3526,26 +3526,26 @@
       <div class="site-db-detail-kv">
         <h4>FCM</h4>
         <dl style="margin:0">
-          ${kv('Статус', fcmBadgeHtml(u.fcm_status))}
+          ${kv('РЎС‚Р°С‚СѓСЃ', fcmBadgeHtml(u.fcm_status))}
           ${kv('Retry count', String(u.fcm_retry_count ?? 0))}
           ${kv('Registered', escapeHtml(fmtTs(u.fcm_registered_at)))}
           ${u.fcm_last_error ? kv('Last error', `<span style="color:#fca5a5">${escapeHtml(u.fcm_last_error)}</span>`) : ''}
-          ${kv('Rust+ token', u.has_rustplus_token ? '? есть' : '<span class="muted">нет</span>')}
-          ${kv('Сокет сейчас', u.has_active_socket ? '?? активен' : '? нет')}
+          ${kv('Rust+ token', u.has_rustplus_token ? 'вњ… РµСЃС‚СЊ' : '<span class="muted">РЅРµС‚</span>')}
+          ${kv('РЎРѕРєРµС‚ СЃРµР№С‡Р°СЃ', u.has_active_socket ? 'рџџў Р°РєС‚РёРІРµРЅ' : 'вљ« РЅРµС‚')}
         </dl>
       </div>`;
 
     const userMeta = `
       <div class="site-db-detail-kv">
-        <h4>Профиль</h4>
+        <h4>РџСЂРѕС„РёР»СЊ</h4>
         <dl style="margin:0">
           ${kv('Discord ID', mono(u.discord_id))}
           ${kv('Steam ID', mono(u.steam_id))}
           ${kv('Guild ID', mono(u.guild_id))}
-          ${kv('Страна', escapeHtml(String(u.country || '—')))}
+          ${kv('РЎС‚СЂР°РЅР°', escapeHtml(String(u.country || 'вЂ”')))}
           ${kv('Last IP', mono(u.last_ip))}
           ${kv('First IP', mono(u.first_ip))}
-          ${kv('Создан', escapeHtml(fmtTs(u.created_at)))}
+          ${kv('РЎРѕР·РґР°РЅ', escapeHtml(fmtTs(u.created_at)))}
           ${kv('Linked', escapeHtml(fmtTs(u.rustplus_linked_at)))}
           ${kv('Updated', escapeHtml(fmtTs(u.updated_at)))}
         </dl>
@@ -3554,7 +3554,7 @@
     const servers = Array.isArray(u.servers) ? u.servers : [];
     const serversBlock = servers.length
       ? `<div class="site-db-servers">${servers.map(renderSiteDbServer).join('')}</div>`
-      : '<span class="muted">Запэйренных серверов нет</span>';
+      : '<span class="muted">Р—Р°РїСЌР№СЂРµРЅРЅС‹С… СЃРµСЂРІРµСЂРѕРІ РЅРµС‚</span>';
 
     return `
       <div class="site-db-detail">
@@ -3571,12 +3571,12 @@
   }
 
   function renderSiteDbServer(s) {
-    const addr = `${escapeHtml(String(s.server_ip || '—'))}:${escapeHtml(String(s.server_port || '—'))}`;
+    const addr = `${escapeHtml(String(s.server_ip || 'вЂ”'))}:${escapeHtml(String(s.server_port || 'вЂ”'))}`;
     const name = s.server_name ? `<div class="site-db-server__name">${escapeHtml(s.server_name)}</div>` : '';
     const onl = s.is_online
-      ? '<span class="site-db-server__online">? онлайн</span>'
-      : '<span class="site-db-server__offline">0 оффлайн</span>';
-    const flag = `<span class="site-db-server__flag">${s.is_active ? 'активный' : 'pair'}</span>`;
+      ? '<span class="site-db-server__online">в—Џ РѕРЅР»Р°Р№РЅ</span>'
+      : '<span class="site-db-server__offline">в—‹ РѕС„С„Р»Р°Р№РЅ</span>';
+    const flag = `<span class="site-db-server__flag">${s.is_active ? 'Р°РєС‚РёРІРЅС‹Р№' : 'pair'}</span>`;
     const last = s.last_seen_at ? `<span class="muted" style="font-size:.74rem">${escapeHtml(fmtTs(s.last_seen_at))}</span>` : '';
     return `
       <div class="site-db-server${s.is_active ? ' is-active' : ''}">
@@ -3592,17 +3592,17 @@
   }
 
   /* =======================================================================
-     SERVER DIRECTORY · логика рендера
-     Принципы:
-       - Отсутствие «режимов». Гильдии всегда группируются по физическому
-         серверу (ip:port). Никаких тумблеров, никаких скрытых веток.
-       - Solo-сервер > одна строка в карточке без раскрытия.
-       - Shared-сервер > раскрывающаяся карточка с оранжевым акцентом.
-       - Фильтр/поиск применяются к ГИЛЬДИЯМ. Сервер показывается, если
-         после фильтра в нём осталась хотя бы одна гильдия.
-       - Сортировка применяется к СЕРВЕРАМ (по агрегату по гильдиям).
-       - При активном поиске раскрываем совпавшие общие серверы, чтобы
-         сразу видеть, что нашлось.
+     SERVER DIRECTORY В· Р»РѕРіРёРєР° СЂРµРЅРґРµСЂР°
+     РџСЂРёРЅС†РёРїС‹:
+       - РћС‚СЃСѓС‚СЃС‚РІРёРµ В«СЂРµР¶РёРјРѕРІВ». Р“РёР»СЊРґРёРё РІСЃРµРіРґР° РіСЂСѓРїРїРёСЂСѓСЋС‚СЃСЏ РїРѕ С„РёР·РёС‡РµСЃРєРѕРјСѓ
+         СЃРµСЂРІРµСЂСѓ (ip:port). РќРёРєР°РєРёС… С‚СѓРјР±Р»РµСЂРѕРІ, РЅРёРєР°РєРёС… СЃРєСЂС‹С‚С‹С… РІРµС‚РѕРє.
+       - Solo-СЃРµСЂРІРµСЂ в†’ РѕРґРЅР° СЃС‚СЂРѕРєР° РІ РєР°СЂС‚РѕС‡РєРµ Р±РµР· СЂР°СЃРєСЂС‹С‚РёСЏ.
+       - Shared-СЃРµСЂРІРµСЂ в†’ СЂР°СЃРєСЂС‹РІР°СЋС‰Р°СЏСЃСЏ РєР°СЂС‚РѕС‡РєР° СЃ РѕСЂР°РЅР¶РµРІС‹Рј Р°РєС†РµРЅС‚РѕРј.
+       - Р¤РёР»СЊС‚СЂ/РїРѕРёСЃРє РїСЂРёРјРµРЅСЏСЋС‚СЃСЏ Рє Р“РР›Р¬Р”РРЇРњ. РЎРµСЂРІРµСЂ РїРѕРєР°Р·С‹РІР°РµС‚СЃСЏ, РµСЃР»Рё
+         РїРѕСЃР»Рµ С„РёР»СЊС‚СЂР° РІ РЅС‘Рј РѕСЃС‚Р°Р»Р°СЃСЊ С…РѕС‚СЏ Р±С‹ РѕРґРЅР° РіРёР»СЊРґРёСЏ.
+       - РЎРѕСЂС‚РёСЂРѕРІРєР° РїСЂРёРјРµРЅСЏРµС‚СЃСЏ Рє РЎР•Р Р’Р•Р РђРњ (РїРѕ Р°РіСЂРµРіР°С‚Сѓ РїРѕ РіРёР»СЊРґРёСЏРј).
+       - РџСЂРё Р°РєС‚РёРІРЅРѕРј РїРѕРёСЃРєРµ СЂР°СЃРєСЂС‹РІР°РµРј СЃРѕРІРїР°РІС€РёРµ РѕР±С‰РёРµ СЃРµСЂРІРµСЂС‹, С‡С‚РѕР±С‹
+         СЃСЂР°Р·Сѓ РІРёРґРµС‚СЊ, С‡С‚Рѕ РЅР°С€Р»РѕСЃСЊ.
      ======================================================================= */
 
   function serverAddrOf(g) {
@@ -3624,7 +3624,7 @@
           key,
           ip: String(g.rust_db.ip || ''),
           port: String(g.rust_db.port || ''),
-          addr: `${g.rust_db.ip || '—'}:${g.rust_db.port || '—'}`,
+          addr: `${g.rust_db.ip || 'вЂ”'}:${g.rust_db.port || 'вЂ”'}`,
           guilds: [],
           live: null,
           name: '',
@@ -3636,7 +3636,7 @@
     for (const gr of map.values()) {
       const withLive = gr.guilds.find(x => x?.rust_live?.server_name);
       gr.live = withLive?.rust_live || null;
-      gr.name = gr.live?.server_name || gr.addr || 'Неизвестный сервер';
+      gr.name = gr.live?.server_name || gr.addr || 'РќРµРёР·РІРµСЃС‚РЅС‹Р№ СЃРµСЂРІРµСЂ';
     }
     const groups = Array.from(map.values());
     if (noServer.length) {
@@ -3645,7 +3645,7 @@
         ip: '', port: '', addr: '',
         guilds: noServer,
         live: null,
-        name: 'Без Rust+ сервера',
+        name: 'Р‘РµР· Rust+ СЃРµСЂРІРµСЂР°',
         hasServer: false,
       });
     }
@@ -3739,15 +3739,15 @@
       const totalServers  = groups.filter(g => g.hasServer).length;
       const sharedServers = groups.filter(g => g.hasServer && g.guilds.length > 1).length;
       const base = shownGuilds === totalGuilds
-        ? `${totalGuilds} гильдий`
-        : `${shownGuilds} / ${totalGuilds} гильдий`;
+        ? `${totalGuilds} РіРёР»СЊРґРёР№`
+        : `${shownGuilds} / ${totalGuilds} РіРёР»СЊРґРёР№`;
       counterEl.textContent = sharedServers > 0
-        ? `${base} · ${totalServers} серверов · ${sharedServers} общих`
-        : `${base} · ${totalServers} серверов`;
+        ? `${base} В· ${totalServers} СЃРµСЂРІРµСЂРѕРІ В· ${sharedServers} РѕР±С‰РёС…`
+        : `${base} В· ${totalServers} СЃРµСЂРІРµСЂРѕРІ`;
     }
 
     if (!groups.length) {
-      listEl.innerHTML = '<div class="srv-empty">Нет гильдий по заданному фильтру</div>';
+      listEl.innerHTML = '<div class="srv-empty">РќРµС‚ РіРёР»СЊРґРёР№ РїРѕ Р·Р°РґР°РЅРЅРѕРјСѓ С„РёР»СЊС‚СЂСѓ</div>';
       return;
     }
 
@@ -3755,7 +3755,7 @@
     listEl.innerHTML = groups.map(gr => renderServerCard(gr, autoOpenShared)).join('');
   }
 
-  /* ---------- рендер отдельной серверной карточки ---------- */
+  /* ---------- СЂРµРЅРґРµСЂ РѕС‚РґРµР»СЊРЅРѕР№ СЃРµСЂРІРµСЂРЅРѕР№ РєР°СЂС‚РѕС‡РєРё ---------- */
 
   function renderServerCard(gr, autoOpenShared) {
     const shared = gr.guilds.length > 1;
@@ -3790,43 +3790,43 @@
       ? `${live.players}/${live.max_players}${live.queued_players ? ' +' + live.queued_players : ''}`
       : '';
     const count = gr.guilds.length;
-    const word = count === 1 ? 'гильдия' : (count < 5 ? 'гильдии' : 'гильдий');
+    const word = count === 1 ? 'РіРёР»СЊРґРёСЏ' : (count < 5 ? 'РіРёР»СЊРґРёРё' : 'РіРёР»СЊРґРёР№');
 
     const uniqueSteams = new Set(
       gr.guilds.map(x => String(x?.rust_db?.steam_id || '')).filter(Boolean)
     ).size;
-    const steamInfo = uniqueSteams > 1 ? `${uniqueSteams} акк.` : '';
+    const steamInfo = uniqueSteams > 1 ? `${uniqueSteams} Р°РєРє.` : '';
     const metaPieces = [gr.addr, steamInfo].filter(Boolean);
-    const meta = metaPieces.length ? metaPieces.join(' · ') : 'гильдии без привязки к Rust-серверу';
+    const meta = metaPieces.length ? metaPieces.join(' В· ') : 'РіРёР»СЊРґРёРё Р±РµР· РїСЂРёРІСЏР·РєРё Рє Rust-СЃРµСЂРІРµСЂСѓ';
 
-    const caret = `<span class="srv-head__caret" aria-hidden="true">?</span>`;
+    const caret = `<span class="srv-head__caret" aria-hidden="true">в–ё</span>`;
 
-    // Лого сервера (пришло из pairing вместе с header_image/logo_image).
+    // Р›РѕРіРѕ СЃРµСЂРІРµСЂР° (РїСЂРёС€Р»Рѕ РёР· pairing РІРјРµСЃС‚Рµ СЃ header_image/logo_image).
     const logoUrl = live.logo_image || live.header_image || '';
     const logo = logoUrl
       ? `<div class="srv-head__logo"><img src="${escapeHtml(logoUrl)}" alt="" loading="lazy" onerror="this.closest('.srv-head__logo').classList.add('srv-head__logo--empty');this.remove();" /></div>`
-      : `<div class="srv-head__logo srv-head__logo--empty" aria-hidden="true">??</div>`;
+      : `<div class="srv-head__logo srv-head__logo--empty" aria-hidden="true">рџЋ®</div>`;
 
-    // Метаданные Rust+: карта / размер / seed / wipe.
+    // РњРµС‚Р°РґР°РЅРЅС‹Рµ Rust+: РєР°СЂС‚Р° / СЂР°Р·РјРµСЂ / seed / wipe.
     const metaExtra = [];
-    if (live.map)  metaExtra.push(`<span class="srv-head__chip" title="Map">?? ${escapeHtml(String(live.map))}</span>`);
-    if (live.size) metaExtra.push(`<span class="srv-head__chip" title="World size">?? ${escapeHtml(String(live.size))}</span>`);
+    if (live.map)  metaExtra.push(`<span class="srv-head__chip" title="Map">рџ—є ${escapeHtml(String(live.map))}</span>`);
+    if (live.size) metaExtra.push(`<span class="srv-head__chip" title="World size">рџ“ђ ${escapeHtml(String(live.size))}</span>`);
     if (live.seed != null && live.seed !== 0)
-      metaExtra.push(`<span class="srv-head__chip" title="Seed">?? ${escapeHtml(String(live.seed))}</span>`);
+      metaExtra.push(`<span class="srv-head__chip" title="Seed">рџЊ± ${escapeHtml(String(live.seed))}</span>`);
     if (live.wipe_time) {
       const wt = new Date(Number(live.wipe_time) * 1000);
       if (!isNaN(wt.getTime())) {
-        metaExtra.push(`<span class="srv-head__chip" title="Last wipe">?? ${escapeHtml(wt.toLocaleDateString('ru-RU'))}</span>`);
+        metaExtra.push(`<span class="srv-head__chip" title="Last wipe">рџ§Ѕ ${escapeHtml(wt.toLocaleDateString('ru-RU'))}</span>`);
       }
     }
     const metaExtraHtml = metaExtra.length ? `<div class="srv-head__meta-extra">${metaExtra.join('')}</div>` : '';
 
-    // Имя сервера из pairing предпочтительнее, если есть — иначе собранное имя группы.
+    // РРјСЏ СЃРµСЂРІРµСЂР° РёР· pairing РїСЂРµРґРїРѕС‡С‚РёС‚РµР»СЊРЅРµРµ, РµСЃР»Рё РµСЃС‚СЊ вЂ” РёРЅР°С‡Рµ СЃРѕР±СЂР°РЅРЅРѕРµ РёРјСЏ РіСЂСѓРїРїС‹.
     const displayName = (live.server_name && typeof live.server_name === 'string')
       ? live.server_name
       : gr.name;
     const urlBadge = live.url
-      ? ` <a href="${escapeHtml(live.url)}" target="_blank" rel="noopener" class="srv-head__chip" style="margin-left:6px;font-size:.7rem;text-decoration:none" title="Сайт сервера">?</a>`
+      ? ` <a href="${escapeHtml(live.url)}" target="_blank" rel="noopener" class="srv-head__chip" style="margin-left:6px;font-size:.7rem;text-decoration:none" title="РЎР°Р№С‚ СЃРµСЂРІРµСЂР°">в†—</a>`
       : '';
 
     const title = `
@@ -3837,7 +3837,7 @@
       </div>
     `;
     const players = playersStr
-      ? `<span class="srv-head__players" title="players / max (+queue)">?? ${escapeHtml(playersStr)}</span>`
+      ? `<span class="srv-head__players" title="players / max (+queue)">рџ‘Ґ ${escapeHtml(playersStr)}</span>`
       : `<span class="srv-head__players" aria-hidden="true"></span>`;
     const guilds = `<span class="srv-head__guilds">${count} ${word}</span>`;
 
@@ -3854,7 +3854,7 @@
       disconnected: 'offline',
       error: 'error',
       empty: 'no info',
-      no_rust: 'нет Rust+',
+      no_rust: 'РЅРµС‚ Rust+',
     }[status] || status;
 
     const badges = [];
@@ -3862,7 +3862,7 @@
     if (g.blocked)                 badges.push('<span class="gc-mini-badge mb-blocked">BAN</span>');
     if (g.has_fcm_token)           badges.push('<span class="gc-mini-badge mb-fcm">FCM</span>');
     if (g.language)                badges.push(`<span class="gc-mini-badge mb-lang">${escapeHtml(g.language)}</span>`);
-    if (g.discord_present === false) badges.push('<span class="gc-mini-badge mb-discord-off">DC ?</span>');
+    if (g.discord_present === false) badges.push('<span class="gc-mini-badge mb-discord-off">DC вњ•</span>');
 
     const members = Array.isArray(g.rust_live?.team_members) ? g.rust_live.team_members : [];
     const teamCount   = members.length;
@@ -3879,10 +3879,10 @@
           const sid  = escapeHtml(String(m.steam_id || ''));
           const onlineCls = m.is_online ? 'gc-member-online' : 'gc-member-offline';
           const aliveCls  = m.is_alive  ? 'gc-member-alive'  : 'gc-member-dead';
-          const aliveIcon = m.is_alive  ? '?'                : '??';
+          const aliveIcon = m.is_alive  ? 'вќ¤'                : 'рџ’Ђ';
           return `<li class="srv-row__team-member">
-            <span class="${onlineCls}" title="${m.is_online ? 'онлайн' : 'офлайн'}">?</span>
-            <span class="${aliveCls}" title="${m.is_alive ? 'жив' : 'мёртв'}">${aliveIcon}</span>
+            <span class="${onlineCls}" title="${m.is_online ? 'РѕРЅР»Р°Р№РЅ' : 'РѕС„Р»Р°Р№РЅ'}">в—Џ</span>
+            <span class="${aliveCls}" title="${m.is_alive ? 'Р¶РёРІ' : 'РјС‘СЂС‚РІ'}">${aliveIcon}</span>
             <span class="gc-member-name">${name}</span>
             ${sid ? `<span class="gc-member-sid">${sid}</span>` : ''}
           </li>`;
@@ -3890,12 +3890,12 @@
         .join('');
       teamBlock = `
         <details class="srv-row__team-details">
-          <summary><b>${teamCount}</b>&nbsp;·&nbsp;${onlineCount} онлайн&nbsp;·&nbsp;${aliveCount} жив</summary>
+          <summary><b>${teamCount}</b>&nbsp;В·&nbsp;${onlineCount} РѕРЅР»Р°Р№РЅ&nbsp;В·&nbsp;${aliveCount} Р¶РёРІ</summary>
           <ul class="srv-row__team-members">${lis}</ul>
         </details>
       `;
     } else {
-      teamBlock = `<span class="srv-row__team">без команды</span>`;
+      teamBlock = `<span class="srv-row__team">Р±РµР· РєРѕРјР°РЅРґС‹</span>`;
     }
 
     const errTxt = (status === 'error' && g.rust_live?.error)
@@ -3906,21 +3906,21 @@
     const metaPieces = [
       `<span class="mono">ID: ${escapeHtml(String(g.guild_id || ''))}</span>`,
       steamId ? `<span class="mono">Steam: ${steamId}</span>` : '',
-      `<span>?? ${g.watched_players_count ?? 0}</span>`,
-      `<span>?? ${g.rust_entities_count ?? 0}</span>`,
+      `<span>рџ‘Ѓ ${g.watched_players_count ?? 0}</span>`,
+      `<span>рџ”§ ${g.rust_entities_count ?? 0}</span>`,
     ].filter(Boolean).join('');
 
     const delBtn = `<button type="button"
         class="dash-btn dash-btn--danger dash-btn--small admin-guild-wipe"
         data-gid="${escapeHtml(String(g.guild_id || ''))}"
         data-gname="${escapeHtml(String(g.guild_name || ''))}"
-        title="Бот покинет гильдию и стираются все её данные">?? Удалить</button>`;
+        title="Р‘РѕС‚ РїРѕРєРёРЅРµС‚ РіРёР»СЊРґРёСЋ Рё СЃС‚РёСЂР°СЋС‚СЃСЏ РІСЃРµ РµС‘ РґР°РЅРЅС‹Рµ">рџ—‘ РЈРґР°Р»РёС‚СЊ</button>`;
 
     return `
       <div class="srv-row" data-status="${status}">
         <span class="srv-row__status srv-row__status--${status}">${escapeHtml(statusLabel)}</span>
         <div class="srv-row__title">
-          <div class="srv-row__name" title="${escapeHtml(g.guild_name || '')}">${escapeHtml(g.guild_name || '—')}</div>
+          <div class="srv-row__name" title="${escapeHtml(g.guild_name || '')}">${escapeHtml(g.guild_name || 'вЂ”')}</div>
           <div class="srv-row__meta">${metaPieces}</div>
         </div>
         <div class="srv-row__aside">
@@ -3933,8 +3933,8 @@
     `;
   }
 
-  // Делегирование клика по кнопкам «Удалить» внутри списка гильдий админ-панели.
-  // Привязывается один раз: динамически перерисованные кнопки тоже отлавливаются.
+  // Р”РµР»РµРіРёСЂРѕРІР°РЅРёРµ РєР»РёРєР° РїРѕ РєРЅРѕРїРєР°Рј В«РЈРґР°Р»РёС‚СЊВ» РІРЅСѓС‚СЂРё СЃРїРёСЃРєР° РіРёР»СЊРґРёР№ Р°РґРјРёРЅ-РїР°РЅРµР»Рё.
+  // РџСЂРёРІСЏР·С‹РІР°РµС‚СЃСЏ РѕРґРёРЅ СЂР°Р·: РґРёРЅР°РјРёС‡РµСЃРєРё РїРµСЂРµСЂРёСЃРѕРІР°РЅРЅС‹Рµ РєРЅРѕРїРєРё С‚РѕР¶Рµ РѕС‚Р»Р°РІР»РёРІР°СЋС‚СЃСЏ.
   function setupAdminGuildWipeOnce() {
     if (window._adminGuildWipeBound) return;
     const list = document.getElementById('admin-guilds-list');
@@ -3950,16 +3950,16 @@
       const gname = btn.getAttribute('data-gname') || '';
       if (!gid) return;
       const ok = window.confirm(
-        `Удалить гильдию из бота?\n\n` +
-        `Название: ${gname || '—'}\nID: ${gid}\n\n` +
-        `Бот выйдет из этой гильдии Discord и удалит все её данные ` +
-        `(rust_plus_servers, players, fcm_tokens, event_history и т.д.).\n\n` +
-        `Это действие необратимо.`
+        `РЈРґР°Р»РёС‚СЊ РіРёР»СЊРґРёСЋ РёР· Р±РѕС‚Р°?\n\n` +
+        `РќР°Р·РІР°РЅРёРµ: ${gname || 'вЂ”'}\nID: ${gid}\n\n` +
+        `Р‘РѕС‚ РІС‹Р№РґРµС‚ РёР· СЌС‚РѕР№ РіРёР»СЊРґРёРё Discord Рё СѓРґР°Р»РёС‚ РІСЃРµ РµС‘ РґР°РЅРЅС‹Рµ ` +
+        `(rust_plus_servers, players, fcm_tokens, event_history Рё С‚.Рґ.).\n\n` +
+        `Р­С‚Рѕ РґРµР№СЃС‚РІРёРµ РЅРµРѕР±СЂР°С‚РёРјРѕ.`
       );
       if (!ok) return;
       btn.disabled = true;
       const oldText = btn.textContent;
-      btn.textContent = 'Удаляю…';
+      btn.textContent = 'РЈРґР°Р»СЏСЋвЂ¦';
       try {
         const r = await fetch(`${API_BASE}/admin/guild/wipe?session=${encodeURIComponent(session)}`, {
           method: 'POST',
@@ -3971,13 +3971,13 @@
         let body = {};
         try { body = text ? JSON.parse(text) : {}; } catch (_) { body = { _raw: text }; }
         if (!r.ok) {
-          alert('Не удалось удалить: ' + (body.error || body._raw || r.status));
+          alert('РќРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ: ' + (body.error || body._raw || r.status));
           return;
         }
-        // Обновляем админ-панель, чтобы карточка гильдии исчезла.
+        // РћР±РЅРѕРІР»СЏРµРј Р°РґРјРёРЅ-РїР°РЅРµР»СЊ, С‡С‚РѕР±С‹ РєР°СЂС‚РѕС‡РєР° РіРёР»СЊРґРёРё РёСЃС‡РµР·Р»Р°.
         await loadAdminPanel(session, _dashDiscordId, { force: true });
       } catch (err) {
-        alert('Сеть: ' + ((err && err.message) || String(err)));
+        alert('РЎРµС‚СЊ: ' + ((err && err.message) || String(err)));
       } finally {
         btn.disabled = false;
         btn.textContent = oldText;
@@ -3985,14 +3985,14 @@
     });
   }
 
-  // Состояние для оптимистичного UI запэйренных серверов.
-  // Решает: «при клике точка/выделение «откатывается» назад» — мы держим
-  // последнее намерение пользователя и не даём фоновому fetch его перерисовать.
+  // РЎРѕСЃС‚РѕСЏРЅРёРµ РґР»СЏ РѕРїС‚РёРјРёСЃС‚РёС‡РЅРѕРіРѕ UI Р·Р°РїСЌР№СЂРµРЅРЅС‹С… СЃРµСЂРІРµСЂРѕРІ.
+  // Р РµС€Р°РµС‚: В«РїСЂРё РєР»РёРєРµ С‚РѕС‡РєР°/РІС‹РґРµР»РµРЅРёРµ В«РѕС‚РєР°С‚С‹РІР°РµС‚СЃСЏВ» РЅР°Р·Р°РґВ» вЂ” РјС‹ РґРµСЂР¶РёРј
+  // РїРѕСЃР»РµРґРЅРµРµ РЅР°РјРµСЂРµРЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Рё РЅРµ РґР°С‘Рј С„РѕРЅРѕРІРѕРјСѓ fetch РµРіРѕ РїРµСЂРµСЂРёСЃРѕРІР°С‚СЊ.
   let _rustServersState = {
     servers: [],
     activeInternalId: null,
     autoMode: false,
-    connectedAddress: null, // "ip:port" текущего активного сокета (из /me)
+    connectedAddress: null, // "ip:port" С‚РµРєСѓС‰РµРіРѕ Р°РєС‚РёРІРЅРѕРіРѕ СЃРѕРєРµС‚Р° (РёР· /me)
     pendingInternalId: null,
   };
 
@@ -4005,12 +4005,12 @@
 
     if (hint) {
       hint.textContent = auto
-        ? 'Авто-режим: активный сервер выбирается автоматически при паринге через игру. Ручной выбор отключён.'
-        : 'Бот использует сервер, отмеченный как «активный». Нажмите карточку, чтобы переключиться.';
+        ? 'РђРІС‚Рѕ-СЂРµР¶РёРј: Р°РєС‚РёРІРЅС‹Р№ СЃРµСЂРІРµСЂ РІС‹Р±РёСЂР°РµС‚СЃСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РїСЂРё РїР°СЂРёРЅРіРµ С‡РµСЂРµР· РёРіСЂСѓ. Р СѓС‡РЅРѕР№ РІС‹Р±РѕСЂ РѕС‚РєР»СЋС‡С‘РЅ.'
+        : 'Р‘РѕС‚ РёСЃРїРѕР»СЊР·СѓРµС‚ СЃРµСЂРІРµСЂ, РѕС‚РјРµС‡РµРЅРЅС‹Р№ РєР°Рє В«Р°РєС‚РёРІРЅС‹Р№В». РќР°Р¶РјРёС‚Рµ РєР°СЂС‚РѕС‡РєСѓ, С‡С‚РѕР±С‹ РїРµСЂРµРєР»СЋС‡РёС‚СЊСЃСЏ.';
     }
 
     if (!st.servers.length) {
-      wrap.innerHTML = '<p class="dash-muted" style="margin:0">Пока нет запэйренных серверов. Откройте Rust+ в игре и выполните pairing.</p>';
+      wrap.innerHTML = '<p class="dash-muted" style="margin:0">РџРѕРєР° РЅРµС‚ Р·Р°РїСЌР№СЂРµРЅРЅС‹С… СЃРµСЂРІРµСЂРѕРІ. РћС‚РєСЂРѕР№С‚Рµ Rust+ РІ РёРіСЂРµ Рё РІС‹РїРѕР»РЅРёС‚Рµ pairing.</p>';
       return;
     }
 
@@ -4023,9 +4023,9 @@
       const connected = !!(st.connectedAddress && st.connectedAddress === addr && active);
 
       const badges = [];
-      if (active) badges.push('<span class="dash-badge dash-badge--accent">активный</span>');
-      if (connected) badges.push('<span class="dash-badge dash-badge--neutral">подключён</span>');
-      else if (active && !auto) badges.push('<span class="dash-badge dash-badge--neutral">ожидает</span>');
+      if (active) badges.push('<span class="dash-badge dash-badge--accent">Р°РєС‚РёРІРЅС‹Р№</span>');
+      if (connected) badges.push('<span class="dash-badge dash-badge--neutral">РїРѕРґРєР»СЋС‡С‘РЅ</span>');
+      else if (active && !auto) badges.push('<span class="dash-badge dash-badge--neutral">РѕР¶РёРґР°РµС‚</span>');
 
       const cls = [
         'rust-srv-card',
@@ -4047,7 +4047,7 @@
         </div>
         <div class="rust-srv-card__meta">
           <span class="ip">${escapeHtml(addr)}</span>
-          <span>Steam: ${escapeHtml(String(s.player_id || '—'))}</span>
+          <span>Steam: ${escapeHtml(String(s.player_id || 'вЂ”'))}</span>
         </div>
       </button>`;
     });
@@ -4061,7 +4061,7 @@
     if (!target) return;
     const previousActive = st.activeInternalId;
 
-    // Оптимистично переключаем визуально.
+    // РћРїС‚РёРјРёСЃС‚РёС‡РЅРѕ РїРµСЂРµРєР»СЋС‡Р°РµРј РІРёР·СѓР°Р»СЊРЅРѕ.
     st.servers.forEach(s => { s.is_active = (String(s.internal_id) === String(internalId)) ? 1 : 0; });
     st.activeInternalId = String(internalId);
     st.pendingInternalId = String(internalId);
@@ -4078,22 +4078,22 @@
       let body = {};
       try { body = text ? JSON.parse(text) : {}; } catch (_) { body = { _raw: text }; }
       if (!r.ok) {
-        // Откат к предыдущему состоянию.
+        // РћС‚РєР°С‚ Рє РїСЂРµРґС‹РґСѓС‰РµРјСѓ СЃРѕСЃС‚РѕСЏРЅРёСЋ.
         st.activeInternalId = previousActive;
         st.servers.forEach(s => { s.is_active = (String(s.internal_id) === String(previousActive)) ? 1 : 0; });
         st.pendingInternalId = null;
         renderRustServerCards();
         const msg = body.error || body._raw || String(r.status);
-        alert('Не удалось сменить активный сервер: ' + msg);
+        alert('РќРµ СѓРґР°Р»РѕСЃСЊ СЃРјРµРЅРёС‚СЊ Р°РєС‚РёРІРЅС‹Р№ СЃРµСЂРІРµСЂ: ' + msg);
         return;
       }
-      // Успех: обновляем «подключённый сервер» в фоне (не дергая re-render серверной сетки).
+      // РЈСЃРїРµС…: РѕР±РЅРѕРІР»СЏРµРј В«РїРѕРґРєР»СЋС‡С‘РЅРЅС‹Р№ СЃРµСЂРІРµСЂВ» РІ С„РѕРЅРµ (РЅРµ РґРµСЂРіР°СЏ re-render СЃРµСЂРІРµСЂРЅРѕР№ СЃРµС‚РєРё).
       try { await loadDashboard(session, { force: true }); } catch (_) {}
     } catch (err) {
       st.activeInternalId = previousActive;
       st.servers.forEach(s => { s.is_active = (String(s.internal_id) === String(previousActive)) ? 1 : 0; });
       renderRustServerCards();
-      alert('Сеть: ' + ((err && err.message) || String(err)));
+      alert('РЎРµС‚СЊ: ' + ((err && err.message) || String(err)));
     } finally {
       st.pendingInternalId = null;
       renderRustServerCards();
@@ -4130,18 +4130,18 @@
       try { body = text ? JSON.parse(text) : {}; } catch (_) { body = { _raw: text }; }
       if (!r.ok) {
         if (toggle) toggle.checked = !enabled;
-        alert('Не удалось сохранить: ' + (body.error || body._raw || r.status));
+        alert('РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕС…СЂР°РЅРёС‚СЊ: ' + (body.error || body._raw || r.status));
         return;
       }
       _rustServersState.autoMode = !!enabled;
       renderRustServerCards();
-      // При включении сервер мог переключиться (если активного не было) — синхронизируем.
+      // РџСЂРё РІРєР»СЋС‡РµРЅРёРё СЃРµСЂРІРµСЂ РјРѕРі РїРµСЂРµРєР»СЋС‡РёС‚СЊСЃСЏ (РµСЃР»Рё Р°РєС‚РёРІРЅРѕРіРѕ РЅРµ Р±С‹Р»Рѕ) вЂ” СЃРёРЅС…СЂРѕРЅРёР·РёСЂСѓРµРј.
       if (enabled) {
         try { await loadDashboard(session, { force: true }); } catch (_) {}
       }
     } catch (err) {
       if (toggle) toggle.checked = !enabled;
-      alert('Сеть: ' + ((err && err.message) || String(err)));
+      alert('РЎРµС‚СЊ: ' + ((err && err.message) || String(err)));
     }
   }
 
@@ -4166,7 +4166,7 @@
     if (!serversEl || !oauthEl || !badge) return;
     if (scopeMsg) scopeMsg.style.display = 'none';
 
-    // Auto-mode тоггл: значение приходит из /me (dataCtx.auto_active_server).
+    // Auto-mode С‚РѕРіРіР»: Р·РЅР°С‡РµРЅРёРµ РїСЂРёС…РѕРґРёС‚ РёР· /me (dataCtx.auto_active_server).
     const autoToggle = document.getElementById('rust-auto-toggle');
     if (autoToggle) {
       autoToggle.checked = !!dataCtx.auto_active_server;
@@ -4185,9 +4185,9 @@
         const st = j1.user.fcm_status || 'unlinked';
         const map = {
           ok: ['dash-badge--ok', 'FCM OK'],
-          pending: ['dash-badge--warn', 'FCM…'],
-          error: ['dash-badge--warn', 'FCM ошибка'],
-          unlinked: ['dash-badge--neutral', 'Не привязано']
+          pending: ['dash-badge--warn', 'FCMвЂ¦'],
+          error: ['dash-badge--warn', 'FCM РѕС€РёР±РєР°'],
+          unlinked: ['dash-badge--neutral', 'РќРµ РїСЂРёРІСЏР·Р°РЅРѕ']
         };
         const pair = map[st] || map.unlinked;
         badge.className = 'dash-badge ' + pair[0];
@@ -4195,7 +4195,7 @@
         if (retryBtn) {
           retryBtn.style.display = (st === 'error' || st === 'pending') ? 'inline-flex' : 'none';
         }
-        // Если сервер обновил флаг auto_active_server — синхронизируемся.
+        // Р•СЃР»Рё СЃРµСЂРІРµСЂ РѕР±РЅРѕРІРёР» С„Р»Р°Рі auto_active_server вЂ” СЃРёРЅС…СЂРѕРЅРёР·РёСЂСѓРµРјСЃСЏ.
         if (j1.user.auto_active_server != null) {
           _rustServersState.autoMode = !!Number(j1.user.auto_active_server);
           if (autoToggle) autoToggle.checked = _rustServersState.autoMode;
@@ -4209,7 +4209,7 @@
       renderRustServerCards();
     } catch (e) {
       console.error('[rust panels]', e);
-      serversEl.innerHTML = '<p class="dash-muted">Не удалось загрузить <code>/me/rust</code>.</p>';
+      serversEl.innerHTML = '<p class="dash-muted">РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ <code>/me/rust</code>.</p>';
     }
 
     try {
@@ -4218,17 +4218,17 @@
       });
       if (r2.status === 403) {
         if (scopeMsg) {
-          scopeMsg.textContent = 'Для отображения списка серверов Discord выйдите и войдите заново, разрешив доступ к «guilds».';
+          scopeMsg.textContent = 'Р”Р»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ СЃРїРёСЃРєР° СЃРµСЂРІРµСЂРѕРІ Discord РІС‹Р№РґРёС‚Рµ Рё РІРѕР№РґРёС‚Рµ Р·Р°РЅРѕРІРѕ, СЂР°Р·СЂРµС€РёРІ РґРѕСЃС‚СѓРї Рє В«guildsВ».';
           scopeMsg.style.display = 'block';
         }
         oauthEl.innerHTML = '';
       } else if (!r2.ok) {
-        oauthEl.innerHTML = '<p class="dash-muted">Список гильдий временно недоступен.</p>';
+        oauthEl.innerHTML = '<p class="dash-muted">РЎРїРёСЃРѕРє РіРёР»СЊРґРёР№ РІСЂРµРјРµРЅРЅРѕ РЅРµРґРѕСЃС‚СѓРїРµРЅ.</p>';
       } else {
         const j2 = await r2.json();
         const list = (j2.guilds || []).filter(g => g.is_admin || g.is_owner);
         if (!list.length) {
-          oauthEl.innerHTML = '<p class="dash-muted" style="margin:0">Нет гильдий с правами администратора (или список пуст).</p>';
+          oauthEl.innerHTML = '<p class="dash-muted" style="margin:0">РќРµС‚ РіРёР»СЊРґРёР№ СЃ РїСЂР°РІР°РјРё Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР° (РёР»Рё СЃРїРёСЃРѕРє РїСѓСЃС‚).</p>';
         } else {
           const selectedId = String(j2.selected_guild_id || '');
           list.sort((a, b) => {
@@ -4240,18 +4240,18 @@
             const gid = String(g.id);
             const isSel = g.is_selected || gid === selectedId;
             const botB = g.has_bot
-              ? '<span class="dash-badge dash-badge--ok">бот добавлен</span>'
-              : '<span class="dash-badge dash-badge--warn">нет бота</span>';
-            const selB = isSel ? '<span class="dash-badge dash-badge--accent">используется</span>' : '';
+              ? '<span class="dash-badge dash-badge--ok">Р±РѕС‚ РґРѕР±Р°РІР»РµРЅ</span>'
+              : '<span class="dash-badge dash-badge--warn">РЅРµС‚ Р±РѕС‚Р°</span>';
+            const selB = isSel ? '<span class="dash-badge dash-badge--accent">РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ</span>' : '';
             const useBtn = !isSel
-              ? `<button type="button" class="dash-btn dash-btn--primary dash-btn--small rust-select-guild" data-gid="${escapeHtml(gid)}">Использовать</button>`
+              ? `<button type="button" class="dash-btn dash-btn--primary dash-btn--small rust-select-guild" data-gid="${escapeHtml(gid)}">РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ</button>`
               : '';
             const inv = !g.has_bot
-              ? `<a href="${INVITE_BOT_URL}" target="_blank" rel="noreferrer" class="dash-btn dash-btn--ghost dash-btn--small">Пригласить бота</a>`
+              ? `<a href="${INVITE_BOT_URL}" target="_blank" rel="noreferrer" class="dash-btn dash-btn--ghost dash-btn--small">РџСЂРёРіР»Р°СЃРёС‚СЊ Р±РѕС‚Р°</a>`
               : '';
             return `<div class="rust-guild-card ${isSel ? 'is-selected' : ''}">
               <div style="flex:1;min-width:0" class="rust-guild-card__name">
-                <strong>${escapeHtml(g.name || '—')}</strong>
+                <strong>${escapeHtml(g.name || 'вЂ”')}</strong>
                 <span class="mono">${escapeHtml(gid)}</span>
               </div>
               <div class="rust-guild-card__inactive-actions">${botB}${selB}${useBtn}${inv}</div>
@@ -4262,7 +4262,7 @@
               const gid = btn.getAttribute('data-gid');
               btn.disabled = true;
               const old = btn.textContent;
-              btn.textContent = 'Сохраняю…';
+              btn.textContent = 'РЎРѕС…СЂР°РЅСЏСЋвЂ¦';
               try {
                 const r = await fetch(`${API_BASE}/me/select_guild?session=${encodeURIComponent(session)}`, {
                   method: 'POST',
@@ -4272,7 +4272,7 @@
                 });
                 const text = await r.text();
                 if (!r.ok) {
-                  alert('Ошибка: ' + (text.slice(0, 240) || r.status));
+                  alert('РћС€РёР±РєР°: ' + (text.slice(0, 240) || r.status));
                   return;
                 }
                 await loadDashboard(session, { force: true });
@@ -4288,7 +4288,7 @@
       }
     } catch (e) {
       console.error('[guilds]', e);
-      oauthEl.innerHTML = '<p class="dash-muted">Список гильдий временно недоступен.</p>';
+      oauthEl.innerHTML = '<p class="dash-muted">РЎРїРёСЃРѕРє РіРёР»СЊРґРёР№ РІСЂРµРјРµРЅРЅРѕ РЅРµРґРѕСЃС‚СѓРїРµРЅ.</p>';
     }
 
     if (retryBtn && !retryBtn._rustRetryBound) {
@@ -4301,7 +4301,7 @@
           });
           if (!r.ok) {
             const t = await r.text();
-            alert('Не удалось: ' + (t.slice(0, 200) || r.status));
+            alert('РќРµ СѓРґР°Р»РѕСЃСЊ: ' + (t.slice(0, 200) || r.status));
             return;
           }
           await loadDashboard(session, { force: true });
@@ -4348,13 +4348,13 @@
 
     const av = avatarUrl(data.discord_id, data.avatar);
     document.getElementById('profile-avatar').src = av;
-    document.getElementById('profile-username').textContent = data.global_name || data.username || '—';
+    document.getElementById('profile-username').textContent = data.global_name || data.username || 'вЂ”';
     const didEl = document.getElementById('profile-discord-id');
     if (didEl) didEl.textContent = data.discord_id != null ? String(data.discord_id) : '';
 
     document.getElementById('nav-user').style.display = 'flex';
     document.getElementById('nav-avatar').src = av;
-    document.getElementById('nav-username').textContent = data.global_name || data.username || '—';
+    document.getElementById('nav-username').textContent = data.global_name || data.username || 'вЂ”';
 
     if (data.steam_id) {
       document.getElementById('rust-linked-block').style.display = 'block';
@@ -4375,12 +4375,12 @@
       if (bgEl) {
         bgEl.style.backgroundImage = server.header_image ? `url(${JSON.stringify(server.header_image)})` : 'none';
       }
-      document.getElementById('server-name').textContent = server.name || '—';
-      document.getElementById('server-address').textContent = server.address || '—';
+      document.getElementById('server-name').textContent = server.name || 'вЂ”';
+      document.getElementById('server-address').textContent = server.address || 'вЂ”';
       const p = server.players, m = server.max_players, q = server.queued_players;
       document.getElementById('server-players').textContent = 
-        (p != null && m != null) ? `${p}/${m}` + (q != null && q > 0 ? ` (очередь: ${q})` : '') : '—';
-      document.getElementById('server-size').textContent = server.size || '—';
+        (p != null && m != null) ? `${p}/${m}` + (q != null && q > 0 ? ` (РѕС‡РµСЂРµРґСЊ: ${q})` : '') : 'вЂ”';
+      document.getElementById('server-size').textContent = server.size || 'вЂ”';
       const teamBlock = document.getElementById('server-team-block');
       const teamList = document.getElementById('server-team-list');
       if (server.team && server.team.length > 0) {
@@ -4388,7 +4388,7 @@
         teamList.innerHTML = server.team.map(t => 
           `<li style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
             <span>${escapeHtml(t.name || '?')}</span>
-            <span class="badge ${t.is_online ? 'badge-green' : 'badge-gray'}">${t.is_online ? 'онлайн' : 'офлайн'}</span>
+            <span class="badge ${t.is_online ? 'badge-green' : 'badge-gray'}">${t.is_online ? 'РѕРЅР»Р°Р№РЅ' : 'РѕС„Р»Р°Р№РЅ'}</span>
           </li>`
         ).join('');
       } else {
@@ -4398,7 +4398,7 @@
       serverCard.style.display = 'none';
     }
 
-    // Кэш для вкладки «Команда» — используется при первом открытии без дополнительного запроса.
+    // РљСЌС€ РґР»СЏ РІРєР»Р°РґРєРё В«РљРѕРјР°РЅРґР°В» вЂ” РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РїСЂРё РїРµСЂРІРѕРј РѕС‚РєСЂС‹С‚РёРё Р±РµР· РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕРіРѕ Р·Р°РїСЂРѕСЃР°.
     _teamPanelLastServer = server ? {
       name: server.name,
       address: server.address,
@@ -4416,7 +4416,7 @@
   }
 
   /* ================================================================
-     Вкладка «Команда» — live team status
+     Р’РєР»Р°РґРєР° В«РљРѕРјР°РЅРґР°В» вЂ” live team status
      ================================================================ */
 
   function setupTeamPanel() {
@@ -4471,7 +4471,7 @@
       if (!resp.ok) {
         if (statusEl) {
           statusEl.className = 'team-panel__status is-err';
-          statusEl.textContent = 'Ошибка запроса /me/team: HTTP ' + resp.status;
+          statusEl.textContent = 'РћС€РёР±РєР° Р·Р°РїСЂРѕСЃР° /me/team: HTTP ' + resp.status;
         }
         return;
       }
@@ -4490,7 +4490,7 @@
     } catch (e) {
       if (statusEl) {
         statusEl.className = 'team-panel__status is-err';
-        statusEl.textContent = 'Сеть: ' + ((e && e.message) || String(e));
+        statusEl.textContent = 'РЎРµС‚СЊ: ' + ((e && e.message) || String(e));
       }
     }
   }
@@ -4504,10 +4504,10 @@
     if (!server || server.status === 'no_connection') {
       if (statusEl) {
         statusEl.className = 'team-panel__status is-warn';
-        statusEl.textContent = 'Нет активного Rust+ подключения для выбранной гильдии.';
+        statusEl.textContent = 'РќРµС‚ Р°РєС‚РёРІРЅРѕРіРѕ Rust+ РїРѕРґРєР»СЋС‡РµРЅРёСЏ РґР»СЏ РІС‹Р±СЂР°РЅРЅРѕР№ РіРёР»СЊРґРёРё.';
       }
       grid.innerHTML = `<div class="team-panel__empty">
-        Выберите гильдию с привязанным Rust-сервером в разделе «Аккаунт», чтобы увидеть команду.
+        Р’С‹Р±РµСЂРёС‚Рµ РіРёР»СЊРґРёСЋ СЃ РїСЂРёРІСЏР·Р°РЅРЅС‹Рј Rust-СЃРµСЂРІРµСЂРѕРј РІ СЂР°Р·РґРµР»Рµ В«РђРєРєР°СѓРЅС‚В», С‡С‚РѕР±С‹ СѓРІРёРґРµС‚СЊ РєРѕРјР°РЅРґСѓ.
       </div>`;
       if (updEl) updEl.textContent = '';
       return;
@@ -4515,38 +4515,38 @@
     if (server.status === 'disconnected') {
       if (statusEl) {
         statusEl.className = 'team-panel__status is-warn';
-        statusEl.textContent = 'Сокет Rust+ не подключён — данные команды недоступны.';
+        statusEl.textContent = 'РЎРѕРєРµС‚ Rust+ РЅРµ РїРѕРґРєР»СЋС‡С‘РЅ вЂ” РґР°РЅРЅС‹Рµ РєРѕРјР°РЅРґС‹ РЅРµРґРѕСЃС‚СѓРїРЅС‹.';
       }
-      grid.innerHTML = `<div class="team-panel__empty">Бот не подключён к игровому серверу прямо сейчас.</div>`;
+      grid.innerHTML = `<div class="team-panel__empty">Р‘РѕС‚ РЅРµ РїРѕРґРєР»СЋС‡С‘РЅ Рє РёРіСЂРѕРІРѕРјСѓ СЃРµСЂРІРµСЂСѓ РїСЂСЏРјРѕ СЃРµР№С‡Р°СЃ.</div>`;
       return;
     }
     if (server.status === 'error') {
       if (statusEl) {
         statusEl.className = 'team-panel__status is-err';
-        statusEl.textContent = 'Ошибка Rust+: ' + escapeHtml(String(server.error || 'unknown'));
+        statusEl.textContent = 'РћС€РёР±РєР° Rust+: ' + escapeHtml(String(server.error || 'unknown'));
       }
-      grid.innerHTML = `<div class="team-panel__empty">Не удалось получить список команды.</div>`;
+      grid.innerHTML = `<div class="team-panel__empty">РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ СЃРїРёСЃРѕРє РєРѕРјР°РЅРґС‹.</div>`;
       return;
     }
 
     const members = Array.isArray(server.members) ? server.members : [];
     const mySid = String(server.my_steam_id || '');
-    const serverName = server.name ? ` · ${server.name}` : '';
+    const serverName = server.name ? ` В· ${server.name}` : '';
     const onlineCount = members.filter(m => m.is_online).length;
     const aliveCount = members.filter(m => m.is_alive).length;
     if (statusEl) {
       statusEl.className = 'team-panel__status is-ok';
       statusEl.innerHTML = `
-        <b>${members.length}</b> в команде
-        &nbsp;·&nbsp; <span style="color:#6ee7b7">? ${onlineCount} онлайн</span>
-        &nbsp;·&nbsp; <span style="color:#6ee7b7">? ${aliveCount} жив</span>
-        &nbsp;·&nbsp; <span style="color:#fca5a5">?? ${members.length - aliveCount} мёртв</span>
+        <b>${members.length}</b> РІ РєРѕРјР°РЅРґРµ
+        &nbsp;В·&nbsp; <span style="color:#6ee7b7">в—Џ ${onlineCount} РѕРЅР»Р°Р№РЅ</span>
+        &nbsp;В·&nbsp; <span style="color:#6ee7b7">вќ¤ ${aliveCount} Р¶РёРІ</span>
+        &nbsp;В·&nbsp; <span style="color:#fca5a5">рџ’Ђ ${members.length - aliveCount} РјС‘СЂС‚РІ</span>
         <span class="muted" style="margin-left:auto;font-size:.78rem">${escapeHtml(serverName.slice(3))}</span>
       `;
     }
 
     if (!members.length) {
-      grid.innerHTML = `<div class="team-panel__empty">Команда пуста (вы соло либо Rust+ не вернул членов).</div>`;
+      grid.innerHTML = `<div class="team-panel__empty">РљРѕРјР°РЅРґР° РїСѓСЃС‚Р° (РІС‹ СЃРѕР»Рѕ Р»РёР±Рѕ Rust+ РЅРµ РІРµСЂРЅСѓР» С‡Р»РµРЅРѕРІ).</div>`;
     } else {
       const sorted = members.slice().sort((a, b) => {
         if (!!b.is_online !== !!a.is_online) return (b.is_online ? 1 : 0) - (a.is_online ? 1 : 0);
@@ -4558,7 +4558,7 @@
 
     if (updEl) {
       const ts = server.generated_at_unix ? new Date(Number(server.generated_at_unix) * 1000) : new Date();
-      updEl.textContent = 'Обновлено: ' + ts.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      updEl.textContent = 'РћР±РЅРѕРІР»РµРЅРѕ: ' + ts.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
   }
 
@@ -4575,21 +4575,21 @@
     ].filter(Boolean).join(' ');
 
     const badges = [];
-    if (isMe) badges.push('<span class="team-card__badge team-card__badge--me">вы</span>');
-    if (m.is_leader) badges.push('<span class="team-card__badge team-card__badge--leader" title="Лидер команды">?? лидер</span>');
+    if (isMe) badges.push('<span class="team-card__badge team-card__badge--me">РІС‹</span>');
+    if (m.is_leader) badges.push('<span class="team-card__badge team-card__badge--leader" title="Р›РёРґРµСЂ РєРѕРјР°РЅРґС‹">рџ‘‘ Р»РёРґРµСЂ</span>');
 
     const onlineChip = m.is_online
-      ? '<span class="team-card__chip team-card__chip--online">? онлайн</span>'
-      : '<span class="team-card__chip team-card__chip--offline">0 оффлайн</span>';
+      ? '<span class="team-card__chip team-card__chip--online">в—Џ РѕРЅР»Р°Р№РЅ</span>'
+      : '<span class="team-card__chip team-card__chip--offline">в—‹ РѕС„С„Р»Р°Р№РЅ</span>';
 
     const deathAgo = !m.is_alive && m.death_time ? formatAgo(m.death_time) : null;
     const spawnAgo = m.is_alive && m.spawn_time ? formatAgo(m.spawn_time) : null;
     const aliveChip = m.is_alive
-      ? `<span class="team-card__chip team-card__chip--alive">? жив${spawnAgo ? ' · ' + escapeHtml(spawnAgo) : ''}</span>`
-      : `<span class="team-card__chip team-card__chip--dead">?? мёртв${deathAgo ? ' · ' + escapeHtml(deathAgo) : ''}</span>`;
+      ? `<span class="team-card__chip team-card__chip--alive">вќ¤ Р¶РёРІ${spawnAgo ? ' В· ' + escapeHtml(spawnAgo) : ''}</span>`
+      : `<span class="team-card__chip team-card__chip--dead">рџ’Ђ РјС‘СЂС‚РІ${deathAgo ? ' В· ' + escapeHtml(deathAgo) : ''}</span>`;
 
     const coords = (m.is_alive && (m.x || m.y))
-      ? `<div class="team-card__coords">?? X ${Math.round(m.x)} · Y ${Math.round(m.y)}</div>`
+      ? `<div class="team-card__coords">рџ§­ X ${Math.round(m.x)} В· Y ${Math.round(m.y)}</div>`
       : '';
 
     return `
@@ -4614,10 +4614,10 @@
   function formatAgo(unixTs) {
     if (!unixTs) return '';
     const diffSec = Math.max(0, Math.floor(Date.now() / 1000 - Number(unixTs)));
-    if (diffSec < 60)    return diffSec + 'с назад';
-    if (diffSec < 3600)  return Math.floor(diffSec / 60) + 'м назад';
-    if (diffSec < 86400) return Math.floor(diffSec / 3600) + 'ч назад';
-    return Math.floor(diffSec / 86400) + 'д назад';
+    if (diffSec < 60)    return diffSec + 'СЃ РЅР°Р·Р°Рґ';
+    if (diffSec < 3600)  return Math.floor(diffSec / 60) + 'Рј РЅР°Р·Р°Рґ';
+    if (diffSec < 86400) return Math.floor(diffSec / 3600) + 'С‡ РЅР°Р·Р°Рґ';
+    return Math.floor(diffSec / 86400) + 'Рґ РЅР°Р·Р°Рґ';
   }
 
   function escapeHtml(s) {
@@ -4631,21 +4631,21 @@
     document.getElementById('error-block').style.display = 'block';
     document.getElementById('btn-login-big').href = OAUTH_URL;
     if (oauthMsg) {
-      document.getElementById('error-title').textContent = 'Ошибка OAuth2';
+      document.getElementById('error-title').textContent = 'РћС€РёР±РєР° OAuth2';
       document.getElementById('error-text').textContent = oauthMsg;
     } else {
-      document.getElementById('error-title').textContent = 'Необходима авторизация';
-      document.getElementById('error-text').textContent = 'Войдите через Discord чтобы открыть панель управления.';
+      document.getElementById('error-title').textContent = 'РќРµРѕР±С…РѕРґРёРјР° Р°РІС‚РѕСЂРёР·Р°С†РёСЏ';
+      document.getElementById('error-text').textContent = 'Р’РѕР№РґРёС‚Рµ С‡РµСЂРµР· Discord С‡С‚РѕР±С‹ РѕС‚РєСЂС‹С‚СЊ РїР°РЅРµР»СЊ СѓРїСЂР°РІР»РµРЅРёСЏ.';
     }
   }
 
   /* ================================================================
-     Вкладка «Карта»
+     Р’РєР»Р°РґРєР° В«РљР°СЂС‚Р°В»
      ================================================================ */
   let _mapPanelBound = false;
   let _mapData = null;
   let _mapScale = 1;
-  let _mapFitScale = 1;   // масштаб при котором вся карта помещается в контейнер
+  let _mapFitScale = 1;   // РјР°СЃС€С‚Р°Р± РїСЂРё РєРѕС‚РѕСЂРѕРј РІСЃСЏ РєР°СЂС‚Р° РїРѕРјРµС‰Р°РµС‚СЃСЏ РІ РєРѕРЅС‚РµР№РЅРµСЂ
   let _mapOffsetX = 0;
   let _mapOffsetY = 0;
   let _mapDragging = false;
@@ -4657,7 +4657,7 @@
 
   const MAP_MAX_SCALE = 8.0;
   const MAP_GRID_DIAMETER = 146.28571428571428;
-  /** Как в rustplus: output.paste(generate_grid(...), (5, 5), grid) — сетка смещена на 5 px. */
+  /** РљР°Рє РІ rustplus: output.paste(generate_grid(...), (5, 5), grid) вЂ” СЃРµС‚РєР° СЃРјРµС‰РµРЅР° РЅР° 5 px. */
   const MAP_GRID_PASTE_OFFSET = 5;
 
   function initMapPanelOnce() {
@@ -4764,7 +4764,7 @@
     const t = String(q || '').trim();
     let m = t.match(/^([A-Za-z]{1,2})\s*(\d{1,3})\s*$/);
     if (m) return { letters: m[1], row: parseInt(m[2], 10) };
-    m = t.match(/^(?:квадрат|square|grid)\s+([A-Za-z]{1,2})\s*(\d{1,3})\s*$/i);
+    m = t.match(/^(?:РєРІР°РґСЂР°С‚|square|grid)\s+([A-Za-z]{1,2})\s*(\d{1,3})\s*$/i);
     if (m) return { letters: m[1], row: parseInt(m[2], 10) };
     return null;
   }
@@ -4840,7 +4840,7 @@
     const ow = outer.clientWidth,  oh = outer.clientHeight;
     const cw = canvas.offsetWidth  * _mapScale;
     const ch = canvas.offsetHeight * _mapScale;
-    // При scale == fitScale карта помещается целиком — разрешаем центрированное положение
+    // РџСЂРё scale == fitScale РєР°СЂС‚Р° РїРѕРјРµС‰Р°РµС‚СЃСЏ С†РµР»РёРєРѕРј вЂ” СЂР°Р·СЂРµС€Р°РµРј С†РµРЅС‚СЂРёСЂРѕРІР°РЅРЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ
     const minX = Math.min(0, ow - cw);
     const minY = Math.min(0, oh - ch);
     const maxX = Math.max(0, ow - cw);
@@ -4865,8 +4865,8 @@
       const wx = parseFloat(el.dataset.wx);
       const wy = parseFloat(el.dataset.wy);
       if (isNaN(wx) || isNaN(wy)) return;
-      // marker.x/y — прямые пиксельные координаты на PNG-изображении.
-      // x=0 — западный край, y=0 — южный край (y перевёрнут относительно canvas).
+      // marker.x/y вЂ” РїСЂСЏРјС‹Рµ РїРёРєСЃРµР»СЊРЅС‹Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹ РЅР° PNG-РёР·РѕР±СЂР°Р¶РµРЅРёРё.
+      // x=0 вЂ” Р·Р°РїР°РґРЅС‹Р№ РєСЂР°Р№, y=0 вЂ” СЋР¶РЅС‹Р№ РєСЂР°Р№ (y РїРµСЂРµРІС‘СЂРЅСѓС‚ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ canvas).
       const cx = wx;
       const cy = ch - wy;
       const sx = cx * _mapScale + _mapOffsetX;
@@ -4888,11 +4888,11 @@
     if (!sel) return;
     const servers = _rustServersState?.servers || [];
     const prev = sel.value;
-    sel.innerHTML = '<option value="">— выберите сервер —</option>';
+    sel.innerHTML = '<option value="">вЂ” РІС‹Р±РµСЂРёС‚Рµ СЃРµСЂРІРµСЂ вЂ”</option>';
     servers.forEach(s => {
       const opt = document.createElement('option');
       opt.value = String(s.internal_id);
-      opt.textContent = (s.server_name || s.server_ip + ':' + s.server_port) + (Number(s.is_active) ? ' ?' : '');
+      opt.textContent = (s.server_name || s.server_ip + ':' + s.server_port) + (Number(s.is_active) ? ' в…' : '');
       sel.appendChild(opt);
     });
     if (prev && [...sel.options].some(o => o.value === prev)) {
@@ -4910,12 +4910,12 @@
     const btnLoad   = document.getElementById('btn-map-load');
     const btnRefresh= document.getElementById('btn-map-refresh');
 
-    statusEl && Object.assign(statusEl, { className: 'map-status', textContent: '? Загрузка…' });
+    statusEl && Object.assign(statusEl, { className: 'map-status', textContent: 'вЏі Р—Р°РіСЂСѓР·РєР°вЂ¦' });
     if (btnLoad)    btnLoad.disabled = true;
     if (btnRefresh) btnRefresh.disabled = true;
 
     try {
-      // 1. JSON: маркеры + мета
+      // 1. JSON: РјР°СЂРєРµСЂС‹ + РјРµС‚Р°
       let metaUrl = `${API_BASE}/me/map?session=${encodeURIComponent(session)}`;
       if (serverId) metaUrl += `&server_id=${encodeURIComponent(serverId)}`;
       if (force)    metaUrl += `&force=1`;
@@ -4925,7 +4925,7 @@
       if (!data.ok) throw new Error(data.error || 'unknown');
       _mapData = data;
 
-      // 2. Изображение через отдельный endpoint
+      // 2. РР·РѕР±СЂР°Р¶РµРЅРёРµ С‡РµСЂРµР· РѕС‚РґРµР»СЊРЅС‹Р№ endpoint
       let imgUrl = `${API_BASE}/me/map/image?session=${encodeURIComponent(session)}`;
       if (serverId) imgUrl += `&server_id=${encodeURIComponent(serverId)}`;
       if (force)    imgUrl += `&force=1`;
@@ -4934,12 +4934,12 @@
 
       if (statusEl) {
         statusEl.textContent = data.image_cached
-          ? `? Кеш · seed ${data.server?.seed ?? '?'} · ${data.server?.size ?? '?'}u`
-          : `? Загружено · ${data.server?.name || ''}`;
+          ? `вњ… РљРµС€ В· seed ${data.server?.seed ?? '?'} В· ${data.server?.size ?? '?'}u`
+          : `вњ… Р—Р°РіСЂСѓР¶РµРЅРѕ В· ${data.server?.name || ''}`;
       }
       if (btnRefresh) btnRefresh.style.display = '';
     } catch (e) {
-      statusEl && Object.assign(statusEl, { className: 'map-status err', textContent: '? ' + (e.message || e) });
+      statusEl && Object.assign(statusEl, { className: 'map-status err', textContent: 'вќЊ ' + (e.message || e) });
     } finally {
       if (btnLoad)    btnLoad.disabled = false;
       if (btnRefresh) btnRefresh.disabled = false;
@@ -4952,7 +4952,7 @@
     const imgEl       = document.getElementById('map-img');
     if (!viewport || !imgEl) return;
 
-    // Загружаем изображение — canvas = натуральный размер, scale подстраивается под outer
+    // Р—Р°РіСЂСѓР¶Р°РµРј РёР·РѕР±СЂР°Р¶РµРЅРёРµ вЂ” canvas = РЅР°С‚СѓСЂР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ, scale РїРѕРґСЃС‚СЂР°РёРІР°РµС‚СЃСЏ РїРѕРґ outer
     imgEl.onload = () => {
       requestAnimationFrame(() => {
         const canvas = document.getElementById('map-canvas');
@@ -4962,23 +4962,23 @@
         const natW = imgEl.naturalWidth  || 2048;
         const natH = imgEl.naturalHeight || 2048;
 
-        // Устанавливаем canvas в натуральный размер изображения
+        // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј canvas РІ РЅР°С‚СѓСЂР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
         canvas.style.width  = natW + 'px';
         canvas.style.height = natH + 'px';
 
         const ow = outer.clientWidth;
         const oh = outer.clientHeight;
-        // coverScale: карта всегда полностью заполняет контейнер (нет пустых краёв)
+        // coverScale: РєР°СЂС‚Р° РІСЃРµРіРґР° РїРѕР»РЅРѕСЃС‚СЊСЋ Р·Р°РїРѕР»РЅСЏРµС‚ РєРѕРЅС‚РµР№РЅРµСЂ (РЅРµС‚ РїСѓСЃС‚С‹С… РєСЂР°С‘РІ)
         _mapFitScale = Math.max(ow / natW, oh / natH);
 
         resetMapView();  // scale = _mapFitScale, offset = 0
-        // Центрируем: при coverScale карта больше контейнера — центрируем по обеим осям
+        // Р¦РµРЅС‚СЂРёСЂСѓРµРј: РїСЂРё coverScale РєР°СЂС‚Р° Р±РѕР»СЊС€Рµ РєРѕРЅС‚РµР№РЅРµСЂР° вЂ” С†РµРЅС‚СЂРёСЂСѓРµРј РїРѕ РѕР±РµРёРј РѕСЃСЏРј
         _mapOffsetX = (ow - natW * _mapFitScale) / 2;
         _mapOffsetY = (oh - natH * _mapFitScale) / 2;
         clampOffset();
         applyMapTransform();
 
-        // Маркеры рендерим только после того, как canvas получил реальные размеры
+        // РњР°СЂРєРµСЂС‹ СЂРµРЅРґРµСЂРёРј С‚РѕР»СЊРєРѕ РїРѕСЃР»Рµ С‚РѕРіРѕ, РєР°Рє canvas РїРѕР»СѓС‡РёР» СЂРµР°Р»СЊРЅС‹Рµ СЂР°Р·РјРµСЂС‹
         renderMapMarkers(data.markers || [], data.team || [], data.server?.size || 4000);
         const si = document.getElementById('map-search-input');
         const q0 = (si && si.value) ? si.value.trim() : '';
@@ -4992,20 +4992,20 @@
     if (placeholder) placeholder.style.display = 'none';
   }
 
-  const MARKER_FALLBACK = { 2:'??', 4:'??', 5:'??', 6:'??', 8:'??', 3:'??', 9:'??' };
+  const MARKER_FALLBACK = { 2:'рџ’Ґ', 4:'рџљЃ', 5:'рџљў', 6:'рџ“¦', 8:'рџ”«', 3:'рџ›’', 9:'рџљђ' };
 
   function markerIconHtml(m) {
-    const fallback = MARKER_FALLBACK[m.type] || '??';
+    const fallback = MARKER_FALLBACK[m.type] || 'рџ“Ќ';
 
     if (m.type === 1) {
-      // Игрок — аватар или инициалы
+      // РРіСЂРѕРє вЂ” Р°РІР°С‚Р°СЂ РёР»Рё РёРЅРёС†РёР°Р»С‹
       if (m.avatar_url)
         return `<img src="${escapeHtml(m.avatar_url)}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.outerHTML='<span>${(m.name||'?').slice(0,2).toUpperCase()}</span>'"/>`;
       return `<span>${escapeHtml((m.name || '?').slice(0, 2).toUpperCase())}</span>`;
     }
 
     if (m.icon_url) {
-      // Иконка с сервера + fallback emoji если не загрузилась
+      // РРєРѕРЅРєР° СЃ СЃРµСЂРІРµСЂР° + fallback emoji РµСЃР»Рё РЅРµ Р·Р°РіСЂСѓР·РёР»Р°СЃСЊ
       return `<img src="${escapeHtml(m.icon_url)}" alt="${fallback}"
         style="width:22px;height:22px;object-fit:contain"
         onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${fallback}',style:'font-size:15px'}))"/>`;
@@ -5019,7 +5019,7 @@
     if (!container) return;
     container.innerHTML = '';
 
-    // Позиция задаётся через data-wx/wy — updateMarkerPositions() пересчитывает при каждом зуме
+    // РџРѕР·РёС†РёСЏ Р·Р°РґР°С‘С‚СЃСЏ С‡РµСЂРµР· data-wx/wy вЂ” updateMarkerPositions() РїРµСЂРµСЃС‡РёС‚С‹РІР°РµС‚ РїСЂРё РєР°Р¶РґРѕРј Р·СѓРјРµ
     const place = (wx, wy, typeClass, iconHtml, tooltipHtml, extraCls) => {
       const el = document.createElement('div');
       el.className = 'map-marker' + (extraCls ? ' ' + extraCls : '');
@@ -5041,18 +5041,18 @@
       const tc = `type-${m.type}`;
       eventCount++;
       const grid = coordsToGrid(m.x, m.y, mapSize);
-      const tip = `<strong>${escapeHtml(m.type_name || String(m.type))}</strong><div class="map-tip-coords">${grid} · X${Math.round(m.x)} Y${Math.round(m.y)}</div>`;
+      const tip = `<strong>${escapeHtml(m.type_name || String(m.type))}</strong><div class="map-tip-coords">${grid} В· X${Math.round(m.x)} Y${Math.round(m.y)}</div>`;
       place(m.x, m.y, tc, markerIconHtml(m), tip, '');
     }
 
-    // Команда — рисуем перед вендингами; магазины последние в DOM и с большим z-index
+    // РљРѕРјР°РЅРґР° вЂ” СЂРёСЃСѓРµРј РїРµСЂРµРґ РІРµРЅРґРёРЅРіР°РјРё; РјР°РіР°Р·РёРЅС‹ РїРѕСЃР»РµРґРЅРёРµ РІ DOM Рё СЃ Р±РѕР»СЊС€РёРј z-index
     for (const member of (team || [])) {
       if (member.x == null || member.y == null) continue;
       const alive = member.is_online && member.is_alive;
       const tc    = `type-1${alive ? ' alive' : ''}`;
       const grid  = coordsToGrid(member.x, member.y, mapSize);
-      const status = !member.is_online ? '? офлайн' : alive ? '?? живой' : '?? мёртв';
-      const tip = `<strong>${escapeHtml(member.name || '?')}</strong>${status}<div class="map-tip-coords">${grid} · X${Math.round(member.x)} Y${Math.round(member.y)}</div>`;
+      const status = !member.is_online ? 'вљ« РѕС„Р»Р°Р№РЅ' : alive ? 'рџџў Р¶РёРІРѕР№' : 'рџ’Ђ РјС‘СЂС‚РІ';
+      const tip = `<strong>${escapeHtml(member.name || '?')}</strong>${status}<div class="map-tip-coords">${grid} В· X${Math.round(member.x)} Y${Math.round(member.y)}</div>`;
       place(member.x, member.y, tc, markerIconHtml({ type: 1, name: member.name, avatar_url: member.avatar_url || '' }), tip, '');
     }
 
@@ -5061,26 +5061,26 @@
       const orders = (m.sell_orders || []).slice(0, 4).map(o => {
         const iImg = o.item_img     ? `<img src="${escapeHtml(o.item_img)}" class="map-tooltip-order-img" onerror="this.style.display='none'">` : '';
         const cImg = o.currency_img ? `<img src="${escapeHtml(o.currency_img)}" class="map-tooltip-order-img" onerror="this.style.display='none'">` : '';
-        const bp    = o.is_blueprint ? ' ??' : '';
+        const bp    = o.is_blueprint ? ' рџ“' : '';
         const qty   = o.quantity   ?? 1;
         const cost  = o.cost_per_item ?? '?';
         const stock = (o.amount_in_stock > 0)
-          ? `<span style="margin-left:auto;color:#4ade80;font-size:.68rem">?${o.amount_in_stock}</span>`
+          ? `<span style="margin-left:auto;color:#4ade80;font-size:.68rem">Г—${o.amount_in_stock}</span>`
           : '';
-        return `<div class="map-tooltip-order">${iImg}<span>${escapeHtml(o.item_name||'')}${bp} ?${qty}</span><span class="arrow">></span>${cImg}<span>${escapeHtml(o.currency_name||'')} ?${cost}</span>${stock}</div>`;
+        return `<div class="map-tooltip-order">${iImg}<span>${escapeHtml(o.item_name||'')}${bp} Г—${qty}</span><span class="arrow">в†’</span>${cImg}<span>${escapeHtml(o.currency_name||'')} Г—${cost}</span>${stock}</div>`;
       }).join('');
       const grid = coordsToGrid(m.x, m.y, mapSize);
-      const tip = `<strong>${escapeHtml(m.name || 'Магазин')}</strong>${orders || '<span style="opacity:.5">нет данных</span>'}<div class="map-tip-coords">${grid} · X${Math.round(m.x)} Y${Math.round(m.y)}</div>`;
+      const tip = `<strong>${escapeHtml(m.name || 'РњР°РіР°Р·РёРЅ')}</strong>${orders || '<span style="opacity:.5">РЅРµС‚ РґР°РЅРЅС‹С…</span>'}<div class="map-tip-coords">${grid} В· X${Math.round(m.x)} Y${Math.round(m.y)}</div>`;
       place(m.x, m.y, tc, markerIconHtml(m), tip, 'map-marker--vend');
     }
 
-    // Обновить позиции
+    // РћР±РЅРѕРІРёС‚СЊ РїРѕР·РёС†РёРё
     updateMarkerPositions();
 
-    // Счётчик ивентов в статусе
+    // РЎС‡С‘С‚С‡РёРє РёРІРµРЅС‚РѕРІ РІ СЃС‚Р°С‚СѓСЃРµ
     const statusEl = document.getElementById('map-status');
     if (statusEl && eventCount > 0) {
-      statusEl.textContent += ` · ?? Ивентов: ${eventCount}`;
+      statusEl.textContent += ` В· рџ”ґ РРІРµРЅС‚РѕРІ: ${eventCount}`;
     }
   }
 
@@ -5088,7 +5088,7 @@
     const resultsEl = document.getElementById('map-search-results');
     if (!resultsEl) return;
     if (!_mapData) {
-      resultsEl.innerHTML = '<p style="font-size:.8rem;color:var(--text2);padding:6px 4px">Загрузите карту</p>';
+      resultsEl.innerHTML = '<p style="font-size:.8rem;color:var(--text2);padding:6px 4px">Р—Р°РіСЂСѓР·РёС‚Рµ РєР°СЂС‚Сѓ</p>';
       return;
     }
     const mapSize = _mapData.server?.size || 4000;
@@ -5098,16 +5098,16 @@
 
     if (gridParsed) {
       if (!isGridRefOnMap(gridParsed.letters, gridParsed.row, mapSize)) {
-        resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">Нет квадрата «${escapeHtml(formatGridLabel(gridParsed.letters, gridParsed.row))}» на карте этого размера.</p>`;
+        resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">РќРµС‚ РєРІР°РґСЂР°С‚Р° В«${escapeHtml(formatGridLabel(gridParsed.letters, gridParsed.row))}В» РЅР° РєР°СЂС‚Рµ СЌС‚РѕРіРѕ СЂР°Р·РјРµСЂР°.</p>`;
         return;
       }
       const gl = formatGridLabel(gridParsed.letters, gridParsed.row);
-      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--accent);padding:6px 4px;font-weight:600">?? ${escapeHtml(gl)}</p><p style="font-size:.76rem;color:var(--text2);padding:0 4px 6px">Карта отцентрована и увеличена. Магазинов на карте: ${vms.length}. Для поиска товара введите название.</p>`;
+      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--accent);padding:6px 4px;font-weight:600">рџ“Ќ ${escapeHtml(gl)}</p><p style="font-size:.76rem;color:var(--text2);padding:0 4px 6px">РљР°СЂС‚Р° РѕС‚С†РµРЅС‚СЂРѕРІР°РЅР° Рё СѓРІРµР»РёС‡РµРЅР°. РњР°РіР°Р·РёРЅРѕРІ РЅР° РєР°СЂС‚Рµ: ${vms.length}. Р”Р»СЏ РїРѕРёСЃРєР° С‚РѕРІР°СЂР° РІРІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ.</p>`;
       return;
     }
 
     if (!rawQ) {
-      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">Найдено магазинов: ${vms.length}<br>Введите название товара или квадрат (например L20)</p>`;
+      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">РќР°Р№РґРµРЅРѕ РјР°РіР°Р·РёРЅРѕРІ: ${vms.length}<br>Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ С‚РѕРІР°СЂР° РёР»Рё РєРІР°РґСЂР°С‚ (РЅР°РїСЂРёРјРµСЂ L20)</p>`;
       return;
     }
     const q = rawQ.toLowerCase();
@@ -5117,7 +5117,7 @@
       )
     );
     if (!matched.length) {
-      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">Не найдено: «${escapeHtml(rawQ)}»</p>`;
+      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">РќРµ РЅР°Р№РґРµРЅРѕ: В«${escapeHtml(rawQ)}В»</p>`;
       return;
     }
     resultsEl.innerHTML = matched.map(vm => {
@@ -5127,17 +5127,17 @@
       const ordersHtml = relevantOrders.map(o => {
         const iImg  = o.item_img     ? `<img class="vend-item-img" src="${escapeHtml(o.item_img)}"     onerror="this.style.display='none'" alt="">` : '';
         const cImg  = o.currency_img ? `<img class="vend-item-img" src="${escapeHtml(o.currency_img)}" onerror="this.style.display='none'" alt="">` : '';
-        const bp    = o.is_blueprint ? ' ??' : '';
+        const bp    = o.is_blueprint ? ' рџ“' : '';
         const qty   = o.quantity   ?? 1;
         const cost  = o.cost_per_item ?? '?';
         const inStock = o.amount_in_stock;
         const stockHtml = (inStock > 0)
-          ? `<span class="vend-stock vend-stock--ok">${inStock} шт</span>`
+          ? `<span class="vend-stock vend-stock--ok">${inStock} С€С‚</span>`
           : '';
         return `<div class="vend-order-row">
-          ${iImg}<span class="vend-item-name" title="${escapeHtml(o.item_name||'')}">?${qty} ${escapeHtml(o.item_name||'')}${bp}</span>
-          <span class="vend-arrow">></span>
-          ${cImg}<span class="vend-cost">?${cost} ${escapeHtml(o.currency_name||'')}</span>
+          ${iImg}<span class="vend-item-name" title="${escapeHtml(o.item_name||'')}">Г—${qty} ${escapeHtml(o.item_name||'')}${bp}</span>
+          <span class="vend-arrow">в†’</span>
+          ${cImg}<span class="vend-cost">Г—${cost} ${escapeHtml(o.currency_name||'')}</span>
           ${stockHtml}
         </div>`;
       }).join('');
@@ -5146,15 +5146,15 @@
       const mwy = vm.y != null ? String(vm.y) : '';
       const navCls = mwx && mwy ? ' vend-result--nav' : '';
       return `<div class="vend-result${navCls}" data-mwx="${escapeHtml(mwx)}" data-mwy="${escapeHtml(mwy)}" role="button" tabindex="0">
-        <div class="vend-name"><span class="vend-dot"></span>${escapeHtml(vm.name || 'Магазин')}</div>
+        <div class="vend-name"><span class="vend-dot"></span>${escapeHtml(vm.name || 'РњР°РіР°Р·РёРЅ')}</div>
         <div class="vend-orders">${ordersHtml}</div>
-        ${grid ? `<div class="vend-coords">?? ${escapeHtml(grid)} · X${Math.round(vm.x)} Y${Math.round(vm.y)}</div>` : ''}
+        ${grid ? `<div class="vend-coords">рџ“Ќ ${escapeHtml(grid)} В· X${Math.round(vm.x)} Y${Math.round(vm.y)}</div>` : ''}
       </div>`;
     }).join('');
   }
 
   function coordsToGrid(x, y, mapSize) {
-    // Сетка на PNG совпадает с rustplus: paste(grid, (5,5), grid) — учитываем сдвиг.
+    // РЎРµС‚РєР° РЅР° PNG СЃРѕРІРїР°РґР°РµС‚ СЃ rustplus: paste(grid, (5,5), grid) вЂ” СѓС‡РёС‚С‹РІР°РµРј СЃРґРІРёРі.
     const ox = MAP_GRID_PASTE_OFFSET;
     const col = Math.max(0, Math.floor((x - ox) / MAP_GRID_DIAMETER));
     const row = Math.max(0, Math.floor((mapSize - y - ox) / MAP_GRID_DIAMETER));
