@@ -1817,6 +1817,13 @@ footer::before {
   text-decoration: none;
 }
 .yn-cta-btn:hover { opacity: .88; transform: translateY(-1px); color: #fff; }
+.yn-auth-btn {
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.14), 0 6px 20px rgba(0,0,0,0.35);
+  font-weight: 700;
+}
+[data-theme="light"] .yn-auth-btn {
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.1), 0 6px 20px rgba(0,0,0,0.12);
+}
 .yn-lang {
   display: flex; align-items: center; gap: 4px;
 }
