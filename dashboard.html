@@ -2568,9 +2568,9 @@
       if (panel) panel.classList.add('is-active');
       if (tab === 'chat') {
         setupAdminChat();
-      } else {
-        stopAdminChatPoll();
       }
+      // Не останавливаем поллинг при смене внутренних вкладок —
+      // он останавливается только при уходе из всей admin-панели.
     });
   }
 
@@ -2584,12 +2584,13 @@
 
   function startAdminChatPoll() {
     stopAdminChatPoll();
-    _adminChatPollTimer = setInterval(fetchAdminChatMessages, 4000);
+    _adminChatPollTimer = setInterval(fetchAdminChatMessages, 3000);
   }
 
   async function setupAdminChat() {
     if (_adminChatBound) {
-      // Уже инициализирован — просто запускаем поллинг
+      // Уже инициализирован — немедленный fetch + запускаем поллинг
+      fetchAdminChatMessages();
       startAdminChatPoll();
       return;
     }
