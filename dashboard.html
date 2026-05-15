@@ -3309,19 +3309,54 @@
       if (rustSumEl && data.rust_users_db) {
         const ru = data.rust_users_db;
         const br = ru.fcm_status_breakdown || {};
-        const tile = (label, value, cls = '') => `
+
+        // Вычисляем live-статистику из полного списка пользователей.
+        const usersAll = Array.isArray(ru.users) ? ru.users : [];
+        let onlinePlayers = 0, offlinePlayers = 0;
+        let onlineServers = 0, offlineServers = 0;
+        let serversWithPeople = 0, serversWithoutPeople = 0;
+        for (const u of usersAll) {
+          if (u.has_active_socket) onlinePlayers++;
+          else offlinePlayers++;
+          const srv = u.active_server;
+          if (srv) {
+            if (srv.is_online) { onlineServers++; serversWithPeople++; }
+            else               { offlineServers++; serversWithoutPeople++; }
+          }
+        }
+        const totalPlayers = usersAll.length || (ru.users_count ?? 0);
+        const totalActiveServers = onlineServers + offlineServers;
+
+        const tile = (label, value, cls = '', hint = '') => `
           <div class="admin-stat ${cls}">
             <div class="admin-stat-label">${label}</div>
             <div class="admin-stat-value">${value}</div>
+            ${hint ? `<div class="admin-stat-hint">${hint}</div>` : ''}
           </div>`;
+        const divider = (label) => `
+          <div style="grid-column:1/-1;font-size:.72rem;font-weight:700;text-transform:uppercase;
+               letter-spacing:.06em;color:var(--text2);padding:6px 0 0;
+               border-top:1px solid var(--border);margin-top:2px">${label}</div>`;
+
         rustSumEl.classList.add('admin-stat-grid');
         rustSumEl.innerHTML = [
-          tile('👤 rust_users', ru.users_count ?? '—', 'admin-stat--info'),
-          tile('🗄 rust_servers', ru.rust_servers_rows ?? '—', 'admin-stat--info'),
+          divider('Игроки · rust_users'),
+          tile('👥 Всего', totalPlayers, 'admin-stat--info'),
+          tile('🟢 Онлайн', onlinePlayers, 'admin-stat--ok', 'активный Rust+ сокет'),
+          tile('⚫ Оффлайн', offlinePlayers, 'admin-stat--muted', 'без активного сокета'),
           tile('🎮 Со Steam', ru.users_with_steam ?? '—', 'admin-stat--info'),
-          tile('🔌 С активным сокетом', ru.users_with_active_socket ?? '—', 'admin-stat--ok'),
           tile('🏠 С серверами', ru.users_with_servers ?? '—', 'admin-stat--info'),
           tile('🚫 Забанено', ru.users_banned ?? 0, (ru.users_banned > 0 ? 'admin-stat--bad' : 'admin-stat--muted')),
+
+          divider('Серверы · rust_servers'),
+          tile('🗄 Записей в БД', ru.rust_servers_rows ?? '—', 'admin-stat--info'),
+          tile('📋 Активных серверов', totalActiveServers, 'admin-stat--info', 'с active_server'),
+          tile('🟢 Онлайн серверов', onlineServers, 'admin-stat--ok', 'socket подключён'),
+          tile('🔴 Оффлайн серверов', offlineServers, 'admin-stat--bad', 'socket разорван'),
+          tile('👣 С игроками', serversWithPeople, 'admin-stat--ok', 'онлайн-сокет активен'),
+          tile('🌙 Без игроков', serversWithoutPeople, 'admin-stat--muted', 'из подключённых'),
+
+          divider('FCM · push-уведомления'),
           tile('✅ FCM OK', br.ok ?? ru.fcm_ok_users ?? 0, 'admin-stat--ok'),
           tile('⏳ FCM pending', br.pending ?? 0, 'admin-stat--warn'),
           tile('❌ FCM error', br.error ?? 0, 'admin-stat--bad'),
