@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8"/>
@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="style.css?v=21"/>
+  <link rel="stylesheet" href="style.css?v=18"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1320,9 +1320,43 @@
     .admin-panel-head .dash-btn { padding: 8px 14px; }
 
     .admin-panel-body {
-      padding: 16px 24px 22px;
-      display: flex; flex-direction: column;
-      gap: 24px;
+      padding: 0 24px 22px;
+    }
+
+    /* === Admin tabs === */
+    .admin-tabs-nav {
+      display: flex;
+      overflow-x: auto;
+      gap: 2px;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--border);
+      scrollbar-width: none;
+    }
+    .admin-tabs-nav::-webkit-scrollbar { display: none; }
+    .admin-tab-btn {
+      flex-shrink: 0;
+      padding: 11px 18px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      border-radius: 6px 6px 0 0;
+      cursor: pointer;
+      color: var(--text2);
+      font-size: .82rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      transition: color .15s, border-color .15s, background .15s;
+    }
+    .admin-tab-btn:hover { color: var(--text); background: rgba(255,255,255,.04); }
+    .admin-tab-btn.is-active {
+      color: var(--accent, #ff6b35);
+      border-bottom-color: var(--accent, #ff6b35);
+    }
+    .admin-tab-panel { display: none; }
+    .admin-tab-panel.is-active {
+      display: flex; flex-direction: column; gap: 24px;
+      padding-top: 20px;
     }
 
     .admin-panel-section { display: flex; flex-direction: column; gap: 12px; }
@@ -2192,146 +2226,178 @@
               </button>
             </div>
 
+            <!-- Tab navigation -->
+            <nav class="admin-tabs-nav" id="admin-tabs-nav" role="tablist" aria-label="Разделы админ-панели">
+              <button class="admin-tab-btn is-active" data-admin-tab="overview" role="tab" aria-selected="true">Сводка</button>
+              <button class="admin-tab-btn" data-admin-tab="host" role="tab" aria-selected="false">Хост</button>
+              <button class="admin-tab-btn" data-admin-tab="commands" role="tab" aria-selected="false">Команды</button>
+              <button class="admin-tab-btn" data-admin-tab="newdb" role="tab" aria-selected="false">Новая БД</button>
+              <button class="admin-tab-btn" data-admin-tab="guilds" role="tab" aria-selected="false">Гильдии</button>
+            </nav>
+
             <div class="admin-panel-body">
-              <section class="admin-panel-section admin-panel-section--overview">
-                <h3 class="admin-panel-section__title">
-                  <span class="admin-panel-section__title-text">Сводка</span>
-                </h3>
-                <div class="cmd-grid" id="admin-overview"></div>
-              </section>
 
-              <section class="admin-panel-section">
-                <h3 class="admin-panel-section__title">
-                  <span class="admin-panel-section__title-text">Хост · Pi / сервер бота</span>
-                </h3>
-                <div id="admin-host-metrics">—</div>
-              </section>
+              <!-- ── TAB: Сводка ── -->
+              <div class="admin-tab-panel is-active" data-admin-tab-panel="overview">
+                <section class="admin-panel-section admin-panel-section--overview">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text">Сводка · Rust+ гильдии</span>
+                  </h3>
+                  <div class="cmd-grid" id="admin-overview"></div>
+                </section>
 
-              <section class="admin-panel-section">
-                <h3 class="admin-panel-section__title">
-                  <span class="admin-panel-section__title-text">Команды в игре · Rust+</span>
-                </h3>
-                <div class="admin-panel-table-wrap">
-                  <table class="admin-panel-table">
-                    <thead>
-                      <tr>
-                        <th>Время</th>
-                        <th>Команда</th>
-                        <th>Игрок</th>
-                        <th>Сервер</th>
-                        <th>Гильдия</th>
-                      </tr>
-                    </thead>
-                    <tbody id="admin-commands-tbody"></tbody>
-                  </table>
-                </div>
-              </section>
+                <section class="admin-panel-section">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text">Таблицы БД · счётчики строк</span>
+                  </h3>
+                  <pre id="admin-db-counts" class="admin-panel-pre">—</pre>
+                </section>
+              </div>
 
-              <section class="admin-panel-section">
-                <h3 class="admin-panel-section__title">
-                  <span class="admin-panel-section__title-text">Новая БД · rust_users / rust_servers</span>
-                </h3>
-                <div class="admin-stat-grid" id="admin-rust-users-summary" style="margin-bottom:14px"></div>
-                <div class="admin-panel-site-db">
-                  <div class="admin-panel-site-db__head">
-                    <p class="muted" style="margin:0;font-size:0.85rem">
-                      Полный список пользователей сайта. Клик по строке — список всех запэйренных серверов.
-                    </p>
-                    <input type="search" id="admin-site-db-search" class="admin-panel-search"
-                           placeholder="Поиск: ник, discord/steam ID, IP…" autocomplete="off" />
-                  </div>
-                  <div class="admin-panel-table-wrap admin-panel-site-db__wrap">
-                    <table class="admin-panel-table admin-panel-site-db__table">
+              <!-- ── TAB: Хост ── -->
+              <div class="admin-tab-panel" data-admin-tab-panel="host">
+                <section class="admin-panel-section">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text">Хост · Pi / сервер бота</span>
+                  </h3>
+                  <div id="admin-host-metrics">—</div>
+                </section>
+              </div>
+
+              <!-- ── TAB: Команды ── -->
+              <div class="admin-tab-panel" data-admin-tab-panel="commands">
+                <section class="admin-panel-section">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text">Команды в игре · Rust+</span>
+                  </h3>
+                  <div class="admin-panel-table-wrap">
+                    <table class="admin-panel-table">
                       <thead>
                         <tr>
-                          <th style="width:30px"></th>
-                          <th>internal_id</th>
-                          <th>Discord</th>
-                          <th>Steam</th>
-                          <th>FCM</th>
-                          <th>guild_id</th>
-                          <th>Страна</th>
-                          <th>Серверы</th>
-                          <th>Последний вход</th>
+                          <th>Время</th>
+                          <th>Команда</th>
+                          <th>Игрок</th>
+                          <th>Сервер</th>
+                          <th>Гильдия</th>
                         </tr>
                       </thead>
-                      <tbody id="admin-rust-users-tbody"></tbody>
+                      <tbody id="admin-commands-tbody"></tbody>
                     </table>
                   </div>
-                </div>
-              </section>
+                </section>
 
-              <section class="admin-panel-section">
-                <h3 class="admin-panel-section__title">
-                  <span class="admin-panel-section__title-text">Входы в панель (как команды в Rust+)</span>
-                </h3>
-                <p class="muted" style="margin-bottom:10px;font-size:0.85rem">Уведомления в Discord webhook дублируются при каждом OAuth-входе.</p>
-                <div class="admin-panel-table-wrap">
-                  <table class="admin-panel-table">
-                    <thead>
-                      <tr>
-                        <th>Время</th>
-                        <th>Discord ID</th>
-                        <th>Ник</th>
-                        <th>IP</th>
-                        <th>Страна</th>
-                      </tr>
-                    </thead>
-                    <tbody id="admin-panel-logins-tbody"></tbody>
-                  </table>
-                </div>
-              </section>
-
-              <section class="admin-panel-section">
-                <h3 class="admin-panel-section__title">
-                  <span class="admin-panel-section__title-text">Таблицы БД</span>
-                </h3>
-                <pre id="admin-db-counts" class="admin-panel-pre">—</pre>
-              </section>
-
-              <section class="admin-panel-section">
-                <h3 class="admin-panel-section__title">
-                  <span class="admin-panel-section__title-text">Гильдии · live Rust+</span>
-                  <span id="guilds-counter" class="admin-panel-section__title-count">0</span>
-                </h3>
-                <div class="guilds-section">
-                  <div class="guilds-toolbar">
-                    <div class="guilds-toolbar-left">
-                      <span class="muted" style="font-size:.8rem">Фильтр / сортировка / группировка</span>
-                    </div>
-                <div class="guilds-toolbar-right">
-                  <input
-                    type="search"
-                    id="guilds-search"
-                    class="dash-select"
-                    placeholder="Поиск по названию, ID, IP, Steam..."
-                    style="max-width:280px;padding:8px 12px;font-size:.85rem"
-                  />
-                  <select id="guilds-sort" class="dash-select" style="max-width:260px;padding:8px 12px;font-size:.85rem">
-                    <option value="shared">Сорт: сначала общие ↓</option>
-                    <option value="players">Сорт: игроки на сервере ↓</option>
-                    <option value="online">Сорт: онлайн в командах ↓</option>
-                    <option value="team">Сорт: размер команд ↓</option>
-                    <option value="status">Сорт: статус ↓</option>
-                    <option value="name">Сорт: название A→Z</option>
-                    <option value="name_desc">Сорт: название Z→A</option>
-                    <option value="watched">Сорт: отслеживаемые ↓</option>
-                  </select>
-                  <select id="guilds-filter" class="dash-select" style="max-width:200px;padding:8px 12px;font-size:.85rem">
-                    <option value="all">Фильтр: все</option>
-                    <option value="connected">Только connected</option>
-                    <option value="disconnected">Только disconnected</option>
-                    <option value="error">С ошибкой</option>
-                    <option value="vip">VIP</option>
-                    <option value="blocked">Blocked</option>
-                    <option value="fcm">С FCM</option>
-                    <option value="no_rust">Без Rust+</option>
-                  </select>
-                </div>
+                <section class="admin-panel-section">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text">Входы в панель</span>
+                  </h3>
+                  <p class="muted" style="margin-bottom:10px;font-size:0.85rem">Уведомление в Discord webhook отправляется при каждом OAuth-входе.</p>
+                  <div class="admin-panel-table-wrap">
+                    <table class="admin-panel-table">
+                      <thead>
+                        <tr>
+                          <th>Время</th>
+                          <th>Discord ID</th>
+                          <th>Ник</th>
+                          <th>IP</th>
+                          <th>Страна</th>
+                        </tr>
+                      </thead>
+                      <tbody id="admin-panel-logins-tbody"></tbody>
+                    </table>
+                  </div>
+                </section>
               </div>
-              <div id="admin-guilds-list" class="server-dir"></div>
-            </div>
-              </section>
+
+              <!-- ── TAB: Новая БД ── -->
+              <div class="admin-tab-panel" data-admin-tab-panel="newdb">
+                <section class="admin-panel-section">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text">Новая БД · Сводка rust_users / rust_servers</span>
+                  </h3>
+                  <div class="admin-stat-grid" id="admin-rust-users-summary" style="margin-bottom:4px"></div>
+                </section>
+
+                <section class="admin-panel-section">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text">Пользователи сайта · полный список</span>
+                  </h3>
+                  <div class="admin-panel-site-db">
+                    <div class="admin-panel-site-db__head">
+                      <p class="muted" style="margin:0;font-size:0.85rem">
+                        Клик по строке — детали и все запэйренные серверы пользователя.
+                      </p>
+                      <input type="search" id="admin-site-db-search" class="admin-panel-search"
+                             placeholder="Поиск: ник, discord/steam ID, IP…" autocomplete="off" />
+                    </div>
+                    <div class="admin-panel-table-wrap admin-panel-site-db__wrap">
+                      <table class="admin-panel-table admin-panel-site-db__table">
+                        <thead>
+                          <tr>
+                            <th style="width:30px"></th>
+                            <th>internal_id</th>
+                            <th>Discord</th>
+                            <th>Steam</th>
+                            <th>FCM</th>
+                            <th>guild_id</th>
+                            <th>Страна</th>
+                            <th>Серверы</th>
+                            <th>Последний вход</th>
+                          </tr>
+                        </thead>
+                        <tbody id="admin-rust-users-tbody"></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <!-- ── TAB: Гильдии ── -->
+              <div class="admin-tab-panel" data-admin-tab-panel="guilds">
+                <section class="admin-panel-section">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text">Гильдии · live Rust+</span>
+                    <span id="guilds-counter" class="admin-panel-section__title-count">0</span>
+                  </h3>
+                  <div class="guilds-section">
+                    <div class="guilds-toolbar">
+                      <div class="guilds-toolbar-left">
+                        <span class="muted" style="font-size:.8rem">Фильтр / сортировка / группировка</span>
+                      </div>
+                      <div class="guilds-toolbar-right">
+                        <input
+                          type="search"
+                          id="guilds-search"
+                          class="dash-select"
+                          placeholder="Поиск по названию, ID, IP, Steam..."
+                          style="max-width:280px;padding:8px 12px;font-size:.85rem"
+                        />
+                        <select id="guilds-sort" class="dash-select" style="max-width:260px;padding:8px 12px;font-size:.85rem">
+                          <option value="shared">Сорт: сначала общие ↓</option>
+                          <option value="players">Сорт: игроки на сервере ↓</option>
+                          <option value="online">Сорт: онлайн в командах ↓</option>
+                          <option value="team">Сорт: размер команд ↓</option>
+                          <option value="status">Сорт: статус ↓</option>
+                          <option value="name">Сорт: название A→Z</option>
+                          <option value="name_desc">Сорт: название Z→A</option>
+                          <option value="watched">Сорт: отслеживаемые ↓</option>
+                        </select>
+                        <select id="guilds-filter" class="dash-select" style="max-width:200px;padding:8px 12px;font-size:.85rem">
+                          <option value="all">Фильтр: все</option>
+                          <option value="connected">Только connected</option>
+                          <option value="disconnected">Только disconnected</option>
+                          <option value="error">С ошибкой</option>
+                          <option value="vip">VIP</option>
+                          <option value="blocked">Blocked</option>
+                          <option value="fcm">С FCM</option>
+                          <option value="no_rust">Без Rust+</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div id="admin-guilds-list" class="server-dir"></div>
+                  </div>
+                </section>
+              </div>
+
             </div>
           </div>
         </div>
@@ -2371,6 +2437,27 @@
       clearInterval(_adminPanelPollTimer);
       _adminPanelPollTimer = null;
     }
+  }
+
+  function setupAdminTabs() {
+    const nav = document.getElementById('admin-tabs-nav');
+    if (!nav || nav.dataset.bound === '1') return;
+    nav.dataset.bound = '1';
+    nav.addEventListener('click', (e) => {
+      const btn = e.target.closest('.admin-tab-btn');
+      if (!btn) return;
+      const tab = btn.dataset.adminTab;
+      if (!tab) return;
+      nav.querySelectorAll('.admin-tab-btn').forEach(b => {
+        b.classList.remove('is-active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      document.querySelectorAll('.admin-tab-panel').forEach(p => p.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      btn.setAttribute('aria-selected', 'true');
+      const panel = document.querySelector(`.admin-tab-panel[data-admin-tab-panel="${tab}"]`);
+      if (panel) panel.classList.add('is-active');
+    });
   }
 
   function setupAdminPanelPolling() {
@@ -2981,6 +3068,7 @@
 
     if (btn) btn.style.display = '';
     setupAdminPanelRefreshButton();
+    setupAdminTabs();
     if (_adminPanelLoading && !opts.force) {
       return;
     }
