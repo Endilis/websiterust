@@ -2052,7 +2052,7 @@
                 <span class="dash-badge dash-badge--neutral" id="token-status-badge">—</span>
                 <a href="#" id="btn-token-refresh" class="dash-btn dash-btn--ghost" style="display:none">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-                  Обновить
+                  <span data-i18n="nav.refresh">Обновить</span>
                 </a>
               </div>
               <div id="rust-linked-block" style="display:none">
@@ -2079,11 +2079,11 @@
               <p class="dash-muted" id="token-status-message" style="display:none"></p>
               <div class="dash-list" style="display:none">
                 <div class="dash-list__row" id="token-expiry-row" style="display:none">
-                  <span class="dash-k">Истекает</span>
+                  <span class="dash-k" data-i18n="acc.token_expires">Истекает</span>
                   <span class="dash-v dash-v--plain" id="token-expires-val">—</span>
                 </div>
                 <div class="dash-list__row" id="token-days-row" style="display:none">
-                  <span class="dash-k">Осталось дней</span>
+                  <span class="dash-k" data-i18n="acc.token_days">Осталось дней</span>
                   <span class="dash-v" id="token-days-val">—</span>
                 </div>
               </div>
@@ -2594,6 +2594,8 @@
       'acc.danger_zone':      'Опасная зона',
       'acc.danger_hint':      'Отключить FCM и Rust+ сокет и заблокировать автоматическое восстановление после перезапуска бота.',
       'acc.btn_disable':      'Отключить навсегда',
+      'acc.token_expires':    'Истекает',
+      'acc.token_days':       'Осталось дней',
       /* rust panel */
       'rust.server_title': 'Сервер Rust',
       'rust.name':         'Название',
@@ -2774,6 +2776,8 @@
       'acc.danger_zone':      'Danger Zone',
       'acc.danger_hint':      'Disable FCM and Rust+ socket and block automatic recovery after bot restart.',
       'acc.btn_disable':      'Disable Forever',
+      'acc.token_expires':    'Expires',
+      'acc.token_days':       'Days remaining',
       /* rust panel */
       'rust.server_title': 'Rust Server',
       'rust.name':         'Name',
@@ -3043,7 +3047,7 @@
           ? _adminChatServers.map(s =>
               `<option value="${escapeHtml(String(s.steam_id))}">${escapeHtml(s.server_name || s.steam_id)}${s.is_connected ? '' : ' (offline)'}</option>`
             ).join('')
-          : '<option value="">— нет активных серверов —</option>';
+          : `<option value="">${_lang==='en'?'— no active servers —':'— нет активных серверов —'}</option>`;
         if (_adminChatServers.length) {
           _adminChatSteamId = String(_adminChatServers[0].steam_id);
           select.value = _adminChatSteamId;
@@ -3063,7 +3067,7 @@
       const srv = _adminChatServers.find(s => String(s.steam_id) === _adminChatSteamId);
       updateAdminChatServerBar(srv || null);
       const msgs = document.getElementById('admin-chat-messages');
-      if (msgs) msgs.innerHTML = '<span class="admin-chat-empty">Загрузка...</span>';
+      if (msgs) msgs.innerHTML = `<span class="admin-chat-empty">${_lang==='en'?'Loading...':'Загрузка...'}</span>`;
       fetchAdminChatMessages();
     });
 
@@ -3132,7 +3136,7 @@
         const isBot = !m.sender_steam_id || m.sender_name === 'RustInfoBot';
         const d = document.createElement('div');
         d.className = `admin-chat-msg ${isBot ? 'admin-chat-msg--bot' : 'admin-chat-msg--player'}`;
-        const t = m.ts ? new Date(m.ts * 1000).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
+        const t = m.ts ? new Date(m.ts * 1000).toLocaleTimeString(_lang==='en'?'en-US':'ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
         d.innerHTML =
           `<span class="admin-chat-msg__time">${escapeHtml(t)}</span>` +
           `<span class="admin-chat-msg__name" style="color:${escapeHtml(m.colour || '#34d399')}">${escapeHtml(m.sender_name || '?')}</span>` +
@@ -3175,7 +3179,7 @@
         setTimeout(fetchAdminChatMessages, 1000);
       }
     } catch (e) {
-      alert(`Сетевая ошибка: ${e.message || e}`);
+      alert(`${_lang==='en'?'Network error: ':'Сетевая ошибка: '}${e.message || e}`);
     } finally {
       sendBtn.disabled = false;
       input.focus();
@@ -3431,7 +3435,7 @@
     if (expIso || (expUnix != null && expUnix !== undefined)) {
       expRow.style.display = 'flex';
       const d = expIso ? new Date(expIso) : new Date(Number(expUnix) * 1000);
-      document.getElementById('token-expires-val').textContent = d.toLocaleString('ru-RU', {
+      document.getElementById('token-expires-val').textContent = d.toLocaleString(_lang==='en'?'en-US':'ru-RU', {
         dateStyle: 'long',
         timeStyle: 'short'
       });
@@ -3583,14 +3587,14 @@
     }
     const raw = (ta && ta.value || '').trim();
     if (!raw) {
-      if (msgEl) msgEl.textContent = 'Вставьте JSON';
+      if (msgEl) msgEl.textContent = _lang==='en'?'Paste JSON':'Вставьте JSON';
       return;
     }
     let obj;
     try {
       obj = JSON.parse(raw);
     } catch (e) {
-      if (msgEl) msgEl.textContent = 'Некорректный JSON';
+      if (msgEl) msgEl.textContent = _lang==='en'?'Invalid JSON':'Некорректный JSON';
       return;
     }
     const body = buildFcmBody(obj);
@@ -3614,7 +3618,7 @@
       if (ta) ta.value = '';
       await loadDashboard(session);
     } catch (e) {
-      if (msgEl) msgEl.textContent = 'Сеть: ' + ((e && e.message) || String(e));
+      if (msgEl) msgEl.textContent = (_lang==='en'?'Network: ':'Сеть: ') + ((e && e.message) || String(e));
     }
   }
 
@@ -3632,7 +3636,7 @@
     if (ru.admin_disabled) {
       btn.style.display = 'none';
       note.style.display = 'block';
-      note.textContent = 'Авто-восстановление отключено.';
+      note.textContent = _lang==='en'?'Auto-recovery is disabled.':'Авто-восстановление отключено.';
     } else {
       btn.style.display = '';
       btn.disabled = false;
@@ -3648,8 +3652,9 @@
     const btn = document.getElementById('btn-account-disable-forever');
     if (!btn) return;
     btn.addEventListener('click', async () => {
-      const msg =
-        'Отключить FCM+сокет и заблокировать авто-восстановление? Бот не будет переподключаться после перезапуска.';
+      const msg = _lang === 'en'
+        ? 'Disable FCM+socket and block auto-recovery? The bot will not reconnect after restart.'
+        : 'Отключить FCM+сокет и заблокировать авто-восстановление? Бот не будет переподключаться после перезапуска.';
       if (!confirm(msg)) return;
       const session = _dashSessionRef || localStorage.getItem('ri_session');
       if (!session) return;
@@ -3671,9 +3676,9 @@
           await loadDashboard(session, { force: true });
           return;
         }
-        alert(d.message || d.error || `Ошибка ${resp.status}`);
+        alert(d.message || d.error || (_lang==='en'?`Error ${resp.status}`:`Ошибка ${resp.status}`));
       } catch (_) {
-        alert('Сетевая ошибка');
+        alert(_lang==='en'?'Network error':'Сетевая ошибка');
       } finally {
         btn.disabled = false;
       }
@@ -3748,13 +3753,13 @@
         displayEl.textContent = d.prefix;
         wrapEl.classList.remove('open');
         editBtn.style.display = '';
-        if (msgEl) { msgEl.textContent = '✅ Сохранено'; msgEl.style.display = 'block'; }
+        if (msgEl) { msgEl.textContent = _lang==='en'?'✅ Saved':'✅ Сохранено'; msgEl.style.display = 'block'; }
         setTimeout(() => { if (msgEl) { msgEl.style.display = 'none'; msgEl.textContent = ''; } }, 2500);
       } else {
-        if (msgEl) { msgEl.textContent = '❌ ' + (d.message || d.error || 'Ошибка'); msgEl.style.display = 'block'; }
+        if (msgEl) { msgEl.textContent = '❌ ' + (d.message || d.error || (_lang==='en'?'Error':'Ошибка')); msgEl.style.display = 'block'; }
       }
     } catch (e) {
-      if (msgEl) { msgEl.textContent = '❌ Сетевая ошибка'; msgEl.style.display = 'block'; }
+      if (msgEl) { msgEl.textContent = _lang==='en'?'❌ Network error':'❌ Сетевая ошибка'; msgEl.style.display = 'block'; }
     } finally {
       if (saveBtn) saveBtn.disabled = false;
     }
@@ -3771,9 +3776,9 @@
         const msg = document.getElementById('fcm-paste-msg');
         try {
           await navigator.clipboard.writeText(FCM_JSON_TEMPLATE);
-          if (msg) msg.textContent = 'Пример скопирован в буфер обмена';
+          if (msg) msg.textContent = _lang==='en'?'Example copied to clipboard':'Пример скопирован в буфер обмена';
         } catch (e) {
-          if (msg) msg.textContent = 'Не удалось скопировать (разрешите доступ к буферу)';
+          if (msg) msg.textContent = _lang==='en'?'Could not copy (grant clipboard access)':'Не удалось скопировать (разрешите доступ к буферу)';
         }
       });
     }
@@ -3805,7 +3810,7 @@
 
     try {
       _adminPanelLoading = true;
-      if (statusEl) statusEl.textContent = 'Загрузка...';
+        if (statusEl) statusEl.textContent = _lang==='en'?'Loading...':'Загрузка...';
       const requestTs = Date.now();
       const resp = await fetch(`${API_BASE}/admin/panel?session=${encodeURIComponent(session)}&_t=${requestTs}`, {
         credentials: 'include',
@@ -4178,7 +4183,7 @@
 
   function fmtTs(t) {
     if (t == null) return '—';
-    try { return new Date(Number(t) * 1000).toLocaleString('ru-RU'); }
+    try { return new Date(Number(t) * 1000).toLocaleString(_lang==='en'?'en-US':'ru-RU'); }
     catch (_) { return '—'; }
   }
 
@@ -4306,7 +4311,7 @@
       });
       if (!resp.ok) {
         const txt = await resp.text().catch(() => '');
-        alert(`Ошибка ${resp.status}: ${txt || '—'}`);
+        alert(`${_lang==='en'?'Error':'Ошибка'} ${resp.status}: ${txt || '—'}`);
         return;
       }
       const data = await resp.json();
@@ -4328,7 +4333,7 @@
       // И параллельно дергаем полный refresh панели, чтобы подтянуть FCM-каунтеры.
       if (_dashSessionRef) loadAdminPanel(_dashSessionRef, _dashDiscordId);
     } catch (err) {
-      alert('Сеть: ' + ((err && err.message) || String(err)));
+      alert((_lang==='en'?'Network: ':'Сеть: ') + ((err && err.message) || String(err)));
     } finally {
       btn.disabled = false;
       btn.textContent = origText;
@@ -4427,9 +4432,9 @@
     const addr = `${escapeHtml(String(s.server_ip || '—'))}:${escapeHtml(String(s.server_port || '—'))}`;
     const name = s.server_name ? `<div class="site-db-server__name">${escapeHtml(s.server_name)}</div>` : '';
     const onl = s.is_online
-      ? '<span class="site-db-server__online">● онлайн</span>'
-      : '<span class="site-db-server__offline">○ оффлайн</span>';
-    const flag = `<span class="site-db-server__flag">${s.is_active ? 'активный' : 'pair'}</span>`;
+      ? `<span class="site-db-server__online">● ${_lang==='en'?'online':'онлайн'}</span>`
+      : `<span class="site-db-server__offline">○ ${_lang==='en'?'offline':'оффлайн'}</span>`;
+    const flag = `<span class="site-db-server__flag">${s.is_active ? (_lang==='en'?'active':'активный') : 'pair'}</span>`;
     const last = s.last_seen_at ? `<span class="muted" style="font-size:.74rem">${escapeHtml(fmtTs(s.last_seen_at))}</span>` : '';
     return `
       <div class="site-db-server${s.is_active ? ' is-active' : ''}">
@@ -4707,7 +4712,7 @@
       disconnected: 'offline',
       error: 'error',
       empty: 'no info',
-      no_rust: 'нет Rust+',
+      no_rust: _lang==='en'?'no Rust+':'нет Rust+',
     }[status] || status;
 
     const badges = [];
@@ -4734,8 +4739,8 @@
           const aliveCls  = m.is_alive  ? 'gc-member-alive'  : 'gc-member-dead';
           const aliveIcon = m.is_alive  ? '❤'                : '💀';
           return `<li class="srv-row__team-member">
-            <span class="${onlineCls}" title="${m.is_online ? 'онлайн' : 'офлайн'}">●</span>
-            <span class="${aliveCls}" title="${m.is_alive ? 'жив' : 'мёртв'}">${aliveIcon}</span>
+            <span class="${onlineCls}" title="${m.is_online ? (_lang==='en'?'online':'онлайн') : (_lang==='en'?'offline':'офлайн')}">●</span>
+            <span class="${aliveCls}" title="${m.is_alive ? (_lang==='en'?'alive':'жив') : (_lang==='en'?'dead':'мёртв')}">${aliveIcon}</span>
             <span class="gc-member-name">${name}</span>
             ${sid ? `<span class="gc-member-sid">${sid}</span>` : ''}
           </li>`;
@@ -4743,12 +4748,12 @@
         .join('');
       teamBlock = `
         <details class="srv-row__team-details">
-          <summary><b>${teamCount}</b>&nbsp;·&nbsp;${onlineCount} онлайн&nbsp;·&nbsp;${aliveCount} жив</summary>
+          <summary><b>${teamCount}</b>&nbsp;·&nbsp;${onlineCount} ${_lang==='en'?'online':'онлайн'}&nbsp;·&nbsp;${aliveCount} ${_lang==='en'?'alive':'жив'}</summary>
           <ul class="srv-row__team-members">${lis}</ul>
         </details>
       `;
     } else {
-      teamBlock = `<span class="srv-row__team">без команды</span>`;
+      teamBlock = `<span class="srv-row__team">${_lang==='en'?'no team':'без команды'}</span>`;
     }
 
     const errTxt = (status === 'error' && g.rust_live?.error)
@@ -4767,7 +4772,7 @@
         class="dash-btn dash-btn--danger dash-btn--small admin-guild-wipe"
         data-gid="${escapeHtml(String(g.guild_id || ''))}"
         data-gname="${escapeHtml(String(g.guild_name || ''))}"
-        title="Бот покинет гильдию и стираются все её данные">🗑 Удалить</button>`;
+        title="${_lang==='en'?'Bot will leave the guild and all its data will be deleted':'Бот покинет гильдию и стираются все её данные'}">🗑 ${_lang==='en'?'Delete':'Удалить'}</button>`;
 
     return `
       <div class="srv-row" data-status="${status}">
@@ -4802,17 +4807,14 @@
       const gid = btn.getAttribute('data-gid') || '';
       const gname = btn.getAttribute('data-gname') || '';
       if (!gid) return;
-      const ok = window.confirm(
-        `Удалить гильдию из бота?\n\n` +
-        `Название: ${gname || '—'}\nID: ${gid}\n\n` +
-        `Бот выйдет из этой гильдии Discord и удалит все её данные ` +
-        `(rust_plus_servers, players, fcm_tokens, event_history и т.д.).\n\n` +
-        `Это действие необратимо.`
+      const ok = window.confirm(_lang === 'en'
+        ? `Remove guild from bot?\n\nName: ${gname || '—'}\nID: ${gid}\n\nThe bot will leave this Discord guild and delete all its data (rust_plus_servers, players, fcm_tokens, event_history, etc.).\n\nThis action is irreversible.`
+        : `Удалить гильдию из бота?\n\nНазвание: ${gname || '—'}\nID: ${gid}\n\nБот выйдет из этой гильдии Discord и удалит все её данные (rust_plus_servers, players, fcm_tokens, event_history и т.д.).\n\nЭто действие необратимо.`
       );
       if (!ok) return;
       btn.disabled = true;
       const oldText = btn.textContent;
-      btn.textContent = 'Удаляю…';
+      btn.textContent = _lang==='en'?'Deleting…':'Удаляю…';
       try {
         const r = await fetch(`${API_BASE}/admin/guild/wipe?session=${encodeURIComponent(session)}`, {
           method: 'POST',
@@ -4824,13 +4826,13 @@
         let body = {};
         try { body = text ? JSON.parse(text) : {}; } catch (_) { body = { _raw: text }; }
         if (!r.ok) {
-          alert('Не удалось удалить: ' + (body.error || body._raw || r.status));
+          alert((_lang==='en'?'Failed to delete: ':'Не удалось удалить: ') + (body.error || body._raw || r.status));
           return;
         }
         // Обновляем админ-панель, чтобы карточка гильдии исчезла.
         await loadAdminPanel(session, _dashDiscordId, { force: true });
       } catch (err) {
-        alert('Сеть: ' + ((err && err.message) || String(err)));
+        alert((_lang==='en'?'Network: ':'Сеть: ') + ((err && err.message) || String(err)));
       } finally {
         btn.disabled = false;
         btn.textContent = oldText;
@@ -4857,13 +4859,17 @@
     const auto = !!st.autoMode;
 
     if (hint) {
-      hint.textContent = auto
-        ? 'Авто-режим: активный сервер выбирается автоматически при паринге через игру. Ручной выбор отключён.'
-        : 'Бот использует сервер, отмеченный как «активный». Нажмите карточку, чтобы переключиться.';
+      hint.textContent = _lang === 'en'
+        ? (auto
+            ? 'Auto mode: active server is selected automatically when pairing from the game. Manual selection is disabled.'
+            : 'The bot uses the server marked as «active». Click a card to switch.')
+        : (auto
+            ? 'Авто-режим: активный сервер выбирается автоматически при паринге через игру. Ручной выбор отключён.'
+            : 'Бот использует сервер, отмеченный как «активный». Нажмите карточку, чтобы переключиться.');
     }
 
     if (!st.servers.length) {
-      wrap.innerHTML = '<p class="dash-muted" style="margin:0">Пока нет запэйренных серверов. Откройте Rust+ в игре и выполните pairing.</p>';
+      wrap.innerHTML = `<p class="dash-muted" style="margin:0">${_lang==='en'?'No paired servers yet. Open Rust+ in the game and perform pairing.':'Пока нет запэйренных серверов. Откройте Rust+ в игре и выполните pairing.'}</p>`;
       return;
     }
 
@@ -4876,9 +4882,9 @@
       const connected = !!(st.connectedAddress && st.connectedAddress === addr && active);
 
       const badges = [];
-      if (active) badges.push('<span class="dash-badge dash-badge--accent">активный</span>');
-      if (connected) badges.push('<span class="dash-badge dash-badge--neutral">подключён</span>');
-      else if (active && !auto) badges.push('<span class="dash-badge dash-badge--neutral">ожидает</span>');
+      if (active) badges.push(`<span class="dash-badge dash-badge--accent">${_lang==='en'?'active':'активный'}</span>`);
+      if (connected) badges.push(`<span class="dash-badge dash-badge--neutral">${_lang==='en'?'connected':'подключён'}</span>`);
+      else if (active && !auto) badges.push(`<span class="dash-badge dash-badge--neutral">${_lang==='en'?'waiting':'ожидает'}</span>`);
 
       const cls = [
         'rust-srv-card',
@@ -4937,7 +4943,7 @@
         st.pendingInternalId = null;
         renderRustServerCards();
         const msg = body.error || body._raw || String(r.status);
-        alert('Не удалось сменить активный сервер: ' + msg);
+        alert((_lang==='en'?'Failed to switch active server: ':'Не удалось сменить активный сервер: ') + msg);
         return;
       }
       // Успех: обновляем «подключённый сервер» в фоне (не дергая re-render серверной сетки).
@@ -4946,7 +4952,7 @@
       st.activeInternalId = previousActive;
       st.servers.forEach(s => { s.is_active = (String(s.internal_id) === String(previousActive)) ? 1 : 0; });
       renderRustServerCards();
-      alert('Сеть: ' + ((err && err.message) || String(err)));
+      alert((_lang==='en'?'Network: ':'Сеть: ') + ((err && err.message) || String(err)));
     } finally {
       st.pendingInternalId = null;
       renderRustServerCards();
@@ -4983,7 +4989,7 @@
       try { body = text ? JSON.parse(text) : {}; } catch (_) { body = { _raw: text }; }
       if (!r.ok) {
         if (toggle) toggle.checked = !enabled;
-        alert('Не удалось сохранить: ' + (body.error || body._raw || r.status));
+        alert((_lang==='en'?'Failed to save: ':'Не удалось сохранить: ') + (body.error || body._raw || r.status));
         return;
       }
       _rustServersState.autoMode = !!enabled;
@@ -4994,7 +5000,7 @@
       }
     } catch (err) {
       if (toggle) toggle.checked = !enabled;
-      alert('Сеть: ' + ((err && err.message) || String(err)));
+      alert((_lang==='en'?'Network: ':'Сеть: ') + ((err && err.message) || String(err)));
     }
   }
 
@@ -5039,8 +5045,8 @@
         const map = {
           ok: ['dash-badge--ok', 'FCM OK'],
           pending: ['dash-badge--warn', 'FCM…'],
-          error: ['dash-badge--warn', 'FCM ошибка'],
-          unlinked: ['dash-badge--neutral', 'Не привязано']
+          error: ['dash-badge--warn', _lang==='en'?'FCM error':'FCM ошибка'],
+          unlinked: ['dash-badge--neutral', _lang==='en'?'Not linked':'Не привязано']
         };
         const pair = map[st] || map.unlinked;
         badge.className = 'dash-badge ' + pair[0];
@@ -5062,7 +5068,7 @@
       renderRustServerCards();
     } catch (e) {
       console.error('[rust panels]', e);
-      serversEl.innerHTML = '<p class="dash-muted">Не удалось загрузить <code>/me/rust</code>.</p>';
+      serversEl.innerHTML = `<p class="dash-muted">${_lang==='en'?'Failed to load':'Не удалось загрузить'} <code>/me/rust</code>.</p>`;
     }
 
     try {
@@ -5071,17 +5077,19 @@
       });
       if (r2.status === 403) {
         if (scopeMsg) {
-          scopeMsg.textContent = 'Для отображения списка серверов Discord выйдите и войдите заново, разрешив доступ к «guilds».';
+          scopeMsg.textContent = _lang==='en'
+            ? 'To display your Discord servers, log out and log in again, granting access to «guilds».'
+            : 'Для отображения списка серверов Discord выйдите и войдите заново, разрешив доступ к «guilds».';
           scopeMsg.style.display = 'block';
         }
         oauthEl.innerHTML = '';
       } else if (!r2.ok) {
-        oauthEl.innerHTML = '<p class="dash-muted">Список гильдий временно недоступен.</p>';
+        oauthEl.innerHTML = `<p class="dash-muted">${_lang==='en'?'Guild list temporarily unavailable.':'Список гильдий временно недоступен.'}</p>`;
       } else {
         const j2 = await r2.json();
         const list = (j2.guilds || []).filter(g => g.is_admin || g.is_owner);
         if (!list.length) {
-          oauthEl.innerHTML = '<p class="dash-muted" style="margin:0">Нет гильдий с правами администратора (или список пуст).</p>';
+          oauthEl.innerHTML = `<p class="dash-muted" style="margin:0">${_lang==='en'?'No guilds with admin rights (or the list is empty).':'Нет гильдий с правами администратора (или список пуст).'}</p>`;
         } else {
           const selectedId = String(j2.selected_guild_id || '');
           list.sort((a, b) => {
@@ -5093,14 +5101,14 @@
             const gid = String(g.id);
             const isSel = g.is_selected || gid === selectedId;
             const botB = g.has_bot
-              ? '<span class="dash-badge dash-badge--ok">бот добавлен</span>'
-              : '<span class="dash-badge dash-badge--warn">нет бота</span>';
-            const selB = isSel ? '<span class="dash-badge dash-badge--accent">используется</span>' : '';
+              ? `<span class="dash-badge dash-badge--ok">${_lang==='en'?'bot added':'бот добавлен'}</span>`
+              : `<span class="dash-badge dash-badge--warn">${_lang==='en'?'no bot':'нет бота'}</span>`;
+            const selB = isSel ? `<span class="dash-badge dash-badge--accent">${_lang==='en'?'in use':'используется'}</span>` : '';
             const useBtn = !isSel
-              ? `<button type="button" class="dash-btn dash-btn--primary dash-btn--small rust-select-guild" data-gid="${escapeHtml(gid)}">Использовать</button>`
+              ? `<button type="button" class="dash-btn dash-btn--primary dash-btn--small rust-select-guild" data-gid="${escapeHtml(gid)}">${_lang==='en'?'Use':'Использовать'}</button>`
               : '';
             const inv = !g.has_bot
-              ? `<a href="${INVITE_BOT_URL}" target="_blank" rel="noreferrer" class="dash-btn dash-btn--ghost dash-btn--small">Пригласить бота</a>`
+              ? `<a href="${INVITE_BOT_URL}" target="_blank" rel="noreferrer" class="dash-btn dash-btn--ghost dash-btn--small">${_lang==='en'?'Invite bot':'Пригласить бота'}</a>`
               : '';
             return `<div class="rust-guild-card ${isSel ? 'is-selected' : ''}">
               <div style="flex:1;min-width:0" class="rust-guild-card__name">
@@ -5115,7 +5123,7 @@
               const gid = btn.getAttribute('data-gid');
               btn.disabled = true;
               const old = btn.textContent;
-              btn.textContent = 'Сохраняю…';
+              btn.textContent = _lang==='en'?'Saving…':'Сохраняю…';
               try {
                 const r = await fetch(`${API_BASE}/me/select_guild?session=${encodeURIComponent(session)}`, {
                   method: 'POST',
@@ -5125,7 +5133,7 @@
                 });
                 const text = await r.text();
                 if (!r.ok) {
-                  alert('Ошибка: ' + (text.slice(0, 240) || r.status));
+                  alert((_lang==='en'?'Error: ':'Ошибка: ') + (text.slice(0, 240) || r.status));
                   return;
                 }
                 await loadDashboard(session, { force: true });
@@ -5141,7 +5149,7 @@
       }
     } catch (e) {
       console.error('[guilds]', e);
-      oauthEl.innerHTML = '<p class="dash-muted">Список гильдий временно недоступен.</p>';
+      oauthEl.innerHTML = `<p class="dash-muted">${_lang==='en'?'Guild list temporarily unavailable.':'Список гильдий временно недоступен.'}</p>`;
     }
 
     if (retryBtn && !retryBtn._rustRetryBound) {
@@ -5191,7 +5199,7 @@
     if (data.web_user && data.web_user.registered_at != null) {
       regRow.style.display = 'block';
       const rd = new Date(Number(data.web_user.registered_at) * 1000);
-      document.getElementById('profile-registered').textContent = rd.toLocaleString('ru-RU', {
+      document.getElementById('profile-registered').textContent = rd.toLocaleString(_lang==='en'?'en-US':'ru-RU', {
         dateStyle: 'long',
         timeStyle: 'short'
       });
@@ -5232,7 +5240,7 @@
       document.getElementById('server-address').textContent = server.address || '—';
       const p = server.players, m = server.max_players, q = server.queued_players;
       document.getElementById('server-players').textContent = 
-        (p != null && m != null) ? `${p}/${m}` + (q != null && q > 0 ? ` (очередь: ${q})` : '') : '—';
+        (p != null && m != null) ? `${p}/${m}` + (q != null && q > 0 ? ` (${_lang==='en'?'queue':'очередь'}: ${q})` : '') : '—';
       document.getElementById('server-size').textContent = server.size || '—';
       const teamBlock = document.getElementById('server-team-block');
       const teamList = document.getElementById('server-team-list');
@@ -5241,7 +5249,7 @@
         teamList.innerHTML = server.team.map(t => 
           `<li style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
             <span>${escapeHtml(t.name || '?')}</span>
-            <span class="badge ${t.is_online ? 'badge-green' : 'badge-gray'}">${t.is_online ? 'онлайн' : 'офлайн'}</span>
+            <span class="badge ${t.is_online ? 'badge-green' : 'badge-gray'}">${t.is_online ? (_lang==='en'?'online':'онлайн') : (_lang==='en'?'offline':'офлайн')}</span>
           </li>`
         ).join('');
       } else {
@@ -5324,7 +5332,7 @@
       if (!resp.ok) {
         if (statusEl) {
           statusEl.className = 'team-panel__status is-err';
-          statusEl.textContent = 'Ошибка запроса /me/team: HTTP ' + resp.status;
+          statusEl.textContent = (_lang==='en'?'Request error /me/team: HTTP ':'Ошибка запроса /me/team: HTTP ') + resp.status;
         }
         return;
       }
@@ -5437,19 +5445,20 @@
       isMe ? 'team-card--me' : '',
     ].filter(Boolean).join(' ');
 
+    const _e = (_lang === 'en');
     const badges = [];
-    if (isMe) badges.push('<span class="team-card__badge team-card__badge--me">вы</span>');
-    if (m.is_leader) badges.push('<span class="team-card__badge team-card__badge--leader" title="Лидер команды">👑 лидер</span>');
+    if (isMe) badges.push(`<span class="team-card__badge team-card__badge--me">${_e?'you':'вы'}</span>`);
+    if (m.is_leader) badges.push(`<span class="team-card__badge team-card__badge--leader" title="${_e?'Team leader':'Лидер команды'}">👑 ${_e?'leader':'лидер'}</span>`);
 
     const onlineChip = m.is_online
-      ? '<span class="team-card__chip team-card__chip--online">● онлайн</span>'
-      : '<span class="team-card__chip team-card__chip--offline">○ оффлайн</span>';
+      ? `<span class="team-card__chip team-card__chip--online">● ${_e?'online':'онлайн'}</span>`
+      : `<span class="team-card__chip team-card__chip--offline">○ ${_e?'offline':'оффлайн'}</span>`;
 
     const deathAgo = !m.is_alive && m.death_time ? formatAgo(m.death_time) : null;
     const spawnAgo = m.is_alive && m.spawn_time ? formatAgo(m.spawn_time) : null;
     const aliveChip = m.is_alive
-      ? `<span class="team-card__chip team-card__chip--alive">❤ жив${spawnAgo ? ' · ' + escapeHtml(spawnAgo) : ''}</span>`
-      : `<span class="team-card__chip team-card__chip--dead">💀 мёртв${deathAgo ? ' · ' + escapeHtml(deathAgo) : ''}</span>`;
+      ? `<span class="team-card__chip team-card__chip--alive">❤ ${_e?'alive':'жив'}${spawnAgo ? ' · ' + escapeHtml(spawnAgo) : ''}</span>`
+      : `<span class="team-card__chip team-card__chip--dead">💀 ${_e?'dead':'мёртв'}${deathAgo ? ' · ' + escapeHtml(deathAgo) : ''}</span>`;
 
     const coords = (m.is_alive && (m.x || m.y))
       ? `<div class="team-card__coords">🧭 X ${Math.round(m.x)} · Y ${Math.round(m.y)}</div>`
@@ -5477,6 +5486,12 @@
   function formatAgo(unixTs) {
     if (!unixTs) return '';
     const diffSec = Math.max(0, Math.floor(Date.now() / 1000 - Number(unixTs)));
+    if (_lang === 'en') {
+      if (diffSec < 60)    return diffSec + 's ago';
+      if (diffSec < 3600)  return Math.floor(diffSec / 60) + 'm ago';
+      if (diffSec < 86400) return Math.floor(diffSec / 3600) + 'h ago';
+      return Math.floor(diffSec / 86400) + 'd ago';
+    }
     if (diffSec < 60)    return diffSec + 'с назад';
     if (diffSec < 3600)  return Math.floor(diffSec / 60) + 'м назад';
     if (diffSec < 86400) return Math.floor(diffSec / 3600) + 'ч назад';
@@ -5751,7 +5766,7 @@
     if (!sel) return;
     const servers = _rustServersState?.servers || [];
     const prev = sel.value;
-    sel.innerHTML = '<option value="">— выберите сервер —</option>';
+    sel.innerHTML = `<option value="">${t('map.select_server')}</option>`;
     servers.forEach(s => {
       const opt = document.createElement('option');
       opt.value = String(s.internal_id);
@@ -5773,7 +5788,7 @@
     const btnLoad   = document.getElementById('btn-map-load');
     const btnRefresh= document.getElementById('btn-map-refresh');
 
-    statusEl && Object.assign(statusEl, { className: 'map-status', textContent: '⏳ Загрузка…' });
+    statusEl && Object.assign(statusEl, { className: 'map-status', textContent: _lang==='en'?'⏳ Loading…':'⏳ Загрузка…' });
     if (btnLoad)    btnLoad.disabled = true;
     if (btnRefresh) btnRefresh.disabled = true;
 
@@ -5797,8 +5812,8 @@
 
       if (statusEl) {
         statusEl.textContent = data.image_cached
-          ? `✅ Кеш · seed ${data.server?.seed ?? '?'} · ${data.server?.size ?? '?'}u`
-          : `✅ Загружено · ${data.server?.name || ''}`;
+          ? `✅ ${_lang==='en'?'Cache':'Кеш'} · seed ${data.server?.seed ?? '?'} · ${data.server?.size ?? '?'}u`
+          : `✅ ${_lang==='en'?'Loaded':'Загружено'} · ${data.server?.name || ''}`;
       }
       if (btnRefresh) btnRefresh.style.display = '';
     } catch (e) {
@@ -5914,7 +5929,11 @@
       const alive = member.is_online && member.is_alive;
       const tc    = `type-1${alive ? ' alive' : ''}`;
       const grid  = coordsToGrid(member.x, member.y, mapSize);
-      const status = !member.is_online ? '⚫ офлайн' : alive ? '🟢 живой' : '💀 мёртв';
+      const status = !member.is_online
+        ? (_lang==='en'?'⚫ offline':'⚫ офлайн')
+        : alive
+          ? (_lang==='en'?'🟢 alive':'🟢 живой')
+          : (_lang==='en'?'💀 dead':'💀 мёртв');
       const tip = `<strong>${escapeHtml(member.name || '?')}</strong>${status}<div class="map-tip-coords">${grid} · X${Math.round(member.x)} Y${Math.round(member.y)}</div>`;
       place(member.x, member.y, tc, markerIconHtml({ type: 1, name: member.name, avatar_url: member.avatar_url || '' }), tip, '');
     }
@@ -5943,7 +5962,7 @@
     // Счётчик ивентов в статусе
     const statusEl = document.getElementById('map-status');
     if (statusEl && eventCount > 0) {
-      statusEl.textContent += ` · 🔴 Ивентов: ${eventCount}`;
+      statusEl.textContent += ` · 🔴 ${_lang==='en'?'Events':'Ивентов'}: ${eventCount}`;
     }
   }
 
@@ -5951,7 +5970,7 @@
     const resultsEl = document.getElementById('map-search-results');
     if (!resultsEl) return;
     if (!_mapData) {
-      resultsEl.innerHTML = '<p style="font-size:.8rem;color:var(--text2);padding:6px 4px">Загрузите карту</p>';
+      resultsEl.innerHTML = `<p style="font-size:.8rem;color:var(--text2);padding:6px 4px">${_lang==='en'?'Load the map first':'Загрузите карту'}</p>`;
       return;
     }
     const mapSize = _mapData.server?.size || 4000;
@@ -5961,16 +5980,16 @@
 
     if (gridParsed) {
       if (!isGridRefOnMap(gridParsed.letters, gridParsed.row, mapSize)) {
-        resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">Нет квадрата «${escapeHtml(formatGridLabel(gridParsed.letters, gridParsed.row))}» на карте этого размера.</p>`;
+        resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">${_lang==='en'?'Grid «':'Нет квадрата «'}${escapeHtml(formatGridLabel(gridParsed.letters, gridParsed.row))}${_lang==='en'?'» not found on map of this size.':'» на карте этого размера.'}</p>`;
         return;
       }
       const gl = formatGridLabel(gridParsed.letters, gridParsed.row);
-      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--accent);padding:6px 4px;font-weight:600">📍 ${escapeHtml(gl)}</p><p style="font-size:.76rem;color:var(--text2);padding:0 4px 6px">Карта отцентрована и увеличена. Магазинов на карте: ${vms.length}. Для поиска товара введите название.</p>`;
+      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--accent);padding:6px 4px;font-weight:600">📍 ${escapeHtml(gl)}</p><p style="font-size:.76rem;color:var(--text2);padding:0 4px 6px">${_lang==='en'?`Map centered and zoomed. Shops on map: ${vms.length}. Enter an item name to search.`:`Карта отцентрована и увеличена. Магазинов на карте: ${vms.length}. Для поиска товара введите название.`}</p>`;
       return;
     }
 
     if (!rawQ) {
-      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">Найдено магазинов: ${vms.length}<br>Введите название товара или квадрат (например L20)</p>`;
+      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">${_lang==='en'?`Shops found: ${vms.length}<br>Enter item name or grid (e.g. L20)`:`Найдено магазинов: ${vms.length}<br>Введите название товара или квадрат (например L20)`}</p>`;
       return;
     }
     const q = rawQ.toLowerCase();
@@ -5980,7 +5999,7 @@
       )
     );
     if (!matched.length) {
-      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">Не найдено: «${escapeHtml(rawQ)}»</p>`;
+      resultsEl.innerHTML = `<p style="font-size:.78rem;color:var(--text2);padding:6px 4px">${_lang==='en'?'Not found: ':'Не найдено: '}«${escapeHtml(rawQ)}»</p>`;
       return;
     }
     resultsEl.innerHTML = matched.map(vm => {
@@ -5995,7 +6014,7 @@
         const cost  = o.cost_per_item ?? '?';
         const inStock = o.amount_in_stock;
         const stockHtml = (inStock > 0)
-          ? `<span class="vend-stock vend-stock--ok">${inStock} шт</span>`
+          ? `<span class="vend-stock vend-stock--ok">${inStock} ${_lang==='en'?'pcs':'шт'}</span>`
           : '';
         return `<div class="vend-order-row">
           ${iImg}<span class="vend-item-name" title="${escapeHtml(o.item_name||'')}">×${qty} ${escapeHtml(o.item_name||'')}${bp}</span>
