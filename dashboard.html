@@ -2187,6 +2187,16 @@
                         style="padding:5px 14px;font-size:.8rem" data-i18n="acc.btn_save">Сохранить</button>
                 <span id="ingame-lang-msg" style="font-size:.8rem;color:var(--muted);margin-left:8px"></span>
               </div>
+
+              <!-- Уведомления в игре (только для admin — скрыто для остальных) -->
+              <div class="setting-row" id="notif-toggle-row" style="margin-top:10px;display:none">
+                <span class="setting-row__label" data-i18n="acc.ingame_notif">Уведомления в игре</span>
+                <label class="team-panel__toggle" style="margin:0">
+                  <input type="checkbox" id="notif-toggle-cb" checked />
+                  <span id="notif-toggle-label" data-i18n="acc.ingame_notif_on">Включены</span>
+                </label>
+                <span id="notif-toggle-msg" style="font-size:.8rem;color:var(--muted);margin-left:8px"></span>
+              </div>
             </section>
 
             <hr class="dash-sep"/>
@@ -2435,6 +2445,26 @@
 
               <!-- ── TAB: Хост ── -->
               <div class="admin-tab-panel" data-admin-tab-panel="host">
+                <!-- Глобальное управление уведомлениями -->
+                <section class="admin-panel-section" style="margin-bottom:16px">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text" data-i18n="admin.notif.title">🔔 Уведомления в игре</span>
+                  </h3>
+                  <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:8px">
+                    <label class="team-panel__toggle" style="margin:0">
+                      <input type="checkbox" id="admin-global-notif-cb" checked />
+                      <span data-i18n="admin.notif.global_lbl">Глобально включены</span>
+                    </label>
+                    <span id="admin-global-notif-status" style="font-size:.82rem;color:var(--muted)"></span>
+                    <button type="button" id="btn-admin-notif-disable-all"
+                      style="background:rgba(255,40,40,.15);color:#ff4444;border:1px solid rgba(255,40,40,.35);border-radius:8px;padding:6px 14px;font-size:.82rem;cursor:pointer;font-weight:600"
+                      data-i18n="admin.notif.disable_all_btn">Выключить для всех (БД)</button>
+                    <button type="button" id="btn-admin-notif-enable-all"
+                      style="background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.3);border-radius:8px;padding:6px 14px;font-size:.82rem;cursor:pointer;font-weight:600"
+                      data-i18n="admin.notif.enable_all_btn">Включить для всех (БД)</button>
+                  </div>
+                </section>
+
                 <section class="admin-panel-section">
                   <h3 class="admin-panel-section__title">
                     <span class="admin-panel-section__title-text" data-i18n="admin.sec.host">Хост · Pi / сервер бота</span>
@@ -2730,6 +2760,14 @@
       'acc.settings_hint':    'Настройки применяются к вашему Discord-серверу. Изменения синхронизируются с ботом в реальном времени.',
       'acc.bot_name':         'Имя бота',
       'acc.ingame_lang':      'Язык уведомлений в игре',
+      'acc.ingame_notif':     'Уведомления в игре',
+      'acc.ingame_notif_on':  'Включены',
+      'acc.ingame_notif_off': 'Выключены',
+      'admin.notif.title':           '🔔 Уведомления в игре',
+      'admin.notif.global_lbl':      'Глобально включены',
+      'admin.notif.disable_all_btn': 'Выключить для всех (БД)',
+      'admin.notif.enable_all_btn':  'Включить для всех (БД)',
+      'admin.notif.disable_all_confirm': 'Выключить уведомления в игре для ВСЕХ пользователей в БД?',
       'events.title':         '📋 История событий',
       'events.filter_all':    'Все события',
       'events.empty':         'Событий пока нет.',
@@ -2967,6 +3005,14 @@
       'acc.settings':         'Settings',
       'acc.settings_hint':    'Settings apply to your Discord server. Changes sync with the bot in real time.',
       'acc.ingame_lang':      'In-game notification language',
+      'acc.ingame_notif':     'In-game notifications',
+      'acc.ingame_notif_on':  'Enabled',
+      'acc.ingame_notif_off': 'Disabled',
+      'admin.notif.title':           '🔔 In-game Notifications',
+      'admin.notif.global_lbl':      'Globally enabled',
+      'admin.notif.disable_all_btn': 'Disable for all (DB)',
+      'admin.notif.enable_all_btn':  'Enable for all (DB)',
+      'admin.notif.disable_all_confirm': 'Disable in-game notifications for ALL users in DB?',
       'events.title':         '📋 Event History',
       'events.filter_all':    'All events',
       'events.empty':         'No events yet.',
@@ -4062,6 +4108,98 @@
     }
   }
 
+  /* ── Уведомления в игре (per-user, только admin) ── */
+  let _notifToggleInitDone = false;
+
+  function initIngameNotifToggle(session, discordId) {
+    const row = document.getElementById('notif-toggle-row');
+    if (!row) return;
+    // Показываем только admin
+    if (String(discordId) !== ADMIN_DISCORD_ID) return;
+    row.style.display = '';
+
+    const cb    = document.getElementById('notif-toggle-cb');
+    const lbl   = document.getElementById('notif-toggle-label');
+    const msg   = document.getElementById('notif-toggle-msg');
+    if (!cb) return;
+
+    // Загружаем текущее состояние
+    fetch(`${API_BASE}/me/notifications?session=${encodeURIComponent(session)}`, { credentials: 'include' })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d?.ok != null) cb.checked = !!d.enabled; })
+      .catch(() => {});
+
+    if (!_notifToggleInitDone) {
+      _notifToggleInitDone = true;
+      cb.addEventListener('change', async () => {
+        const enabled = cb.checked;
+        if (lbl) lbl.setAttribute('data-i18n', enabled ? 'acc.ingame_notif_on' : 'acc.ingame_notif_off');
+        if (lbl) lbl.textContent = enabled
+          ? (_lang==='en'?'Enabled':'Включены')
+          : (_lang==='en'?'Disabled':'Выключены');
+        if (msg) msg.textContent = '';
+        try {
+          const r = await fetch(`${API_BASE}/me/notifications?session=${encodeURIComponent(session)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ enabled }),
+          });
+          const d = await r.json();
+          if (msg) {
+            msg.textContent = d.ok ? (_lang==='en'?'✅ Saved':'✅ Сохранено') : '❌ ' + (d.error || '');
+            setTimeout(() => { if (msg) msg.textContent = ''; }, 2000);
+          }
+        } catch (_) {
+          if (msg) msg.textContent = _lang==='en'?'❌ Error':'❌ Ошибка';
+        }
+      });
+    }
+  }
+
+  /* ── Admin: глобальный переключатель уведомлений ── */
+  function setupAdminGlobalNotifOnce(session) {
+    if (window._adminGlobalNotifBound) return;
+    const cb  = document.getElementById('admin-global-notif-cb');
+    const sta = document.getElementById('admin-global-notif-status');
+    const btnOff = document.getElementById('btn-admin-notif-disable-all');
+    const btnOn  = document.getElementById('btn-admin-notif-enable-all');
+    if (!cb) return;
+    window._adminGlobalNotifBound = true;
+
+    const applyGlobal = async (action, persist) => {
+      try {
+        const r = await fetch(`${API_BASE}/admin/notifications/global?session=${encodeURIComponent(session)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ action, persist_to_db: !!persist }),
+        });
+        const d = await r.json();
+        if (d.ok) {
+          cb.checked = d.global_enabled;
+          if (sta) sta.textContent = d.global_enabled
+            ? (_lang==='en'?'✅ Globally ON':'✅ Глобально ВКЛ')
+            : (_lang==='en'?'⛔ Globally OFF':'⛔ Глобально ВЫКЛ');
+          setTimeout(() => { if (sta) sta.textContent = ''; }, 3000);
+        }
+      } catch (_) {}
+    };
+
+    cb.addEventListener('change', () => applyGlobal(cb.checked ? 'enable' : 'disable', false));
+    if (btnOff) btnOff.addEventListener('click', async () => {
+      if (!confirm(t('admin.notif.disable_all_confirm'))) return;
+      btnOff.disabled = true;
+      await applyGlobal('disable', true);
+      btnOff.disabled = false;
+    });
+    if (btnOn) btnOn.addEventListener('click', async () => {
+      btnOn.disabled = true;
+      await applyGlobal('enable', true);
+      btnOn.disabled = false;
+    });
+  }
+
   /* ── История событий ── */
   let _eventHistoryInitDone = false;
   // ─── Конфигурация иконок событий ─────────────────────────────────────
@@ -4535,6 +4673,7 @@
         setupOldDbWipeAllOnce();
         setupOldDbLeaveAllOnce();
         setupSetUserGuildOnce();
+        setupAdminGlobalNotifOnce(session);
       }
     } catch (e) {
       if (statusEl) statusEl.textContent = (_lang==='en'?'Load error: ':'Ошибка загрузки: ') + ((e && e.message) || String(e));
@@ -5891,6 +6030,7 @@
     setupFcmPasteOnce();
     initPrefixSettings(session);
     initIngameLangSettings(session);
+    initIngameNotifToggle(session, data.discord_id || _dashDiscordId);
     initEventHistory(session);
     setupAccountDisableForeverOnce();
     updateAccountSelfDisableUI(data);
