@@ -2559,6 +2559,9 @@
                       data-i18n-placeholder="admin.olddb.search_ph"
                       placeholder="Поиск по названию, ID…"
                       style="max-width:280px;padding:8px 12px;font-size:.85rem" />
+                    <button type="button" id="olddb-wipe-all-btn"
+                      style="margin-left:auto;background:rgba(255,40,40,.15);color:#ff4444;border:1px solid rgba(255,40,40,.35);border-radius:8px;padding:7px 16px;font-size:.83rem;cursor:pointer;font-weight:600"
+                      data-i18n="admin.olddb.wipe_all_btn">☢ Удалить всех</button>
                   </div>
                   <div id="admin-olddb-list"></div>
                 </section>
@@ -2728,6 +2731,11 @@
       'admin.olddb.title': '🗄 Старая БД · гильдии',
       'admin.olddb.search_ph': 'Поиск по названию, ID…',
       'admin.olddb.wipe_btn': 'Полная очистка',
+      'admin.olddb.wipe_all_btn': '☢ Удалить всех',
+      'admin.olddb.wipe_all_confirm': 'УДАЛИТЬ ВСЕ ГИЛЬДИИ из старой БД?\n\nЭто сотрёт таблицы: guilds, players, rust_plus_servers, fcm_tokens, rust_entities, guild_servers, event_history, notifications, ingame_lang.\n\nВсе Rust+ соединения будут разорваны.\nБот останется в Discord-серверах.\n\nДействие НЕОБРАТИМО. Продолжить?',
+      'admin.olddb.wipe_all_ing': 'Удаление всех…',
+      'admin.olddb.wipe_all_ok': 'Все данные старой БД удалены.',
+      'admin.olddb.wipe_all_err': 'Ошибка удаления:',
       'admin.olddb.wipe_confirm': 'Удалить ВСЕ данные гильдии {name} ({id}) из БД?\n\nЭто действие необратимо!',
       'admin.olddb.wipe_leave': 'Бот также покинет Discord-сервер.',
       'admin.olddb.wiping': 'Удаление…',
@@ -2939,6 +2947,11 @@
       'admin.olddb.title': '🗄 Old DB · Guilds',
       'admin.olddb.search_ph': 'Search by name, ID…',
       'admin.olddb.wipe_btn': 'Full wipe',
+      'admin.olddb.wipe_all_btn': '☢ Delete all',
+      'admin.olddb.wipe_all_confirm': 'DELETE ALL GUILDS from the old DB?\n\nThis will clear: guilds, players, rust_plus_servers, fcm_tokens, rust_entities, guild_servers, event_history, notifications, ingame_lang.\n\nAll Rust+ connections will be closed.\nThe bot will remain in Discord servers.\n\nThis is IRREVERSIBLE. Continue?',
+      'admin.olddb.wipe_all_ing': 'Deleting all…',
+      'admin.olddb.wipe_all_ok': 'All old DB data deleted.',
+      'admin.olddb.wipe_all_err': 'Wipe error:',
       'admin.olddb.wipe_confirm': 'Delete ALL data for guild {name} ({id})?\n\nThis is irreversible!',
       'admin.olddb.wipe_leave': 'Bot will also leave the Discord server.',
       'admin.olddb.wiping': 'Deleting…',
@@ -4267,6 +4280,7 @@
         // Old DB tab uses same cache
         renderOldDbPanel(_adminGuildsCache);
         setupOldDbSearch();
+        setupOldDbWipeAllOnce();
       }
     } catch (e) {
       if (statusEl) statusEl.textContent = (_lang==='en'?'Load error: ':'Ошибка загрузки: ') + ((e && e.message) || String(e));
@@ -4300,6 +4314,43 @@
     if (!s) return;
     s.addEventListener('input', () => renderOldDbPanel(_adminGuildsCache));
     window._oldDbSearchBound = true;
+  }
+
+  function setupOldDbWipeAllOnce() {
+    if (window._oldDbWipeAllBound) return;
+    const btn = document.getElementById('olddb-wipe-all-btn');
+    if (!btn) return;
+    window._oldDbWipeAllBound = true;
+    btn.addEventListener('click', async () => {
+      const session = _dashSessionRef;
+      if (!session || String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
+      if (!window.confirm(t('admin.olddb.wipe_all_confirm'))) return;
+      btn.disabled = true;
+      const oldText = btn.textContent.trim();
+      btn.textContent = t('admin.olddb.wipe_all_ing');
+      try {
+        const r = await fetch(`${API_BASE}/admin/guild/wipe/all?session=${encodeURIComponent(session)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({}),
+        });
+        const text = await r.text();
+        let body = {};
+        try { body = text ? JSON.parse(text) : {}; } catch (_) { body = { _raw: text }; }
+        if (!r.ok) {
+          alert(t('admin.olddb.wipe_all_err') + ' ' + (body.error || body._raw || r.status));
+          return;
+        }
+        alert(t('admin.olddb.wipe_all_ok'));
+        await loadAdminPanel(session, _dashDiscordId, { force: true });
+      } catch (err) {
+        alert(t('admin.olddb.wipe_all_err') + ' ' + ((err && err.message) || String(err)));
+      } finally {
+        btn.disabled = false;
+        btn.textContent = oldText;
+      }
+    });
   }
 
   /* ================================================================
