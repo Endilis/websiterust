@@ -2174,6 +2174,21 @@
                 </div>
                 <p class="dash-muted" id="prefix-save-msg" style="flex:1 0 100%;font-size:.8rem;margin:4px 0 0;display:none"></p>
               </div>
+
+              <!-- Язык игровых сообщений -->
+              <div class="setting-row" style="margin-top:10px">
+                <span class="setting-row__label" data-i18n="acc.ingame_lang">Язык уведомлений в игре</span>
+                <select id="ingame-lang-select" class="dash-select" style="padding:6px 12px;font-size:.85rem;min-width:140px">
+                  <option value="ru">🇷🇺 Русский</option>
+                  <option value="en">🇬🇧 English</option>
+                  <option value="de">🇩🇪 Deutsch</option>
+                  <option value="fr">🇫🇷 Français</option>
+                  <option value="zh">🇨🇳 中文</option>
+                </select>
+                <button type="button" class="dash-btn dash-btn--primary" id="btn-ingame-lang-save"
+                        style="padding:5px 14px;font-size:.8rem" data-i18n="acc.btn_save">Сохранить</button>
+                <span id="ingame-lang-msg" style="font-size:.8rem;color:var(--muted);margin-left:8px"></span>
+              </div>
             </section>
 
             <hr class="dash-sep"/>
@@ -2213,6 +2228,29 @@
                   </div>
                 </div>
               </div>
+            </div>
+
+            <!-- История событий активного сервера -->
+            <div class="card full-card" id="event-history-card" style="display:none;margin-top:12px">
+              <div class="card-header" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+                <span style="display:inline-flex;align-items:center;gap:8px">
+                  📋 <span data-i18n="events.title">История событий</span>
+                </span>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                  <select id="event-history-filter" class="dash-select" style="padding:5px 10px;font-size:.8rem">
+                    <option value="" data-i18n="events.filter_all">Все события</option>
+                    <option value="PatrolHelicopter">🚁 Heli</option>
+                    <option value="CargoShip">🚢 Cargo</option>
+                    <option value="CH47">🚁 CH47</option>
+                    <option value="Crate">📦 Crate</option>
+                    <option value="DeepSea">🌊 DeepSea</option>
+                    <option value="TravelingVendor">🚐 Vendor</option>
+                  </select>
+                  <button type="button" class="dash-btn dash-btn--ghost" id="btn-event-history-refresh"
+                          style="padding:5px 10px;font-size:.8rem" data-i18n="nav.refresh">Обновить</button>
+                </div>
+              </div>
+              <div id="event-history-list" style="margin-top:8px"></div>
             </div>
 
           </div>
@@ -2673,6 +2711,14 @@
       'acc.settings':         'Настройки',
       'acc.settings_hint':    'Настройки применяются к вашему Discord-серверу. Изменения синхронизируются с ботом в реальном времени.',
       'acc.bot_name':         'Имя бота',
+      'acc.ingame_lang':      'Язык уведомлений в игре',
+      'events.title':         '📋 История событий',
+      'events.filter_all':    'Все события',
+      'events.empty':         'Событий пока нет.',
+      'events.spawn':         'Спавн',
+      'events.despawn':       'Деспавн',
+      'events.duration':      'Длительность',
+      'events.grid':          'Позиция',
       'acc.btn_edit':         'Изменить',
       'acc.btn_save':         'Сохранить',
       'acc.btn_cancel':       'Отмена',
@@ -2893,6 +2939,14 @@
       'acc.instructions':     'Instructions →',
       'acc.settings':         'Settings',
       'acc.settings_hint':    'Settings apply to your Discord server. Changes sync with the bot in real time.',
+      'acc.ingame_lang':      'In-game notification language',
+      'events.title':         '📋 Event History',
+      'events.filter_all':    'All events',
+      'events.empty':         'No events yet.',
+      'events.spawn':         'Spawn',
+      'events.despawn':       'Despawn',
+      'events.duration':      'Duration',
+      'events.grid':          'Grid',
       'acc.bot_name':         'Bot name',
       'acc.btn_edit':         'Edit',
       'acc.btn_save':         'Save',
@@ -3926,6 +3980,127 @@
     } finally {
       if (saveBtn) saveBtn.disabled = false;
     }
+  }
+
+  /* ── Настройки: язык игровых уведомлений ── */
+  let _ingameLangInitDone = false;
+  function initIngameLangSettings(session) {
+    const sel = document.getElementById('ingame-lang-select');
+    const btn = document.getElementById('btn-ingame-lang-save');
+    const msg = document.getElementById('ingame-lang-msg');
+    if (!sel || !btn) return;
+
+    // Загружаем текущий язык
+    fetch(`${API_BASE}/me/settings?session=${encodeURIComponent(session)}`, { credentials: 'include' })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (d?.ok && d.ingame_language) sel.value = d.ingame_language;
+      })
+      .catch(() => {});
+
+    if (!_ingameLangInitDone) {
+      _ingameLangInitDone = true;
+      btn.addEventListener('click', async () => {
+        const lang = sel.value;
+        btn.disabled = true;
+        try {
+          const r = await fetch(`${API_BASE}/me/settings?session=${encodeURIComponent(session)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ ingame_language: lang }),
+          });
+          const d = await r.json();
+          if (d.ok) {
+            if (msg) { msg.textContent = _lang==='en'?'✅ Saved':'✅ Сохранено'; }
+            setTimeout(() => { if (msg) msg.textContent = ''; }, 2500);
+          } else {
+            if (msg) msg.textContent = '❌ ' + (d.error || '');
+          }
+        } catch (_) {
+          if (msg) msg.textContent = _lang==='en'?'❌ Network error':'❌ Сетевая ошибка';
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    }
+  }
+
+  /* ── История событий ── */
+  let _eventHistoryInitDone = false;
+  async function loadEventHistory(session) {
+    const card = document.getElementById('event-history-card');
+    const list = document.getElementById('event-history-list');
+    const filterEl = document.getElementById('event-history-filter');
+    if (!card || !list) return;
+
+    const eventType = filterEl?.value || '';
+    const url = `${API_BASE}/me/event-history?session=${encodeURIComponent(session)}`
+      + (eventType ? `&event_type=${encodeURIComponent(eventType)}` : '')
+      + '&limit=50';
+
+    list.innerHTML = `<span class="muted" style="font-size:.82rem">${_lang==='en'?'Loading…':'Загрузка…'}</span>`;
+
+    try {
+      const r = await fetch(url, { credentials: 'include' });
+      const d = await r.json();
+      if (!d.ok || !d.server) {
+        list.innerHTML = `<span class="muted" style="font-size:.82rem">${t('events.empty')}</span>`;
+        return;
+      }
+      card.style.display = '';
+      const events = d.events || [];
+      if (!events.length) {
+        list.innerHTML = `<span class="muted" style="font-size:.82rem">${t('events.empty')}</span>`;
+        return;
+      }
+
+      const EVENT_ICONS = {
+        PatrolHelicopter: '🚁', CargoShip: '🚢', CH47: '🚁',
+        Crate: '📦', DeepSea: '🌊', TravelingVendor: '🚐',
+      };
+      const locale = _lang === 'en' ? 'en-US' : 'ru-RU';
+      const fmt = ts => ts ? new Date(ts * 1000).toLocaleString(locale, { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }) : '—';
+      const fmtDur = s => {
+        const m = Math.floor(s / 60), sec = s % 60;
+        return m > 0 ? `${m}${_lang==='en'?'m':'м'} ${sec}${_lang==='en'?'s':'с'}` : `${sec}${_lang==='en'?'s':'с'}`;
+      };
+
+      list.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:.82rem">
+        <thead><tr style="color:var(--muted);font-size:.75rem;text-align:left">
+          <th style="padding:4px 8px">Event</th>
+          <th style="padding:4px 8px">${t('events.grid')}</th>
+          <th style="padding:4px 8px">${t('events.spawn')}</th>
+          <th style="padding:4px 8px">${t('events.despawn')}</th>
+          <th style="padding:4px 8px">${t('events.duration')}</th>
+        </tr></thead>
+        <tbody>${events.map(e => `
+          <tr style="border-top:1px solid var(--border)">
+            <td style="padding:5px 8px">${EVENT_ICONS[e.event_type] || '🎮'} ${escapeHtml(e.event_type)}</td>
+            <td style="padding:5px 8px;font-family:monospace">${escapeHtml(e.grid_position || '—')}</td>
+            <td style="padding:5px 8px">${fmt(e.spawn_time)}</td>
+            <td style="padding:5px 8px">${fmt(e.despawn_time)}</td>
+            <td style="padding:5px 8px">${fmtDur(e.duration || 0)}</td>
+          </tr>
+        `).join('')}</tbody>
+      </table>`;
+    } catch (_) {
+      list.innerHTML = `<span class="muted" style="font-size:.82rem">—</span>`;
+    }
+  }
+
+  function initEventHistory(session) {
+    const card = document.getElementById('event-history-card');
+    if (!card) return;
+    card.style.display = '';
+    if (!_eventHistoryInitDone) {
+      _eventHistoryInitDone = true;
+      const filterEl = document.getElementById('event-history-filter');
+      const refBtn = document.getElementById('btn-event-history-refresh');
+      if (filterEl) filterEl.addEventListener('change', () => loadEventHistory(session));
+      if (refBtn)   refBtn.addEventListener('click',   () => loadEventHistory(session));
+    }
+    loadEventHistory(session);
   }
 
   function setupFcmPasteOnce() {
@@ -5609,6 +5784,8 @@
     _dashDiscordId = data.discord_id;
     setupFcmPasteOnce();
     initPrefixSettings(session);
+    initIngameLangSettings(session);
+    initEventHistory(session);
     setupAccountDisableForeverOnce();
     updateAccountSelfDisableUI(data);
 
