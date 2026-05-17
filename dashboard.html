@@ -4127,7 +4127,6 @@
   function initCmdDelaySettings(session, discordId) {
     const row = document.getElementById('cmd-delay-row');
     if (!row) return;
-    if (String(discordId) !== ADMIN_DISCORD_ID) return;
     row.style.display = '';
 
     const slider  = document.getElementById('cmd-delay-slider');
