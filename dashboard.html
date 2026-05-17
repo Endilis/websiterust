@@ -2188,6 +2188,17 @@
                 <span id="ingame-lang-msg" style="font-size:.8rem;color:var(--muted);margin-left:8px"></span>
               </div>
 
+              <!-- Задержка ответа команд (только для admin) -->
+              <div class="setting-row" id="cmd-delay-row" style="margin-top:10px;display:none">
+                <span class="setting-row__label" data-i18n="acc.cmd_delay">Задержка команд</span>
+                <input type="range" id="cmd-delay-slider" min="0" max="5" step="1" value="0"
+                       style="width:120px;accent-color:var(--accent)" />
+                <span id="cmd-delay-value" style="min-width:32px;font-weight:600;font-family:monospace">0с</span>
+                <button type="button" class="dash-btn dash-btn--primary" id="btn-cmd-delay-save"
+                        style="padding:5px 14px;font-size:.8rem" data-i18n="acc.btn_save">Сохранить</button>
+                <span id="cmd-delay-msg" style="font-size:.8rem;color:var(--muted);margin-left:8px"></span>
+              </div>
+
               <!-- Уведомления в игре (только для admin — скрыто для остальных) -->
               <div class="setting-row" id="notif-toggle-row" style="margin-top:10px;display:none">
                 <span class="setting-row__label" data-i18n="acc.ingame_notif">Уведомления в игре</span>
@@ -2760,6 +2771,7 @@
       'acc.settings_hint':    'Настройки применяются к вашему Discord-серверу. Изменения синхронизируются с ботом в реальном времени.',
       'acc.bot_name':         'Имя бота',
       'acc.ingame_lang':      'Язык уведомлений в игре',
+      'acc.cmd_delay':        'Задержка команд (0–5с)',
       'acc.ingame_notif':     'Уведомления в игре',
       'acc.ingame_notif_on':  'Включены',
       'acc.ingame_notif_off': 'Выключены',
@@ -3005,6 +3017,7 @@
       'acc.settings':         'Settings',
       'acc.settings_hint':    'Settings apply to your Discord server. Changes sync with the bot in real time.',
       'acc.ingame_lang':      'In-game notification language',
+      'acc.cmd_delay':        'Command delay (0–5s)',
       'acc.ingame_notif':     'In-game notifications',
       'acc.ingame_notif_on':  'Enabled',
       'acc.ingame_notif_off': 'Disabled',
@@ -4101,6 +4114,65 @@
           }
         } catch (_) {
           if (msg) msg.textContent = _lang==='en'?'❌ Network error':'❌ Сетевая ошибка';
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    }
+  }
+
+  /* ── Задержка ответа команд (admin only) ── */
+  let _cmdDelayInitDone = false;
+
+  function initCmdDelaySettings(session, discordId) {
+    const row = document.getElementById('cmd-delay-row');
+    if (!row) return;
+    if (String(discordId) !== ADMIN_DISCORD_ID) return;
+    row.style.display = '';
+
+    const slider  = document.getElementById('cmd-delay-slider');
+    const valLbl  = document.getElementById('cmd-delay-value');
+    const btn     = document.getElementById('btn-cmd-delay-save');
+    const msg     = document.getElementById('cmd-delay-msg');
+    if (!slider) return;
+
+    const updateLabel = () => {
+      const s = parseInt(slider.value, 10);
+      if (valLbl) valLbl.textContent = `${s}${_lang==='en'?'s':'с'}`;
+    };
+    slider.addEventListener('input', updateLabel);
+    updateLabel();
+
+    // Загружаем текущее значение
+    fetch(`${API_BASE}/me/settings?session=${encodeURIComponent(session)}`, { credentials: 'include' })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (d?.ok && d.ingame_cmd_delay != null) {
+          slider.value = Math.max(0, Math.min(5, parseInt(d.ingame_cmd_delay, 10) || 0));
+          updateLabel();
+        }
+      })
+      .catch(() => {});
+
+    if (!_cmdDelayInitDone) {
+      _cmdDelayInitDone = true;
+      if (btn) btn.addEventListener('click', async () => {
+        const delay = parseInt(slider.value, 10);
+        btn.disabled = true;
+        try {
+          const r = await fetch(`${API_BASE}/me/settings?session=${encodeURIComponent(session)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ ingame_cmd_delay: delay }),
+          });
+          const d = await r.json();
+          if (msg) {
+            msg.textContent = d.ok ? (_lang==='en'?'✅ Saved':'✅ Сохранено') : '❌ ' + (d.error || '');
+            setTimeout(() => { if (msg) msg.textContent = ''; }, 2500);
+          }
+        } catch (_) {
+          if (msg) msg.textContent = _lang==='en'?'❌ Error':'❌ Ошибка';
         } finally {
           btn.disabled = false;
         }
@@ -6030,6 +6102,7 @@
     setupFcmPasteOnce();
     initPrefixSettings(session);
     initIngameLangSettings(session);
+    initCmdDelaySettings(session, data.discord_id || _dashDiscordId);
     initIngameNotifToggle(session, data.discord_id || _dashDiscordId);
     initEventHistory(session);
     setupAccountDisableForeverOnce();
