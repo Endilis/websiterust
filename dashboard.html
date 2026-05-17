@@ -2199,14 +2199,49 @@
                 <span id="cmd-delay-msg" style="font-size:.8rem;color:var(--muted);margin-left:8px"></span>
               </div>
 
-              <!-- Уведомления в игре (только для admin — скрыто для остальных) -->
-              <div class="setting-row" id="notif-toggle-row" style="margin-top:10px;display:none">
-                <span class="setting-row__label" data-i18n="acc.ingame_notif">Уведомления в игре</span>
-                <label class="team-panel__toggle" style="margin:0">
-                  <input type="checkbox" id="notif-toggle-cb" checked />
-                  <span id="notif-toggle-label" data-i18n="acc.ingame_notif_on">Включены</span>
-                </label>
-                <span id="notif-toggle-msg" style="font-size:.8rem;color:var(--muted);margin-left:8px"></span>
+              <!-- Уведомления в игре -->
+              <div id="notif-section" style="margin-top:14px">
+                <div class="setting-row" id="notif-toggle-row">
+                  <span class="setting-row__label" data-i18n="acc.ingame_notif">Уведомления в игре</span>
+                  <label class="team-panel__toggle" style="margin:0">
+                    <input type="checkbox" id="notif-toggle-cb" checked />
+                    <span id="notif-toggle-label" data-i18n="acc.ingame_notif_on">Включены</span>
+                  </label>
+                  <span id="notif-toggle-msg" style="font-size:.8rem;color:var(--muted);margin-left:8px"></span>
+                </div>
+                <!-- Индивидуальные уведомления по типам событий -->
+                <div id="event-notif-config" style="margin-top:10px;padding:10px 14px;background:var(--card-bg2,rgba(255,255,255,.04));border-radius:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px 16px">
+                  <div class="setting-row" style="grid-column:1/-1;margin-bottom:2px">
+                    <span style="font-size:.8rem;color:var(--muted)" data-i18n="acc.event_notif_hint">Включить/выключить отдельные события:</span>
+                  </div>
+                  <label class="team-panel__toggle" style="gap:8px;margin:0">
+                    <input type="checkbox" class="evt-notif-cb" data-event="PatrolHelicopter" checked />
+                    <span data-i18n="acc.evt_patrol">Патрульный вертолет</span>
+                  </label>
+                  <label class="team-panel__toggle" style="gap:8px;margin:0">
+                    <input type="checkbox" class="evt-notif-cb" data-event="CargoShip" checked />
+                    <span data-i18n="acc.evt_cargo">Грузовой корабль</span>
+                  </label>
+                  <label class="team-panel__toggle" style="gap:8px;margin:0">
+                    <input type="checkbox" class="evt-notif-cb" data-event="CH47" checked />
+                    <span data-i18n="acc.evt_ch47">Чинук</span>
+                  </label>
+                  <label class="team-panel__toggle" style="gap:8px;margin:0">
+                    <input type="checkbox" class="evt-notif-cb" data-event="Crate" checked />
+                    <span data-i18n="acc.evt_crate">Ящик</span>
+                  </label>
+                  <label class="team-panel__toggle" style="gap:8px;margin:0">
+                    <input type="checkbox" class="evt-notif-cb" data-event="DeepSea" checked />
+                    <span data-i18n="acc.evt_deepsea">Глубокое море</span>
+                  </label>
+                  <label class="team-panel__toggle" style="gap:8px;margin:0">
+                    <input type="checkbox" class="evt-notif-cb" data-event="TravelingVendor" checked />
+                    <span data-i18n="acc.evt_vendor">Странствующий торговец</span>
+                  </label>
+                  <div style="grid-column:1/-1;margin-top:4px">
+                    <span id="event-notif-save-msg" style="font-size:.8rem;color:var(--muted)"></span>
+                  </div>
+                </div>
               </div>
             </section>
 
@@ -2772,9 +2807,16 @@
       'acc.bot_name':         'Имя бота',
       'acc.ingame_lang':      'Язык уведомлений в игре',
       'acc.cmd_delay':        'Задержка команд (0–5с)',
-      'acc.ingame_notif':     'Уведомления в игре',
-      'acc.ingame_notif_on':  'Включены',
-      'acc.ingame_notif_off': 'Выключены',
+      'acc.ingame_notif':      'Уведомления в игре',
+      'acc.ingame_notif_on':   'Включены',
+      'acc.ingame_notif_off':  'Выключены',
+      'acc.event_notif_hint':  'Включить/выключить отдельные события:',
+      'acc.evt_patrol':        'Патрульный вертолет',
+      'acc.evt_cargo':         'Грузовой корабль',
+      'acc.evt_ch47':          'Чинук',
+      'acc.evt_crate':         'Ящик',
+      'acc.evt_deepsea':       'Глубокое море',
+      'acc.evt_vendor':        'Странствующий торговец',
       'admin.notif.title':           '🔔 Уведомления в игре',
       'admin.notif.global_lbl':      'Глобально включены',
       'admin.notif.disable_all_btn': 'Выключить для всех (БД)',
@@ -3018,9 +3060,16 @@
       'acc.settings_hint':    'Settings apply to your Discord server. Changes sync with the bot in real time.',
       'acc.ingame_lang':      'In-game notification language',
       'acc.cmd_delay':        'Command delay (0–5s)',
-      'acc.ingame_notif':     'In-game notifications',
-      'acc.ingame_notif_on':  'Enabled',
-      'acc.ingame_notif_off': 'Disabled',
+      'acc.ingame_notif':      'In-game notifications',
+      'acc.ingame_notif_on':   'Enabled',
+      'acc.ingame_notif_off':  'Disabled',
+      'acc.event_notif_hint':  'Enable/disable individual events:',
+      'acc.evt_patrol':        'Patrol Helicopter',
+      'acc.evt_cargo':         'Cargo Ship',
+      'acc.evt_ch47':          'Chinook (CH47)',
+      'acc.evt_crate':         'Locked Crate',
+      'acc.evt_deepsea':       'Deep Sea',
+      'acc.evt_vendor':        'Traveling Vendor',
       'admin.notif.title':           '🔔 In-game Notifications',
       'admin.notif.global_lbl':      'Globally enabled',
       'admin.notif.disable_all_btn': 'Disable for all (DB)',
@@ -4183,12 +4232,6 @@
   let _notifToggleInitDone = false;
 
   function initIngameNotifToggle(session, discordId) {
-    const row = document.getElementById('notif-toggle-row');
-    if (!row) return;
-    // Показываем только admin
-    if (String(discordId) !== ADMIN_DISCORD_ID) return;
-    row.style.display = '';
-
     const cb    = document.getElementById('notif-toggle-cb');
     const lbl   = document.getElementById('notif-toggle-label');
     const msg   = document.getElementById('notif-toggle-msg');
@@ -4197,13 +4240,19 @@
     // Загружаем текущее состояние
     fetch(`${API_BASE}/me/notifications?session=${encodeURIComponent(session)}`, { credentials: 'include' })
       .then(r => r.ok ? r.json() : null)
-      .then(d => { if (d?.ok != null) cb.checked = !!d.enabled; })
+      .then(d => {
+        if (d?.ok != null) {
+          cb.checked = !!d.enabled;
+          _updateEventCbsDisabled(!d.enabled);
+        }
+      })
       .catch(() => {});
 
     if (!_notifToggleInitDone) {
       _notifToggleInitDone = true;
       cb.addEventListener('change', async () => {
         const enabled = cb.checked;
+        _updateEventCbsDisabled(!enabled);
         if (lbl) lbl.setAttribute('data-i18n', enabled ? 'acc.ingame_notif_on' : 'acc.ingame_notif_off');
         if (lbl) lbl.textContent = enabled
           ? (_lang==='en'?'Enabled':'Включены')
@@ -4226,6 +4275,62 @@
         }
       });
     }
+
+    // Инициализация per-event конфига
+    initEventNotifConfig(session);
+  }
+
+  function _updateEventCbsDisabled(disabled) {
+    document.querySelectorAll('.evt-notif-cb').forEach(cb => {
+      cb.disabled = disabled;
+      cb.closest('label').style.opacity = disabled ? '0.45' : '1';
+    });
+  }
+
+  let _eventNotifInitDone = false;
+  function initEventNotifConfig(session) {
+    if (_eventNotifInitDone) return;
+    _eventNotifInitDone = true;
+    const saveMsg = document.getElementById('event-notif-save-msg');
+
+    // Загружаем конфиг
+    fetch(`${API_BASE}/me/notifications/events?session=${encodeURIComponent(session)}`, { credentials: 'include' })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (!d?.config) return;
+        document.querySelectorAll('.evt-notif-cb').forEach(cb => {
+          const key = cb.dataset.event;
+          if (key in d.config) cb.checked = !!d.config[key];
+        });
+      })
+      .catch(() => {});
+
+    // Сохранение при изменении
+    async function saveEventConfig() {
+      const config = {};
+      document.querySelectorAll('.evt-notif-cb').forEach(cb => {
+        config[cb.dataset.event] = cb.checked;
+      });
+      try {
+        const r = await fetch(`${API_BASE}/me/notifications/events?session=${encodeURIComponent(session)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ config }),
+        });
+        const d = await r.json();
+        if (saveMsg) {
+          saveMsg.textContent = d.ok ? (_lang==='en'?'✅ Saved':'✅ Сохранено') : '❌ ' + (d.error || '');
+          setTimeout(() => { if (saveMsg) saveMsg.textContent = ''; }, 2000);
+        }
+      } catch (_) {
+        if (saveMsg) saveMsg.textContent = _lang==='en'?'❌ Error':'❌ Ошибка';
+      }
+    }
+
+    document.querySelectorAll('.evt-notif-cb').forEach(cb => {
+      cb.addEventListener('change', saveEventConfig);
+    });
   }
 
   /* ── Admin: глобальный переключатель уведомлений ── */
