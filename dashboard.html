@@ -2559,9 +2559,14 @@
                       data-i18n-placeholder="admin.olddb.search_ph"
                       placeholder="Поиск по названию, ID…"
                       style="max-width:280px;padding:8px 12px;font-size:.85rem" />
-                    <button type="button" id="olddb-wipe-all-btn"
-                      style="margin-left:auto;background:rgba(255,40,40,.15);color:#ff4444;border:1px solid rgba(255,40,40,.35);border-radius:8px;padding:7px 16px;font-size:.83rem;cursor:pointer;font-weight:600"
-                      data-i18n="admin.olddb.wipe_all_btn">☢ Удалить всех</button>
+                    <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
+                      <button type="button" id="olddb-leave-all-btn"
+                        style="background:rgba(255,160,0,.13);color:#ffa500;border:1px solid rgba(255,160,0,.35);border-radius:8px;padding:7px 16px;font-size:.83rem;cursor:pointer;font-weight:600"
+                        data-i18n="admin.olddb.leave_all_btn">🚪 Выйти со всех серверов</button>
+                      <button type="button" id="olddb-wipe-all-btn"
+                        style="background:rgba(255,40,40,.15);color:#ff4444;border:1px solid rgba(255,40,40,.35);border-radius:8px;padding:7px 16px;font-size:.83rem;cursor:pointer;font-weight:600"
+                        data-i18n="admin.olddb.wipe_all_btn">☢ Удалить всех</button>
+                    </div>
                   </div>
                   <div id="admin-olddb-list"></div>
                 </section>
@@ -2736,6 +2741,11 @@
       'admin.olddb.wipe_all_ing': 'Удаление всех…',
       'admin.olddb.wipe_all_ok': 'Все данные старой БД удалены.',
       'admin.olddb.wipe_all_err': 'Ошибка удаления:',
+      'admin.olddb.leave_all_btn': '🚪 Выйти со всех серверов',
+      'admin.olddb.leave_all_confirm': 'Бот покинет ВСЕ Discord-серверы ({count} шт)?\n\nДанные в БД не удаляются — только выход из Discord.\n\nПродолжить?',
+      'admin.olddb.leave_all_ing': 'Выхожу из серверов…',
+      'admin.olddb.leave_all_ok': 'Бот вышел из {left} серверов. Ошибок: {failed}.',
+      'admin.olddb.leave_all_err': 'Ошибка выхода:',
       'admin.olddb.wipe_confirm': 'Удалить ВСЕ данные гильдии {name} ({id}) из БД?\n\nЭто действие необратимо!',
       'admin.olddb.wipe_leave': 'Бот также покинет Discord-сервер.',
       'admin.olddb.wiping': 'Удаление…',
@@ -2952,6 +2962,11 @@
       'admin.olddb.wipe_all_ing': 'Deleting all…',
       'admin.olddb.wipe_all_ok': 'All old DB data deleted.',
       'admin.olddb.wipe_all_err': 'Wipe error:',
+      'admin.olddb.leave_all_btn': '🚪 Leave all servers',
+      'admin.olddb.leave_all_confirm': 'Bot will leave ALL Discord servers ({count} total)?\n\nDB data is NOT deleted — only Discord leave.\n\nContinue?',
+      'admin.olddb.leave_all_ing': 'Leaving servers…',
+      'admin.olddb.leave_all_ok': 'Bot left {left} servers. Failed: {failed}.',
+      'admin.olddb.leave_all_err': 'Leave error:',
       'admin.olddb.wipe_confirm': 'Delete ALL data for guild {name} ({id})?\n\nThis is irreversible!',
       'admin.olddb.wipe_leave': 'Bot will also leave the Discord server.',
       'admin.olddb.wiping': 'Deleting…',
@@ -4281,6 +4296,7 @@
         renderOldDbPanel(_adminGuildsCache);
         setupOldDbSearch();
         setupOldDbWipeAllOnce();
+        setupOldDbLeaveAllOnce();
       }
     } catch (e) {
       if (statusEl) statusEl.textContent = (_lang==='en'?'Load error: ':'Ошибка загрузки: ') + ((e && e.message) || String(e));
@@ -4346,6 +4362,49 @@
         await loadAdminPanel(session, _dashDiscordId, { force: true });
       } catch (err) {
         alert(t('admin.olddb.wipe_all_err') + ' ' + ((err && err.message) || String(err)));
+      } finally {
+        btn.disabled = false;
+        btn.textContent = oldText;
+      }
+    });
+  }
+
+  function setupOldDbLeaveAllOnce() {
+    if (window._oldDbLeaveAllBound) return;
+    const btn = document.getElementById('olddb-leave-all-btn');
+    if (!btn) return;
+    window._oldDbLeaveAllBound = true;
+    btn.addEventListener('click', async () => {
+      const session = _dashSessionRef;
+      if (!session || String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
+      // Показываем количество серверов из текущего кэша
+      const count = (_adminGuildsCache || []).filter(g => g.discord_present).length;
+      const msg = t('admin.olddb.leave_all_confirm').replace('{count}', count);
+      if (!window.confirm(msg)) return;
+      btn.disabled = true;
+      const oldText = btn.textContent.trim();
+      btn.textContent = t('admin.olddb.leave_all_ing');
+      try {
+        const r = await fetch(`${API_BASE}/admin/guild/leave/all?session=${encodeURIComponent(session)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({}),
+        });
+        const text = await r.text();
+        let body = {};
+        try { body = text ? JSON.parse(text) : {}; } catch (_) { body = { _raw: text }; }
+        if (!r.ok) {
+          alert(t('admin.olddb.leave_all_err') + ' ' + (body.error || body._raw || r.status));
+          return;
+        }
+        const msg2 = t('admin.olddb.leave_all_ok')
+          .replace('{left}',   body.left_count   ?? '?')
+          .replace('{failed}', body.failed_count ?? '0');
+        alert(msg2);
+        await loadAdminPanel(session, _dashDiscordId, { force: true });
+      } catch (err) {
+        alert(t('admin.olddb.leave_all_err') + ' ' + ((err && err.message) || String(err)));
       } finally {
         btn.disabled = false;
         btn.textContent = oldText;
