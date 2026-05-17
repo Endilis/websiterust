@@ -1370,6 +1370,65 @@
     }
 
     /* === Admin chat === */
+    /* ── Old DB guild cards ── */
+    .olddb-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 14px;
+      margin-top: 4px;
+    }
+    .olddb-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px 12px;
+      display: flex; flex-direction: column; gap: 8px;
+      transition: border-color .2s;
+    }
+    .olddb-card:hover { border-color: var(--accent); }
+    .olddb-card__head {
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .olddb-card__name {
+      font-weight: 700; font-size: .98rem; flex: 1;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .olddb-card__id {
+      font-size: .72rem; color: var(--muted);
+      white-space: nowrap; margin-top: 2px;
+    }
+    .olddb-badges { display: flex; flex-wrap: wrap; gap: 4px; }
+    .olddb-badge {
+      font-size: .68rem; padding: 2px 7px; border-radius: 20px;
+      background: rgba(255,255,255,.06); color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .olddb-badge.vip    { background: rgba(255,200,0,.12);  color: #ffc800; border-color: rgba(255,200,0,.3); }
+    .olddb-badge.block  { background: rgba(255,80,80,.12);  color: #ff5050; border-color: rgba(255,80,80,.3); }
+    .olddb-badge.ok     { background: rgba(60,200,100,.12); color: #3cca64; border-color: rgba(60,200,100,.3); }
+    .olddb-badge.warn   { background: rgba(255,165,0,.12);  color: #ffa500; border-color: rgba(255,165,0,.3); }
+    .olddb-divider { border: none; border-top: 1px solid var(--border); margin: 2px 0; }
+    .olddb-section-label {
+      font-size: .72rem; color: var(--accent); font-weight: 600;
+      text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px;
+    }
+    .olddb-row-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2px 10px;
+    }
+    .olddb-kv { display: flex; flex-direction: column; }
+    .olddb-kv__k { font-size: .68rem; color: var(--muted); }
+    .olddb-kv__v { font-size: .8rem; font-weight: 500; word-break: break-all; }
+    .olddb-kv__v.zero { color: var(--muted); }
+    .olddb-wipe-btn {
+      margin-top: 4px; align-self: flex-end;
+      background: rgba(255,60,60,.12); color: #ff5050;
+      border: 1px solid rgba(255,60,60,.3);
+      border-radius: 8px; padding: 6px 14px; font-size: .82rem;
+      cursor: pointer; transition: background .15s;
+    }
+    .olddb-wipe-btn:hover { background: rgba(255,60,60,.25); }
+    .olddb-wipe-btn:disabled { opacity: .5; cursor: not-allowed; }
+
     .admin-chat-wrap {
       display: flex; flex-direction: column;
       height: 520px; min-height: 200px;
@@ -2320,6 +2379,7 @@
               <button class="admin-tab-btn" data-admin-tab="commands" role="tab" aria-selected="false" data-i18n="admin.tab.commands">Команды</button>
               <button class="admin-tab-btn" data-admin-tab="newdb" role="tab" aria-selected="false" data-i18n="admin.tab.newdb">Новая БД</button>
               <button class="admin-tab-btn" data-admin-tab="guilds" role="tab" aria-selected="false" data-i18n="admin.tab.guilds">Гильдии</button>
+              <button class="admin-tab-btn" data-admin-tab="olddb" role="tab" aria-selected="false" data-i18n="admin.tab.olddb">Старая БД</button>
               <button class="admin-tab-btn" data-admin-tab="chat" role="tab" aria-selected="false" data-i18n="admin.tab.chat">💬 Чат</button>
             </nav>
 
@@ -2487,6 +2547,23 @@
                 </section>
               </div>
 
+              <!-- ── TAB: Старая БД ── -->
+              <div class="admin-tab-panel" data-admin-tab-panel="olddb">
+                <section class="admin-panel-section">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text" data-i18n="admin.olddb.title">🗄 Старая БД · гильдии</span>
+                    <span id="olddb-counter" class="admin-panel-section__title-count">0</span>
+                  </h3>
+                  <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+                    <input type="search" id="olddb-search" class="dash-select"
+                      data-i18n-placeholder="admin.olddb.search_ph"
+                      placeholder="Поиск по названию, ID…"
+                      style="max-width:280px;padding:8px 12px;font-size:.85rem" />
+                  </div>
+                  <div id="admin-olddb-list"></div>
+                </section>
+              </div>
+
               <!-- ── TAB: Чат ── -->
               <div class="admin-tab-panel" data-admin-tab-panel="chat">
                 <section class="admin-panel-section">
@@ -2646,7 +2723,36 @@
       'admin.tab.commands': 'Команды',
       'admin.tab.newdb':    'Новая БД',
       'admin.tab.guilds':   'Гильдии',
+      'admin.tab.olddb':   '🗄 Старая БД',
       'admin.tab.chat':     '💬 Чат',
+      'admin.olddb.title': '🗄 Старая БД · гильдии',
+      'admin.olddb.search_ph': 'Поиск по названию, ID…',
+      'admin.olddb.wipe_btn': 'Полная очистка',
+      'admin.olddb.wipe_confirm': 'Удалить ВСЕ данные гильдии {name} ({id}) из БД?\n\nЭто действие необратимо!',
+      'admin.olddb.wipe_leave': 'Бот также покинет Discord-сервер.',
+      'admin.olddb.wiping': 'Удаление…',
+      'admin.olddb.wipe_ok': 'Данные гильдии удалены.',
+      'admin.olddb.wipe_err': 'Ошибка:',
+      'admin.olddb.empty': 'Нет гильдий в старой БД.',
+      'admin.olddb.lbl_id': 'ID',
+      'admin.olddb.lbl_lang': 'Язык',
+      'admin.olddb.lbl_vip': 'VIP',
+      'admin.olddb.lbl_blocked': 'Заблокирована',
+      'admin.olddb.lbl_discord': 'Бот в Discord',
+      'admin.olddb.lbl_ch_info': 'Канал info',
+      'admin.olddb.lbl_ch_alerts': 'Канал alerts',
+      'admin.olddb.lbl_active_srv': 'Активный сервер',
+      'admin.olddb.section_db': 'Данные в БД',
+      'admin.olddb.lbl_players': 'Игроков',
+      'admin.olddb.lbl_entities': 'Объектов',
+      'admin.olddb.lbl_events': 'События',
+      'admin.olddb.lbl_notif': 'Уведомления',
+      'admin.olddb.lbl_gsrv': 'Guild servers',
+      'admin.olddb.lbl_ilang': 'In-game lang',
+      'admin.olddb.section_rust': 'Rust+ сервер',
+      'admin.olddb.lbl_ip': 'IP:Port',
+      'admin.olddb.lbl_steam': 'Steam ID',
+      'admin.olddb.no_rust': 'Rust+ не привязан',
       'admin.sec.overview_guilds': 'Сводка · Rust+ гильдии',
       'admin.sec.db_counts':       'Таблицы БД · счётчики строк',
       'admin.sec.host':            'Хост · Pi / сервер бота',
@@ -2828,7 +2934,36 @@
       'admin.tab.commands': 'Commands',
       'admin.tab.newdb':    'New DB',
       'admin.tab.guilds':   'Guilds',
+      'admin.tab.olddb':   '🗄 Old DB',
       'admin.tab.chat':     '💬 Chat',
+      'admin.olddb.title': '🗄 Old DB · Guilds',
+      'admin.olddb.search_ph': 'Search by name, ID…',
+      'admin.olddb.wipe_btn': 'Full wipe',
+      'admin.olddb.wipe_confirm': 'Delete ALL data for guild {name} ({id})?\n\nThis is irreversible!',
+      'admin.olddb.wipe_leave': 'Bot will also leave the Discord server.',
+      'admin.olddb.wiping': 'Deleting…',
+      'admin.olddb.wipe_ok': 'Guild data deleted.',
+      'admin.olddb.wipe_err': 'Error:',
+      'admin.olddb.empty': 'No guilds in old DB.',
+      'admin.olddb.lbl_id': 'ID',
+      'admin.olddb.lbl_lang': 'Language',
+      'admin.olddb.lbl_vip': 'VIP',
+      'admin.olddb.lbl_blocked': 'Blocked',
+      'admin.olddb.lbl_discord': 'Bot in Discord',
+      'admin.olddb.lbl_ch_info': 'Info channel',
+      'admin.olddb.lbl_ch_alerts': 'Alerts channel',
+      'admin.olddb.lbl_active_srv': 'Active server',
+      'admin.olddb.section_db': 'DB data',
+      'admin.olddb.lbl_players': 'Players',
+      'admin.olddb.lbl_entities': 'Entities',
+      'admin.olddb.lbl_events': 'Events',
+      'admin.olddb.lbl_notif': 'Notifications',
+      'admin.olddb.lbl_gsrv': 'Guild servers',
+      'admin.olddb.lbl_ilang': 'In-game lang',
+      'admin.olddb.section_rust': 'Rust+ server',
+      'admin.olddb.lbl_ip': 'IP:Port',
+      'admin.olddb.lbl_steam': 'Steam ID',
+      'admin.olddb.no_rust': 'No Rust+ configured',
       'admin.sec.overview_guilds': 'Overview · Rust+ Guilds',
       'admin.sec.db_counts':       'DB Tables · row counts',
       'admin.sec.host':            'Host · Pi / bot server',
@@ -4129,6 +4264,9 @@
         setupGuildsToolbar();
         renderGuildCards();
         setupAdminGuildWipeOnce();
+        // Old DB tab uses same cache
+        renderOldDbPanel(_adminGuildsCache);
+        setupOldDbSearch();
       }
     } catch (e) {
       if (statusEl) statusEl.textContent = (_lang==='en'?'Load error: ':'Ошибка загрузки: ') + ((e && e.message) || String(e));
@@ -4154,6 +4292,14 @@
     sort.addEventListener('change', h);
     filter.addEventListener('change', h);
     _adminToolbarBound = true;
+  }
+
+  function setupOldDbSearch() {
+    if (window._oldDbSearchBound) return;
+    const s = document.getElementById('olddb-search');
+    if (!s) return;
+    s.addEventListener('input', () => renderOldDbPanel(_adminGuildsCache));
+    window._oldDbSearchBound = true;
   }
 
   /* ================================================================
@@ -4836,6 +4982,177 @@
       } finally {
         btn.disabled = false;
         btn.textContent = oldText;
+      }
+    });
+  }
+
+  // ── Old DB tab ─────────────────────────────────────────────────────────────
+
+  function renderOldDbPanel(guilds) {
+    const listEl  = document.getElementById('admin-olddb-list');
+    const cntEl   = document.getElementById('olddb-counter');
+    if (!listEl) return;
+
+    const search = (document.getElementById('olddb-search')?.value || '').trim().toLowerCase();
+    let items = (guilds || _adminGuildsCache || []).slice();
+
+    if (search) {
+      items = items.filter(g =>
+        (g.guild_name || '').toLowerCase().includes(search) ||
+        String(g.guild_id || '').includes(search)
+      );
+    }
+
+    if (cntEl) cntEl.textContent = items.length;
+
+    if (!items.length) {
+      listEl.innerHTML = `<div class="admin-panel-empty">${t('admin.olddb.empty')}</div>`;
+      return;
+    }
+
+    const isEn = _lang === 'en';
+
+    function kv(label, val, cls) {
+      const v = (val !== null && val !== undefined && val !== '') ? escapeHtml(String(val)) : '—';
+      const zeroCls = (val === 0 || val === '0') ? ' zero' : '';
+      return `<div class="olddb-kv">
+        <span class="olddb-kv__k">${label}</span>
+        <span class="olddb-kv__v${zeroCls}${cls ? ' ' + cls : ''}">${v}</span>
+      </div>`;
+    }
+
+    function badge(text, cls) {
+      return `<span class="olddb-badge ${cls}">${escapeHtml(String(text))}</span>`;
+    }
+
+    listEl.innerHTML = '<div class="olddb-grid">' + items.map(g => {
+      const badges = [];
+      if (g.vip)              badges.push(badge('VIP', 'vip'));
+      if (g.blocked)          badges.push(badge(isEn ? 'BLOCKED' : 'ЗАБЛОК', 'block'));
+      if (g.has_fcm_token)    badges.push(badge('FCM', 'ok'));
+      if (g.discord_present)  badges.push(badge(isEn ? 'Bot ✓' : 'Бот ✓', 'ok'));
+      else                    badges.push(badge(isEn ? 'Bot ✗' : 'Бот ✗', 'warn'));
+      if (g.language)         badges.push(badge(g.language, ''));
+
+      const rustServersBlock = (() => {
+        const servers = Array.isArray(g.rust_plus_servers) ? g.rust_plus_servers : (g.rust_db ? [g.rust_db] : []);
+        if (!servers.length) {
+          return `<div class="olddb-kv" style="grid-column:1/-1">
+            <span class="olddb-kv__v zero">${t('admin.olddb.no_rust')}</span>
+          </div>`;
+        }
+        return servers.map(s => `
+          <div class="olddb-kv" style="grid-column:1/-1">
+            <span class="olddb-kv__k">${t('admin.olddb.lbl_ip')}</span>
+            <span class="olddb-kv__v mono">${escapeHtml(String(s.ip || '—'))}:${escapeHtml(String(s.port || '—'))}</span>
+          </div>
+          <div class="olddb-kv">
+            <span class="olddb-kv__k">${t('admin.olddb.lbl_steam')}</span>
+            <span class="olddb-kv__v mono">${escapeHtml(String(s.steam_id || '—'))}</span>
+          </div>
+        `).join('<hr class="olddb-divider" style="grid-column:1/-1;margin:4px 0">');
+      })();
+
+      return `<div class="olddb-card"
+        data-gid="${escapeHtml(String(g.guild_id || ''))}"
+        data-gname="${escapeHtml(String(g.guild_name || ''))}">
+
+        <div class="olddb-card__head">
+          <div>
+            <div class="olddb-card__name" title="${escapeHtml(g.guild_name || '')}">${escapeHtml(g.guild_name || '—')}</div>
+            <div class="olddb-card__id">ID: ${escapeHtml(String(g.guild_id || ''))}</div>
+          </div>
+        </div>
+
+        <div class="olddb-badges">${badges.join('')}</div>
+
+        <hr class="olddb-divider">
+        <div class="olddb-section-label">${t('admin.olddb.section_db')}</div>
+        <div class="olddb-row-grid">
+          ${kv(t('admin.olddb.lbl_players'),  g.watched_players_count ?? 0)}
+          ${kv(t('admin.olddb.lbl_entities'), g.rust_entities_count   ?? 0)}
+          ${kv(t('admin.olddb.lbl_events'),   g.event_history_count   ?? 0)}
+          ${kv(t('admin.olddb.lbl_notif'),    g.notifications_count   ?? 0)}
+          ${kv(t('admin.olddb.lbl_gsrv'),     g.guild_servers_count   ?? 0)}
+          ${kv(t('admin.olddb.lbl_ilang'),    g.ingame_lang_count     ?? 0)}
+          ${kv(t('admin.olddb.lbl_lang'),     g.language || '—')}
+          ${kv(t('admin.olddb.lbl_active_srv'), g.active_server_id || '—')}
+          ${kv(t('admin.olddb.lbl_ch_info'),  g.channel_info_id   || '—')}
+          ${kv(t('admin.olddb.lbl_ch_alerts'),g.channel_alerts_id || '—')}
+        </div>
+
+        <hr class="olddb-divider">
+        <div class="olddb-section-label">${t('admin.olddb.section_rust')}</div>
+        <div class="olddb-row-grid">
+          ${rustServersBlock}
+        </div>
+
+        <button type="button" class="olddb-wipe-btn"
+          data-gid="${escapeHtml(String(g.guild_id || ''))}"
+          data-gname="${escapeHtml(String(g.guild_name || ''))}"
+          data-discord="${g.discord_present ? '1' : '0'}">
+          🗑 ${t('admin.olddb.wipe_btn')}
+        </button>
+      </div>`;
+    }).join('') + '</div>';
+
+    setupOldDbWipeOnce();
+  }
+
+  function setupOldDbWipeOnce() {
+    if (window._oldDbWipeBound) return;
+    const list = document.getElementById('admin-olddb-list');
+    if (!list) return;
+    window._oldDbWipeBound = true;
+    list.addEventListener('click', async (ev) => {
+      const btn = ev.target.closest('.olddb-wipe-btn');
+      if (!btn || btn.disabled) return;
+      ev.preventDefault();
+      const session = _dashSessionRef;
+      if (!session || String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
+
+      const gid     = btn.getAttribute('data-gid')   || '';
+      const gname   = btn.getAttribute('data-gname') || '';
+      const hasDc   = btn.getAttribute('data-discord') === '1';
+      if (!gid) return;
+
+      const isEn = _lang === 'en';
+      let msg = t('admin.olddb.wipe_confirm')
+        .replace('{name}', gname || '—')
+        .replace('{id}', gid);
+      if (hasDc) msg += '\n\n' + t('admin.olddb.wipe_leave');
+      if (!window.confirm(msg)) return;
+
+      const doLeave = hasDc;
+      btn.disabled = true;
+      const oldText = btn.textContent.trim();
+      btn.textContent = t('admin.olddb.wiping');
+      try {
+        const r = await fetch(`${API_BASE}/admin/guild/wipe?session=${encodeURIComponent(session)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ guild_id: gid, leave: doLeave }),
+        });
+        const text = await r.text();
+        let body = {};
+        try { body = text ? JSON.parse(text) : {}; } catch (_) { body = { _raw: text }; }
+        if (!r.ok) {
+          alert(t('admin.olddb.wipe_err') + ' ' + (body.error || body._raw || r.status));
+          return;
+        }
+        // Убираем карточку из DOM сразу
+        btn.closest('.olddb-card')?.remove();
+        // Обновляем счётчик
+        const cntEl = document.getElementById('olddb-counter');
+        if (cntEl) cntEl.textContent = Math.max(0, parseInt(cntEl.textContent || '0') - 1);
+        // Перезагружаем весь admin panel через 2 с
+        setTimeout(() => loadAdminPanel(session, _dashDiscordId, { force: true }), 2000);
+      } catch (err) {
+        alert(t('admin.olddb.wipe_err') + ' ' + ((err && err.message) || String(err)));
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🗑 ' + t('admin.olddb.wipe_btn');
       }
     });
   }
