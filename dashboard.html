@@ -2036,7 +2036,7 @@
       <aside class="dash-sidebar">
         <nav class="dash-nav" aria-label="Разделы панели">
           <button type="button" class="dash-nav-btn active" data-panel="account" data-i18n="nav.account">Аккаунт</button>
-          <button type="button" class="dash-nav-btn" data-panel="rust" data-i18n="nav.rust">Rust+ и сервер</button>
+          <button type="button" class="dash-nav-btn" data-panel="rust" data-i18n="nav.rust">Сервер</button>
           <button type="button" class="dash-nav-btn" data-panel="team" data-i18n="nav.team">Команда</button>
           <button type="button" class="dash-nav-btn" data-panel="commands" data-i18n="nav.commands">Команды</button>
           <div class="dash-nav-label" data-i18n="nav.wip">🚧 В разработке</div>
@@ -2220,35 +2220,30 @@
                   <div class="info-row"><span class="info-label" data-i18n="rust.address">Адрес</span><span class="info-value" id="server-address">—</span></div>
                   <div class="info-row"><span class="info-label" data-i18n="rust.players">Игроки</span><span class="info-value" id="server-players">—</span></div>
                   <div class="info-row"><span class="info-label" data-i18n="rust.map_size">Размер карты</span><span class="info-value" id="server-size">—</span></div>
-                  <div id="server-team-block" style="display:none;margin-top:12px">
-                    <div class="info-label" style="margin-bottom:8px" data-i18n="rust.team">Команда</div>
-                    <ul id="server-team-list" style="list-style:none;padding:0"></ul>
-                  </div>
+                  <div class="info-row" id="server-time-row" style="display:none"><span class="info-label" data-i18n="rust.game_time">Время в игре</span><span class="info-value" id="server-game-time">—</span></div>
                 </div>
               </div>
             </div>
 
-            <!-- История событий активного сервера -->
+            <!-- События активного сервера (кэш + история) -->
             <div class="card full-card" id="event-history-card" style="display:none;margin-top:12px">
               <div class="card-header" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
                 <span style="display:inline-flex;align-items:center;gap:8px">
                   📋 <span data-i18n="events.title">История событий</span>
                 </span>
-                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-                  <select id="event-history-filter" class="dash-select" style="padding:5px 10px;font-size:.8rem">
-                    <option value="" data-i18n="events.filter_all">Все события</option>
-                    <option value="PatrolHelicopter">🚁 Heli</option>
-                    <option value="CargoShip">🚢 Cargo</option>
-                    <option value="CH47">🚁 CH47</option>
-                    <option value="Crate">📦 Crate</option>
-                    <option value="DeepSea">🌊 DeepSea</option>
-                    <option value="TravelingVendor">🚐 Vendor</option>
-                  </select>
-                  <button type="button" class="dash-btn dash-btn--ghost" id="btn-event-history-refresh"
-                          style="padding:5px 10px;font-size:.8rem" data-i18n="nav.refresh">Обновить</button>
-                </div>
+                <button type="button" class="dash-btn dash-btn--ghost" id="btn-event-history-refresh"
+                        style="padding:5px 10px;font-size:.8rem" data-i18n="nav.refresh">Обновить</button>
               </div>
-              <div id="event-history-list" style="margin-top:8px"></div>
+              <!-- Активные прямо сейчас -->
+              <div id="event-active-section" style="display:none;margin-top:8px">
+                <div style="font-size:.75rem;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px" data-i18n="events.active_now">🟢 Активные сейчас</div>
+                <div id="event-active-list"></div>
+              </div>
+              <!-- История завершённых -->
+              <div id="event-recent-section" style="margin-top:10px">
+                <div style="font-size:.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px" data-i18n="events.recent">📋 Последние события</div>
+                <div id="event-history-list"></div>
+              </div>
             </div>
 
           </div>
@@ -2606,6 +2601,31 @@
                   </div>
                   <div id="admin-olddb-list"></div>
                 </section>
+
+                <!-- Форма: привязать guild_id к пользователю новой БД -->
+                <section class="admin-panel-section" style="margin-top:16px">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text" data-i18n="admin.set_guild.title">🔗 Привязать Discord-сервер к пользователю (новая БД)</span>
+                  </h3>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+                    <div style="display:flex;flex-direction:column;gap:4px">
+                      <label style="font-size:.75rem;color:var(--muted)" data-i18n="admin.set_guild.discord_id_lbl">Discord ID пользователя</label>
+                      <input type="text" id="set-guild-discord-id" class="dash-select" placeholder="Discord ID" style="padding:7px 12px;font-size:.85rem;width:200px" />
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:4px">
+                      <label style="font-size:.75rem;color:var(--muted)" data-i18n="admin.set_guild.guild_id_lbl">Guild ID Discord-сервера</label>
+                      <input type="text" id="set-guild-guild-id" class="dash-select" placeholder="Guild ID" style="padding:7px 12px;font-size:.85rem;width:200px" />
+                    </div>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:.82rem;cursor:pointer;padding-bottom:2px">
+                      <input type="checkbox" id="set-guild-wipe-old" checked />
+                      <span data-i18n="admin.set_guild.wipe_old">Очистить старую БД для этого guild_id</span>
+                    </label>
+                    <button type="button" id="btn-set-guild-submit"
+                      style="background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:.85rem;cursor:pointer;font-weight:600"
+                      data-i18n="admin.set_guild.btn">Привязать</button>
+                  </div>
+                  <div id="set-guild-result" style="margin-top:8px;font-size:.82rem"></div>
+                </section>
               </div>
 
               <!-- ── TAB: Чат ── -->
@@ -2666,7 +2686,7 @@
       'nav.refresh':      'Обновить',
       'nav.logout':       'Выйти',
       'nav.account':      'Аккаунт',
-      'nav.rust':         'Rust+ и сервер',
+      'nav.rust':         'Сервер',
       'nav.team':         'Команда',
       'nav.commands':     'Команды',
       'nav.wip':          '🚧 В разработке',
@@ -2713,6 +2733,8 @@
       'events.title':         '📋 История событий',
       'events.filter_all':    'Все события',
       'events.empty':         'Событий пока нет.',
+      'events.active_now':    '🟢 Активные сейчас',
+      'events.recent':        '📋 Последние события',
       'events.spawn':         'Спавн',
       'events.despawn':       'Деспавн',
       'events.duration':      'Длительность',
@@ -2731,6 +2753,7 @@
       'rust.address':      'Адрес',
       'rust.players':      'Игроки',
       'rust.map_size':     'Размер карты',
+      'rust.game_time':    'Время в игре',
       'rust.team':         'Команда',
       /* team panel */
       'team.title':              'Команда Rust+',
@@ -2815,6 +2838,12 @@
       'admin.olddb.lbl_ip': 'IP:Port',
       'admin.olddb.lbl_steam': 'Steam ID',
       'admin.olddb.no_rust': 'Rust+ не привязан',
+      'admin.set_guild.title': '🔗 Привязать Discord-сервер к пользователю (новая БД)',
+      'admin.set_guild.discord_id_lbl': 'Discord ID пользователя',
+      'admin.set_guild.guild_id_lbl': 'Guild ID Discord-сервера',
+      'admin.set_guild.wipe_old': 'Очистить старую БД для этого guild_id',
+      'admin.set_guild.btn': 'Привязать',
+      'admin.set_guild.err_fields': 'Заполните Discord ID и Guild ID',
       'admin.sec.overview_guilds': 'Сводка · Rust+ гильдии',
       'admin.sec.db_counts':       'Таблицы БД · счётчики строк',
       'admin.sec.host':            'Хост · Pi / сервер бота',
@@ -2895,7 +2924,7 @@
       'nav.refresh':      'Refresh',
       'nav.logout':       'Log out',
       'nav.account':      'Account',
-      'nav.rust':         'Rust+ & Server',
+      'nav.rust':         'Server',
       'nav.team':         'Team',
       'nav.commands':     'Commands',
       'nav.wip':          '🚧 In Development',
@@ -2941,6 +2970,8 @@
       'events.title':         '📋 Event History',
       'events.filter_all':    'All events',
       'events.empty':         'No events yet.',
+      'events.active_now':    '🟢 Active now',
+      'events.recent':        '📋 Recent events',
       'events.spawn':         'Spawn',
       'events.despawn':       'Despawn',
       'events.duration':      'Duration',
@@ -2960,6 +2991,7 @@
       'rust.address':      'Address',
       'rust.players':      'Players',
       'rust.map_size':     'Map size',
+      'rust.game_time':    'In-game time',
       'rust.team':         'Team',
       /* team panel */
       'team.title':              'Rust+ Team',
@@ -3044,6 +3076,12 @@
       'admin.olddb.lbl_ip': 'IP:Port',
       'admin.olddb.lbl_steam': 'Steam ID',
       'admin.olddb.no_rust': 'No Rust+ configured',
+      'admin.set_guild.title': '🔗 Link Discord Server to User (new DB)',
+      'admin.set_guild.discord_id_lbl': 'User Discord ID',
+      'admin.set_guild.guild_id_lbl': 'Discord Server Guild ID',
+      'admin.set_guild.wipe_old': 'Clear old DB for this guild_id',
+      'admin.set_guild.btn': 'Link',
+      'admin.set_guild.err_fields': 'Fill in Discord ID and Guild ID',
       'admin.sec.overview_guilds': 'Overview · Rust+ Guilds',
       'admin.sec.db_counts':       'DB Tables · row counts',
       'admin.sec.host':            'Host · Pi / bot server',
@@ -4026,45 +4064,73 @@
 
   /* ── История событий ── */
   let _eventHistoryInitDone = false;
+  // ─── Конфигурация иконок событий ─────────────────────────────────────
+  const EVENT_ICONS = {
+    PatrolHelicopter: '🚁', CargoShip: '🚢', CH47: '🚁',
+    Crate: '📦', DeepSea: '🌊', TravelingVendor: '🚐',
+  };
+
+  function _fmtEventTs(ts) {
+    if (!ts) return '—';
+    const locale = _lang === 'en' ? 'en-US' : 'ru-RU';
+    return new Date(ts * 1000).toLocaleString(locale, { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+  }
+  function _fmtEventDur(s) {
+    if (!s) return '—';
+    const m = Math.floor(s / 60), sec = s % 60;
+    return m > 0 ? `${m}${_lang==='en'?'m':'м'} ${sec}${_lang==='en'?'s':'с'}` : `${sec}${_lang==='en'?'s':'с'}`;
+  }
+
   async function loadEventHistory(session) {
-    const card = document.getElementById('event-history-card');
-    const list = document.getElementById('event-history-list');
-    const filterEl = document.getElementById('event-history-filter');
-    if (!card || !list) return;
+    const card    = document.getElementById('event-history-card');
+    const actSec  = document.getElementById('event-active-section');
+    const actList = document.getElementById('event-active-list');
+    const recList = document.getElementById('event-history-list');
+    if (!card || !recList) return;
 
-    const eventType = filterEl?.value || '';
-    const url = `${API_BASE}/me/event-history?session=${encodeURIComponent(session)}`
-      + (eventType ? `&event_type=${encodeURIComponent(eventType)}` : '')
-      + '&limit=50';
-
-    list.innerHTML = `<span class="muted" style="font-size:.82rem">${_lang==='en'?'Loading…':'Загрузка…'}</span>`;
+    const url = `${API_BASE}/me/event-history?session=${encodeURIComponent(session)}`;
+    recList.innerHTML = `<span class="muted" style="font-size:.82rem">${_lang==='en'?'Loading…':'Загрузка…'}</span>`;
+    if (actList) actList.innerHTML = '';
 
     try {
       const r = await fetch(url, { credentials: 'include' });
       const d = await r.json();
+
       if (!d.ok || !d.server) {
-        list.innerHTML = `<span class="muted" style="font-size:.82rem">${t('events.empty')}</span>`;
+        card.style.display = '';
+        recList.innerHTML = `<span class="muted" style="font-size:.82rem">${t('events.empty')}</span>`;
+        if (actSec) actSec.style.display = 'none';
         return;
       }
+
       card.style.display = '';
-      const events = d.events || [];
-      if (!events.length) {
-        list.innerHTML = `<span class="muted" style="font-size:.82rem">${t('events.empty')}</span>`;
-        return;
+
+      // ── Активные сейчас ───────────────────────────────────────────────
+      const active = d.active_events || [];
+      if (actSec && actList) {
+        if (active.length) {
+          actSec.style.display = '';
+          actList.innerHTML = active.map(e => `
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">
+              <span style="font-size:1.1rem">${EVENT_ICONS[e.event_type] || '🎮'}</span>
+              <span style="font-weight:600">${escapeHtml(e.event_type)}</span>
+              <span class="badge badge-green" style="font-size:.7rem">${_lang==='en'?'ACTIVE':'АКТИВНО'}</span>
+              ${e.grid_position ? `<span style="font-family:monospace;color:var(--muted);font-size:.8rem">${escapeHtml(e.grid_position)}</span>` : ''}
+              ${e.spawn_time ? `<span style="color:var(--muted);font-size:.78rem">↑ ${_fmtEventTs(e.spawn_time)}</span>` : ''}
+              ${e.duration_so_far != null ? `<span style="color:var(--accent);font-size:.78rem">${_fmtEventDur(e.duration_so_far)}</span>` : ''}
+            </div>`).join('');
+        } else {
+          actSec.style.display = 'none';
+        }
       }
 
-      const EVENT_ICONS = {
-        PatrolHelicopter: '🚁', CargoShip: '🚢', CH47: '🚁',
-        Crate: '📦', DeepSea: '🌊', TravelingVendor: '🚐',
-      };
-      const locale = _lang === 'en' ? 'en-US' : 'ru-RU';
-      const fmt = ts => ts ? new Date(ts * 1000).toLocaleString(locale, { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }) : '—';
-      const fmtDur = s => {
-        const m = Math.floor(s / 60), sec = s % 60;
-        return m > 0 ? `${m}${_lang==='en'?'m':'м'} ${sec}${_lang==='en'?'s':'с'}` : `${sec}${_lang==='en'?'s':'с'}`;
-      };
-
-      list.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:.82rem">
+      // ── История завершённых ───────────────────────────────────────────
+      const recent = d.recent_events || [];
+      if (!recent.length) {
+        recList.innerHTML = `<span class="muted" style="font-size:.82rem">${t('events.empty')}</span>`;
+        return;
+      }
+      recList.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:.82rem">
         <thead><tr style="color:var(--muted);font-size:.75rem;text-align:left">
           <th style="padding:4px 8px">Event</th>
           <th style="padding:4px 8px">${t('events.grid')}</th>
@@ -4072,18 +4138,18 @@
           <th style="padding:4px 8px">${t('events.despawn')}</th>
           <th style="padding:4px 8px">${t('events.duration')}</th>
         </tr></thead>
-        <tbody>${events.map(e => `
+        <tbody>${recent.map(e => `
           <tr style="border-top:1px solid var(--border)">
             <td style="padding:5px 8px">${EVENT_ICONS[e.event_type] || '🎮'} ${escapeHtml(e.event_type)}</td>
             <td style="padding:5px 8px;font-family:monospace">${escapeHtml(e.grid_position || '—')}</td>
-            <td style="padding:5px 8px">${fmt(e.spawn_time)}</td>
-            <td style="padding:5px 8px">${fmt(e.despawn_time)}</td>
-            <td style="padding:5px 8px">${fmtDur(e.duration || 0)}</td>
+            <td style="padding:5px 8px">${_fmtEventTs(e.spawn_time)}</td>
+            <td style="padding:5px 8px">${_fmtEventTs(e.despawn_time)}</td>
+            <td style="padding:5px 8px">${_fmtEventDur(e.duration)}</td>
           </tr>
         `).join('')}</tbody>
       </table>`;
     } catch (_) {
-      list.innerHTML = `<span class="muted" style="font-size:.82rem">—</span>`;
+      recList.innerHTML = `<span class="muted" style="font-size:.82rem">—</span>`;
     }
   }
 
@@ -4093,10 +4159,8 @@
     card.style.display = '';
     if (!_eventHistoryInitDone) {
       _eventHistoryInitDone = true;
-      const filterEl = document.getElementById('event-history-filter');
       const refBtn = document.getElementById('btn-event-history-refresh');
-      if (filterEl) filterEl.addEventListener('change', () => loadEventHistory(session));
-      if (refBtn)   refBtn.addEventListener('click',   () => loadEventHistory(session));
+      if (refBtn) refBtn.addEventListener('click', () => loadEventHistory(session));
     }
     loadEventHistory(session);
   }
@@ -4470,6 +4534,7 @@
         setupOldDbSearch();
         setupOldDbWipeAllOnce();
         setupOldDbLeaveAllOnce();
+        setupSetUserGuildOnce();
       }
     } catch (e) {
       if (statusEl) statusEl.textContent = (_lang==='en'?'Load error: ':'Ошибка загрузки: ') + ((e && e.message) || String(e));
@@ -4581,6 +4646,49 @@
       } finally {
         btn.disabled = false;
         btn.textContent = oldText;
+      }
+    });
+  }
+
+  function setupSetUserGuildOnce() {
+    if (window._setUserGuildBound) return;
+    const btn = document.getElementById('btn-set-guild-submit');
+    if (!btn) return;
+    window._setUserGuildBound = true;
+    btn.addEventListener('click', async () => {
+      const session = _dashSessionRef;
+      if (!session || String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
+      const discordId = (document.getElementById('set-guild-discord-id')?.value || '').trim();
+      const guildId   = (document.getElementById('set-guild-guild-id')?.value || '').trim();
+      const wipeOld   = document.getElementById('set-guild-wipe-old')?.checked ?? true;
+      const resultEl  = document.getElementById('set-guild-result');
+      if (!discordId || !guildId) {
+        if (resultEl) resultEl.innerHTML = `<span style="color:#ff4444">${t('admin.set_guild.err_fields')}</span>`;
+        return;
+      }
+      btn.disabled = true;
+      if (resultEl) resultEl.innerHTML = `<span class="muted">${_lang==='en'?'Working…':'Выполняю…'}</span>`;
+      try {
+        const r = await fetch(`${API_BASE}/admin/set-user-guild?session=${encodeURIComponent(session)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ discord_id: discordId, guild_id: Number(guildId), wipe_old_db: wipeOld }),
+        });
+        const d = await r.json().catch(() => ({}));
+        if (!r.ok || !d.ok) {
+          if (resultEl) resultEl.innerHTML = `<span style="color:#ff4444">❌ ${d.error || r.status}</span>`;
+          return;
+        }
+        const wipedInfo = d.old_db_wiped
+          ? ` · ${_lang==='en'?'old DB wiped':'старая БД очищена'}: ${JSON.stringify(d.old_db_wiped)}`
+          : '';
+        if (resultEl) resultEl.innerHTML =
+          `<span style="color:#34d399">✅ guild_id ${d.guild_id_set} → user #${d.user_internal_id}${wipedInfo}</span>`;
+      } catch (err) {
+        if (resultEl) resultEl.innerHTML = `<span style="color:#ff4444">❌ ${err.message || err}</span>`;
+      } finally {
+        btn.disabled = false;
       }
     });
   }
@@ -5844,18 +5952,16 @@
       document.getElementById('server-players').textContent = 
         (p != null && m != null) ? `${p}/${m}` + (q != null && q > 0 ? ` (${_lang==='en'?'queue':'очередь'}: ${q})` : '') : '—';
       document.getElementById('server-size').textContent = server.size || '—';
-      const teamBlock = document.getElementById('server-team-block');
-      const teamList = document.getElementById('server-team-list');
-      if (server.team && server.team.length > 0) {
-        teamBlock.style.display = 'block';
-        teamList.innerHTML = server.team.map(t => 
-          `<li style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-            <span>${escapeHtml(t.name || '?')}</span>
-            <span class="badge ${t.is_online ? 'badge-green' : 'badge-gray'}">${t.is_online ? (_lang==='en'?'online':'онлайн') : (_lang==='en'?'offline':'офлайн')}</span>
-          </li>`
-        ).join('');
-      } else {
-        teamBlock.style.display = 'none';
+      // Время в игре (0–24 float → HH:MM)
+      const timeRow = document.getElementById('server-time-row');
+      const timeVal = document.getElementById('server-game-time');
+      if (server.game_time != null && timeRow && timeVal) {
+        const h = Math.floor(server.game_time);
+        const min = Math.floor((server.game_time - h) * 60);
+        timeVal.textContent = `${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}`;
+        timeRow.style.display = '';
+      } else if (timeRow) {
+        timeRow.style.display = 'none';
       }
     } else {
       serverCard.style.display = 'none';
