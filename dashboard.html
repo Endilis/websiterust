@@ -402,6 +402,58 @@
 
     /* Аккаунт: одна поверхность (Linear / Vercel-style settings), без «коробок в коробках» */
     #panel-account.active { padding: 0; }
+
+    /* ── Devices panel ── */
+    .devices-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .device-card {
+      background: var(--card-bg2, rgba(255,255,255,.05));
+      border: 1px solid var(--border, rgba(255,255,255,.08));
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color .2s;
+    }
+    .device-card--switch { border-left: 3px solid #ff6b35; }
+    .device-card--alarm  { border-left: 3px solid #ffd700; }
+    .device-card--storage{ border-left: 3px solid #4e9af1; }
+    .device-card__header {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .device-card__icon { font-size: 1.5rem; line-height: 1; }
+    .device-card__name { font-weight: 600; font-size: .95rem; color: var(--text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .device-card__type { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    .device-card__status {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .device-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 20px; font-size: .78rem; font-weight: 600;
+    }
+    .device-badge--on  { background: rgba(80,200,100,.18); color: #50c864; }
+    .device-badge--off { background: rgba(200,80,80,.15); color: #c85050; }
+    .device-badge--unknown { background: rgba(180,180,180,.12); color: var(--muted); }
+    .device-card__toggle {
+      margin-top: auto;
+      display: flex; gap: 8px;
+    }
+    .device-btn {
+      flex: 1; padding: 7px 10px; border-radius: 8px; border: none;
+      font-size: .82rem; font-weight: 600; cursor: pointer; transition: opacity .15s, background .15s;
+    }
+    .device-btn--on  { background: #50c864; color: #111; }
+    .device-btn--off { background: #c85050; color: #fff; }
+    .device-btn:disabled { opacity: .45; cursor: default; }
+    .device-card__items { font-size: .8rem; color: var(--text2); }
+    .device-card__items li { list-style: none; padding: 2px 0; }
+    .device-protection { font-size: .75rem; color: #ffd700; }
+    .devices-empty { text-align: center; color: var(--muted); padding: 40px 0; font-size: .95rem; }
     .account-sheet {
       border-radius: 16px;
       border: 1px solid var(--border);
@@ -2039,6 +2091,7 @@
           <button type="button" class="dash-nav-btn" data-panel="rust" data-i18n="nav.rust">Сервер</button>
           <button type="button" class="dash-nav-btn" data-panel="team" data-i18n="nav.team">Команда</button>
           <button type="button" class="dash-nav-btn" data-panel="commands" data-i18n="nav.commands">Команды</button>
+          <button type="button" class="dash-nav-btn" data-panel="devices" data-i18n="nav.devices">Устройства</button>
           <div class="dash-nav-label" data-i18n="nav.wip">🚧 В разработке</div>
           <button type="button" class="dash-nav-btn sub" data-panel="map" data-i18n="nav.map">🗺️ Карта</button>
           <button type="button" class="dash-nav-btn sub dash-nav-btn--wip" data-panel="notify-game" data-i18n="nav.notify">🔔 Уведомления</button>
@@ -2444,6 +2497,22 @@
           </div>
         </div>
 
+        <!-- PANEL: devices -->
+        <div id="panel-devices" class="dash-panel" role="tabpanel">
+          <div class="card full-card">
+            <div class="card-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+              <span data-i18n="dev.title">Устройства</span>
+              <button type="button" class="dash-btn dash-btn--sm" id="btn-devices-refresh" style="margin-left:auto" data-i18n="dev.refresh">Обновить</button>
+            </div>
+            <p class="dash-muted" style="font-size:.82rem;margin:4px 0 0" data-i18n="dev.hint">
+              Smart Switch — включить/выключить прямо из панели. Storage Monitor — список предметов.
+            </p>
+            <div id="devices-loading" style="display:none;padding:20px 0;text-align:center;color:var(--muted)" data-i18n="dev.loading">Загрузка...</div>
+            <div id="devices-grid" class="devices-grid"></div>
+          </div>
+        </div>
+
         <!-- PANEL: admin -->
         <div id="panel-admin" class="dash-panel" role="tabpanel">
           <div class="card admin-panel-card">
@@ -2765,6 +2834,23 @@
       'nav.rust':         'Сервер',
       'nav.team':         'Команда',
       'nav.commands':     'Команды',
+      'nav.devices':      'Устройства',
+      'dev.title':        '🔌 Устройства',
+      'dev.refresh':      'Обновить',
+      'dev.hint':         'Smart Switch — включить/выключить из панели. Storage Monitor — предметы.',
+      'dev.loading':      'Загрузка...',
+      'dev.empty':        'Нет зарегистрированных устройств. Используйте .add в игре.',
+      'dev.offline':      'Сервер офлайн',
+      'dev.type_switch':  'Smart Switch',
+      'dev.type_alarm':   'Smart Alarm',
+      'dev.type_storage': 'Storage Monitor',
+      'dev.on':           'Вкл',
+      'dev.off':          'Выкл',
+      'dev.unknown':      'Нет данных',
+      'dev.btn_on':       'Включить',
+      'dev.btn_off':      'Выключить',
+      'dev.protection':   'Защита: ',
+      'dev.no_items':     'Нет предметов',
       'nav.wip':          '🚧 В разработке',
       'nav.map':          '🗺️ Карта',
       'nav.notify':       '🔔 Уведомления',
@@ -3019,6 +3105,23 @@
       'nav.rust':         'Server',
       'nav.team':         'Team',
       'nav.commands':     'Commands',
+      'nav.devices':      'Devices',
+      'dev.title':        '🔌 Devices',
+      'dev.refresh':      'Refresh',
+      'dev.hint':         'Smart Switch — toggle from panel. Storage Monitor — view items.',
+      'dev.loading':      'Loading...',
+      'dev.empty':        'No registered devices. Use .add in-game.',
+      'dev.offline':      'Server offline',
+      'dev.type_switch':  'Smart Switch',
+      'dev.type_alarm':   'Smart Alarm',
+      'dev.type_storage': 'Storage Monitor',
+      'dev.on':           'On',
+      'dev.off':          'Off',
+      'dev.unknown':      'Unknown',
+      'dev.btn_on':       'Turn On',
+      'dev.btn_off':      'Turn Off',
+      'dev.protection':   'Protection: ',
+      'dev.no_items':     'No items',
       'nav.wip':          '🚧 In Development',
       'nav.map':          '🗺️ Map',
       'nav.notify':       '🔔 Notifications',
@@ -3612,6 +3715,9 @@
         }
         if (id === 'map') {
           initMapPanelOnce();
+        }
+        if (id === 'devices') {
+          loadDevices();
         }
       });
     });
@@ -4331,6 +4437,119 @@
     document.querySelectorAll('.evt-notif-cb').forEach(cb => {
       cb.addEventListener('change', saveEventConfig);
     });
+  }
+
+  /* ── Devices panel ── */
+  let _devSession = null;
+  let _devAutoRefresh = null;
+
+  const DEVICE_TYPE_LABEL = { 1: 'dev.type_switch', 2: 'dev.type_alarm', 3: 'dev.type_storage' };
+  const DEVICE_TYPE_CLASS  = { 1: 'switch', 2: 'alarm', 3: 'storage' };
+  const DEVICE_TYPE_ICON   = { 1: '💡', 2: '🔔', 3: '📦' };
+
+  function formatProtection(secs) {
+    if (!secs) return '';
+    const h = Math.floor(secs / 3600);
+    const m = Math.floor((secs % 3600) / 60);
+    return h > 0 ? `${h}h ${m}m` : `${m}m`;
+  }
+
+  function renderDevices(devices) {
+    const grid = document.getElementById('devices-grid');
+    if (!grid) return;
+    if (!devices || devices.length === 0) {
+      grid.innerHTML = `<div class="devices-empty">${t('dev.empty')}</div>`;
+      return;
+    }
+    grid.innerHTML = devices.map(dev => {
+      const typeClass = DEVICE_TYPE_CLASS[dev.entity_type] || 'switch';
+      const icon      = DEVICE_TYPE_ICON[dev.entity_type] || '🔌';
+      const typeLabel = t(DEVICE_TYPE_LABEL[dev.entity_type] || 'dev.type_switch');
+      const name      = dev.custom_name || dev.entity_name || `Device ${dev.entity_id}`;
+
+      let statusHtml = '';
+      if (!dev.online) {
+        statusHtml = `<span class="device-badge device-badge--unknown">${t('dev.offline')}</span>`;
+      } else if (dev.value === null || dev.value === undefined) {
+        statusHtml = `<span class="device-badge device-badge--unknown">${t('dev.unknown')}</span>`;
+      } else {
+        const on = dev.value;
+        statusHtml = `<span class="device-badge ${on ? 'device-badge--on' : 'device-badge--off'}">${on ? t('dev.on') : t('dev.off')}</span>`;
+      }
+
+      let toggleHtml = '';
+      if (dev.entity_type === 1 && dev.online) {
+        toggleHtml = `
+          <div class="device-card__toggle">
+            <button class="device-btn device-btn--on" onclick="deviceSet(${dev.entity_id}, true)" ${dev.value === true ? 'disabled' : ''}>${t('dev.btn_on')}</button>
+            <button class="device-btn device-btn--off" onclick="deviceSet(${dev.entity_id}, false)" ${dev.value === false ? 'disabled' : ''}>${t('dev.btn_off')}</button>
+          </div>`;
+      }
+
+      let itemsHtml = '';
+      if (dev.entity_type === 3) {
+        const prot = dev.has_protection ? `<div class="device-protection">🛡 ${t('dev.protection')}${formatProtection(dev.protection_expiry)}</div>` : '';
+        if (dev.items && dev.items.length > 0) {
+          const itemRows = dev.items.map(it => `<li>× ${it.quantity} — ID ${it.item_id}${it.is_blueprint ? ' (BP)' : ''}</li>`).join('');
+          itemsHtml = `${prot}<ul class="device-card__items">${itemRows}</ul>`;
+        } else {
+          itemsHtml = `${prot}<div class="device-card__items">${t('dev.no_items')}</div>`;
+        }
+      }
+
+      return `
+        <div class="device-card device-card--${typeClass}" data-eid="${dev.entity_id}">
+          <div class="device-card__header">
+            <div class="device-card__icon">${icon}</div>
+            <div>
+              <div class="device-card__name" title="${name}">${name}</div>
+              <div class="device-card__type">${typeLabel}</div>
+            </div>
+          </div>
+          <div class="device-card__status">${statusHtml}</div>
+          ${itemsHtml}
+          ${toggleHtml}
+        </div>`;
+    }).join('');
+  }
+
+  async function loadDevices() {
+    if (!_devSession) return;
+    const loading = document.getElementById('devices-loading');
+    if (loading) loading.style.display = 'block';
+    try {
+      const r = await fetch(`${API_BASE}/me/devices?session=${encodeURIComponent(_devSession)}`, { credentials: 'include' });
+      const d = r.ok ? await r.json() : null;
+      renderDevices(d?.devices || []);
+    } catch (_) {
+      const grid = document.getElementById('devices-grid');
+      if (grid) grid.innerHTML = `<div class="devices-empty">❌ ${_lang==='en'?'Load error':'Ошибка загрузки'}</div>`;
+    } finally {
+      if (loading) loading.style.display = 'none';
+    }
+  }
+
+  async function deviceSet(entityId, value) {
+    if (!_devSession) return;
+    // Блокируем кнопки на время запроса
+    document.querySelectorAll(`.device-card[data-eid="${entityId}"] .device-btn`).forEach(b => b.disabled = true);
+    try {
+      await fetch(`${API_BASE}/me/devices/${entityId}/set?session=${encodeURIComponent(_devSession)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ value }),
+      });
+      // Перезагружаем список после небольшой паузы
+      setTimeout(loadDevices, 600);
+    } catch (_) {
+      document.querySelectorAll(`.device-card[data-eid="${entityId}"] .device-btn`).forEach(b => b.disabled = false);
+    }
+  }
+
+  function initDevicesPanel(session) {
+    _devSession = session;
+    document.getElementById('btn-devices-refresh')?.addEventListener('click', loadDevices);
   }
 
   /* ── Admin: глобальный переключатель уведомлений ── */
@@ -6208,6 +6427,7 @@
     initIngameLangSettings(session);
     initCmdDelaySettings(session, data.discord_id || _dashDiscordId);
     initIngameNotifToggle(session, data.discord_id || _dashDiscordId);
+    initDevicesPanel(session);
     initEventHistory(session);
     setupAccountDisableForeverOnce();
     updateAccountSelfDisableUI(data);
