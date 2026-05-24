@@ -2200,7 +2200,6 @@
                 Расширение перехватит Rust+ токен после входа через Steam.
               </p>
               <div class="dash-stack" id="rust-ext-actions"></div>
-              <a href="setup.html" class="dash-btn dash-btn--ghost" style="display:inline-flex;width:fit-content;margin-top:10px" data-i18n="acc.instructions">Инструкция →</a>
               <!-- Скрытый, но используемый в JS токен-сообщение и expires-блок (не показываем подробности по умолчанию) -->
               <p class="dash-muted" id="token-status-message" style="display:none"></p>
               <div class="dash-list" style="display:none">
@@ -2912,9 +2911,8 @@
       'acc.ext_update':       'Обновить токен',
       'acc.ext_install_hint': 'Установите расширение RustInfo Bot из Chrome Web Store, затем нажмите «Привязать Rust+».',
       'acc.ext_bind_hint':    'Расширение установлено. Войдите через Steam на Facepunch — токен сохранится автоматически.',
-      'acc.ext_update_hint':  'Steam уже привязан. Откройте Facepunch через расширение, чтобы обновить Rust+ токен.',
+      'acc.ext_update_hint':  'Steam уже привязан. Откройте Facepunch через кнопку «Обновить» выше, чтобы обновить Rust+ токен.',
       'acc.via_facepunch':    'Через Facepunch',
-      'acc.instructions':     'Инструкция →',
       'acc.settings':         'Настройки',
       'acc.settings_hint':    'Настройки применяются к вашему Discord-серверу. Изменения синхронизируются с ботом в реальном времени.',
       'acc.bot_name':         'Имя бота',
@@ -3196,7 +3194,7 @@
       'acc.ext_update':       'Refresh token',
       'acc.ext_install_hint': 'Install the RustInfo Bot extension from the Chrome Web Store, then click «Link Rust+».',
       'acc.ext_bind_hint':    'Extension is installed. Sign in via Steam on Facepunch — the token will be saved automatically.',
-      'acc.ext_update_hint':  'Steam is already linked. Open Facepunch via the extension to refresh the Rust+ token.',
+      'acc.ext_update_hint':  'Steam is already linked. Use the Refresh button above to open Facepunch and update the Rust+ token.',
       'acc.via_facepunch':    'Via Facepunch',
       'acc.instructions':     'Instructions →',
       'acc.settings':         'Settings',
@@ -3943,42 +3941,37 @@
     }
 
     let hintKey = 'acc.ext_install_hint';
-    let btnLabel = t('acc.ext_install');
-    let btnHref = CHROME_EXT_STORE;
-    let btnTarget = '_blank';
-    let btnRel = 'noreferrer';
-    let btnClass = 'dash-btn dash-btn--primary dash-btn--block';
+    let actionHtml = '';
 
     if (hasSteam) {
       hintKey = 'acc.ext_update_hint';
-      btnLabel = t('acc.ext_update');
-      btnHref = facepunchLinkHref(session);
-      btnTarget = '_self';
-      btnRel = '';
+      if (!extInstalled) {
+        actionHtml = `
+          <a href="${escapeHtml(CHROME_EXT_STORE)}" class="dash-btn dash-btn--primary dash-btn--block" target="_blank" rel="noreferrer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            <span>${escapeHtml(t('acc.ext_install'))}</span>
+          </a>`;
+      }
     } else if (extInstalled) {
       hintKey = 'acc.ext_bind_hint';
-      btnLabel = t('acc.ext_bind');
-      btnHref = facepunchLinkHref(session);
-      btnTarget = '_self';
-      btnRel = '';
+      actionHtml = `
+        <a href="${escapeHtml(facepunchLinkHref(session))}" class="dash-btn dash-btn--primary dash-btn--block">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          <span>${escapeHtml(t('acc.ext_bind'))}</span>
+        </a>`;
+    } else {
+      actionHtml = `
+        <a href="${escapeHtml(CHROME_EXT_STORE)}" class="dash-btn dash-btn--primary dash-btn--block" target="_blank" rel="noreferrer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          <span>${escapeHtml(t('acc.ext_install'))}</span>
+        </a>`;
     }
 
     if (hintEl) {
       hintEl.textContent = t(hintKey);
     }
 
-    actionsEl.innerHTML = `
-      <a href="${escapeHtml(btnHref)}" class="${btnClass}"${btnTarget ? ` target="${btnTarget}"` : ''}${btnRel ? ` rel="${btnRel}"` : ''}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-        <span>${escapeHtml(btnLabel)}</span>
-      </a>`;
-
-    if (!extInstalled && hasSteam) {
-      actionsEl.innerHTML += `
-        <a href="${escapeHtml(CHROME_EXT_STORE)}" class="dash-btn dash-btn--ghost dash-btn--block" target="_blank" rel="noreferrer">
-          <span>${escapeHtml(t('acc.ext_install'))}</span>
-        </a>`;
-    }
+    actionsEl.innerHTML = actionHtml;
   }
 
   if (!window._rustExtReadyBound) {
