@@ -5357,7 +5357,7 @@
       disconnect: 'Закрыть Rust+ сокет и остановить FCM listener для этого юзера?',
       reconnect: 'Подключиться заново к Rust+ и стартовать FCM listener?',
       clear_fcm: 'Стереть FCM-токены в БД? Pairing сохранится, но push работать не будет до новой регистрации.',
-      wipe: 'ПОЛНЫЙ СБРОС: закрыть сокет + стереть FCM-токены. Продолжить?',
+      wipe: 'ПОЛНЫЙ СБРОС: закрыть сокет, удалить FCM-токены, rustplus_token и все записи rust_servers. Пользователю нужна повторная привязка. Продолжить?',
       ban: 'Забанить пользователя? /me/* ответит 403, сокет и FCM будут остановлены.',
       unban: 'Снять бан с пользователя?',
       disable: 'Отключить FCM+сокет и заблокировать авто-восстановление? Бот не будет переподключаться после перезапуска.',
@@ -5397,6 +5397,8 @@
             banned_reason: data.user.banned_reason ?? null,
             admin_disabled: !!data.user.admin_disabled,
             has_active_socket: !!data.user.has_active_socket,
+            has_rustplus_token: !!data.user.has_rustplus_token,
+            servers_count: data.user.servers_count ?? 0,
           });
         }
       }
@@ -5435,7 +5437,7 @@
             : `<button type="button" class="site-db-btn" data-admin-action="reconnect" data-admin-iid="${escapeHtml(iid)}" title="Поднять Rust+ сокет + стартовать FCM listener" ${u.is_banned || u.admin_disabled ? 'disabled' : ''}>🔌 Подключить</button>`
           }
           <button type="button" class="site-db-btn" data-admin-action="clear_fcm" data-admin-iid="${escapeHtml(iid)}" title="Стереть FCM-токены в rust_users (expo/fcm/gcm), pairing сохраняется">🗑 FCM</button>
-          <button type="button" class="site-db-btn site-db-btn--warn" data-admin-action="wipe" data-admin-iid="${escapeHtml(iid)}" title="Сокет + listener + очистка FCM-полей">💥 Полный сброс</button>
+          <button type="button" class="site-db-btn site-db-btn--warn" data-admin-action="wipe" data-admin-iid="${escapeHtml(iid)}" title="Сокет + listener + удаление FCM, rustplus_token и всех rust_servers">💥 Полный сброс</button>
           ${u.admin_disabled
             ? `<button type="button" class="site-db-btn site-db-btn--ok" data-admin-action="enable" data-admin-iid="${escapeHtml(iid)}" title="Снять флаг блокировки — бот снова будет восстанавливать соединение">✅ Включить</button>`
             : `<button type="button" class="site-db-btn site-db-btn--danger" data-admin-action="disable" data-admin-iid="${escapeHtml(iid)}" title="Отключить FCM+сокет и заблокировать авто-восстановление">🔒 Откл. навсегда</button>`
@@ -5447,7 +5449,8 @@
         </div>
         <p class="muted" style="margin:8px 0 0;font-size:.76rem">
           Действия применяются сразу к боту: закрытие RustSocket, остановка FCM listener,
-          запись в <code>rust_users.is_banned</code> / <code>admin_disabled</code>. Пэйринговые записи в <code>rust_servers</code> не удаляются.
+          запись в <code>rust_users.is_banned</code> / <code>admin_disabled</code>.
+          «Полный сброс» также удаляет FCM-токены, <code>rustplus_token</code> и все строки <code>rust_servers</code>.
         </p>
       </div>`;
 
