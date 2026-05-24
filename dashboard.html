@@ -604,6 +604,22 @@
       text-transform: none; letter-spacing: 0;
     }
     .rust-srv-block__hint { margin: 0 0 12px; font-size: 0.85rem; }
+    .rust-srv-empty {
+      padding: 16px 18px; border-radius: 12px;
+      border: 1px dashed var(--border);
+      background: rgba(255,255,255,.02);
+    }
+    .rust-srv-empty--warn {
+      border-color: rgba(251,191,36,.35);
+      background: rgba(251,191,36,.06);
+    }
+    .rust-srv-empty__title {
+      margin: 0 0 8px; font-size: 1rem; font-weight: 700; color: var(--text);
+    }
+    .rust-srv-empty__text {
+      margin: 0; font-size: 0.88rem; line-height: 1.65; color: var(--text2);
+    }
+    .rust-srv-empty--warn .rust-srv-empty__text { color: #fbbf24; font-weight: 600; }
 
     .rust-srv-grid {
       display: grid;
@@ -2874,7 +2890,11 @@
       'acc.paired_servers':   'Запэйренные серверы',
       'acc.auto_toggle':      'Авто-переключение',
       'acc.auto_toggle_title':'Автоматически переключать активный сервер на свежезапэйренный из игры',
-      'acc.srv_hint':         'Бот использует сервер, отмеченный как «активный».',
+      'acc.srv_hint':         'Бот использует сервер, отмеченный как «активный». Нажмите карточку, чтобы переключиться.',
+      'acc.srv_hint_auto':    'Авто-режим: активный сервер выбирается автоматически при паринге через игру. Ручной выбор отключён.',
+      'acc.srv_empty_title':  'Ваши сервера',
+      'acc.srv_empty_fcm_ok': 'На данный момент нет подключенных серверов.<br>Вам нужно зайти на сервер в игре Rust.<br>И в меню игры связать сервер, вы увидите ваш сервер в этом меню.',
+      'acc.srv_empty_fcm_bad':'Пожалуйста авторизуйтесь через специальное расширение. Rust Info Bot',
       'acc.discord_connect':  'Подключение Discord',
       'acc.wip_badge':        'В разработке',
       'acc.discord_hint':     'Серверы Discord, где у вас есть права администратора. Кнопка «Использовать» привязывает гильдию к боту, «Пригласить» добавляет бота на сервер.',
@@ -3153,7 +3173,11 @@
       'acc.paired_servers':   'Paired Servers',
       'acc.auto_toggle':      'Auto-switch',
       'acc.auto_toggle_title':'Automatically switch active server to the latest paired one from the game',
-      'acc.srv_hint':         'The bot uses the server marked as «active».',
+      'acc.srv_hint':         'The bot uses the server marked as «active». Click a card to switch.',
+      'acc.srv_hint_auto':    'Auto mode: active server is selected automatically when pairing from the game. Manual selection is disabled.',
+      'acc.srv_empty_title':  'Your servers',
+      'acc.srv_empty_fcm_ok': 'There are no connected servers at the moment.<br>You need to join a server in Rust.<br>Then link the server in the in-game menu — it will appear here.',
+      'acc.srv_empty_fcm_bad':'Please sign in using the Rust Info Bot browser extension.',
       'acc.discord_connect':  'Discord Connection',
       'acc.wip_badge':        'In Development',
       'acc.discord_hint':     'Discord servers where you have admin rights. «Use» button links the guild to the bot, «Invite» adds the bot to the server.',
@@ -3424,6 +3448,7 @@
     if (_teamPanelLastServer) {
       renderTeamPanel(_teamPanelLastServer);
     }
+    renderRustServerCards();
   }
 
   document.getElementById('btn-lang-toggle').addEventListener('click', toggleLang);
@@ -6251,6 +6276,7 @@
     autoMode: false,
     connectedAddress: null, // "ip:port" текущего активного сокета (из /me)
     pendingInternalId: null,
+    fcmStatus: 'unlinked',
   };
 
   function renderRustServerCards() {
@@ -6259,19 +6285,25 @@
     if (!wrap) return;
     const st = _rustServersState;
     const auto = !!st.autoMode;
+    const fcmOk = st.fcmStatus === 'ok';
 
     if (hint) {
-      hint.textContent = _lang === 'en'
-        ? (auto
-            ? 'Auto mode: active server is selected automatically when pairing from the game. Manual selection is disabled.'
-            : 'The bot uses the server marked as «active». Click a card to switch.')
-        : (auto
-            ? 'Авто-режим: активный сервер выбирается автоматически при паринге через игру. Ручной выбор отключён.'
-            : 'Бот использует сервер, отмеченный как «активный». Нажмите карточку, чтобы переключиться.');
+      hint.textContent = auto ? t('acc.srv_hint_auto') : t('acc.srv_hint');
     }
 
     if (!st.servers.length) {
-      wrap.innerHTML = `<p class="dash-muted" style="margin:0">${_lang==='en'?'No paired servers yet. Open Rust+ in the game and perform pairing.':'Пока нет запэйренных серверов. Откройте Rust+ в игре и выполните pairing.'}</p>`;
+      if (fcmOk) {
+        wrap.innerHTML = `
+          <div class="rust-srv-empty">
+            <h4 class="rust-srv-empty__title">${escapeHtml(t('acc.srv_empty_title'))}</h4>
+            <p class="dash-muted rust-srv-empty__text">${t('acc.srv_empty_fcm_ok')}</p>
+          </div>`;
+      } else {
+        wrap.innerHTML = `
+          <div class="rust-srv-empty rust-srv-empty--warn">
+            <p class="rust-srv-empty__text">${escapeHtml(t('acc.srv_empty_fcm_bad'))}</p>
+          </div>`;
+      }
       return;
     }
 
@@ -6440,18 +6472,19 @@
       });
       const j1 = r1.ok ? await r1.json() : null;
       if (j1 && j1.user) {
-        const st = j1.user.fcm_status || 'unlinked';
+        const fcmSt = j1.user.fcm_status || 'unlinked';
+        _rustServersState.fcmStatus = fcmSt;
         const map = {
           ok: ['dash-badge--ok', 'FCM OK'],
           pending: ['dash-badge--warn', 'FCM…'],
           error: ['dash-badge--warn', _lang==='en'?'FCM error':'FCM ошибка'],
           unlinked: ['dash-badge--neutral', _lang==='en'?'Not linked':'Не привязано']
         };
-        const pair = map[st] || map.unlinked;
+        const pair = map[fcmSt] || map.unlinked;
         badge.className = 'dash-badge ' + pair[0];
         badge.textContent = pair[1];
         if (retryBtn) {
-          retryBtn.style.display = (st === 'error' || st === 'pending') ? 'inline-flex' : 'none';
+          retryBtn.style.display = (fcmSt === 'error' || fcmSt === 'pending') ? 'inline-flex' : 'none';
         }
         // Если сервер обновил флаг auto_active_server — синхронизируемся.
         if (j1.user.auto_active_server != null) {
