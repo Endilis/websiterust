@@ -2175,18 +2175,14 @@
                   </div>
                 </div>
               </div>
-              <div id="rust-not-linked-block">
-                <p class="dash-muted" style="margin-bottom:14px" data-i18n="acc.steam_hint">
-                  Расширение перехватит Rust+ токен после входа через Steam.
-                </p>
-                <div class="dash-stack">
-                  <a href="#" id="btn-facepunch-link" class="dash-btn dash-btn--primary dash-btn--block">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-                    <span data-i18n="acc.via_facepunch">Через Facepunch</span>
-                  </a>
-                  <a href="setup.html" class="dash-btn dash-btn--ghost" style="display:inline-flex;width:fit-content" data-i18n="acc.instructions">Инструкция →</a>
-                </div>
+              <div class="dash-inline" style="flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0 10px">
+                <span class="dash-badge dash-badge--neutral" id="rust-ext-badge">—</span>
               </div>
+              <p class="dash-muted" style="margin-bottom:14px" id="rust-ext-hint" data-i18n="acc.steam_hint">
+                Расширение перехватит Rust+ токен после входа через Steam.
+              </p>
+              <div class="dash-stack" id="rust-ext-actions"></div>
+              <a href="setup.html" class="dash-btn dash-btn--ghost" style="display:inline-flex;width:fit-content;margin-top:10px" data-i18n="acc.instructions">Инструкция →</a>
               <!-- Скрытый, но используемый в JS токен-сообщение и expires-блок (не показываем подробности по умолчанию) -->
               <p class="dash-muted" id="token-status-message" style="display:none"></p>
               <div class="dash-list" style="display:none">
@@ -2886,6 +2882,14 @@
       'acc.wip_badge':        'В разработке',
       'acc.discord_hint':     'Серверы Discord, где у вас есть права администратора. Кнопка «Использовать» привязывает гильдию к боту, «Пригласить» добавляет бота на сервер.',
       'acc.steam_hint':       'Расширение перехватит Rust+ токен после входа через Steam.',
+      'acc.ext_installed':    'Расширение установлено',
+      'acc.ext_missing':      'Расширение не найдено',
+      'acc.ext_install':      'Установить расширение',
+      'acc.ext_bind':         'Привязать Rust+',
+      'acc.ext_update':       'Обновить токен',
+      'acc.ext_install_hint': 'Установите расширение RustInfo Bot из Chrome Web Store, затем нажмите «Привязать Rust+».',
+      'acc.ext_bind_hint':    'Расширение установлено. Войдите через Steam на Facepunch — токен сохранится автоматически.',
+      'acc.ext_update_hint':  'Steam уже привязан. Откройте Facepunch через расширение, чтобы обновить Rust+ токен.',
       'acc.via_facepunch':    'Через Facepunch',
       'acc.instructions':     'Инструкция →',
       'acc.settings':         'Настройки',
@@ -3157,6 +3161,14 @@
       'acc.wip_badge':        'In Development',
       'acc.discord_hint':     'Discord servers where you have admin rights. «Use» button links the guild to the bot, «Invite» adds the bot to the server.',
       'acc.steam_hint':       'The extension will capture the Rust+ token after logging in via Steam.',
+      'acc.ext_installed':    'Extension installed',
+      'acc.ext_missing':      'Extension not found',
+      'acc.ext_install':      'Install extension',
+      'acc.ext_bind':         'Link Rust+',
+      'acc.ext_update':       'Refresh token',
+      'acc.ext_install_hint': 'Install the RustInfo Bot extension from the Chrome Web Store, then click «Link Rust+».',
+      'acc.ext_bind_hint':    'Extension is installed. Sign in via Steam on Facepunch — the token will be saved automatically.',
+      'acc.ext_update_hint':  'Steam is already linked. Open Facepunch via the extension to refresh the Rust+ token.',
       'acc.via_facepunch':    'Via Facepunch',
       'acc.instructions':     'Instructions →',
       'acc.settings':         'Settings',
@@ -3808,6 +3820,130 @@
   }
 
   const FACEPUNCH_LOGIN = 'https://companion-rust.facepunch.com/login';
+  const CHROME_EXT_ID = 'bnmfocbcaaaimljcchgplaceimiaglha';
+  const CHROME_EXT_STORE = 'https://chromewebstore.google.com/detail/rustinfo-bot/bnmfocbcaaaimljcchgplaceimiaglha';
+
+  let _rustExtInstalledCache = null;
+  let _rustExtDetectPromise = null;
+
+  function probeExtensionIcon(extId) {
+    return new Promise((resolve) => {
+      if (!extId) { resolve(false); return; }
+      const img = new Image();
+      let done = false;
+      const finish = (val) => { if (!done) { done = true; resolve(!!val); } };
+      img.onload = () => finish(true);
+      img.onerror = () => finish(false);
+      img.src = `chrome-extension://${extId}/icons/rustinfo_16.png?t=${Date.now()}`;
+      setTimeout(() => finish(false), 1500);
+    });
+  }
+
+  function pingExtensionExternal(extId) {
+    return new Promise((resolve) => {
+      if (typeof chrome === 'undefined' || !chrome.runtime || !chrome.runtime.sendMessage) {
+        resolve(false);
+        return;
+      }
+      try {
+        chrome.runtime.sendMessage(extId, { type: 'ping' }, (resp) => {
+          if (chrome.runtime.lastError) {
+            resolve(false);
+            return;
+          }
+          resolve(!!(resp && resp.ok));
+        });
+      } catch {
+        resolve(false);
+      }
+    });
+  }
+
+  async function detectRustInfoExtension(force) {
+    if (!force && _rustExtInstalledCache != null) return _rustExtInstalledCache;
+    if (!force && _rustExtDetectPromise) return _rustExtDetectPromise;
+    _rustExtDetectPromise = (async () => {
+      if (document.documentElement.dataset.rustinfoExtension === '1') return true;
+      if (await pingExtensionExternal(CHROME_EXT_ID)) return true;
+      return probeExtensionIcon(CHROME_EXT_ID);
+    })();
+    try {
+      _rustExtInstalledCache = await _rustExtDetectPromise;
+      return _rustExtInstalledCache;
+    } finally {
+      _rustExtDetectPromise = null;
+    }
+  }
+
+  function invalidateRustExtensionCache() {
+    _rustExtInstalledCache = null;
+  }
+
+  async function updateRustExtensionActions(data, session) {
+    const actionsEl = document.getElementById('rust-ext-actions');
+    const hintEl = document.getElementById('rust-ext-hint');
+    const badgeEl = document.getElementById('rust-ext-badge');
+    if (!actionsEl) return;
+
+    const hasSteam = !!(data && (data.steam_id || (data.token_status && data.token_status.has_token)));
+    const extInstalled = await detectRustInfoExtension(false);
+
+    if (badgeEl) {
+      badgeEl.className = 'dash-badge ' + (extInstalled ? 'dash-badge--ok' : 'dash-badge--warn');
+      badgeEl.textContent = extInstalled ? t('acc.ext_installed') : t('acc.ext_missing');
+    }
+
+    let hintKey = 'acc.ext_install_hint';
+    let btnLabel = t('acc.ext_install');
+    let btnHref = CHROME_EXT_STORE;
+    let btnTarget = '_blank';
+    let btnRel = 'noreferrer';
+    let btnClass = 'dash-btn dash-btn--primary dash-btn--block';
+
+    if (hasSteam) {
+      hintKey = 'acc.ext_update_hint';
+      btnLabel = t('acc.ext_update');
+      btnHref = facepunchLinkHref(session);
+      btnTarget = '_self';
+      btnRel = '';
+    } else if (extInstalled) {
+      hintKey = 'acc.ext_bind_hint';
+      btnLabel = t('acc.ext_bind');
+      btnHref = facepunchLinkHref(session);
+      btnTarget = '_self';
+      btnRel = '';
+    }
+
+    if (hintEl) {
+      hintEl.textContent = t(hintKey);
+    }
+
+    actionsEl.innerHTML = `
+      <a href="${escapeHtml(btnHref)}" class="${btnClass}"${btnTarget ? ` target="${btnTarget}"` : ''}${btnRel ? ` rel="${btnRel}"` : ''}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        <span>${escapeHtml(btnLabel)}</span>
+      </a>`;
+
+    if (!extInstalled && hasSteam) {
+      actionsEl.innerHTML += `
+        <a href="${escapeHtml(CHROME_EXT_STORE)}" class="dash-btn dash-btn--ghost dash-btn--block" target="_blank" rel="noreferrer">
+          <span>${escapeHtml(t('acc.ext_install'))}</span>
+        </a>`;
+    }
+  }
+
+  if (!window._rustExtReadyBound) {
+    window._rustExtReadyBound = true;
+    window.addEventListener('rustinfo-extension-ready', () => {
+      invalidateRustExtensionCache();
+      _rustExtInstalledCache = true;
+      const session = _dashSessionRef || localStorage.getItem('ri_session');
+      if (session && document.getElementById('dashboard')?.style.display !== 'none') {
+        loadDashboard(session, { force: true }).catch(() => {});
+      }
+    });
+    window.addEventListener('focus', () => { invalidateRustExtensionCache(); });
+  }
 
   const NOTIFY_LABELS = {
     cargo: 'Карго (Cargo Ship)',
@@ -6440,6 +6576,8 @@
       linkBtn.href = facepunchLinkHref(session);
     }
 
+    updateRustExtensionActions(data, session);
+
     renderTokenStatus(data.token_status, session);
 
     renderNotifyPrefs(data.ingame_notify_prefs, session);
@@ -6469,11 +6607,11 @@
 
     if (data.steam_id) {
       document.getElementById('rust-linked-block').style.display = 'block';
-      document.getElementById('rust-not-linked-block').style.display = 'none';
       document.getElementById('steam-id-val').textContent = data.steam_id;
       const extSteps = document.getElementById('extension-steps-card');
       if (extSteps) extSteps.style.display = 'none';
     } else {
+      document.getElementById('rust-linked-block').style.display = 'none';
       const extSteps = document.getElementById('extension-steps-card');
       if (extSteps) extSteps.style.display = '';
     }

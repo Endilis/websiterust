@@ -9,6 +9,15 @@
    "content_scripts": [ {
       "js": [ "addon.js" ],
       "matches": [ "https://companion-rust.facepunch.com/*" ]
+   }, {
+      "js": [ "dashboard-bridge.js" ],
+      "matches": [
+         "https://rustinfo.online/*",
+         "https://www.rustinfo.online/*",
+         "http://localhost/*",
+         "http://127.0.0.1/*"
+      ],
+      "run_at": "document_start"
    } ],
    "icons": {
       "128": "icons/rustinfo_128.png",
@@ -22,9 +31,25 @@
    "manifest_version": 3,
    "name": "RustInfo Bot",
    "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "1.0",
+   "version": "1.0.1",
+   "externally_connectable": {
+      "matches": [
+         "https://rustinfo.online/*",
+         "https://www.rustinfo.online/*",
+         "http://localhost/*",
+         "http://127.0.0.1/*"
+      ]
+   },
    "web_accessible_resources": [ {
       "matches": [ "https://companion-rust.facepunch.com/*" ],
       "resources": [ "worker.js" ]
+   }, {
+      "matches": [
+         "https://rustinfo.online/*",
+         "https://www.rustinfo.online/*",
+         "http://localhost/*",
+         "http://127.0.0.1/*"
+      ],
+      "resources": [ "icons/rustinfo_16.png", "icons/rustinfo_32.png" ]
    } ]
 }
