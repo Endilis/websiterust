@@ -2119,7 +2119,6 @@
             <!-- Rust+ · FCM и серверы — основная рабочая зона, на верх. -->
             <section class="dash-section" id="rust-account-v2" aria-labelledby="acc-block-rust2">
               <h2 class="dash-section-title" id="acc-block-rust2" data-i18n="acc.rust_fcm">Rust+ · FCM и серверы</h2>
-              <p class="dash-muted" id="rust-v2-scope-msg" style="display:none;margin-bottom:10px"></p>
 
               <div id="rust-v2-fcm-row" class="dash-inline" style="flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px">
                 <span class="dash-badge dash-badge--neutral" id="rust-v2-fcm-badge">—</span>
@@ -2141,16 +2140,9 @@
               </div>
 
               <!-- Discord-подключение: в разработке -->
-              <div style="margin-top:22px;display:flex;align-items:center;gap:10px;margin-bottom:8px">
+              <div style="margin-top:22px;display:flex;align-items:center;gap:10px">
                 <h3 class="rust-srv-block__title" style="margin:0" data-i18n="acc.discord_connect">Подключение Discord</h3>
                 <span class="dash-badge" style="background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.3);font-size:.7rem;padding:2px 8px;border-radius:6px" data-i18n="acc.wip_badge">В разработке</span>
-              </div>
-              <div style="opacity:.45;pointer-events:none;user-select:none" aria-disabled="true">
-                <p class="dash-muted" style="font-size:0.85rem;margin:0 0 12px" data-i18n="acc.discord_hint">
-                  Серверы Discord, где у вас есть права администратора. Кнопка «Использовать» привязывает гильдию к боту,
-                  «Пригласить» добавляет бота на сервер.
-                </p>
-                <div id="rust-v2-oauth-guilds"></div>
               </div>
             </section>
 
@@ -6398,13 +6390,10 @@
 
   async function loadRustAccountPanels(session, opts) {
     const dataCtx = (opts && opts.data) || {};
-    const scopeMsg = document.getElementById('rust-v2-scope-msg');
     const serversEl = document.getElementById('rust-v2-servers');
-    const oauthEl = document.getElementById('rust-v2-oauth-guilds');
     const badge = document.getElementById('rust-v2-fcm-badge');
     const retryBtn = document.getElementById('btn-fcm-retry');
-    if (!serversEl || !oauthEl || !badge) return;
-    if (scopeMsg) scopeMsg.style.display = 'none';
+    if (!serversEl || !badge) return;
 
     // Auto-mode тоггл: значение приходит из /me (dataCtx.auto_active_server).
     const autoToggle = document.getElementById('rust-auto-toggle');
@@ -6450,87 +6439,6 @@
     } catch (e) {
       console.error('[rust panels]', e);
       serversEl.innerHTML = `<p class="dash-muted">${_lang==='en'?'Failed to load':'Не удалось загрузить'} <code>/me/rust</code>.</p>`;
-    }
-
-    try {
-      const r2 = await fetch(`${API_BASE}/me/guilds?session=${encodeURIComponent(session)}&_t=${Date.now()}`, {
-        credentials: 'include', cache: 'no-store',
-      });
-      if (r2.status === 403) {
-        if (scopeMsg) {
-          scopeMsg.textContent = _lang==='en'
-            ? 'To display your Discord servers, log out and log in again, granting access to «guilds».'
-            : 'Для отображения списка серверов Discord выйдите и войдите заново, разрешив доступ к «guilds».';
-          scopeMsg.style.display = 'block';
-        }
-        oauthEl.innerHTML = '';
-      } else if (!r2.ok) {
-        oauthEl.innerHTML = `<p class="dash-muted">${_lang==='en'?'Guild list temporarily unavailable.':'Список гильдий временно недоступен.'}</p>`;
-      } else {
-        const j2 = await r2.json();
-        const list = (j2.guilds || []).filter(g => g.is_admin || g.is_owner);
-        if (!list.length) {
-          oauthEl.innerHTML = `<p class="dash-muted" style="margin:0">${_lang==='en'?'No guilds with admin rights (or the list is empty).':'Нет гильдий с правами администратора (или список пуст).'}</p>`;
-        } else {
-          const selectedId = String(j2.selected_guild_id || '');
-          list.sort((a, b) => {
-            const score = x => (String(x.id) === selectedId ? -10 : 0) + (x.has_bot ? 0 : 1);
-            const d = score(a) - score(b);
-            return d !== 0 ? d : String(a.name || '').localeCompare(String(b.name || ''), 'ru');
-          });
-          oauthEl.innerHTML = list.map(g => {
-            const gid = String(g.id);
-            const isSel = g.is_selected || gid === selectedId;
-            const botB = g.has_bot
-              ? `<span class="dash-badge dash-badge--ok">${_lang==='en'?'bot added':'бот добавлен'}</span>`
-              : `<span class="dash-badge dash-badge--warn">${_lang==='en'?'no bot':'нет бота'}</span>`;
-            const selB = isSel ? `<span class="dash-badge dash-badge--accent">${_lang==='en'?'in use':'используется'}</span>` : '';
-            const useBtn = !isSel
-              ? `<button type="button" class="dash-btn dash-btn--primary dash-btn--small rust-select-guild" data-gid="${escapeHtml(gid)}">${_lang==='en'?'Use':'Использовать'}</button>`
-              : '';
-            const inv = !g.has_bot
-              ? `<a href="${INVITE_BOT_URL}" target="_blank" rel="noreferrer" class="dash-btn dash-btn--ghost dash-btn--small">${_lang==='en'?'Invite bot':'Пригласить бота'}</a>`
-              : '';
-            return `<div class="rust-guild-card ${isSel ? 'is-selected' : ''}">
-              <div style="flex:1;min-width:0" class="rust-guild-card__name">
-                <strong>${escapeHtml(g.name || '—')}</strong>
-                <span class="mono">${escapeHtml(gid)}</span>
-              </div>
-              <div class="rust-guild-card__inactive-actions">${botB}${selB}${useBtn}${inv}</div>
-            </div>`;
-          }).join('');
-          oauthEl.querySelectorAll('.rust-select-guild').forEach(btn => {
-            btn.addEventListener('click', async () => {
-              const gid = btn.getAttribute('data-gid');
-              btn.disabled = true;
-              const old = btn.textContent;
-              btn.textContent = _lang==='en'?'Saving…':'Сохраняю…';
-              try {
-                const r = await fetch(`${API_BASE}/me/select_guild?session=${encodeURIComponent(session)}`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  credentials: 'include',
-                  body: JSON.stringify({ guild_id: gid })
-                });
-                const text = await r.text();
-                if (!r.ok) {
-                  alert((_lang==='en'?'Error: ':'Ошибка: ') + (text.slice(0, 240) || r.status));
-                  return;
-                }
-                await loadDashboard(session, { force: true });
-              } catch (err) {
-                alert(err && err.message ? err.message : String(err));
-              } finally {
-                btn.disabled = false;
-                btn.textContent = old;
-              }
-            });
-          });
-        }
-      }
-    } catch (e) {
-      console.error('[guilds]', e);
-      oauthEl.innerHTML = `<p class="dash-muted">${_lang==='en'?'Guild list temporarily unavailable.':'Список гильдий временно недоступен.'}</p>`;
     }
 
     if (retryBtn && !retryBtn._rustRetryBound) {
