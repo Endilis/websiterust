@@ -209,21 +209,31 @@
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .yn-hero-sub {
-      font-size: 1.15rem; color: var(--text2); max-width: 620px;
-      margin: 0 auto 36px; line-height: 1.7;
+    /* Hero notice — тот же стиль, что beta-notice на экране входа в панель */
+    .yn-hero-notice-wrap {
+      display: flex; justify-content: center;
+      width: 100%; margin: 0 auto 36px;
     }
-    .yn-hero-sub a { color: var(--accent); }
-    .yn-hero-sub a:hover { text-decoration: underline; }
-    .yn-hero-sub.yn-hero-sub--panel {
-      max-width: 900px;
-      text-align: left;
-      color: var(--text);
-      background: rgba(10, 11, 15, 0.82);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 18px 20px;
-      box-shadow: 0 20px 44px rgba(0, 0, 0, 0.35);
+    .yn-hero .beta-notice {
+      display: flex; flex-direction: column; gap: 14px;
+      width: 100%; max-width: 720px; margin: 0;
+      background: linear-gradient(135deg, rgba(88,101,242,.12) 0%, rgba(88,101,242,.04) 100%);
+      border: 1px solid rgba(88,101,242,.35);
+      border-radius: 14px; padding: 22px 28px; text-align: left;
+    }
+    .yn-hero .beta-notice__header {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .yn-hero .beta-notice__title {
+      font-size: 1.15rem; font-weight: 700; color: var(--text); margin: 0;
+    }
+    .yn-hero .beta-notice__body {
+      font-size: .9rem; color: var(--text2); line-height: 1.65; margin: 0;
+    }
+    .yn-hero .beta-notice__body code {
+      background: rgba(88,101,242,.18);
+      padding: 1px 7px; border-radius: 5px;
+      font-size: .83rem; color: #a5b4fc;
     }
     .yn-hero-btns {
       display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;
@@ -680,16 +690,23 @@
           <span>Новое</span> &nbsp;Версия 2.0 — Быстрее и умнее
         </a>
 
-        <h1><span class="yn-grad">RustInfoBot</span><br/>Панель управления Rust+</h1>
-
-        <p class="yn-hero-sub yn-hero-sub--panel">
-          RustInfoBot - полностью заменит вам RustPlusBot, Rustplusplus и Rust+ на телефоне.
-          RustInfo это более 20+ внутриигровых команд: <b>.pop</b>, <b>.time</b>, <b>.vendor</b>, <b>.deepsea</b> и другие.
-          RustInfo это удобное управление выключателями: <b>.sw turret off/on</b> через чат или панель.
-          RustInfo это работа 24/7 - работает пока вы спите.
-          RustInfo это удобная панель управления, с картой, настройками и управлением.
-          RustInfo это бесплатно.
-        </p>
+        <div class="yn-hero-notice-wrap">
+          <div class="beta-notice">
+            <div class="beta-notice__header">
+              <p class="beta-notice__title">RustInfoBot</p>
+            </div>
+            <p class="beta-notice__body">
+              RustInfoBot — полностью заменит вам RustPlusBot, Rustplusplus и Rust+ на телефоне.<br><br>
+              RustInfo это более 20+ внутриигровых команд:
+              <code>.pop</code>, <code>.time</code>, <code>.vendor</code>, <code>.deepsea</code> и другие.<br><br>
+              RustInfo это удобное управление выключателями:
+              <code>.sw turret off/on</code> через чат или панель.<br><br>
+              RustInfo это работа 24/7 — работает пока вы спите.<br><br>
+              RustInfo это удобная панель управления, с картой, настройками и управлением.<br><br>
+              RustInfo это бесплатно.
+            </p>
+          </div>
+        </div>
 
         <div class="yn-hero-btns">
           <!-- Кнопка входа через Discord временно скрыта по запросу -->
