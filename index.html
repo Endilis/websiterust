@@ -290,10 +290,17 @@
       border-color: rgba(88,101,242,.22);
     }
     .ri-hero-features__icon {
-      flex-shrink: 0; width: 32px; height: 32px; border-radius: 10px;
+      flex-shrink: 0; width: 40px; height: 40px; border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1rem;
-      background: rgba(88,101,242,.2); border: 1px solid rgba(88,101,242,.35);
+      padding: 4px;
+      background: rgba(13,17,23,.65); border: 1px solid rgba(88,101,242,.35);
+      box-shadow: 0 4px 14px rgba(0,0,0,.25);
+    }
+    .ri-hero-features__icon img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      image-rendering: -webkit-optimize-contrast;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,.35));
     }
     .ri-hero-features li.ri-hero-features__free {
       background: linear-gradient(135deg, rgba(52,211,153,.1), rgba(52,211,153,.03));
@@ -787,21 +794,29 @@
             </p>
             <ul class="ri-hero-features">
               <li>
-                <span class="ri-hero-features__icon" aria-hidden="true">⌨</span>
+                <span class="ri-hero-features__icon" aria-hidden="true">
+                  <img src="images/campfire.png" alt="" width="32" height="32" loading="lazy" decoding="async">
+                </span>
                 <span><span class="ri-hl-brand">RustInfo</span> — более 20+ внутриигровых команд:
                   <code>.pop</code> <code>.time</code> <code>.vendor</code> <code>.deepsea</code> и другие.</span>
               </li>
               <li>
-                <span class="ri-hero-features__icon" aria-hidden="true">⚡</span>
+                <span class="ri-hero-features__icon" aria-hidden="true">
+                  <img src="images/autoturret.png" alt="" width="32" height="32" loading="lazy" decoding="async">
+                </span>
                 <span><span class="ri-hl-brand">RustInfo</span> — удобное управление выключателями
                   <code>.sw turret off/on</code> через чат или панель.</span>
               </li>
               <li>
-                <span class="ri-hero-features__icon" aria-hidden="true">🌙</span>
+                <span class="ri-hero-features__icon" aria-hidden="true">
+                  <img src="images/digitalclock.png" alt="" width="32" height="32" loading="lazy" decoding="async">
+                </span>
                 <span><span class="ri-hl-brand">RustInfo</span> — работа 24/7, пока вы спите.</span>
               </li>
               <li>
-                <span class="ri-hero-features__icon" aria-hidden="true">🗺</span>
+                <span class="ri-hero-features__icon" aria-hidden="true">
+                  <img src="images/captainslog.png" alt="" width="32" height="32" loading="lazy" decoding="async">
+                </span>
                 <span><span class="ri-hl-brand">RustInfo</span> — панель с картой, настройками и управлением.</span>
               </li>
               <li class="ri-hero-features__free">
