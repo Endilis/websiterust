@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+  <meta http-equiv="Pragma" content="no-cache"/>
+  <meta http-equiv="Expires" content="0"/>
   <title>Dashboard — RustInfo Bot</title>
   <link rel="icon" href="https://rustinfo.online/favicon.ico"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -3746,20 +3749,20 @@
   /** Параллельные вызовы с тем же session (двойной init, расширения) → один fetch к /me */
   const _meLoadBySession = new Map();
   async function loadDashboard(session, opts) {
-    const force = !!(opts && opts.force);
+    const force = !(opts && opts.force === false);
     if (!force && _meLoadBySession.has(session)) {
       return _meLoadBySession.get(session);
     }
-    const url = `${API_BASE}/me?session=${encodeURIComponent(session)}${force ? '&_t=' + Date.now() : ''}`;
+    const url = `${API_BASE}/me?session=${encodeURIComponent(session)}&_t=${Date.now()}`;
     const promise = (async () => {
       try {
         const resp = await fetch(url, {
           credentials: 'include',
-          cache: force ? 'no-store' : 'default',
+          cache: 'no-store',
         });
         if (!resp.ok) throw new Error('unauthorized');
         const data = await resp.json();
-        showDashboard(data, session);
+        await showDashboard(data, session);
       } catch {
         // При force-обновлении не выкидываем юзера в логин из-за разовой сетевой ошибки —
         // только если стартовый /me провалился.
@@ -3769,9 +3772,22 @@
         }
       }
     })();
-    _meLoadBySession.set(session, promise);
-    promise.finally(() => _meLoadBySession.delete(session));
+    if (!force) _meLoadBySession.set(session, promise);
+    promise.finally(() => { if (!force) _meLoadBySession.delete(session); });
     return promise;
+  }
+
+  /** Обновить вкладки, которые сейчас открыты (команда, устройства, админ). */
+  async function refreshActivePanels(session) {
+    if (!session) return;
+    const activeId = document.querySelector('.dash-panel.active')?.id || '';
+    if (activeId === 'panel-team') {
+      fetchAndRenderTeam(session).catch(() => {});
+    } else if (activeId === 'panel-devices') {
+      loadDevices();
+    } else if (activeId === 'panel-admin' && String(_dashDiscordId || '') === ADMIN_DISCORD_ID) {
+      await loadAdminPanel(session, _dashDiscordId, { force: true });
+    }
   }
 
   /**
@@ -3804,6 +3820,13 @@
     const session = _dashSessionRef || localStorage.getItem('ri_session');
     if (!session) return;
     refreshUserData(null);
+  });
+
+  // Возврат из bfcache (назад/вперёд) — снова тянем свежие данные.
+  window.addEventListener('pageshow', (ev) => {
+    if (!ev.persisted) return;
+    const session = _dashSessionRef || localStorage.getItem('ri_session');
+    if (session) refreshUserData(null);
   });
 
   function avatarUrl(id, hash) {
@@ -4211,7 +4234,7 @@
       }
       if (msgEl) msgEl.textContent = _lang==='en'?'Saved. Refreshing…':'Сохранено. Обновляем…';
       if (ta) ta.value = '';
-      await loadDashboard(session);
+      await loadDashboard(session, { force: true });
     } catch (e) {
       if (msgEl) msgEl.textContent = (_lang==='en'?'Network: ':'Сеть: ') + ((e && e.message) || String(e));
     }
@@ -4677,7 +4700,11 @@
 
   function initDevicesPanel(session) {
     _devSession = session;
-    document.getElementById('btn-devices-refresh')?.addEventListener('click', loadDevices);
+    const refreshBtn = document.getElementById('btn-devices-refresh');
+    if (refreshBtn && !refreshBtn.dataset.bound) {
+      refreshBtn.dataset.bound = '1';
+      refreshBtn.addEventListener('click', loadDevices);
+    }
   }
 
   /* ── Admin: глобальный переключатель уведомлений ── */
@@ -6462,7 +6489,7 @@
     }
   }
 
-  function showDashboard(data, session) {
+  async function showDashboard(data, session) {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
 
@@ -6489,7 +6516,7 @@
     renderTokenStatus(data.token_status, session);
 
     renderNotifyPrefs(data.ingame_notify_prefs, session);
-    loadAdminPanel(session, data.discord_id);
+    loadAdminPanel(session, data.discord_id, { force: true });
 
     const regRow = document.getElementById('profile-registered-row');
     if (data.web_user && data.web_user.registered_at != null) {
@@ -6567,7 +6594,8 @@
       renderTeamPanel(_teamPanelLastServer);
     }
 
-    loadRustAccountPanels(session, { data: data });
+    await loadRustAccountPanels(session, { data: data });
+    await refreshActivePanels(session);
   }
 
   /* ================================================================
@@ -7359,7 +7387,7 @@
 
   const session = localStorage.getItem('ri_session');
   if (session) {
-    loadDashboard(session);
+    loadDashboard(session, { force: true });
   } else {
     showError(oauthError === 'oauth' ? (oauthMsg || '') : null);
   }
