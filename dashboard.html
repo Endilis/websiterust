@@ -2887,6 +2887,12 @@
       'login.auth_needed':'Необходима авторизация',
       'login.auth_text':  'Войдите через Discord чтобы открыть панель управления.',
       'login.auth_btn':   'Авторизироваться',
+      'login.oauth_error_title': 'Ошибка OAuth2',
+      'login.session_expired_title': 'Сессия истекла',
+      'login.session_expired_text':  'Войдите через Discord снова. Обычно это происходит после перезапуска бота или долгого перерыва.',
+      'login.banned_title': 'Доступ ограничен',
+      'login.banned_text':  'Аккаунт заблокирован администратором.',
+      'login.network_error_text': 'Не удалось загрузить панель. Проверьте интернет и попробуйте снова.',
       /* account */
       'acc.badge':            'Авторизован',
       'acc.registered_since': 'В панели с',
@@ -3170,6 +3176,12 @@
       'login.auth_needed':'Authorization Required',
       'login.auth_text':  'Log in via Discord to open the control panel.',
       'login.auth_btn':   'Log In',
+      'login.oauth_error_title': 'OAuth2 Error',
+      'login.session_expired_title': 'Session Expired',
+      'login.session_expired_text':  'Please sign in with Discord again. This usually happens after a bot restart or a long break.',
+      'login.banned_title': 'Access Restricted',
+      'login.banned_text':  'Your account has been blocked by an administrator.',
+      'login.network_error_text': 'Could not load the panel. Check your connection and try again.',
       /* account */
       'acc.badge':            'Authorized',
       'acc.registered_since': 'In panel since',
@@ -3196,7 +3208,6 @@
       'acc.ext_bind_hint':    'Extension is installed. Sign in via Steam on Facepunch — the token will be saved automatically.',
       'acc.ext_update_hint':  'Steam is already linked. Use the Refresh button above to open Facepunch and update the Rust+ token.',
       'acc.via_facepunch':    'Via Facepunch',
-      'acc.instructions':     'Instructions →',
       'acc.settings':         'Settings',
       'acc.settings_hint':    'Settings apply to your Discord server. Changes sync with the bot in real time.',
       'acc.ingame_lang':      'In-game notification language',
@@ -3780,6 +3791,41 @@
 
   /** Параллельные вызовы с тем же session (двойной init, расширения) → один fetch к /me */
   const _meLoadBySession = new Map();
+
+  function clearPanelSession() {
+    localStorage.removeItem('ri_session');
+    _dashSessionRef = null;
+    _dashDiscordId = null;
+  }
+
+  function showLoginScreen(opts) {
+    const o = opts || {};
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('error-block').style.display = 'block';
+    const navUser = document.getElementById('nav-user');
+    if (navUser) navUser.style.display = 'none';
+    document.getElementById('btn-login-big').href = OAUTH_URL;
+    const titleEl = document.getElementById('error-title');
+    const textEl = document.getElementById('error-text');
+    if (o.oauthMsg) {
+      titleEl.textContent = t('login.oauth_error_title');
+      textEl.textContent = o.oauthMsg;
+    } else if (o.kind === 'session_expired') {
+      titleEl.textContent = t('login.session_expired_title');
+      textEl.textContent = t('login.session_expired_text');
+    } else if (o.kind === 'banned') {
+      titleEl.textContent = t('login.banned_title');
+      textEl.textContent = o.reason || t('login.banned_text');
+    } else if (o.kind === 'network') {
+      titleEl.textContent = t('login.auth_needed');
+      textEl.textContent = t('login.network_error_text');
+    } else {
+      titleEl.textContent = t('login.auth_needed');
+      textEl.textContent = t('login.auth_text');
+    }
+  }
+
   async function loadDashboard(session, opts) {
     const force = !(opts && opts.force === false);
     if (!force && _meLoadBySession.has(session)) {
@@ -3792,16 +3838,29 @@
           credentials: 'include',
           cache: 'no-store',
         });
-        if (!resp.ok) throw new Error('unauthorized');
+        if (resp.status === 401) {
+          clearPanelSession();
+          showLoginScreen({ kind: 'session_expired' });
+          return;
+        }
+        if (resp.status === 403) {
+          let body = {};
+          try { body = await resp.json(); } catch (_) {}
+          if (body.error === 'banned') {
+            clearPanelSession();
+            showLoginScreen({ kind: 'banned', reason: body.reason });
+            return;
+          }
+        }
+        if (!resp.ok) throw new Error('me_failed');
         const data = await resp.json();
         await showDashboard(data, session);
       } catch {
-        // При force-обновлении не выкидываем юзера в логин из-за разовой сетевой ошибки —
-        // только если стартовый /me провалился.
-        if (!force) {
-          localStorage.removeItem('ri_session');
-          showError();
-        }
+        const dashVisible = document.getElementById('dashboard').style.display === 'block';
+        // Фоновый рефреш: не выбрасываем из уже открытой панели из-за сети.
+        if (force && dashVisible) return;
+        clearPanelSession();
+        showLoginScreen({ kind: 'network' });
       }
     })();
     if (!force) _meLoadBySession.set(session, promise);
@@ -6871,16 +6930,7 @@
   }
 
   function showError(oauthMsg) {
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('error-block').style.display = 'block';
-    document.getElementById('btn-login-big').href = OAUTH_URL;
-    if (oauthMsg) {
-      document.getElementById('error-title').textContent = 'Ошибка OAuth2';
-      document.getElementById('error-text').textContent = oauthMsg;
-    } else {
-      document.getElementById('error-title').textContent = 'Необходима авторизация';
-      document.getElementById('error-text').textContent = 'Войдите через Discord чтобы открыть панель управления.';
-    }
+    showLoginScreen(oauthMsg ? { oauthMsg } : {});
   }
 
   /* ================================================================
