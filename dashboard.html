@@ -2593,6 +2593,31 @@
                   </div>
                 </section>
 
+                <section class="admin-panel-section" style="margin-bottom:16px">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text" data-i18n="admin.cpu.title">⚙️ Диагностика CPU</span>
+                  </h3>
+                  <p style="font-size:.82rem;color:var(--muted);margin:4px 0 10px" data-i18n="admin.cpu.hint">
+                    Отключайте по одному, чтобы понять источник нагрузки. По умолчанию всё включено.
+                  </p>
+                  <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+                    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+                      <label class="team-panel__toggle" style="margin:0">
+                        <input type="checkbox" id="admin-auto-reconnect-cb" checked />
+                        <span data-i18n="admin.cpu.reconnect_lbl">Авто-переподключение серверов</span>
+                      </label>
+                      <span id="admin-auto-reconnect-status" style="font-size:.82rem;color:var(--muted)"></span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+                      <label class="team-panel__toggle" style="margin:0">
+                        <input type="checkbox" id="admin-notification-polling-cb" checked />
+                        <span data-i18n="admin.cpu.polling_lbl">Опрос событий и уведомлений</span>
+                      </label>
+                      <span id="admin-notification-polling-status" style="font-size:.82rem;color:var(--muted)"></span>
+                    </div>
+                  </div>
+                </section>
+
                 <section class="admin-panel-section">
                   <h3 class="admin-panel-section__title">
                     <span class="admin-panel-section__title-text" data-i18n="admin.sec.host">Хост · Pi / сервер бота</span>
@@ -2939,6 +2964,10 @@
       'admin.notif.disable_all_btn': 'Выключить для всех (БД)',
       'admin.notif.enable_all_btn':  'Включить для всех (БД)',
       'admin.notif.disable_all_confirm': 'Выключить уведомления в игре для ВСЕХ пользователей в БД?',
+      'admin.cpu.title':           '⚙️ Диагностика CPU',
+      'admin.cpu.hint':            'Отключайте по одному, чтобы понять источник нагрузки. По умолчанию всё включено.',
+      'admin.cpu.reconnect_lbl':   'Авто-переподключение серверов',
+      'admin.cpu.polling_lbl':     'Опрос событий и уведомлений',
       'events.title':         '📋 История событий',
       'events.filter_all':    'Все события',
       'events.empty':         'Событий пока нет.',
@@ -3227,6 +3256,10 @@
       'admin.notif.disable_all_btn': 'Disable for all (DB)',
       'admin.notif.enable_all_btn':  'Enable for all (DB)',
       'admin.notif.disable_all_confirm': 'Disable in-game notifications for ALL users in DB?',
+      'admin.cpu.title':           '⚙️ CPU diagnostics',
+      'admin.cpu.hint':            'Disable one at a time to find the load source. Everything is ON by default.',
+      'admin.cpu.reconnect_lbl':   'Auto-reconnect dead servers',
+      'admin.cpu.polling_lbl':     'Event polling & notifications',
       'events.title':         '📋 Event History',
       'events.filter_all':    'All events',
       'events.empty':         'No events yet.',
@@ -4836,6 +4869,66 @@
     });
   }
 
+  function applyAdminRuntimeFlagsUi(rf) {
+    const flags = rf || {};
+    const gcb = document.getElementById('admin-global-notif-cb');
+    if (gcb && flags.global_notifications_enabled !== undefined) {
+      gcb.checked = !!flags.global_notifications_enabled;
+    }
+    const arc = document.getElementById('admin-auto-reconnect-cb');
+    if (arc) arc.checked = flags.auto_reconnect_enabled !== false;
+    const npc = document.getElementById('admin-notification-polling-cb');
+    if (npc) npc.checked = flags.notification_polling_enabled !== false;
+  }
+
+  function setupAdminRuntimeFlagsOnce(session) {
+    if (window._adminRuntimeFlagsBound) return;
+    const reconnectCb = document.getElementById('admin-auto-reconnect-cb');
+    const pollingCb = document.getElementById('admin-notification-polling-cb');
+    if (!reconnectCb && !pollingCb) return;
+    window._adminRuntimeFlagsBound = true;
+
+    const flash = (el, on) => {
+      if (!el) return;
+      el.textContent = on
+        ? (_lang === 'en' ? '✅ ON' : '✅ ВКЛ')
+        : (_lang === 'en' ? '⛔ OFF' : '⛔ ВЫКЛ');
+      setTimeout(() => { if (el) el.textContent = ''; }, 3000);
+    };
+
+    const patchFlags = async (patch) => {
+      try {
+        const r = await fetch(`${API_BASE}/admin/runtime/flags?session=${encodeURIComponent(session)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(patch),
+        });
+        const d = await r.json();
+        if (d.ok) {
+          applyAdminRuntimeFlagsUi(d);
+          if ('auto_reconnect_enabled' in patch) {
+            flash(document.getElementById('admin-auto-reconnect-status'), d.auto_reconnect_enabled);
+          }
+          if ('notification_polling_enabled' in patch) {
+            flash(document.getElementById('admin-notification-polling-status'), d.notification_polling_enabled);
+          }
+        }
+      } catch (_) {}
+    };
+
+    if (reconnectCb) {
+      reconnectCb.addEventListener('change', () => {
+        patchFlags({ auto_reconnect_enabled: reconnectCb.checked });
+      });
+    }
+    if (pollingCb) {
+      pollingCb.addEventListener('change', () => {
+        patchFlags({ notification_polling_enabled: pollingCb.checked });
+      });
+    }
+  }
+
   /* ── История событий ── */
   let _eventHistoryInitDone = false;
   // ─── Конфигурация иконок событий ─────────────────────────────────────
@@ -5309,7 +5402,9 @@
         setupOldDbWipeAllOnce();
         setupOldDbLeaveAllOnce();
         setupSetUserGuildOnce();
+        applyAdminRuntimeFlagsUi(data.runtime_flags);
         setupAdminGlobalNotifOnce(session);
+        setupAdminRuntimeFlagsOnce(session);
       }
     } catch (e) {
       if (statusEl) statusEl.textContent = (_lang==='en'?'Load error: ':'Ошибка загрузки: ') + ((e && e.message) || String(e));
