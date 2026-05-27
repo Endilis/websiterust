@@ -2615,7 +2615,20 @@
                       </label>
                       <span id="admin-notification-polling-status" style="font-size:.82rem;color:var(--muted)"></span>
                     </div>
-                  </div>
+                </section>
+
+                <section class="admin-panel-section" style="margin-bottom:16px">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text" data-i18n="admin.cache.title">🗑️ Кэши бота</span>
+                  </h3>
+                  <p style="font-size:.82rem;color:var(--muted);margin:4px 0 10px" data-i18n="admin.cache.hint">
+                    Очищает team_cache, события, маркеры, AFK. После очистки team_cache перезагружается с активных сокетов.
+                  </p>
+                  <pre id="admin-cache-stats" class="admin-panel-pre" style="margin:8px 0;font-size:.78rem">—</pre>
+                  <button type="button" id="btn-admin-cache-clear"
+                    style="background:rgba(255,180,40,.12);color:#ffb428;border:1px solid rgba(255,180,40,.35);border-radius:8px;padding:6px 14px;font-size:.82rem;cursor:pointer;font-weight:600"
+                    data-i18n="admin.cache.clear_btn">Очистить кэши</button>
+                  <span id="admin-cache-clear-status" style="font-size:.82rem;color:var(--muted);margin-left:12px"></span>
                 </section>
 
                 <section class="admin-panel-section">
@@ -2968,6 +2981,11 @@
       'admin.cpu.hint':            'Отключайте по одному, чтобы понять источник нагрузки. По умолчанию всё включено.',
       'admin.cpu.reconnect_lbl':   'Авто-переподключение серверов',
       'admin.cpu.polling_lbl':     'Опрос событий и уведомлений',
+      'admin.cache.title':         '🗑️ Кэши бота',
+      'admin.cache.hint':          'Очищает team_cache, события, маркеры, AFK. После очистки team_cache перезагружается с активных сокетов.',
+      'admin.cache.clear_btn':     'Очистить кэши',
+      'admin.cache.clear_confirm': 'Очистить все in-memory кэши бота и перезагрузить team_cache?',
+      'admin.cache.cleared_ok':    'Кэши очищены',
       'events.title':         '📋 История событий',
       'events.filter_all':    'Все события',
       'events.empty':         'Событий пока нет.',
@@ -3260,6 +3278,11 @@
       'admin.cpu.hint':            'Disable one at a time to find the load source. Everything is ON by default.',
       'admin.cpu.reconnect_lbl':   'Auto-reconnect dead servers',
       'admin.cpu.polling_lbl':     'Event polling & notifications',
+      'admin.cache.title':         '🗑️ Bot caches',
+      'admin.cache.hint':          'Clears team_cache, events, markers, AFK. team_cache is reloaded from active sockets after clear.',
+      'admin.cache.clear_btn':     'Clear caches',
+      'admin.cache.clear_confirm': 'Clear all in-memory bot caches and reload team_cache?',
+      'admin.cache.cleared_ok':    'Caches cleared',
       'events.title':         '📋 Event History',
       'events.filter_all':    'All events',
       'events.empty':         'No events yet.',
@@ -4929,6 +4952,59 @@
     }
   }
 
+  function renderAdminCacheStats(stats) {
+    const el = document.getElementById('admin-cache-stats');
+    if (!el) return;
+    const s = stats || {};
+    const lines = [
+      `team_cache: ${s.team_cache ?? '—'}`,
+      `active_sockets: ${s.active_sockets ?? '—'}`,
+      `event_state_cache: ${s.event_state_cache ?? '—'}`,
+      `monument_cache: ${s.monument_cache ?? '—'}`,
+      `current_events_cache: ${s.current_events_cache ?? '—'}`,
+      `upcoming_notified: ${s.upcoming_notified ?? '—'}`,
+      `afk_tracker: ${s.afk_tracker ?? '—'}`,
+    ];
+    el.textContent = lines.join('\n');
+  }
+
+  function setupAdminClearCacheOnce(session) {
+    if (window._adminClearCacheBound) return;
+    const btn = document.getElementById('btn-admin-cache-clear');
+    const sta = document.getElementById('admin-cache-clear-status');
+    if (!btn) return;
+    window._adminClearCacheBound = true;
+
+    btn.addEventListener('click', async () => {
+      if (!confirm(t('admin.cache.clear_confirm'))) return;
+      btn.disabled = true;
+      if (sta) sta.textContent = _lang === 'en' ? 'Clearing…' : 'Очистка…';
+      try {
+        const r = await fetch(`${API_BASE}/admin/cache/clear?session=${encodeURIComponent(session)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ refresh_team: true }),
+        });
+        const d = await r.json();
+        if (d.ok) {
+          renderAdminCacheStats(d.cache_stats);
+          const c = d.cleared || {};
+          if (sta) {
+            sta.textContent = `✅ ${t('admin.cache.cleared_ok')} (team: ${c.team_cache_refreshed ?? 0})`;
+            setTimeout(() => { if (sta) sta.textContent = ''; }, 4000);
+          }
+        } else if (sta) {
+          sta.textContent = _lang === 'en' ? 'Error' : 'Ошибка';
+        }
+      } catch (_) {
+        if (sta) sta.textContent = _lang === 'en' ? 'Error' : 'Ошибка';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+
   /* ── История событий ── */
   let _eventHistoryInitDone = false;
   // ─── Конфигурация иконок событий ─────────────────────────────────────
@@ -5403,8 +5479,10 @@
         setupOldDbLeaveAllOnce();
         setupSetUserGuildOnce();
         applyAdminRuntimeFlagsUi(data.runtime_flags);
+        renderAdminCacheStats(data.cache_stats);
         setupAdminGlobalNotifOnce(session);
         setupAdminRuntimeFlagsOnce(session);
+        setupAdminClearCacheOnce(session);
       }
     } catch (e) {
       if (statusEl) statusEl.textContent = (_lang==='en'?'Load error: ':'Ошибка загрузки: ') + ((e && e.message) || String(e));
