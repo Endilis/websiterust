@@ -4045,7 +4045,7 @@
       return;
     }
     tbody.innerHTML = codes.map(c => {
-      const canRevoke = c.status !== 'revoked' && c.status !== 'exhausted';
+      const canRevoke = !['revoked', 'exhausted', 'expired'].includes(c.status);
       return `<tr>
         <td>#${c.id}</td>
         <td>…${c.code_hint || ''}</td>
