@@ -2417,6 +2417,10 @@
                 <p class="account-name" id="profile-username"></p>
                 <p class="account-handle" id="profile-discord-id" style="font-family:ui-monospace,Consolas,monospace;font-size:0.8rem;color:var(--text2);margin:0"></p>
                 <p id="profile-registered-row" style="display:none;font-size:0.75rem;color:var(--text2);margin:2px 0 0"><span data-i18n="acc.registered_since">В панели с</span> <span id="profile-registered">—</span></p>
+                <p id="profile-sponsor-row" style="display:none;margin:6px 0 0;font-size:.85rem">
+                  <span class="dash-badge" id="profile-sponsor-badge" style="background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.35)">⭐ Спонсор</span>
+                  <span class="dash-muted" id="profile-sponsor-expires" style="margin-left:8px;font-size:.8rem"></span>
+                </p>
               </div>
               <span class="dash-badge dash-badge--ok" data-i18n="acc.badge">Авторизован</span>
             </header>
@@ -2521,6 +2525,9 @@
                           style="padding:5px 12px;font-size:.8rem" data-i18n="acc.btn_cancel">Отмена</button>
                 </div>
                 <p class="dash-muted" id="prefix-save-msg" style="flex:1 0 100%;font-size:.8rem;margin:4px 0 0;display:none"></p>
+                <p class="dash-muted" id="prefix-sponsor-hint" style="flex:1 0 100%;font-size:.8rem;margin:4px 0 0;display:none;color:var(--text2)">
+                  Изменить имя бота могут только спонсоры. Статус «Спонсор» — во вкладке «🪙 Коины / VIP».
+                </p>
               </div>
 
               <!-- Язык игровых сообщений -->
@@ -5045,6 +5052,39 @@
 
   /* ─── Настройки: Имя бота (игровой префикс) ─── */
   let _prefixInitDone = false;
+  let _canEditBotPrefix = false;
+
+  function applyPrefixEditAccess(canEdit) {
+    _canEditBotPrefix = !!canEdit;
+    const editBtn = document.getElementById('btn-prefix-edit');
+    const hintEl  = document.getElementById('prefix-sponsor-hint');
+    const wrapEl  = document.getElementById('prefix-input-wrap');
+    if (editBtn) editBtn.style.display = _canEditBotPrefix ? '' : 'none';
+    if (hintEl) hintEl.style.display = _canEditBotPrefix ? 'none' : 'block';
+    if (!_canEditBotPrefix && wrapEl) wrapEl.classList.remove('open');
+  }
+
+  function updateSponsorAccountUI(data) {
+    const row = document.getElementById('profile-sponsor-row');
+    const badge = document.getElementById('profile-sponsor-badge');
+    const expEl = document.getElementById('profile-sponsor-expires');
+    if (!row) return;
+    const sponsor = data?.sponsor;
+    const active = sponsor && Number(sponsor.expires_at) * 1000 > Date.now();
+    if (active) {
+      row.style.display = 'block';
+      if (badge) badge.textContent = '⭐ Спонсор';
+      if (expEl) {
+        const dt = new Date(Number(sponsor.expires_at) * 1000);
+        expEl.textContent = `до ${dt.toLocaleString(_lang === 'en' ? 'en-US' : 'ru-RU', { dateStyle: 'long', timeStyle: 'short' })}`;
+      }
+    } else {
+      row.style.display = 'none';
+      if (expEl) expEl.textContent = '';
+    }
+    applyPrefixEditAccess(!!data?.can_edit_bot_prefix && active);
+  }
+
   function initPrefixSettings(session) {
     // Загружаем текущий префикс с сервера
     const displayEl = document.getElementById('bot-prefix-display');
@@ -5060,6 +5100,11 @@
     if (!_prefixInitDone) {
       _prefixInitDone = true;
       editBtn.addEventListener('click', () => {
+        if (!_canEditBotPrefix) {
+          const hintEl = document.getElementById('prefix-sponsor-hint');
+          if (hintEl) hintEl.style.display = 'block';
+          return;
+        }
         inputEl.value = displayEl.textContent !== '…' ? displayEl.textContent : '';
         wrapEl.classList.add('open');
         inputEl.focus();
@@ -5081,6 +5126,10 @@
       .then(d => {
         if (d?.ok && d.prefix) displayEl.textContent = d.prefix;
         else displayEl.textContent = '[rustinfo.online]';
+        updateSponsorAccountUI({
+          sponsor: d?.sponsor || null,
+          can_edit_bot_prefix: !!d?.can_edit_bot_prefix,
+        });
       })
       .catch(() => { displayEl.textContent = '—'; });
   }
@@ -5654,6 +5703,22 @@
         }
         renderCoinsPanel(d);
         await loadCoinsPanel();
+        if (tier === 'sponsor' && d.purchase) {
+          updateSponsorAccountUI({
+            sponsor: {
+              tier_slug: 'sponsor',
+              expires_at: d.purchase.expires_at,
+            },
+            can_edit_bot_prefix: true,
+          });
+          const displayEl = document.getElementById('bot-prefix-display');
+          if (displayEl) {
+            fetch(`${API_BASE}/me/prefix?session=${encodeURIComponent(_coinsSession)}`, { credentials: 'include' })
+              .then(r => r.ok ? r.json() : null)
+              .then(p => { if (p?.ok && p.prefix) displayEl.textContent = p.prefix; })
+              .catch(() => {});
+          }
+        }
       } else {
         if (msg) {
           msg.textContent = d.message || d.error || 'Не удалось купить VIP';
@@ -7696,6 +7761,7 @@
     _dashSessionRef = session;
     _dashDiscordId = data.discord_id;
     updateCoinsNavVisibility(data.discord_id);
+    updateSponsorAccountUI(data);
     setupFcmPasteOnce();
     initPrefixSettings(session);
     initIngameLangSettings(session);
