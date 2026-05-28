@@ -577,8 +577,8 @@
             <div class="yn-stat-label">Players online</div>
           </div>
           <div class="yn-stat">
-            <span class="yn-stat-num"><span id="playersOffline" data-target="0">—</span></span>
-            <div class="yn-stat-label">Players offline</div>
+            <span class="yn-stat-num"><span id="playersTotal" data-target="0">—</span></span>
+            <div class="yn-stat-label">Total players</div>
           </div>
           <div class="yn-stat">
             <span class="yn-stat-num">3</span>
@@ -862,10 +862,10 @@
           const data = await res.json();
           animateCounter(document.getElementById('registeredAccounts'), data.registered_accounts ?? 0);
           animateCounter(document.getElementById('playersOnline'), data.players_online ?? 0);
-          animateCounter(document.getElementById('playersOffline'), data.players_offline ?? 0);
+          animateCounter(document.getElementById('playersTotal'), data.players_total ?? 0);
         }
       } catch (e) {
-        ['registeredAccounts', 'playersOnline', 'playersOffline'].forEach(id => {
+        ['registeredAccounts', 'playersOnline', 'playersTotal'].forEach(id => {
           const el = document.getElementById(id);
           if (el) el.textContent = '?';
         });
