@@ -1394,6 +1394,87 @@
       color: #fca5a5; font-size: .85rem;
     }
 
+    .admin-host-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+      max-width: 960px;
+    }
+    .admin-host-control-card {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.025);
+      border: 1px solid var(--border);
+    }
+    .admin-host-control-card__title {
+      margin: 0;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text2);
+    }
+    .admin-host-control-card__body {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: .82rem;
+    }
+    .admin-host-control-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .admin-host-control-row .team-panel__toggle { margin: 0; font-size: .82rem; }
+    .admin-host-control-status {
+      font-size: .78rem;
+      color: var(--muted);
+      min-height: 1em;
+    }
+    .admin-host-btn {
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: .78rem;
+      cursor: pointer;
+      font-weight: 600;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .admin-host-btn--warn {
+      background: rgba(255,180,40,.12);
+      color: #ffb428;
+      border-color: rgba(255,180,40,.35);
+    }
+    .admin-host-btn--danger {
+      background: rgba(255,40,40,.12);
+      color: #ff4444;
+      border-color: rgba(255,40,40,.35);
+    }
+    .admin-host-btn--ok {
+      background: rgba(52,211,153,.12);
+      color: #34d399;
+      border-color: rgba(52,211,153,.3);
+    }
+    .admin-host-btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .admin-host-cache-pre {
+      margin: 0;
+      padding: 8px 10px;
+      font-size: .72rem;
+      line-height: 1.45;
+      background: rgba(0,0,0,.2);
+      border-radius: 6px;
+      max-height: 120px;
+      overflow: auto;
+    }
+
     /* ================================================================
        ADMIN PANEL · unified section design (no box-in-box).
        Внешняя рамка — только у .card админ-панели. Внутри: секции с
@@ -1608,6 +1689,7 @@
 
     /* Первая секция — overview — статы идут сразу, без заголовка */
     .admin-panel-section--overview .admin-stat-grid { margin-top: 0; }
+    .admin-panel-section--host-metrics .admin-stat-grid { margin-top: 0; }
 
     /* Таблица команд — без внешней рамки, только горизонтальные разделители */
     .admin-panel-table-wrap {
@@ -2573,70 +2655,65 @@
 
               <!-- ── TAB: Хост ── -->
               <div class="admin-tab-panel" data-admin-tab-panel="host">
-                <!-- Глобальное управление уведомлениями -->
-                <section class="admin-panel-section" style="margin-bottom:16px">
+                <section class="admin-panel-section admin-panel-section--host-metrics">
                   <h3 class="admin-panel-section__title">
-                    <span class="admin-panel-section__title-text" data-i18n="admin.notif.title">🔔 Уведомления в игре</span>
-                  </h3>
-                  <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:8px">
-                    <label class="team-panel__toggle" style="margin:0">
-                      <input type="checkbox" id="admin-global-notif-cb" checked />
-                      <span data-i18n="admin.notif.global_lbl">Глобально включены</span>
-                    </label>
-                    <span id="admin-global-notif-status" style="font-size:.82rem;color:var(--muted)"></span>
-                    <button type="button" id="btn-admin-notif-disable-all"
-                      style="background:rgba(255,40,40,.15);color:#ff4444;border:1px solid rgba(255,40,40,.35);border-radius:8px;padding:6px 14px;font-size:.82rem;cursor:pointer;font-weight:600"
-                      data-i18n="admin.notif.disable_all_btn">Выключить для всех (БД)</button>
-                    <button type="button" id="btn-admin-notif-enable-all"
-                      style="background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.3);border-radius:8px;padding:6px 14px;font-size:.82rem;cursor:pointer;font-weight:600"
-                      data-i18n="admin.notif.enable_all_btn">Включить для всех (БД)</button>
-                  </div>
-                </section>
-
-                <section class="admin-panel-section" style="margin-bottom:16px">
-                  <h3 class="admin-panel-section__title">
-                    <span class="admin-panel-section__title-text" data-i18n="admin.cpu.title">⚙️ Диагностика CPU</span>
-                  </h3>
-                  <p style="font-size:.82rem;color:var(--muted);margin:4px 0 10px" data-i18n="admin.cpu.hint">
-                    Отключайте по одному, чтобы понять источник нагрузки. По умолчанию всё включено.
-                  </p>
-                  <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
-                    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-                      <label class="team-panel__toggle" style="margin:0">
-                        <input type="checkbox" id="admin-auto-reconnect-cb" checked />
-                        <span data-i18n="admin.cpu.reconnect_lbl">Авто-переподключение серверов</span>
-                      </label>
-                      <span id="admin-auto-reconnect-status" style="font-size:.82rem;color:var(--muted)"></span>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-                      <label class="team-panel__toggle" style="margin:0">
-                        <input type="checkbox" id="admin-notification-polling-cb" checked />
-                        <span data-i18n="admin.cpu.polling_lbl">Опрос событий и уведомлений</span>
-                      </label>
-                      <span id="admin-notification-polling-status" style="font-size:.82rem;color:var(--muted)"></span>
-                    </div>
-                </section>
-
-                <section class="admin-panel-section" style="margin-bottom:16px">
-                  <h3 class="admin-panel-section__title">
-                    <span class="admin-panel-section__title-text" data-i18n="admin.cache.title">🗑️ Кэши бота</span>
-                  </h3>
-                  <p style="font-size:.82rem;color:var(--muted);margin:4px 0 10px" data-i18n="admin.cache.hint">
-                    Очищает team_cache, события, маркеры, AFK. После очистки team_cache перезагружается с активных сокетов.
-                  </p>
-                  <pre id="admin-cache-stats" class="admin-panel-pre" style="margin:8px 0;font-size:.78rem">—</pre>
-                  <button type="button" id="btn-admin-cache-clear"
-                    style="background:rgba(255,180,40,.12);color:#ffb428;border:1px solid rgba(255,180,40,.35);border-radius:8px;padding:6px 14px;font-size:.82rem;cursor:pointer;font-weight:600"
-                    data-i18n="admin.cache.clear_btn">Очистить кэши</button>
-                  <span id="admin-cache-clear-status" style="font-size:.82rem;color:var(--muted);margin-left:12px"></span>
-                </section>
-
-                <section class="admin-panel-section">
-                  <h3 class="admin-panel-section__title">
-                    <span class="admin-panel-section__title-text" data-i18n="admin.sec.host">Хост · Pi / сервер бота</span>
+                    <span class="admin-panel-section__title-text" data-i18n="admin.sec.host">Хост</span>
                   </h3>
                   <div id="admin-host-metrics">—</div>
                 </section>
+
+                <div class="admin-host-controls">
+                  <section class="admin-host-control-card">
+                    <h4 class="admin-host-control-card__title" data-i18n="admin.notif.title">Уведомления</h4>
+                    <div class="admin-host-control-card__body">
+                      <div class="admin-host-control-row">
+                        <label class="team-panel__toggle">
+                          <input type="checkbox" id="admin-global-notif-cb" checked />
+                          <span data-i18n="admin.notif.global_lbl">Глобально включены</span>
+                        </label>
+                      </div>
+                      <span id="admin-global-notif-status" class="admin-host-control-status"></span>
+                      <div class="admin-host-btn-row">
+                        <button type="button" id="btn-admin-notif-disable-all" class="admin-host-btn admin-host-btn--danger"
+                          data-i18n="admin.notif.disable_all_btn">Выключить для всех (БД)</button>
+                        <button type="button" id="btn-admin-notif-enable-all" class="admin-host-btn admin-host-btn--ok"
+                          data-i18n="admin.notif.enable_all_btn">Включить для всех (БД)</button>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section class="admin-host-control-card">
+                    <h4 class="admin-host-control-card__title" data-i18n="admin.cpu.title">Диагностика</h4>
+                    <div class="admin-host-control-card__body">
+                      <div class="admin-host-control-row">
+                        <label class="team-panel__toggle">
+                          <input type="checkbox" id="admin-auto-reconnect-cb" checked />
+                          <span data-i18n="admin.cpu.reconnect_lbl">Авто-переподключение</span>
+                        </label>
+                      </div>
+                      <span id="admin-auto-reconnect-status" class="admin-host-control-status"></span>
+                      <div class="admin-host-control-row">
+                        <label class="team-panel__toggle">
+                          <input type="checkbox" id="admin-notification-polling-cb" checked />
+                          <span data-i18n="admin.cpu.polling_lbl">Опрос событий</span>
+                        </label>
+                      </div>
+                      <span id="admin-notification-polling-status" class="admin-host-control-status"></span>
+                    </div>
+                  </section>
+
+                  <section class="admin-host-control-card">
+                    <h4 class="admin-host-control-card__title" data-i18n="admin.cache.title">Кеш</h4>
+                    <div class="admin-host-control-card__body">
+                      <pre id="admin-cache-stats" class="admin-host-cache-pre">—</pre>
+                      <div class="admin-host-control-row">
+                        <button type="button" id="btn-admin-cache-clear" class="admin-host-btn admin-host-btn--warn"
+                          data-i18n="admin.cache.clear_btn">Очистить</button>
+                        <span id="admin-cache-clear-status" class="admin-host-control-status"></span>
+                      </div>
+                    </div>
+                  </section>
+                </div>
               </div>
 
               <!-- ── TAB: Команды ── -->
@@ -2972,18 +3049,16 @@
       'acc.evt_crate':         'Ящик',
       'acc.evt_deepsea':       'Глубокое море',
       'acc.evt_vendor':        'Странствующий торговец',
-      'admin.notif.title':           '🔔 Уведомления в игре',
+      'admin.notif.title':           'Уведомления',
       'admin.notif.global_lbl':      'Глобально включены',
       'admin.notif.disable_all_btn': 'Выключить для всех (БД)',
       'admin.notif.enable_all_btn':  'Включить для всех (БД)',
       'admin.notif.disable_all_confirm': 'Выключить уведомления в игре для ВСЕХ пользователей в БД?',
-      'admin.cpu.title':           '⚙️ Диагностика CPU',
-      'admin.cpu.hint':            'Отключайте по одному, чтобы понять источник нагрузки. По умолчанию всё включено.',
-      'admin.cpu.reconnect_lbl':   'Авто-переподключение серверов',
-      'admin.cpu.polling_lbl':     'Опрос событий и уведомлений',
-      'admin.cache.title':         '🗑️ Кэши бота',
-      'admin.cache.hint':          'Очищает team_cache, события, маркеры, AFK. После очистки team_cache перезагружается с активных сокетов.',
-      'admin.cache.clear_btn':     'Очистить кэши',
+      'admin.cpu.title':           'Диагностика',
+      'admin.cpu.reconnect_lbl':   'Авто-переподключение',
+      'admin.cpu.polling_lbl':     'Опрос событий',
+      'admin.cache.title':         'Кеш',
+      'admin.cache.clear_btn':     'Очистить',
       'admin.cache.clear_confirm': 'Очистить все in-memory кэши бота и перезагрузить team_cache?',
       'admin.cache.cleared_ok':    'Кэши очищены',
       'events.title':         '📋 История событий',
@@ -3102,7 +3177,7 @@
       'admin.set_guild.err_fields': 'Заполните Discord ID и Guild ID',
       'admin.sec.overview_guilds': 'Сводка · Rust+ гильдии',
       'admin.sec.db_counts':       'Таблицы БД · счётчики строк',
-      'admin.sec.host':            'Хост · Pi / сервер бота',
+      'admin.sec.host':            'Хост',
       'admin.sec.game_commands':   'Команды в игре · Rust+',
       'admin.sec.panel_logins':    'Входы в панель',
       'admin.logins_hint':         'Уведомление в Discord webhook отправляется при каждом OAuth-входе.',
@@ -3269,18 +3344,16 @@
       'acc.evt_crate':         'Locked Crate',
       'acc.evt_deepsea':       'Deep Sea',
       'acc.evt_vendor':        'Traveling Vendor',
-      'admin.notif.title':           '🔔 In-game Notifications',
+      'admin.notif.title':           'Notifications',
       'admin.notif.global_lbl':      'Globally enabled',
       'admin.notif.disable_all_btn': 'Disable for all (DB)',
       'admin.notif.enable_all_btn':  'Enable for all (DB)',
       'admin.notif.disable_all_confirm': 'Disable in-game notifications for ALL users in DB?',
-      'admin.cpu.title':           '⚙️ CPU diagnostics',
-      'admin.cpu.hint':            'Disable one at a time to find the load source. Everything is ON by default.',
-      'admin.cpu.reconnect_lbl':   'Auto-reconnect dead servers',
-      'admin.cpu.polling_lbl':     'Event polling & notifications',
-      'admin.cache.title':         '🗑️ Bot caches',
-      'admin.cache.hint':          'Clears team_cache, events, markers, AFK. team_cache is reloaded from active sockets after clear.',
-      'admin.cache.clear_btn':     'Clear caches',
+      'admin.cpu.title':           'Diagnostics',
+      'admin.cpu.reconnect_lbl':   'Auto-reconnect',
+      'admin.cpu.polling_lbl':     'Event polling',
+      'admin.cache.title':         'Cache',
+      'admin.cache.clear_btn':     'Clear',
       'admin.cache.clear_confirm': 'Clear all in-memory bot caches and reload team_cache?',
       'admin.cache.cleared_ok':    'Caches cleared',
       'events.title':         '📋 Event History',
@@ -3400,7 +3473,7 @@
       'admin.set_guild.err_fields': 'Fill in Discord ID and Guild ID',
       'admin.sec.overview_guilds': 'Overview · Rust+ Guilds',
       'admin.sec.db_counts':       'DB Tables · row counts',
-      'admin.sec.host':            'Host · Pi / bot server',
+      'admin.sec.host':            'Host',
       'admin.sec.game_commands':   'In-game Commands · Rust+',
       'admin.sec.panel_logins':    'Panel Logins',
       'admin.logins_hint':         'A Discord webhook notification is sent on every OAuth login.',
@@ -5349,15 +5422,8 @@
             ));
           }
 
-          const headerParts = [];
-          if (h.hostname) headerParts.push(`🖥 <b>${escapeHtml(String(h.hostname))}</b>`);
-          if (h.system || h.machine) headerParts.push(`${escapeHtml([h.system, h.machine].filter(Boolean).join(' '))}`);
-          const header = headerParts.length
-            ? `<div class="admin-host-header">${headerParts.join(' · ')}</div>`
-            : '';
-
           hostEl.innerHTML = tiles.length
-            ? `${header}<div class="admin-stat-grid">${tiles.join('')}</div>`
+            ? `<div class="admin-stat-grid">${tiles.join('')}</div>`
             : '—';
         }
       }
