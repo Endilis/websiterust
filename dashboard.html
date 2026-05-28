@@ -2941,7 +2941,6 @@
                           <option value="connected" data-i18n="guilds.filter.connected">Только connected</option>
                           <option value="disconnected" data-i18n="guilds.filter.disconnected">Только disconnected</option>
                           <option value="error" data-i18n="guilds.filter.error">С ошибкой</option>
-                          <option value="vip">VIP</option>
                           <option value="blocked">Blocked</option>
                           <option value="fcm" data-i18n="guilds.filter.fcm">С FCM</option>
                           <option value="no_rust" data-i18n="guilds.filter.no_rust">Без Rust+</option>
@@ -6309,7 +6308,6 @@
           case 'connected':    return st === 'connected';
           case 'disconnected': return st === 'disconnected';
           case 'error':        return st === 'error';
-          case 'vip':          return !!g.vip;
           case 'blocked':      return !!g.blocked;
           case 'fcm':          return !!g.has_fcm_token;
           case 'no_rust':      return !g.rust_db;
@@ -6446,7 +6444,6 @@
     }[status] || status;
 
     const badges = [];
-    if (g.vip)                     badges.push('<span class="gc-mini-badge mb-vip">VIP</span>');
     if (g.blocked)                 badges.push('<span class="gc-mini-badge mb-blocked">BAN</span>');
     if (g.has_fcm_token)           badges.push('<span class="gc-mini-badge mb-fcm">FCM</span>');
     if (g.language)                badges.push(`<span class="gc-mini-badge mb-lang">${escapeHtml(g.language)}</span>`);
@@ -6611,7 +6608,6 @@
 
     listEl.innerHTML = '<div class="olddb-grid">' + items.map(g => {
       const badges = [];
-      if (g.vip)              badges.push(badge('VIP', 'vip'));
       if (g.blocked)          badges.push(badge(isEn ? 'BLOCKED' : 'ЗАБЛОК', 'block'));
       if (g.has_fcm_token)    badges.push(badge('FCM', 'ok'));
       if (g.discord_present)  badges.push(badge(isEn ? 'Bot ✓' : 'Бот ✓', 'ok'));
