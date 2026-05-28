@@ -5463,23 +5463,28 @@
   }
 
   function renderCoinsPanel(data) {
-    _coinsData = data;
+    _coinsData = {
+      ...(_coinsData || {}),
+      ...data,
+      tiers: data.tiers ?? _coinsData?.tiers,
+    };
+    const merged = _coinsData;
     const balEl = document.getElementById('coins-balance');
-    if (balEl) balEl.textContent = `${Number(data.balance || 0).toLocaleString('ru-RU')} 🪙`;
+    if (balEl) balEl.textContent = `${Number(merged.balance || 0).toLocaleString('ru-RU')} 🪙`;
 
     const cdEl = document.getElementById('coins-cooldown-hint');
     if (cdEl) {
-      const left = Number(data.redeem_cooldown_left_sec || 0);
+      const left = Number(merged.redeem_cooldown_left_sec || 0);
       if (left > 0) {
         const m = Math.ceil(left / 60);
-        cdEl.textContent = `Следующий код можно ввести через ~${m} мин.`;
+        cdEl.textContent = `После неверного кода подождите ~${m} мин.`;
       } else {
         cdEl.textContent = 'Код можно активировать сейчас.';
       }
     }
 
     const bonusEl = document.getElementById('coins-bonus-banner');
-    const bonus = Number(data.pending_deposit_bonus || 0);
+    const bonus = Number(merged.pending_deposit_bonus || 0);
     if (bonusEl) {
       if (bonus > 0) {
         bonusEl.style.display = 'block';
@@ -5491,7 +5496,7 @@
     }
 
     const vipEl = document.getElementById('coins-vip-status');
-    const vip = data.vip;
+    const vip = merged.vip;
     if (vipEl) {
       if (vip && vip.active) {
         vipEl.innerHTML = `Активен tier <strong>${vip.tier_slug}</strong> до ${formatCoinTs(vip.expires_at)}`;
@@ -5500,7 +5505,7 @@
       }
     }
 
-    const sponsor = (data.tiers || []).find(t => t.slug === 'sponsor') || (data.tiers || [])[0];
+    const sponsor = (merged.tiers || []).find(t => t.slug === 'sponsor') || (merged.tiers || [])[0];
     const priceEl = document.getElementById('coins-vip-price');
     const btnWrap = document.getElementById('coins-vip-buttons');
     if (priceEl && sponsor) {
@@ -5551,18 +5556,31 @@
     }).join('');
   }
 
+  async function fetchCoinsData(session) {
+    const ts = Date.now();
+    const [rCoins, rHist] = await Promise.all([
+      fetch(`${API_BASE}/me/coins?session=${encodeURIComponent(session)}&_t=${ts}`, {
+        credentials: 'include',
+        cache: 'no-store',
+      }),
+      fetch(`${API_BASE}/me/coins/history?session=${encodeURIComponent(session)}&limit=50&_t=${ts}`, {
+        credentials: 'include',
+        cache: 'no-store',
+      }),
+    ]);
+    return {
+      coins: rCoins.ok ? await rCoins.json() : null,
+      hist: rHist.ok ? await rHist.json() : null,
+    };
+  }
+
   async function loadCoinsPanel() {
     if (!_coinsSession) return;
     if (String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
     const loading = document.getElementById('coins-history-loading');
     if (loading) loading.style.display = 'block';
     try {
-      const [rCoins, rHist] = await Promise.all([
-        fetch(`${API_BASE}/me/coins?session=${encodeURIComponent(_coinsSession)}`, { credentials: 'include' }),
-        fetch(`${API_BASE}/me/coins/history?session=${encodeURIComponent(_coinsSession)}&limit=50`, { credentials: 'include' }),
-      ]);
-      const coins = rCoins.ok ? await rCoins.json() : null;
-      const hist = rHist.ok ? await rHist.json() : null;
+      const { coins, hist } = await fetchCoinsData(_coinsSession);
       if (coins && coins.ok) renderCoinsPanel(coins);
       renderCoinsHistory(hist?.history || []);
     } catch (_) {
@@ -5600,7 +5618,7 @@
         }
         if (input) input.value = '';
         renderCoinsPanel(d);
-        loadCoinsPanel();
+        await loadCoinsPanel();
       } else {
         if (msg) {
           msg.textContent = d.message || d.error || 'Не удалось активировать код';
@@ -5635,7 +5653,7 @@
           msg.className = 'coins-msg ok';
         }
         renderCoinsPanel(d);
-        loadCoinsPanel();
+        await loadCoinsPanel();
       } else {
         if (msg) {
           msg.textContent = d.message || d.error || 'Не удалось купить VIP';
@@ -5664,6 +5682,15 @@
       codeInput.dataset.bound = '1';
       codeInput.addEventListener('keydown', e => {
         if (e.key === 'Enter') redeemCoinCode();
+      });
+    }
+    if (!window._coinsPanelVisibilityBound) {
+      window._coinsPanelVisibilityBound = true;
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState !== 'visible') return;
+        if (!document.getElementById('panel-coins')?.classList.contains('active')) return;
+        if (String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
+        loadCoinsPanel();
       });
     }
   }
