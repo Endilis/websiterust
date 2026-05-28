@@ -845,12 +845,16 @@
         <!-- Stats -->
         <div class="yn-stats">
           <div class="yn-stat">
-            <span class="yn-stat-num"><span id="guildCount" data-target="0">—</span></span>
-            <div class="yn-stat-label">Discord серверов</div>
+            <span class="yn-stat-num"><span id="registeredAccounts" data-target="0">—</span></span>
+            <div class="yn-stat-label">Аккаунтов зарегистрировано</div>
           </div>
           <div class="yn-stat">
-            <span class="yn-stat-num"><span id="playersInGame" data-target="0">—</span></span>
-            <div class="yn-stat-label">Пользователей в игре</div>
+            <span class="yn-stat-num"><span id="playersOnline" data-target="0">—</span></span>
+            <div class="yn-stat-label">Игроков онлайн</div>
+          </div>
+          <div class="yn-stat">
+            <span class="yn-stat-num"><span id="playersOffline" data-target="0">—</span></span>
+            <div class="yn-stat-label">Игроков оффлайн</div>
           </div>
           <div class="yn-stat">
             <span class="yn-stat-num">3</span>
@@ -1138,26 +1142,25 @@
         else el.textContent = Math.floor(cur);
       }, 16);
     }
-    async function fetchGuildMetrics() {
+    async function fetchPublicMetrics() {
       try {
         const res = await fetch(METRICS_URL);
         if (res.ok) {
           const data = await res.json();
-          const guildEl = document.getElementById('guildCount');
-          const playersEl = document.getElementById('playersInGame');
-          if (guildEl) animateCounter(guildEl, data.guild_count ?? 0);
-          if (playersEl) animateCounter(playersEl, data.players_in_game ?? 0);
+          animateCounter(document.getElementById('registeredAccounts'), data.registered_accounts ?? 0);
+          animateCounter(document.getElementById('playersOnline'), data.players_online ?? 0);
+          animateCounter(document.getElementById('playersOffline'), data.players_offline ?? 0);
         }
       } catch (e) {
-        const guildEl = document.getElementById('guildCount');
-        const playersEl = document.getElementById('playersInGame');
-        if (guildEl) guildEl.textContent = '?';
-        if (playersEl) playersEl.textContent = '?';
+        ['registeredAccounts', 'playersOnline', 'playersOffline'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = '?';
+        });
       }
     }
     document.addEventListener('DOMContentLoaded', () => {
-      fetchGuildMetrics();
-      setInterval(fetchGuildMetrics, 10 * 60 * 1000);
+      fetchPublicMetrics();
+      setInterval(fetchPublicMetrics, 10 * 60 * 1000);
       var mobileBtn = document.getElementById('ynMobileBtn');
       var nav = document.querySelector('.yn-nav');
       if (mobileBtn && nav) {
