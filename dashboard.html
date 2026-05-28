@@ -523,6 +523,41 @@
     }
     .coins-history-table .amt-pos { color: #50c864; font-weight: 600; }
     .coins-history-table .amt-neg { color: #c85050; font-weight: 600; }
+
+    /* ── Admin coins tab ── */
+    .admin-coins-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .admin-coins-action-card {
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border, rgba(255,255,255,.08));
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .admin-coins-action-card h4 {
+      margin: 0 0 10px;
+      font-size: .85rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .admin-coins-form-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .admin-coins-form-row .dash-select { flex: 1; min-width: 100px; padding: 7px 10px; font-size: .82rem; }
+    .admin-coins-msg { margin: 8px 0 0; font-size: .82rem; color: var(--muted); }
+    .admin-coins-msg.ok { color: #50c864; }
+    .admin-coins-msg.err { color: #c85050; }
+    .admin-coins-code-plain {
+      font-family: ui-monospace, monospace;
+      font-size: .9rem;
+      color: #ffd080;
+      word-break: break-all;
+    }
     .device-card__items { font-size: .8rem; color: var(--text2); }
     .device-card__items li { list-style: none; padding: 2px 0; }
     .device-protection { font-size: .75rem; color: #ffd700; }
@@ -2842,6 +2877,7 @@
               <button class="admin-tab-btn" data-admin-tab="commands" role="tab" aria-selected="false" data-i18n="admin.tab.commands">Команды</button>
               <button class="admin-tab-btn" data-admin-tab="newdb" role="tab" aria-selected="false" data-i18n="admin.tab.newdb">Новая БД</button>
               <button class="admin-tab-btn" data-admin-tab="guilds" role="tab" aria-selected="false" data-i18n="admin.tab.guilds">Гильдии</button>
+              <button class="admin-tab-btn" data-admin-tab="coins" role="tab" aria-selected="false">🪙 Коины</button>
               <button class="admin-tab-btn" data-admin-tab="olddb" role="tab" aria-selected="false" data-i18n="admin.tab.olddb">Старая БД</button>
             </nav>
 
@@ -3057,6 +3093,110 @@
                       </div>
                     </div>
                     <div id="admin-guilds-list" class="server-dir"></div>
+                  </div>
+                </section>
+              </div>
+
+              <!-- ── TAB: Коины ── -->
+              <div class="admin-tab-panel" data-admin-tab-panel="coins">
+                <section class="admin-panel-section admin-panel-section--overview">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text">Сводка · коины</span>
+                  </h3>
+                  <div class="admin-stat-grid" id="admin-coins-stats">—</div>
+                </section>
+
+                <section class="admin-panel-section">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text">Действия</span>
+                  </h3>
+                  <div class="admin-coins-actions">
+                    <div class="admin-coins-action-card">
+                      <h4>Начислить коины</h4>
+                      <div class="admin-coins-form-row">
+                        <input type="text" id="admin-coins-grant-discord" class="dash-select" placeholder="Discord ID" />
+                        <input type="number" id="admin-coins-grant-amount" class="dash-select" placeholder="Сумма" min="1" style="width:120px" />
+                        <input type="text" id="admin-coins-grant-reason" class="dash-select" placeholder="Причина (опц.)" />
+                        <button type="button" class="dash-btn dash-btn--sm" id="admin-coins-grant-btn">Выдать</button>
+                      </div>
+                    </div>
+                    <div class="admin-coins-action-card">
+                      <h4>Создать промокод</h4>
+                      <div class="admin-coins-form-row">
+                        <select id="admin-coins-code-type" class="dash-select">
+                          <option value="instant">instant — пополнение</option>
+                          <option value="deposit_bonus">deposit_bonus — бонус к след. пополнению</option>
+                        </select>
+                        <input type="number" id="admin-coins-code-amount" class="dash-select" placeholder="Сумма" min="1" style="width:120px" />
+                        <input type="number" id="admin-coins-code-max-uses" class="dash-select" placeholder="max uses" value="1" min="1" style="width:100px" />
+                        <button type="button" class="dash-btn dash-btn--sm" id="admin-coins-createcode-btn">Создать</button>
+                      </div>
+                      <p class="admin-coins-msg" id="admin-coins-createcode-msg"></p>
+                    </div>
+                    <div class="admin-coins-action-card">
+                      <h4>Настройки</h4>
+                      <div class="admin-coins-form-row">
+                        <label class="dash-muted" style="font-size:.8rem">Cooldown (сек)</label>
+                        <input type="number" id="admin-coins-cooldown" class="dash-select" min="0" style="width:120px" />
+                        <button type="button" class="dash-btn dash-btn--sm" id="admin-coins-cooldown-btn">Сохранить</button>
+                      </div>
+                      <div class="admin-coins-form-row" style="margin-top:8px">
+                        <label class="dash-muted" style="font-size:.8rem">VIP sponsor 🪙/мес</label>
+                        <input type="number" id="admin-coins-tier-price" class="dash-select" min="0" style="width:120px" />
+                        <button type="button" class="dash-btn dash-btn--sm" id="admin-coins-setprice-btn">Сохранить цену</button>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="admin-coins-msg" id="admin-coins-action-msg"></p>
+                </section>
+
+                <section class="admin-panel-section">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text">Промокоды</span>
+                    <span id="admin-coins-codes-count" class="admin-panel-section__title-count">0</span>
+                  </h3>
+                  <div class="admin-panel-table-wrap">
+                    <table class="admin-panel-table">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Hint</th>
+                          <th>Тип</th>
+                          <th>+</th>
+                          <th>Uses</th>
+                          <th>Статус</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody id="admin-coins-codes-tbody"></tbody>
+                    </table>
+                  </div>
+                </section>
+
+                <section class="admin-panel-section">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text">Ledger (последние 100)</span>
+                  </h3>
+                  <div class="admin-coins-form-row" style="margin-bottom:10px">
+                    <input type="number" id="admin-coins-ledger-filter" class="dash-select" placeholder="Фильтр internal_id (опц.)" style="max-width:220px" />
+                    <button type="button" class="dash-btn dash-btn--sm" id="admin-coins-ledger-refresh">Обновить ledger</button>
+                  </div>
+                  <div class="admin-panel-table-wrap admin-panel-site-db__wrap">
+                    <table class="admin-panel-table">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>User</th>
+                          <th>Discord</th>
+                          <th>±</th>
+                          <th>Баланс</th>
+                          <th>Тип</th>
+                          <th>Описание</th>
+                          <th>Дата</th>
+                        </tr>
+                      </thead>
+                      <tbody id="admin-coins-ledger-tbody"></tbody>
+                    </table>
                   </div>
                 </section>
               </div>
@@ -3859,9 +3999,180 @@
       btn.setAttribute('aria-selected', 'true');
       const panel = document.querySelector(`.admin-tab-panel[data-admin-tab-panel="${tab}"]`);
       if (panel) panel.classList.add('is-active');
+      if (tab === 'coins' && _dashSessionRef) {
+        loadAdminCoinsTab(_dashSessionRef);
+      }
       // Не останавливаем поллинг при смене внутренних вкладок —
       // он останавливается только при уходе из всей admin-панели.
     });
+  }
+
+  const ADMIN_COIN_ENTRY_LABELS = {
+    admin_grant: 'Admin grant',
+    code_redeem: 'Code redeem',
+    vip_purchase: 'VIP purchase',
+  };
+
+  function renderAdminCoinsStats(stats) {
+    const el = document.getElementById('admin-coins-stats');
+    if (!el || !stats) return;
+    const codes = stats.codes_by_status || {};
+    const codesSummary = Object.entries(codes).map(([k, v]) => `${k}: ${v}`).join(', ') || '—';
+    const tile = (label, value) => `
+      <div class="admin-stat admin-stat--info">
+        <div class="admin-stat-label">${label}</div>
+        <div class="admin-stat-value">${value}</div>
+      </div>`;
+    el.innerHTML = [
+      tile('Кошельков', stats.wallets_count ?? 0),
+      tile('Сумма балансов', `${Number(stats.total_balance || 0).toLocaleString('ru-RU')} 🪙`),
+      tile('Записей ledger', stats.ledger_entries ?? 0),
+      tile('Активных VIP', stats.active_vip_subscriptions ?? 0),
+      tile('Cooldown', `${stats.redeem_cooldown_sec ?? '—'} сек`),
+      tile('Коды', codesSummary),
+    ].join('');
+    const cdInput = document.getElementById('admin-coins-cooldown');
+    if (cdInput && stats.redeem_cooldown_sec != null) cdInput.value = stats.redeem_cooldown_sec;
+  }
+
+  function renderAdminCoinsCodes(codes) {
+    const tbody = document.getElementById('admin-coins-codes-tbody');
+    const cnt = document.getElementById('admin-coins-codes-count');
+    if (cnt) cnt.textContent = String((codes || []).length);
+    if (!tbody) return;
+    if (!codes || !codes.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="dash-muted">Нет кодов</td></tr>';
+      return;
+    }
+    tbody.innerHTML = codes.map(c => {
+      const canRevoke = c.status !== 'revoked' && c.status !== 'exhausted';
+      return `<tr>
+        <td>#${c.id}</td>
+        <td>…${c.code_hint || ''}</td>
+        <td>${c.code_type}</td>
+        <td>+${c.amount}</td>
+        <td>${c.use_count}/${c.max_uses}</td>
+        <td>${c.status}</td>
+        <td>${canRevoke ? `<button type="button" class="dash-btn dash-btn--sm dash-btn--ghost admin-coins-revoke-btn" data-code-id="${c.id}">Revoke</button>` : '—'}</td>
+      </tr>`;
+    }).join('');
+    tbody.querySelectorAll('.admin-coins-revoke-btn').forEach(btn => {
+      btn.addEventListener('click', () => adminCoinsAction('revoke', { code_id: Number(btn.dataset.codeId) }));
+    });
+  }
+
+  function renderAdminCoinsLedger(rows) {
+    const tbody = document.getElementById('admin-coins-ledger-tbody');
+    if (!tbody) return;
+    if (!rows || !rows.length) {
+      tbody.innerHTML = '<tr><td colspan="8" class="dash-muted">Ledger пуст</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(r => {
+      const amt = Number(r.amount || 0);
+      const cls = amt >= 0 ? 'amt-pos' : 'amt-neg';
+      const sign = amt >= 0 ? '+' : '';
+      const label = ADMIN_COIN_ENTRY_LABELS[r.entry_type] || r.entry_type || '—';
+      return `<tr>
+        <td>${r.id}</td>
+        <td>${r.user_internal_id}</td>
+        <td><code>${r.discord_id || '—'}</code></td>
+        <td class="${cls}">${sign}${amt.toLocaleString('ru-RU')}</td>
+        <td>${Number(r.balance_after || 0).toLocaleString('ru-RU')}</td>
+        <td>${label}</td>
+        <td>${(r.description || '—').replace(/</g, '&lt;')}</td>
+        <td>${formatCoinTs(r.created_at)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function renderAdminCoinsTierPrice(tiers) {
+    const sponsor = (tiers || []).find(t => t.slug === 'sponsor');
+    const priceInput = document.getElementById('admin-coins-tier-price');
+    if (priceInput && sponsor) priceInput.value = sponsor.coin_price_per_month ?? 0;
+  }
+
+  async function loadAdminCoinsTab(session, opts = {}) {
+    if (!session || String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
+    setupAdminCoinsOnce(session);
+    const filterEl = document.getElementById('admin-coins-ledger-filter');
+    const userIid = (filterEl?.value || '').trim();
+    let url = `${API_BASE}/admin/coins?session=${encodeURIComponent(session)}&limit=100`;
+    if (userIid && /^\d+$/.test(userIid)) url += `&user_iid=${encodeURIComponent(userIid)}`;
+    try {
+      const r = await fetch(url, { credentials: 'include', cache: 'no-store' });
+      const d = r.ok ? await r.json() : null;
+      if (!d || !d.ok) throw new Error('bad response');
+      renderAdminCoinsStats(d.stats);
+      renderAdminCoinsCodes(d.codes);
+      renderAdminCoinsLedger(d.ledger);
+      renderAdminCoinsTierPrice(d.tiers);
+    } catch (e) {
+      const msg = document.getElementById('admin-coins-action-msg');
+      if (msg) { msg.textContent = 'Ошибка загрузки коинов'; msg.className = 'admin-coins-msg err'; }
+    }
+  }
+
+  async function adminCoinsAction(action, extra = {}) {
+    const session = _dashSessionRef;
+    if (!session) return;
+    const msgEl = document.getElementById('admin-coins-action-msg');
+    const createMsg = document.getElementById('admin-coins-createcode-msg');
+    if (msgEl) { msgEl.textContent = ''; msgEl.className = 'admin-coins-msg'; }
+    try {
+      const body = { action, ...extra };
+      if (action === 'grant') {
+        body.discord_id = document.getElementById('admin-coins-grant-discord')?.value?.trim();
+        body.amount = Number(document.getElementById('admin-coins-grant-amount')?.value || 0);
+        body.reason = document.getElementById('admin-coins-grant-reason')?.value?.trim();
+      } else if (action === 'createcode') {
+        body.code_type = document.getElementById('admin-coins-code-type')?.value || 'instant';
+        body.amount = Number(document.getElementById('admin-coins-code-amount')?.value || 0);
+        body.max_uses = Number(document.getElementById('admin-coins-code-max-uses')?.value || 1);
+      } else if (action === 'cooldown') {
+        body.seconds = Number(document.getElementById('admin-coins-cooldown')?.value || 0);
+      } else if (action === 'setprice') {
+        body.tier = 'sponsor';
+        body.price = Number(document.getElementById('admin-coins-tier-price')?.value || 0);
+      }
+      const r = await fetch(`${API_BASE}/admin/coins?session=${encodeURIComponent(session)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(body),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.ok) {
+        const errText = d.message || d.error || `HTTP ${r.status}`;
+        if (msgEl) { msgEl.textContent = errText; msgEl.className = 'admin-coins-msg err'; }
+        return;
+      }
+      if (action === 'createcode' && d.code?.code) {
+        if (createMsg) {
+          createMsg.innerHTML = `Код: <span class="admin-coins-code-plain">${d.code.code}</span> — сохраните, повторно не показывается`;
+          createMsg.className = 'admin-coins-msg ok';
+        }
+      } else if (msgEl) {
+        msgEl.textContent = 'Готово';
+        msgEl.className = 'admin-coins-msg ok';
+      }
+      renderAdminCoinsStats(d.stats);
+      renderAdminCoinsCodes(d.codes);
+      renderAdminCoinsLedger(d.ledger);
+      renderAdminCoinsTierPrice(d.tiers);
+    } catch (_) {
+      if (msgEl) { msgEl.textContent = 'Ошибка сети'; msgEl.className = 'admin-coins-msg err'; }
+    }
+  }
+
+  function setupAdminCoinsOnce(session) {
+    if (window._adminCoinsBound) return;
+    window._adminCoinsBound = true;
+    document.getElementById('admin-coins-grant-btn')?.addEventListener('click', () => adminCoinsAction('grant'));
+    document.getElementById('admin-coins-createcode-btn')?.addEventListener('click', () => adminCoinsAction('createcode'));
+    document.getElementById('admin-coins-cooldown-btn')?.addEventListener('click', () => adminCoinsAction('cooldown'));
+    document.getElementById('admin-coins-setprice-btn')?.addEventListener('click', () => adminCoinsAction('setprice'));
+    document.getElementById('admin-coins-ledger-refresh')?.addEventListener('click', () => loadAdminCoinsTab(session, { force: true }));
   }
 
   /* ================================================================
