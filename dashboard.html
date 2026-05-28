@@ -3866,7 +3866,7 @@
     } catch (e) {
       alert(`${_lang==='en'?'Network error: ':'Сетевая ошибка: '}${e.message || e}`);
     } finally {
-      sendBtn.disabled = false;
+      if (sendBtn) sendBtn.disabled = false;
       input.focus();
     }
   }
@@ -5075,6 +5075,9 @@
     const s = stats || {};
     const lines = [
       `team_cache: ${s.team_cache ?? '—'}`,
+      `steam_id (уник.): ${s.total_unique ?? '—'}`,
+      `онлайн: ${s.online ?? '—'}`,
+      `оффлайн: ${s.offline ?? '—'}`,
       `active_sockets: ${s.active_sockets ?? '—'}`,
       `event_state_cache: ${s.event_state_cache ?? '—'}`,
       `monument_cache: ${s.monument_cache ?? '—'}`,
@@ -5295,8 +5298,12 @@
 
         let fcm = 0;
         let online = 0, offline = 0;
-        let totalPlayers = 0, onlinePlayers = 0;
         let serversWithPeople = 0, serversWithoutPeople = 0;
+
+        const tps = data.team_player_stats || data.cache_stats || {};
+        const totalPlayers = tps.total_unique ?? 0;
+        const onlinePlayers = tps.online ?? 0;
+        const offlinePlayers = tps.offline ?? Math.max(0, totalPlayers - onlinePlayers);
 
         for (const g of guilds) {
           if (g.has_fcm_token) fcm++;
@@ -5305,16 +5312,13 @@
           else if (g.rust_db) offline++;
 
           const members = Array.isArray(g.rust_live?.team_members) ? g.rust_live.team_members : [];
-          totalPlayers += members.length;
           const onlineInTeam = members.filter(m => m?.is_online).length;
-          onlinePlayers += onlineInTeam;
 
           if (st === 'connected') {
             if (onlineInTeam > 0) serversWithPeople++;
             else serversWithoutPeople++;
           }
         }
-        const offlinePlayers = Math.max(0, totalPlayers - onlinePlayers);
 
         const tile = (label, value, cls = '', hint = '') => `
           <div class="admin-stat ${cls}">
@@ -5332,7 +5336,7 @@
           tile('📡 ' + (_lang==='en'?'Servers with FCM':'Серверов с FCM'), fcm, 'admin-stat--info'),
           tile('🟢 ' + t('tile.online_servers'), online, 'admin-stat--ok'),
           tile('🔴 ' + t('tile.offline_servers'), offline, 'admin-stat--bad'),
-          tile('👥 ' + (_lang==='en'?'Total players':'Всего игроков'), totalPlayers, '', _lang==='en'?'in all teams':'во всех командах'),
+          tile('👥 ' + (_lang==='en'?'Total players':'Всего игроков'), totalPlayers, '', _lang==='en'?'unique Steam IDs in team_cache':'уникальных Steam ID в team_cache'),
           tile('🟢 ' + t('tile.online_players'), onlinePlayers, 'admin-stat--ok'),
           tile('⚫ ' + t('tile.offline_players'), offlinePlayers, 'admin-stat--muted'),
           tile('👣 ' + t('tile.srv_with_people'), serversWithPeople, 'admin-stat--ok', _lang==='en'?'of connected':'из подключённых'),
