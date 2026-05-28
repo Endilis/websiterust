@@ -462,6 +462,67 @@
     .device-btn--on  { background: #50c864; color: #111; }
     .device-btn--off { background: #c85050; color: #fff; }
     .device-btn:disabled { opacity: .45; cursor: default; }
+
+    /* ── Coins / VIP panel ── */
+    .coins-balance {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 8px 0 4px;
+    }
+    .coins-bonus-banner {
+      background: rgba(255, 200, 80, .12);
+      border: 1px solid rgba(255, 200, 80, .35);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 12px;
+      font-size: .9rem;
+      color: #ffd080;
+    }
+    .coins-redeem-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .coins-redeem-row input {
+      flex: 1;
+      min-width: 180px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border, rgba(255,255,255,.08));
+      background: var(--bg3);
+      color: var(--text);
+    }
+    .coins-vip-status {
+      margin: 8px 0;
+      font-size: .9rem;
+    }
+    .coins-vip-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .coins-msg {
+      margin-top: 10px;
+      font-size: .85rem;
+    }
+    .coins-msg.ok { color: #50c864; }
+    .coins-msg.err { color: #c85050; }
+    .coins-history-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .82rem;
+    }
+    .coins-history-table th,
+    .coins-history-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border, rgba(255,255,255,.08));
+      text-align: left;
+    }
+    .coins-history-table .amt-pos { color: #50c864; font-weight: 600; }
+    .coins-history-table .amt-neg { color: #c85050; font-weight: 600; }
     .device-card__items { font-size: .8rem; color: var(--text2); }
     .device-card__items li { list-style: none; padding: 2px 0; }
     .device-protection { font-size: .75rem; color: #ffd700; }
@@ -2302,6 +2363,7 @@
           <button type="button" class="dash-nav-btn" data-panel="team" data-i18n="nav.team">Команда</button>
           <button type="button" class="dash-nav-btn" data-panel="commands" data-i18n="nav.commands">Команды</button>
           <button type="button" class="dash-nav-btn" data-panel="devices" data-i18n="nav.devices">Устройства</button>
+          <button type="button" class="dash-nav-btn" data-panel="coins">🪙 Коины / VIP</button>
           <div class="dash-nav-label" data-i18n="nav.wip">🚧 В разработке</div>
           <button type="button" class="dash-nav-btn sub" data-panel="map" data-i18n="nav.map">🗺️ Карта</button>
           <button type="button" class="dash-nav-btn sub dash-nav-btn--wip" data-panel="notify-game" data-i18n="nav.notify">🔔 Уведомления</button>
@@ -2708,6 +2770,53 @@
             </p>
             <div id="devices-loading" style="display:none;padding:20px 0;text-align:center;color:var(--muted)" data-i18n="dev.loading">Загрузка...</div>
             <div id="devices-grid" class="devices-grid"></div>
+          </div>
+        </div>
+
+        <!-- PANEL: coins / VIP -->
+        <div id="panel-coins" class="dash-panel" role="tabpanel">
+          <div class="dash-panel-inner">
+            <div class="card">
+              <div class="card-header">
+                <span>🪙 Баланс</span>
+                <button type="button" class="dash-btn dash-btn--sm" id="btn-coins-refresh" style="margin-left:auto">Обновить</button>
+              </div>
+              <div class="coins-balance" id="coins-balance">—</div>
+              <p class="dash-muted" id="coins-cooldown-hint" style="font-size:.8rem;margin:4px 0 0">—</p>
+              <div id="coins-bonus-banner" class="coins-bonus-banner" style="display:none"></div>
+              <div class="coins-redeem-row">
+                <input type="text" id="coins-code-input" placeholder="RI-XXXX-XXXX-XXXX" autocomplete="off" spellcheck="false" />
+                <button type="button" class="dash-btn" id="btn-coins-redeem">Активировать код</button>
+              </div>
+              <p class="coins-msg" id="coins-redeem-msg"></p>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><span>⭐ VIP</span></div>
+              <div class="coins-vip-status" id="coins-vip-status">—</div>
+              <p class="dash-muted" id="coins-vip-price" style="font-size:.82rem;margin:4px 0 0">—</p>
+              <div class="coins-vip-row" id="coins-vip-buttons"></div>
+              <p class="coins-msg" id="coins-vip-msg"></p>
+            </div>
+
+            <div class="card full-card">
+              <div class="card-header"><span>📜 История операций</span></div>
+              <div id="coins-history-loading" style="display:none;padding:12px 0;color:var(--muted)">Загрузка...</div>
+              <div class="admin-panel-table-wrap">
+                <table class="coins-history-table">
+                  <thead>
+                    <tr>
+                      <th>Дата</th>
+                      <th>Тип</th>
+                      <th>Сумма</th>
+                      <th>Баланс</th>
+                      <th>Описание</th>
+                    </tr>
+                  </thead>
+                  <tbody id="coins-history-tbody"></tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -3985,6 +4094,9 @@
         if (id === 'devices') {
           loadDevices();
         }
+        if (id === 'coins') {
+          loadCoinsPanel();
+        }
       });
     });
   }
@@ -4093,6 +4205,8 @@
       fetchAndRenderTeam(session).catch(() => {});
     } else if (activeId === 'panel-devices') {
       loadDevices();
+    } else if (activeId === 'panel-coins') {
+      loadCoinsPanel();
     } else if (activeId === 'panel-admin' && String(_dashDiscordId || '') === ADMIN_DISCORD_ID) {
       await loadAdminPanel(session, _dashDiscordId, { force: true });
     }
@@ -5007,6 +5121,226 @@
     if (refreshBtn && !refreshBtn.dataset.bound) {
       refreshBtn.dataset.bound = '1';
       refreshBtn.addEventListener('click', loadDevices);
+    }
+  }
+
+  let _coinsSession = null;
+  let _coinsData = null;
+
+  const COIN_ENTRY_LABELS = {
+    admin_grant: 'Начисление админом',
+    code_redeem: 'Пополнение кодом',
+    vip_purchase: 'Покупка VIP',
+    deposit_bonus: 'Бонус к пополнению',
+  };
+
+  function formatCoinTs(unix) {
+    if (!unix) return '—';
+    return new Date(Number(unix) * 1000).toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' });
+  }
+
+  function renderCoinsPanel(data) {
+    _coinsData = data;
+    const balEl = document.getElementById('coins-balance');
+    if (balEl) balEl.textContent = `${Number(data.balance || 0).toLocaleString('ru-RU')} 🪙`;
+
+    const cdEl = document.getElementById('coins-cooldown-hint');
+    if (cdEl) {
+      const left = Number(data.redeem_cooldown_left_sec || 0);
+      if (left > 0) {
+        const m = Math.ceil(left / 60);
+        cdEl.textContent = `Следующий код можно ввести через ~${m} мин.`;
+      } else {
+        cdEl.textContent = 'Код можно активировать сейчас.';
+      }
+    }
+
+    const bonusEl = document.getElementById('coins-bonus-banner');
+    const bonus = Number(data.pending_deposit_bonus || 0);
+    if (bonusEl) {
+      if (bonus > 0) {
+        bonusEl.style.display = 'block';
+        bonusEl.textContent = `При пополнении ваш бонус +${bonus.toLocaleString('ru-RU')} коинов`;
+      } else {
+        bonusEl.style.display = 'none';
+        bonusEl.textContent = '';
+      }
+    }
+
+    const vipEl = document.getElementById('coins-vip-status');
+    const vip = data.vip;
+    if (vipEl) {
+      if (vip && vip.active) {
+        vipEl.innerHTML = `Активен tier <strong>${vip.tier_slug}</strong> до ${formatCoinTs(vip.expires_at)}`;
+      } else {
+        vipEl.textContent = 'VIP не активен';
+      }
+    }
+
+    const sponsor = (data.tiers || []).find(t => t.slug === 'sponsor') || (data.tiers || [])[0];
+    const priceEl = document.getElementById('coins-vip-price');
+    const btnWrap = document.getElementById('coins-vip-buttons');
+    if (priceEl && sponsor) {
+      const ppm = Number(sponsor.coin_price_per_month || 0);
+      if (ppm > 0) {
+        priceEl.textContent = `${sponsor.name || sponsor.slug}: ${ppm.toLocaleString('ru-RU')} 🪙 / месяц`;
+      } else {
+        priceEl.textContent = 'Цена Sponsor ещё не установлена (админ: !vip setprice sponsor N)';
+      }
+    }
+    if (btnWrap && sponsor) {
+      const ppm = Number(sponsor.coin_price_per_month || 0);
+      if (ppm > 0) {
+        btnWrap.innerHTML = [1, 3, 6].map(m => {
+          const cost = ppm * m;
+          return `<button type="button" class="dash-btn dash-btn--sm" data-vip-months="${m}" data-vip-tier="${sponsor.slug}">${m} мес. · ${cost.toLocaleString('ru-RU')} 🪙</button>`;
+        }).join('');
+        btnWrap.querySelectorAll('[data-vip-months]').forEach(btn => {
+          if (btn.dataset.bound) return;
+          btn.dataset.bound = '1';
+          btn.addEventListener('click', () => purchaseVipTier(btn.getAttribute('data-vip-tier'), Number(btn.getAttribute('data-vip-months'))));
+        });
+      } else {
+        btnWrap.innerHTML = '<span class="dash-muted">Покупка недоступна — цена не задана</span>';
+      }
+    }
+  }
+
+  function renderCoinsHistory(rows) {
+    const tbody = document.getElementById('coins-history-tbody');
+    if (!tbody) return;
+    if (!rows || !rows.length) {
+      tbody.innerHTML = '<tr><td colspan="5" class="dash-muted">История пуста</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(r => {
+      const amt = Number(r.amount || 0);
+      const cls = amt >= 0 ? 'amt-pos' : 'amt-neg';
+      const sign = amt >= 0 ? '+' : '';
+      const label = COIN_ENTRY_LABELS[r.entry_type] || r.entry_type || '—';
+      return `<tr>
+        <td>${formatCoinTs(r.created_at)}</td>
+        <td>${label}</td>
+        <td class="${cls}">${sign}${amt.toLocaleString('ru-RU')}</td>
+        <td>${Number(r.balance_after || 0).toLocaleString('ru-RU')}</td>
+        <td>${(r.description || '—').replace(/</g, '&lt;')}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  async function loadCoinsPanel() {
+    if (!_coinsSession) return;
+    const loading = document.getElementById('coins-history-loading');
+    if (loading) loading.style.display = 'block';
+    try {
+      const [rCoins, rHist] = await Promise.all([
+        fetch(`${API_BASE}/me/coins?session=${encodeURIComponent(_coinsSession)}`, { credentials: 'include' }),
+        fetch(`${API_BASE}/me/coins/history?session=${encodeURIComponent(_coinsSession)}&limit=50`, { credentials: 'include' }),
+      ]);
+      const coins = rCoins.ok ? await rCoins.json() : null;
+      const hist = rHist.ok ? await rHist.json() : null;
+      if (coins && coins.ok) renderCoinsPanel(coins);
+      renderCoinsHistory(hist?.history || []);
+    } catch (_) {
+      const msg = document.getElementById('coins-redeem-msg');
+      if (msg) { msg.textContent = 'Ошибка загрузки'; msg.className = 'coins-msg err'; }
+    } finally {
+      if (loading) loading.style.display = 'none';
+    }
+  }
+
+  async function redeemCoinCode() {
+    if (!_coinsSession) return;
+    const input = document.getElementById('coins-code-input');
+    const msg = document.getElementById('coins-redeem-msg');
+    const btn = document.getElementById('btn-coins-redeem');
+    const code = (input?.value || '').trim();
+    if (!code) {
+      if (msg) { msg.textContent = 'Введите код'; msg.className = 'coins-msg err'; }
+      return;
+    }
+    if (btn) btn.disabled = true;
+    if (msg) { msg.textContent = ''; msg.className = 'coins-msg'; }
+    try {
+      const r = await fetch(`${API_BASE}/me/coins/redeem?session=${encodeURIComponent(_coinsSession)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ code }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (r.ok && d.ok) {
+        if (msg) {
+          msg.textContent = d.redeem?.message || `Готово! Баланс: ${Number(d.balance || 0).toLocaleString('ru-RU')} 🪙`;
+          msg.className = 'coins-msg ok';
+        }
+        if (input) input.value = '';
+        renderCoinsPanel(d);
+        loadCoinsPanel();
+      } else {
+        if (msg) {
+          msg.textContent = d.message || d.error || 'Не удалось активировать код';
+          msg.className = 'coins-msg err';
+        }
+      }
+    } catch (_) {
+      if (msg) { msg.textContent = 'Ошибка сети'; msg.className = 'coins-msg err'; }
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  async function purchaseVipTier(tier, months) {
+    if (!_coinsSession || !tier) return;
+    const msg = document.getElementById('coins-vip-msg');
+    const ppm = Number((_coinsData?.tiers || []).find(t => t.slug === tier)?.coin_price_per_month || 0);
+    const cost = ppm * months;
+    if (!confirm(`Купить ${tier} на ${months} мес. за ${cost.toLocaleString('ru-RU')} 🪙?`)) return;
+    if (msg) { msg.textContent = ''; msg.className = 'coins-msg'; }
+    try {
+      const r = await fetch(`${API_BASE}/me/vip/purchase?session=${encodeURIComponent(_coinsSession)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ tier, months }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (r.ok && d.ok) {
+        if (msg) {
+          msg.textContent = `VIP активен до ${formatCoinTs(d.purchase?.expires_at || d.vip?.expires_at)}`;
+          msg.className = 'coins-msg ok';
+        }
+        renderCoinsPanel(d);
+        loadCoinsPanel();
+      } else {
+        if (msg) {
+          msg.textContent = d.message || d.error || 'Не удалось купить VIP';
+          msg.className = 'coins-msg err';
+        }
+      }
+    } catch (_) {
+      if (msg) { msg.textContent = 'Ошибка сети'; msg.className = 'coins-msg err'; }
+    }
+  }
+
+  function initCoinsPanel(session) {
+    _coinsSession = session;
+    const refreshBtn = document.getElementById('btn-coins-refresh');
+    if (refreshBtn && !refreshBtn.dataset.bound) {
+      refreshBtn.dataset.bound = '1';
+      refreshBtn.addEventListener('click', loadCoinsPanel);
+    }
+    const redeemBtn = document.getElementById('btn-coins-redeem');
+    if (redeemBtn && !redeemBtn.dataset.bound) {
+      redeemBtn.dataset.bound = '1';
+      redeemBtn.addEventListener('click', redeemCoinCode);
+    }
+    const codeInput = document.getElementById('coins-code-input');
+    if (codeInput && !codeInput.dataset.bound) {
+      codeInput.dataset.bound = '1';
+      codeInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') redeemCoinCode();
+      });
     }
   }
 
@@ -7016,6 +7350,7 @@
     initCmdDelaySettings(session, data.discord_id || _dashDiscordId);
     initIngameNotifToggle(session, data.discord_id || _dashDiscordId);
     initDevicesPanel(session);
+    initCoinsPanel(session);
     initEventHistory(session);
     setupAccountDisableForeverOnce();
     updateAccountSelfDisableUI(data);
