@@ -2398,7 +2398,7 @@
           <button type="button" class="dash-nav-btn" data-panel="team" data-i18n="nav.team">Команда</button>
           <button type="button" class="dash-nav-btn" data-panel="commands" data-i18n="nav.commands">Команды</button>
           <button type="button" class="dash-nav-btn" data-panel="devices" data-i18n="nav.devices">Устройства</button>
-          <button type="button" class="dash-nav-btn" data-panel="coins">🪙 Коины / VIP</button>
+          <button type="button" class="dash-nav-btn" data-panel="coins" id="nav-coins-btn" style="display:none">🪙 Коины / VIP</button>
           <div class="dash-nav-label" data-i18n="nav.wip">🚧 В разработке</div>
           <button type="button" class="dash-nav-btn sub" data-panel="map" data-i18n="nav.map">🗺️ Карта</button>
           <button type="button" class="dash-nav-btn sub dash-nav-btn--wip" data-panel="notify-game" data-i18n="nav.notify">🔔 Уведомления</button>
@@ -3291,6 +3291,16 @@
 <script>
   const DISCORD_CLIENT_ID = '1334943377124495421';
   const ADMIN_DISCORD_ID = '348409098640818178';
+
+  function updateCoinsNavVisibility(discordId) {
+    const btn = document.getElementById('nav-coins-btn');
+    const panel = document.getElementById('panel-coins');
+    const isAdmin = String(discordId || '') === ADMIN_DISCORD_ID;
+    if (btn) btn.style.display = isAdmin ? '' : 'none';
+    if (!isAdmin && panel && panel.classList.contains('active')) {
+      document.querySelector('.dash-nav-btn[data-panel="account"]')?.click();
+    }
+  }
   const isLocal = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
   const REDIRECT_URI = isLocal ? 'http://localhost:8080/discord/callback' : 'https://bot.rustinfo.online/discord/callback';
   const API_BASE = isLocal ? 'http://localhost:8080' : 'https://bot.rustinfo.online';
@@ -4406,7 +4416,9 @@
           loadDevices();
         }
         if (id === 'coins') {
-          loadCoinsPanel();
+          if (String(_dashDiscordId || '') === ADMIN_DISCORD_ID) {
+            loadCoinsPanel();
+          }
         }
       });
     });
@@ -4516,7 +4528,7 @@
       fetchAndRenderTeam(session).catch(() => {});
     } else if (activeId === 'panel-devices') {
       loadDevices();
-    } else if (activeId === 'panel-coins') {
+    } else if (activeId === 'panel-coins' && String(_dashDiscordId || '') === ADMIN_DISCORD_ID) {
       loadCoinsPanel();
     } else if (activeId === 'panel-admin' && String(_dashDiscordId || '') === ADMIN_DISCORD_ID) {
       await loadAdminPanel(session, _dashDiscordId, { force: true });
@@ -5541,6 +5553,7 @@
 
   async function loadCoinsPanel() {
     if (!_coinsSession) return;
+    if (String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
     const loading = document.getElementById('coins-history-loading');
     if (loading) loading.style.display = 'block';
     try {
@@ -7655,6 +7668,7 @@
     _lastDashboardGuildId = data.guild_id || null;
     _dashSessionRef = session;
     _dashDiscordId = data.discord_id;
+    updateCoinsNavVisibility(data.discord_id);
     setupFcmPasteOnce();
     initPrefixSettings(session);
     initIngameLangSettings(session);
