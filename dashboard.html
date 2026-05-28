@@ -1902,6 +1902,39 @@
     .site-db-server__addr { font-family: ui-monospace, Consolas, monospace; color: var(--text); }
     .site-db-server__name { color: var(--text2); font-size: .78rem; }
 
+    .site-db-team-list {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .site-db-team-member {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 8px 12px;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(255,255,255,.02);
+      font-size: .82rem;
+      align-items: start;
+    }
+    .site-db-team-member__name { font-weight: 600; }
+    .site-db-team-member__meta {
+      grid-column: 2 / -1;
+      font-size: .76rem;
+      color: var(--text2);
+      line-height: 1.45;
+    }
+    .site-db-team-member__online {
+      font-size: .72rem; color: #34d399; font-weight: 700; white-space: nowrap;
+    }
+    .site-db-team-member__offline {
+      font-size: .72rem; color: var(--text2); font-weight: 700; white-space: nowrap;
+    }
+    .site-db-steam-link {
+      color: #93c5fd;
+      text-decoration: none;
+    }
+    .site-db-steam-link:hover { text-decoration: underline; }
+
     /* FCM status badges */
     .fcm-badge {
       display: inline-flex; align-items: center; gap: 4px;
@@ -3198,6 +3231,12 @@
       'admin.tab.guilds':   'Гильдии',
       'admin.tab.olddb':   '🗄 Старая БД',
       'admin.user.chat_btn': 'Чат',
+      'admin.user.lang': 'Язык',
+      'admin.user.bot_prefix': 'Имя бота в чате',
+      'admin.user.last_command': 'Последняя команда',
+      'admin.user.team': 'Команда',
+      'admin.user.no_team': 'Нет данных команды (сокет не активен или кеш пуст)',
+      'admin.user.steam_profile': 'Steam-профиль',
       'admin.olddb.title': '🗄 Старая БД · гильдии',
       'admin.olddb.search_ph': 'Поиск по названию, ID…',
       'admin.olddb.wipe_btn': 'Полная очистка',
@@ -3492,6 +3531,12 @@
       'admin.tab.guilds':   'Guilds',
       'admin.tab.olddb':   '🗄 Old DB',
       'admin.user.chat_btn': 'Chat',
+      'admin.user.lang': 'Language',
+      'admin.user.bot_prefix': 'Bot chat prefix',
+      'admin.user.last_command': 'Last command',
+      'admin.user.team': 'Team',
+      'admin.user.no_team': 'No team data (socket inactive or cache empty)',
+      'admin.user.steam_profile': 'Steam profile',
       'admin.olddb.title': '🗄 Old DB · Guilds',
       'admin.olddb.search_ph': 'Search by name, ID…',
       'admin.olddb.wipe_btn': 'Full wipe',
@@ -5786,6 +5831,28 @@
     catch (_) { return '—'; }
   }
 
+  function steamProfileLink(steamId, label) {
+    if (steamId == null || steamId === '') return '<span class="muted">—</span>';
+    const id = String(steamId);
+    const url = `https://steamcommunity.com/profiles/${encodeURIComponent(id)}/`;
+    const text = label != null ? String(label) : id;
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="site-db-steam-link mono" title="${t('admin.user.steam_profile')}">${escapeHtml(text)}</a>`;
+  }
+
+  function fmtIngameLang(code) {
+    const c = String(code || 'en').toLowerCase();
+    if (c === 'ru') return _lang === 'en' ? 'Russian (ru)' : 'Русский (ru)';
+    if (c === 'en') return _lang === 'en' ? 'English (en)' : 'English (en)';
+    return escapeHtml(c);
+  }
+
+  function fmtLastCommand(lc) {
+    if (!lc || !lc.command) return '<span class="muted">—</span>';
+    const when = lc.ts != null ? fmtTs(lc.ts) : '—';
+    const srv = lc.server ? ` · ${escapeHtml(String(lc.server))}` : '';
+    return `<code>${escapeHtml(String(lc.command))}</code> <span class="muted" style="font-size:.76rem">(${escapeHtml(when)}${srv})</span>`;
+  }
+
   function siteDbRowMatchesSearch(u, q) {
     if (!q) return true;
     const hay = [
@@ -5832,7 +5899,7 @@
           `<td style="text-align:center"><span class="site-db-caret">▸</span></td>`,
           `<td class="mono">${escapeHtml(String(u.internal_id))}</td>`,
           `<td>${socketDot}${banChip}${disabledChip}${escapeHtml(String(u.discord_username || '—'))}<br/><span class="muted mono" style="font-size:0.76rem">${escapeHtml(String(u.discord_id || ''))}</span></td>`,
-          `<td class="mono">${escapeHtml(String(u.steam_id || '—'))}</td>`,
+          `<td class="mono">${u.steam_id ? steamProfileLink(u.steam_id) : '<span class="muted">—</span>'}</td>`,
           `<td>${fcmBadgeHtml(u.fcm_status)}</td>`,
           `<td class="mono">${escapeHtml(String(u.guild_id || '—'))}</td>`,
           `<td>${escapeHtml(String(u.country || '—'))}</td>`,
@@ -6021,18 +6088,51 @@
 
     const userMeta = `
       <div class="site-db-detail-kv">
-        <h4>Профиль</h4>
+        <h4>${_lang==='en'?'Profile':'Профиль'}</h4>
         <dl style="margin:0">
           ${kv('Discord ID', mono(u.discord_id))}
-          ${kv('Steam ID', mono(u.steam_id))}
+          ${kv('Steam ID', u.steam_id ? steamProfileLink(u.steam_id) : '<span class="muted">—</span>')}
+          ${kv(t('admin.user.lang'), fmtIngameLang(u.ingame_language))}
+          ${kv(t('admin.user.bot_prefix'), mono(u.ingame_prefix || '[rustinfo.online]'))}
+          ${kv(t('admin.user.last_command'), fmtLastCommand(u.last_command))}
           ${kv('Guild ID', mono(u.guild_id))}
-          ${kv('Страна', escapeHtml(String(u.country || '—')))}
+          ${kv(_lang==='en'?'Country':'Страна', escapeHtml(String(u.country || '—')))}
           ${kv('Last IP', mono(u.last_ip))}
           ${kv('First IP', mono(u.first_ip))}
-          ${kv('Создан', escapeHtml(fmtTs(u.created_at)))}
+          ${kv(_lang==='en'?'Created':'Создан', escapeHtml(fmtTs(u.created_at)))}
           ${kv('Linked', escapeHtml(fmtTs(u.rustplus_linked_at)))}
           ${kv('Updated', escapeHtml(fmtTs(u.updated_at)))}
         </dl>
+      </div>`;
+
+    const teamMembers = Array.isArray(u.team_members) ? u.team_members : [];
+    const teamBlock = teamMembers.length
+      ? `<div class="site-db-team-list">${teamMembers.map(m => {
+          const onl = m.is_online
+            ? `<span class="site-db-team-member__online">● ${_lang==='en'?'online':'онлайн'}</span>`
+            : `<span class="site-db-team-member__offline">○ ${_lang==='en'?'offline':'оффлайн'}</span>`;
+          const alive = m.is_alive === false
+            ? `<span class="muted" style="font-size:.72rem;margin-left:6px">${_lang==='en'?'dead':'мертв'}</span>`
+            : '';
+          const lc = m.last_command ? fmtLastCommand(m.last_command) : '<span class="muted">—</span>';
+          return `
+            <div class="site-db-team-member">
+              ${onl}
+              <div>
+                <div class="site-db-team-member__name">${escapeHtml(String(m.name || '—'))}${alive}</div>
+                <div class="mono" style="font-size:.76rem;margin-top:2px">${steamProfileLink(m.steam_id)}</div>
+              </div>
+              <div class="site-db-team-member__meta">
+                <span>${_lang==='en'?'Last cmd':'Посл. команда'}:</span> ${lc}
+              </div>
+            </div>`;
+        }).join('')}</div>`
+      : `<span class="muted">${t('admin.user.no_team')}</span>`;
+
+    const teamMeta = `
+      <div class="site-db-detail-kv" style="grid-column:1/-1">
+        <h4>${t('admin.user.team')} (${teamMembers.length})</h4>
+        ${teamBlock}
       </div>`;
 
     const servers = Array.isArray(u.servers) ? u.servers : [];
@@ -6045,6 +6145,7 @@
         ${actions}
         ${banMeta}
         ${userMeta}
+        ${teamMeta}
         ${fcmMeta}
         <div class="site-db-detail-kv" style="grid-column: 1 / -1">
           <h4>rust_servers (${servers.length})</h4>
