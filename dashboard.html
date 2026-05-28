@@ -6025,7 +6025,7 @@
       `<div><dt>${escapeHtml(label)}</dt> <dd>${value}</dd></div>`;
     const mono = (v) => v ? `<code class="mono">${escapeHtml(String(v))}</code>` : '<span class="muted">—</span>';
     const iid = String(u.internal_id);
-    const chatSteamId = u.steam_id ? String(u.steam_id) : '';
+    const chatSteamId = (u.socket_steam_id || u.steam_id) ? String(u.socket_steam_id || u.steam_id) : '';
     const chatServerHint = u.active_server
       ? `${u.active_server.server_name || u.active_server.server_ip || '—'}:${u.active_server.server_port || '—'}`
       : '';
@@ -6092,6 +6092,9 @@
         <dl style="margin:0">
           ${kv('Discord ID', mono(u.discord_id))}
           ${kv('Steam ID', u.steam_id ? steamProfileLink(u.steam_id) : '<span class="muted">—</span>')}
+          ${u.socket_steam_id && String(u.socket_steam_id) !== String(u.steam_id || '')
+            ? kv(_lang==='en'?'Socket Steam ID':'Steam ID сокета', steamProfileLink(u.socket_steam_id))
+            : ''}
           ${kv(t('admin.user.lang'), fmtIngameLang(u.ingame_language))}
           ${kv(t('admin.user.bot_prefix'), mono(u.ingame_prefix || '[rustinfo.online]'))}
           ${kv(t('admin.user.last_command'), fmtLastCommand(u.last_command))}
