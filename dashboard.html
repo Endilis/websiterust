@@ -2090,19 +2090,42 @@
     body.sponsor-chat-team-open .sponsor-chat__team-pop.is-open { display: block; }
 
     @media (min-width: 769px) {
-      #panel-chat.active { align-items: center; justify-content: center; padding: 12px; position: relative; }
+      .dash-panels:has(#panel-chat.active) {
+        padding: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        background: #121212;
+        border-color: rgba(255,255,255,.08);
+      }
       #panel-chat { position: relative; }
+      #panel-chat.active {
+        display: flex !important;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        position: relative;
+      }
       .sponsor-chat {
-        width: min(720px, 100%);
-        max-height: calc(100vh - var(--nav-h) - 72px);
-        border: 1px solid rgba(255,255,255,.08);
-        border-radius: 14px;
-        box-shadow: 0 20px 60px rgba(0,0,0,.45);
+        width: 100%;
+        flex: 1;
+        min-height: 0;
+        height: 100%;
+        max-height: none;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
       }
       .sponsor-chat__back { display: none !important; }
       .sponsor-chat__head-main { text-align: left; }
       .sponsor-chat__title-row { justify-content: flex-start; }
       .sponsor-chat__server-stats { justify-content: flex-start; }
+      .sponsor-chat__messages {
+        padding: 14px 20px 18px;
+      }
     }
 
     @media (max-width: 768px) {
