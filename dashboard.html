@@ -3141,6 +3141,16 @@
                       <p class="admin-coins-msg" id="admin-coins-createcode-msg"></p>
                     </div>
                     <div class="admin-coins-action-card">
+                      <h4>Снять VIP</h4>
+                      <div class="admin-coins-form-row">
+                        <input type="text" id="admin-coins-revoke-discord" class="dash-select" placeholder="Discord ID" />
+                        <select id="admin-coins-revoke-tier" class="dash-select" style="max-width:140px">
+                          <option value="sponsor">sponsor</option>
+                        </select>
+                        <button type="button" class="dash-btn dash-btn--sm dash-btn--danger" id="admin-coins-revokevip-btn">Снять VIP</button>
+                      </div>
+                    </div>
+                    <div class="admin-coins-action-card">
                       <h4>Настройки</h4>
                       <div class="admin-coins-form-row">
                         <label class="dash-muted" style="font-size:.8rem">Cooldown (сек)</label>
@@ -4151,6 +4161,9 @@
       } else if (action === 'setprice') {
         body.tier = 'sponsor';
         body.price = Number(document.getElementById('admin-coins-tier-price')?.value || 0);
+      } else if (action === 'revokevip') {
+        body.discord_id = document.getElementById('admin-coins-revoke-discord')?.value?.trim();
+        body.tier = document.getElementById('admin-coins-revoke-tier')?.value || 'sponsor';
       }
       const r = await fetch(`${API_BASE}/admin/coins?session=${encodeURIComponent(session)}`, {
         method: 'POST',
@@ -4170,7 +4183,16 @@
           createMsg.className = 'admin-coins-msg ok';
         }
       } else if (msgEl) {
-        msgEl.textContent = 'Готово';
+        if (action === 'revokevip' && d.revokevip) {
+          const rv = d.revokevip;
+          if (rv.revoked) {
+            msgEl.textContent = `VIP ${rv.tier_slug} снят у ${rv.discord_id || 'пользователя'}`;
+          } else {
+            msgEl.textContent = `VIP ${rv.tier_slug} уже не активен`;
+          }
+        } else {
+          msgEl.textContent = 'Готово';
+        }
         msgEl.className = 'admin-coins-msg ok';
       }
       renderAdminCoinsStats(d.stats);
@@ -4189,6 +4211,17 @@
     document.getElementById('admin-coins-createcode-btn')?.addEventListener('click', () => adminCoinsAction('createcode'));
     document.getElementById('admin-coins-cooldown-btn')?.addEventListener('click', () => adminCoinsAction('cooldown'));
     document.getElementById('admin-coins-setprice-btn')?.addEventListener('click', () => adminCoinsAction('setprice'));
+    document.getElementById('admin-coins-revokevip-btn')?.addEventListener('click', () => {
+      const did = document.getElementById('admin-coins-revoke-discord')?.value?.trim();
+      const tier = document.getElementById('admin-coins-revoke-tier')?.value || 'sponsor';
+      if (!did) {
+        const msg = document.getElementById('admin-coins-action-msg');
+        if (msg) { msg.textContent = 'Укажите Discord ID'; msg.className = 'admin-coins-msg err'; }
+        return;
+      }
+      if (!confirm(`Снять VIP ${tier} у ${did}? Роль спонсора и префикс будут сброшены.`)) return;
+      adminCoinsAction('revokevip');
+    });
     document.getElementById('admin-coins-ledger-refresh')?.addEventListener('click', () => loadAdminCoinsTab(session, { force: true }));
   }
 
