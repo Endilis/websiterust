@@ -562,6 +562,21 @@
     .device-card__items li { list-style: none; padding: 2px 0; }
     .device-protection { font-size: .75rem; color: #ffd700; }
     .devices-empty { text-align: center; color: var(--muted); padding: 40px 0; font-size: .95rem; }
+    .devices-limit {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
+      margin: 12px 0 14px; padding: 10px 12px;
+      border-radius: 10px; border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+    }
+    .devices-limit__badge {
+      font-size: .82rem; font-weight: 700; font-variant-numeric: tabular-nums;
+      padding: 4px 10px; border-radius: 999px;
+      background: rgba(255,255,255,.08); color: var(--text);
+    }
+    .devices-limit__badge.is-full {
+      background: rgba(206,66,47,.18); color: #f0a090; border: 1px solid rgba(206,66,47,.35);
+    }
+    .devices-limit__hint { font-size: .78rem; color: var(--text2); }
     .account-sheet {
       border-radius: 16px;
       border: 1px solid var(--border);
@@ -3261,6 +3276,7 @@
             <p class="dash-muted" style="font-size:.82rem;margin:4px 0 0" data-i18n="dev.hint">
               Smart Switch — включить/выключить прямо из панели. Storage Monitor — список предметов.
             </p>
+            <div id="devices-limit" class="devices-limit" style="display:none"></div>
             <div id="devices-loading" style="display:none;padding:20px 0;text-align:center;color:var(--muted)" data-i18n="dev.loading">Загрузка...</div>
             <div id="devices-grid" class="devices-grid"></div>
           </div>
@@ -3816,6 +3832,8 @@
       'dev.title':        '🔌 Устройства',
       'dev.refresh':      'Обновить',
       'dev.hint':         'Smart Switch — включить/выключить из панели. Storage Monitor — предметы.',
+      'dev.limit_free_hint': 'Бесплатно: 1 устройство. Спонсор — до 5.',
+      'dev.limit_sponsor': 'Спонсор: до {limit} устройств.',
       'dev.loading':      'Загрузка...',
       'dev.empty':        'Нет зарегистрированных устройств. Используйте .add в игре.',
       'dev.offline':      'Сервер офлайн',
@@ -4129,6 +4147,8 @@
       'dev.title':        '🔌 Devices',
       'dev.refresh':      'Refresh',
       'dev.hint':         'Smart Switch — toggle from panel. Storage Monitor — view items.',
+      'dev.limit_free_hint': 'Free: 1 device. Sponsor — up to 5.',
+      'dev.limit_sponsor': 'Sponsor: up to {limit} devices.',
       'dev.loading':      'Loading...',
       'dev.empty':        'No registered devices. Use .add in-game.',
       'dev.offline':      'Server offline',
@@ -6271,6 +6291,22 @@
     return h > 0 ? `${h}h ${m}m` : `${m}m`;
   }
 
+  function renderDevicesLimit(meta) {
+    const el = document.getElementById('devices-limit');
+    if (!el) return;
+    const count = Number(meta?.device_count ?? 0);
+    const limit = Number(meta?.device_limit ?? 1);
+    const isSponsor = !!meta?.is_sponsor;
+    el.style.display = 'flex';
+    const atMax = count >= limit;
+    const hint = isSponsor
+      ? (t('dev.limit_sponsor') || 'Sponsor: up to {limit} devices.').replace('{limit}', String(limit))
+      : (t('dev.limit_free_hint') || 'Free: 1 device. Sponsor — up to 5.');
+    el.innerHTML =
+      `<span class="devices-limit__badge${atMax ? ' is-full' : ''}">${count} / ${limit}</span>` +
+      `<span class="devices-limit__hint">${escapeHtml(hint)}</span>`;
+  }
+
   function renderDevices(devices) {
     const grid = document.getElementById('devices-grid');
     if (!grid) return;
@@ -6337,6 +6373,7 @@
     try {
       const r = await fetch(`${API_BASE}/me/devices?session=${encodeURIComponent(_devSession)}`, { credentials: 'include' });
       const d = r.ok ? await r.json() : null;
+      renderDevicesLimit(d);
       renderDevices(d?.devices || []);
     } catch (_) {
       const grid = document.getElementById('devices-grid');
