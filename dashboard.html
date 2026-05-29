@@ -1832,23 +1832,32 @@
     .admin-chat-send-btn:disabled { opacity: .5; cursor: default; }
     .admin-chat-empty { color: var(--text2); font-size: .82rem; padding: 8px 0; }
 
-    /* === Sponsor chat (PC + mobile) === */
-    #panel-chat { padding: 0; }
+    /* === Sponsor chat — Rust+ companion style === */
+    #panel-chat { padding: 0; background: #0a0a0a; }
     #panel-chat.active { display: flex; flex-direction: column; min-height: 0; }
     .sponsor-chat {
+      --rp-bg: #0a0a0a;
+      --rp-surface: #141414;
+      --rp-bar: #181818;
+      --rp-input: #242424;
+      --rp-border: #2a2a2a;
+      --rp-text: rgba(255,255,255,.92);
+      --rp-muted: rgba(255,255,255,.45);
+      --rp-accent: #cd412b;
+      --rp-accent-dim: rgba(205,65,43,.35);
       display: flex; flex-direction: column;
       flex: 1; min-height: 0;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+      background: var(--rp-bg);
+      color: var(--rp-text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       overflow: hidden;
       max-height: calc(100vh - var(--nav-h) - 48px);
     }
     .sponsor-chat__header {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(10, 11, 15, .92);
+      display: flex; align-items: center; gap: 8px;
+      padding: max(10px, env(safe-area-inset-top, 0px)) 12px 10px;
+      background: var(--rp-bar);
+      border-bottom: 1px solid var(--rp-border);
       flex-shrink: 0;
       position: relative;
       z-index: 2;
@@ -1856,150 +1865,200 @@
     .sponsor-chat__back {
       display: none;
       flex-shrink: 0;
-      padding: 8px 10px;
+      width: 40px; height: 40px;
+      padding: 0;
       border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--bg3);
-      color: var(--text);
-      font-size: .82rem;
-      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--rp-text);
       cursor: pointer;
+      align-items: center; justify-content: center;
     }
-    .sponsor-chat__head-main { flex: 1; min-width: 0; }
+    .sponsor-chat__back:active { background: rgba(255,255,255,.06); }
+    .sponsor-chat__head-main { flex: 1; min-width: 0; text-align: center; }
+    .sponsor-chat__title-row {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .sponsor-chat__status-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+      background: #6b7280;
+      box-shadow: 0 0 0 2px rgba(107,114,128,.25);
+    }
+    .sponsor-chat__status-dot.is-on {
+      background: #5cb85c;
+      box-shadow: 0 0 0 2px rgba(92,184,92,.25);
+    }
+    .sponsor-chat__status-dot.is-off {
+      background: #cd412b;
+      box-shadow: 0 0 0 2px var(--rp-accent-dim);
+    }
     .sponsor-chat__server-name {
-      font-size: .92rem; font-weight: 700;
+      font-size: .95rem; font-weight: 700;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      letter-spacing: .01em;
     }
     .sponsor-chat__server-stats {
-      font-size: .75rem; color: var(--text2); margin-top: 2px;
-      display: flex; flex-wrap: wrap; gap: 8px;
+      font-size: .72rem; color: var(--rp-muted); margin-top: 3px;
+      display: flex; align-items: center; justify-content: center;
+      flex-wrap: wrap; gap: 10px;
+      font-variant-numeric: tabular-nums;
     }
-    .sponsor-chat__stat b { color: var(--text); font-weight: 600; }
+    .sponsor-chat__queue {
+      color: #f0ad4e;
+      font-weight: 600;
+    }
     .sponsor-chat__team-wrap { position: relative; flex-shrink: 0; }
     .sponsor-chat__team-btn {
-      padding: 7px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(251, 191, 36, .35);
-      background: rgba(251, 191, 36, .12);
-      color: #fbbf24;
+      min-width: 44px;
+      padding: 8px 11px;
+      border-radius: 8px;
+      border: 1px solid var(--rp-border);
+      background: var(--rp-surface);
+      color: var(--rp-text);
       font-size: .78rem; font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
+      font-variant-numeric: tabular-nums;
     }
-    .sponsor-chat__team-btn:hover { background: rgba(251, 191, 36, .2); }
+    .sponsor-chat__team-btn:active { background: #1f1f1f; }
     .sponsor-chat__team-pop {
       display: none;
       position: absolute;
       top: calc(100% + 8px);
       right: 0;
-      min-width: 240px;
-      max-width: min(320px, 90vw);
-      background: var(--bg2);
-      border: 1px solid var(--border);
+      min-width: 260px;
+      max-width: min(340px, 92vw);
+      background: var(--rp-bar);
+      border: 1px solid var(--rp-border);
       border-radius: 12px;
-      box-shadow: 0 12px 40px rgba(0,0,0,.45);
+      box-shadow: 0 16px 48px rgba(0,0,0,.55);
       z-index: 20;
       overflow: hidden;
     }
     .sponsor-chat__team-pop.is-open { display: block; }
+    .sponsor-chat__team-pop-grab {
+      display: none;
+      width: 36px; height: 4px; border-radius: 99px;
+      background: rgba(255,255,255,.18);
+      margin: 8px auto 0;
+    }
     .sponsor-chat__team-pop-head {
-      padding: 10px 12px;
-      font-size: .72rem;
+      padding: 12px 14px 8px;
+      font-size: .7rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: .05em;
-      color: var(--text2);
-      border-bottom: 1px solid var(--border);
+      letter-spacing: .08em;
+      color: var(--rp-muted);
     }
     .sponsor-chat__team-list {
-      max-height: 280px;
+      max-height: 300px;
       overflow-y: auto;
-      padding: 6px 0;
+      padding: 0 0 8px;
     }
     .sponsor-chat__team-row {
-      display: flex; align-items: center; gap: 8px;
-      padding: 8px 12px;
-      font-size: .84rem;
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 14px;
+      font-size: .88rem;
+      border-top: 1px solid rgba(255,255,255,.04);
     }
     .sponsor-chat__team-dot {
-      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+      width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
     }
-    .sponsor-chat__team-dot.is-on { background: #34d399; }
-    .sponsor-chat__team-dot.is-off { background: #6b7280; }
-    .sponsor-chat__team-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .sponsor-chat__team-state { font-size: .72rem; color: var(--text2); flex-shrink: 0; }
-    .sponsor-chat__conn {
-      padding: 6px 12px;
-      font-size: .75rem;
-      color: var(--text2);
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
+    .sponsor-chat__team-dot.is-on { background: #5cb85c; }
+    .sponsor-chat__team-dot.is-off { background: #555; }
+    .sponsor-chat__team-name {
+      flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      font-weight: 600;
     }
-    .sponsor-chat__conn.is-ok { color: #34d399; }
-    .sponsor-chat__conn.is-warn { color: #fbbf24; }
-    .sponsor-chat__conn.is-err { color: #f87171; }
+    .sponsor-chat__team-state { font-size: .72rem; color: var(--rp-muted); flex-shrink: 0; }
     .sponsor-chat__messages {
       flex: 1; min-height: 0;
       overflow-y: auto;
-      padding: 12px;
-      display: flex; flex-direction: column; gap: 8px;
-      background: linear-gradient(180deg, rgba(255,255,255,.02), transparent 120px);
+      overflow-x: hidden;
+      padding: 14px 16px 18px;
+      display: flex; flex-direction: column; gap: 10px;
+      background: var(--rp-bg);
+      -webkit-overflow-scrolling: touch;
     }
-    .sponsor-chat__messages::-webkit-scrollbar { width: 8px; }
+    .sponsor-chat__messages::-webkit-scrollbar { width: 4px; }
     .sponsor-chat__messages::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,.12); border-radius: 4px;
+      background: rgba(255,255,255,.14); border-radius: 4px;
     }
     .sponsor-chat__msg {
-      font-size: .84rem; line-height: 1.45;
-      padding: 8px 10px;
-      border-radius: 10px;
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.04);
+      font-size: .94rem;
+      line-height: 1.45;
+      word-break: break-word;
     }
-    .sponsor-chat__msg--bot { border-color: rgba(96,165,250,.15); background: rgba(96,165,250,.06); }
-    .sponsor-chat__msg-time { color: var(--text2); font-size: .72rem; margin-right: 6px; }
     .sponsor-chat__msg-name { font-weight: 700; }
-    .sponsor-chat__msg-text { color: var(--text); word-break: break-word; }
+    .sponsor-chat__msg-colon { color: var(--rp-muted); }
+    .sponsor-chat__msg-body { color: var(--rp-text); }
+    .sponsor-chat__msg--bot .sponsor-chat__msg-name { color: #7eb8ff !important; }
     .sponsor-chat__empty {
-      margin: auto; text-align: center; color: var(--text2);
-      font-size: .85rem; padding: 24px 16px;
+      margin: auto; text-align: center; color: var(--rp-muted);
+      font-size: .88rem; padding: 32px 20px;
     }
     .sponsor-chat__composer {
-      display: flex; align-items: flex-end; gap: 8px;
+      display: flex; align-items: center; gap: 10px;
       padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
-      border-top: 1px solid var(--border);
-      background: rgba(10, 11, 15, .96);
+      background: var(--rp-bar);
+      border-top: 1px solid var(--rp-border);
       flex-shrink: 0;
     }
-    .sponsor-chat__input {
+    .sponsor-chat__input-wrap {
       flex: 1; min-width: 0;
-      padding: 11px 14px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      color: var(--text);
+      background: var(--rp-input);
+      border-radius: 22px;
+      border: 1px solid var(--rp-border);
+      padding: 2px 14px;
+    }
+    .sponsor-chat__input {
+      width: 100%;
+      padding: 10px 0;
+      border: none;
+      background: transparent;
+      color: var(--rp-text);
       font-size: 16px;
       line-height: 1.3;
-      resize: none;
-      max-height: 120px;
+      outline: none;
     }
-    .sponsor-chat__input:focus { outline: none; border-color: rgba(251,191,36,.45); }
+    .sponsor-chat__input::placeholder { color: rgba(255,255,255,.35); }
+    .sponsor-chat__input:disabled { opacity: .45; }
     .sponsor-chat__send {
-      width: 44px; height: 44px;
-      border-radius: 12px;
+      width: 42px; height: 42px;
+      border-radius: 50%;
       border: none;
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      color: #111;
+      background: var(--rp-accent);
+      color: #fff;
       display: flex; align-items: center; justify-content: center;
       cursor: pointer;
       flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(205,65,43,.35);
     }
-    .sponsor-chat__send:disabled { opacity: .45; cursor: default; }
-    .sponsor-chat__send svg { width: 20px; height: 20px; }
+    .sponsor-chat__send:active { transform: scale(.96); }
+    .sponsor-chat__send:disabled {
+      opacity: .35; cursor: default; box-shadow: none; transform: none;
+    }
+    .sponsor-chat__send svg { width: 18px; height: 18px; margin-left: 2px; }
     .sponsor-chat-locked {
       padding: 32px 20px; text-align: center; color: var(--text2);
+      background: #0a0a0a;
     }
     .sponsor-chat-locked h3 { margin: 0 0 8px; color: var(--text); }
+
+    @media (min-width: 769px) {
+      #panel-chat.active { align-items: center; justify-content: center; padding: 12px; }
+      .sponsor-chat {
+        width: min(720px, 100%);
+        max-height: calc(100vh - var(--nav-h) - 72px);
+        border: 1px solid #2a2a2a;
+        border-radius: 14px;
+        box-shadow: 0 20px 60px rgba(0,0,0,.45);
+      }
+      .sponsor-chat__back { display: none !important; }
+      .sponsor-chat__head-main { text-align: left; }
+      .sponsor-chat__title-row { justify-content: flex-start; }
+      .sponsor-chat__server-stats { justify-content: flex-start; }
+    }
 
     @media (max-width: 768px) {
       body.sponsor-chat-active {
@@ -2010,6 +2069,7 @@
         height: 100%;
         overscroll-behavior: none;
         -webkit-overflow-scrolling: auto;
+        background: #0a0a0a;
       }
       body.sponsor-chat-active #dashboard {
         height: 100%;
@@ -2076,7 +2136,9 @@
         min-width: 0; max-width: none;
         border-radius: 16px 16px 0 0;
         max-height: min(70vh, 520px);
+        border-bottom: none;
       }
+      .sponsor-chat__team-pop-grab { display: block; }
       .sponsor-chat__team-pop-backdrop {
         display: none;
         position: fixed; inset: 0;
@@ -2922,31 +2984,39 @@
         <div id="panel-chat" class="dash-panel" role="tabpanel">
           <div class="sponsor-chat" id="sponsor-chat-root">
             <header class="sponsor-chat__header">
-              <button type="button" class="sponsor-chat__back" id="sponsor-chat-back" data-i18n="chat.back_panel">← Панель</button>
+              <button type="button" class="sponsor-chat__back" id="sponsor-chat-back" aria-label="Панель">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
               <div class="sponsor-chat__head-main">
-                <div class="sponsor-chat__server-name" id="sponsor-chat-server-name">—</div>
+                <div class="sponsor-chat__title-row">
+                  <span class="sponsor-chat__status-dot" id="sponsor-chat-status-dot" aria-hidden="true"></span>
+                  <div class="sponsor-chat__server-name" id="sponsor-chat-server-name">—</div>
+                </div>
                 <div class="sponsor-chat__server-stats" id="sponsor-chat-server-stats">—</div>
               </div>
               <div class="sponsor-chat__team-wrap">
                 <button type="button" class="sponsor-chat__team-btn" id="sponsor-chat-team-btn" aria-expanded="false">—</button>
                 <div class="sponsor-chat__team-pop" id="sponsor-chat-team-pop" role="dialog" aria-label="Команда">
+                  <div class="sponsor-chat__team-pop-grab" aria-hidden="true"></div>
                   <div class="sponsor-chat__team-pop-head" data-i18n="chat.team_title">Команда</div>
                   <div class="sponsor-chat__team-list" id="sponsor-chat-team-list"></div>
                 </div>
               </div>
             </header>
             <div class="sponsor-chat__team-pop-backdrop" id="sponsor-chat-team-backdrop"></div>
-            <div class="sponsor-chat__conn" id="sponsor-chat-conn">—</div>
+            <div class="sponsor-chat__conn" id="sponsor-chat-conn" hidden aria-live="polite"></div>
             <div class="sponsor-chat__messages" id="sponsor-chat-messages">
               <div class="sponsor-chat__empty" id="sponsor-chat-empty" data-i18n="chat.loading">Загрузка…</div>
             </div>
             <div class="sponsor-chat__composer">
-              <input type="text" class="sponsor-chat__input" id="sponsor-chat-input"
-                     data-i18n-placeholder="chat.input_ph" placeholder="Напишите сообщение…" maxlength="200"
-                     enterkeyhint="send" autocomplete="off"/>
+              <div class="sponsor-chat__input-wrap">
+                <input type="text" class="sponsor-chat__input" id="sponsor-chat-input"
+                       data-i18n-placeholder="chat.input_ph" placeholder="Team chat…" maxlength="200"
+                       enterkeyhint="send" autocomplete="off"/>
+              </div>
               <button type="button" class="sponsor-chat__send" id="sponsor-chat-send" aria-label="Отправить">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+                <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                 </svg>
               </button>
             </div>
@@ -3919,15 +3989,16 @@
       'chat.modal_title':    'Чат',
       'chat.back_panel':     '← Панель',
       'chat.team_title':     'Команда',
-      'chat.input_ph':       'Напишите сообщение…',
+      'chat.input_ph':       'Team chat…',
       'chat.send_btn':       'Отправить',
       'chat.loading':        'Загрузка…',
-      'chat.empty':          'Сообщений пока нет. Напишите первым!',
+      'chat.empty':          'Сообщений пока нет',
       'chat.sponsor_only_title': 'Чат для спонсоров',
       'chat.sponsor_only_text':  'Активируйте статус «Спонсор» во вкладке «🪙 Коины / VIP», чтобы писать в командный чат Rust+.',
-      'chat.conn_ok':        '🟢 Подключено к серверу',
-      'chat.conn_off':       '🔴 Бот не подключён — сообщения недоступны',
-      'chat.conn_none':      '⚠ Нет активного сервера',
+      'chat.conn_ok':        'Подключено',
+      'chat.conn_off':       'Бот не подключён',
+      'chat.conn_none':      'Нет активного сервера',
+      'chat.queue_short':    'в очереди',
       'chat.players_fmt':    'Онлайн {cur}/{max}',
       'chat.queue_fmt':      'Очередь {n}',
       'chat.team_fmt':       '{on}/{total}',
@@ -4231,15 +4302,16 @@
       'chat.modal_title':    'Chat',
       'chat.back_panel':     '← Panel',
       'chat.team_title':     'Team',
-      'chat.input_ph':       'Type a message…',
+      'chat.input_ph':       'Team chat…',
       'chat.send_btn':       'Send',
       'chat.loading':        'Loading…',
-      'chat.empty':          'No messages yet. Say hello!',
+      'chat.empty':          'No messages yet',
       'chat.sponsor_only_title': 'Sponsor chat',
       'chat.sponsor_only_text':  'Activate Sponsor status in «🪙 Coins / VIP» to use Rust+ team chat.',
-      'chat.conn_ok':        '🟢 Connected to server',
-      'chat.conn_off':       '🔴 Bot offline — cannot send',
-      'chat.conn_none':      '⚠ No active server',
+      'chat.conn_ok':        'Connected',
+      'chat.conn_off':       'Bot offline',
+      'chat.conn_none':      'No active server',
+      'chat.queue_short':    'in queue',
       'chat.players_fmt':    'Online {cur}/{max}',
       'chat.queue_fmt':      'Queue {n}',
       'chat.team_fmt':       '{on}/{total}',
@@ -4644,7 +4716,7 @@
     _sponsorChatMeta = meta || null;
     const nameEl = document.getElementById('sponsor-chat-server-name');
     const statsEl = document.getElementById('sponsor-chat-server-stats');
-    const connEl = document.getElementById('sponsor-chat-conn');
+    const statusDot = document.getElementById('sponsor-chat-status-dot');
     const input = document.getElementById('sponsor-chat-input');
     const sendBtn = document.getElementById('sponsor-chat-send');
 
@@ -4653,13 +4725,10 @@
     if (statsEl) {
       const parts = [];
       if (meta?.players != null && meta?.max_players != null) {
-        parts.push(`<span class="sponsor-chat__stat">${(t('chat.players_fmt') || 'Онлайн {cur}/{max}')
-          .replace('{cur}', String(meta.players))
-          .replace('{max}', String(meta.max_players))}</span>`);
+        parts.push(`<span>${escapeHtml(String(meta.players))} / ${escapeHtml(String(meta.max_players))}</span>`);
       }
       if (meta?.queued_players != null && Number(meta.queued_players) > 0) {
-        parts.push(`<span class="sponsor-chat__stat">${(t('chat.queue_fmt') || 'Очередь {n}')
-          .replace('{n}', String(meta.queued_players))}</span>`);
+        parts.push(`<span class="sponsor-chat__queue">${escapeHtml(String(meta.queued_players))} ${t('chat.queue_short') || 'queue'}</span>`);
       }
       statsEl.innerHTML = parts.length ? parts.join('') : '—';
     }
@@ -4667,11 +4736,11 @@
     renderSponsorChatTeamList(meta);
 
     const connected = !!meta?.is_connected && meta?.status === 'ok';
-    if (connEl) {
-      connEl.className = 'sponsor-chat__conn ' + (connected ? 'is-ok' : (meta?.status === 'disconnected' ? 'is-warn' : 'is-err'));
-      connEl.textContent = connected
-        ? t('chat.conn_ok')
-        : (meta?.status === 'disconnected' ? t('chat.conn_off') : t('chat.conn_none'));
+    if (statusDot) {
+      statusDot.className = 'sponsor-chat__status-dot' + (connected ? ' is-on' : (meta?.status === 'disconnected' ? ' is-off' : ''));
+      statusDot.title = connected
+        ? (t('chat.conn_ok') || 'Connected')
+        : (meta?.status === 'disconnected' ? (t('chat.conn_off') || 'Disconnected') : (t('chat.conn_none') || 'No connection'));
     }
     if (input) input.disabled = !connected;
     if (sendBtn) sendBtn.disabled = !connected;
@@ -4763,13 +4832,11 @@
         const row = document.createElement('div');
         row.className = `sponsor-chat__msg ${isBot ? 'sponsor-chat__msg--bot' : ''}`;
         row.dataset.chatKey = key;
-        const timeStr = m.ts
-          ? new Date(m.ts * 1000).toLocaleTimeString(_lang==='en'?'en-US':'ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
-          : '—';
+        const nameColor = m.colour || (isBot ? '#7eb8ff' : '#ffffff');
         row.innerHTML =
-          `<span class="sponsor-chat__msg-time">${escapeHtml(timeStr)}</span>` +
-          `<span class="sponsor-chat__msg-name" style="color:${escapeHtml(m.colour || (isBot ? '#60a5fa' : '#34d399'))}">${escapeHtml(m.sender_name || '?')}</span>` +
-          `<span class="sponsor-chat__msg-text">: ${escapeHtml(m.message || '')}</span>`;
+          `<span class="sponsor-chat__msg-name" style="color:${escapeHtml(nameColor)}">${escapeHtml(m.sender_name || '?')}</span>` +
+          `<span class="sponsor-chat__msg-colon">: </span>` +
+          `<span class="sponsor-chat__msg-body">${escapeHtml(m.message || '')}</span>`;
         container.appendChild(row);
         added++;
       }
