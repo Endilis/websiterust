@@ -2689,6 +2689,36 @@
     .team-card--online .team-card__avatar::after { background: #34d399; }
 
     .team-card__body { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    .team-card__cmd {
+      grid-column: 1 / -1;
+      margin-top: 6px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: .78rem;
+    }
+    .team-card__cmd label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: var(--text2);
+      user-select: none;
+    }
+    .team-card__cmd label.is-blocked { color: #fca5a5; }
+    .team-card__cmd input { accent-color: #ef4444; width: 15px; height: 15px; }
+    .team-panel__sponsor-hint {
+      margin-bottom: 12px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(251,191,36,.25);
+      background: rgba(251,191,36,.06);
+      color: #fcd34d;
+      font-size: .82rem;
+    }
     .team-card__name {
       font-weight: 700; font-size: 1rem; color: var(--text);
       display: flex; align-items: center; gap: 6px;
@@ -3171,6 +3201,9 @@
             <p class="muted team-panel__hint" id="team-panel-hint" style="margin-bottom:12px" data-i18n="team.hint">
               Список товарищей по команде из Rust+ с их состоянием: онлайн/оффлайн, жив/мёртв.
               Данные приходят от игрового сервера через активное Rust+ подключение бота.
+            </p>
+            <p class="team-panel__sponsor-hint" id="team-sponsor-cmd-hint" style="display:none" data-i18n="team.sponsor_cmd_hint">
+              Спонсор: отключите тиммейту команды бота в игровом чате (переключатель на карточке игрока).
             </p>
             <div class="team-panel__status" id="team-panel-status">—</div>
             <div class="team-panel__grid" id="team-panel-grid"></div>
@@ -3979,6 +4012,11 @@
       'team.auto_refresh':       'Авто-обновление',
       'team.auto_refresh_title': 'Обновлять каждые 5 секунд',
       'team.hint':               'Список товарищей по команде из Rust+ с их состоянием: онлайн/оффлайн, жив/мёртв. Данные приходят от игрового сервера через активное Rust+ подключение бота.',
+      'team.sponsor_cmd_hint':   'Спонсор: отключите тиммейту команды бота в игровом чате (переключатель на карточке игрока).',
+      'team.cmd_toggle':         'Команды бота',
+      'team.cmd_allowed':        'Разрешены',
+      'team.cmd_disabled':       'Отключены',
+      'team.cmd_block_label':    'Запретить команды',
       /* map panel */
       'map.title':         'Карта сервера',
       'map.select_server': '— выберите сервер —',
@@ -4296,6 +4334,11 @@
       'team.auto_refresh':       'Auto-refresh',
       'team.auto_refresh_title': 'Refresh every 5 seconds',
       'team.hint':               'List of Rust+ teammates with their status: online/offline, alive/dead. Data comes from the game server via the bot\'s active Rust+ connection.',
+      'team.sponsor_cmd_hint':   'Sponsor: disable bot commands in team chat for a teammate (toggle on their card).',
+      'team.cmd_toggle':         'Bot commands',
+      'team.cmd_allowed':        'Allowed',
+      'team.cmd_disabled':       'Disabled',
+      'team.cmd_block_label':    'Block commands',
       /* map panel */
       'map.title':         'Server Map',
       'map.select_server': '— select a server —',
@@ -4543,6 +4586,8 @@
   let _teamPanelBound = false;
   let _teamPanelLastServer = null;
   let _teamPanelAutoRefresh = false;
+  let _teamCanManageCommands = false;
+  const _teamCmdToggleBusy = new Set();
 
   function clearAdminPanelPoll() {
     if (_adminPanelPollTimer) {
@@ -8928,7 +8973,9 @@
         error: data.error,
         members: Array.isArray(data.members) ? data.members : [],
         generated_at_unix: data.generated_at_unix || Math.floor(Date.now() / 1000),
+        can_manage_team_commands: !!data.can_manage_team_commands,
       };
+      _teamCanManageCommands = !!data.can_manage_team_commands;
       renderTeamPanel(_teamPanelLastServer);
     } catch (e) {
       if (statusEl) {
@@ -8979,6 +9026,10 @@
 
     const members = Array.isArray(server.members) ? server.members : [];
     const mySid = String(server.my_steam_id || '');
+    const canManageCmd = !!server.can_manage_team_commands;
+    _teamCanManageCommands = canManageCmd;
+    const sponsorHint = document.getElementById('team-sponsor-cmd-hint');
+    if (sponsorHint) sponsorHint.style.display = canManageCmd ? 'block' : 'none';
     const serverName = server.name ? ` · ${server.name}` : '';
     const onlineCount = members.filter(m => m.is_online).length;
     const aliveCount = members.filter(m => m.is_alive).length;
@@ -9005,7 +9056,7 @@
         if (!!b.is_alive !== !!a.is_alive)  return (b.is_alive  ? 1 : 0) - (a.is_alive  ? 1 : 0);
         return String(a.name || '').localeCompare(String(b.name || ''));
       });
-      grid.innerHTML = sorted.map(m => renderTeamCard(m, mySid)).join('');
+      grid.innerHTML = sorted.map(m => renderTeamCard(m, mySid, canManageCmd)).join('');
     }
 
     if (updEl) {
@@ -9015,7 +9066,7 @@
     }
   }
 
-  function renderTeamCard(m, mySid) {
+  function renderTeamCard(m, mySid, canManageCmd) {
     const name = String(m.name || '?');
     const initials = name.trim().slice(0, 2).toUpperCase() || '??';
     const sid = String(m.steam_id || '');
@@ -9046,6 +9097,19 @@
       ? `<div class="team-card__coords">🧭 X ${Math.round(m.x)} · Y ${Math.round(m.y)}</div>`
       : '';
 
+    let cmdToggleHtml = '';
+    if (canManageCmd && sid && !isMe) {
+      const blocked = !!m.commands_disabled;
+      cmdToggleHtml = `
+        <div class="team-card__cmd">
+          <span>${t('team.cmd_toggle')}</span>
+          <label class="${blocked ? 'is-blocked' : ''}">
+            <input type="checkbox" ${blocked ? 'checked' : ''} onchange="teamSetCommandsDisabled('${escapeHtml(sid)}', this.checked)"/>
+            <span>${blocked ? t('team.cmd_disabled') : t('team.cmd_allowed')}</span>
+          </label>
+        </div>`;
+    }
+
     return `
       <div class="${cls}">
         <div class="team-card__avatar">${escapeHtml(initials)}</div>
@@ -9061,8 +9125,41 @@
           ${sid ? `<div class="team-card__sid">Steam: ${escapeHtml(sid)}</div>` : ''}
           ${coords}
         </div>
+        ${cmdToggleHtml}
       </div>
     `;
+  }
+
+  async function teamSetCommandsDisabled(steamId, disabled) {
+    const session = _dashSessionRef;
+    if (!session || !steamId || !_teamCanManageCommands) return;
+    if (_teamCmdToggleBusy.has(steamId)) return;
+    _teamCmdToggleBusy.add(steamId);
+    try {
+      const resp = await fetch(`${API_BASE}/me/team/commands?session=${encodeURIComponent(session)}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ steam_id: String(steamId), commands_disabled: !!disabled }),
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok || !data.ok) {
+        const msg = data.error || ('HTTP ' + resp.status);
+        alert((_lang === 'en' ? 'Failed to update: ' : 'Не удалось обновить: ') + msg);
+        await fetchAndRenderTeam(session);
+        return;
+      }
+      if (_teamPanelLastServer?.members) {
+        const member = _teamPanelLastServer.members.find(x => String(x.steam_id) === String(steamId));
+        if (member) member.commands_disabled = !!disabled;
+      }
+      renderTeamPanel(_teamPanelLastServer);
+    } catch (e) {
+      alert((_lang === 'en' ? 'Network error: ' : 'Ошибка сети: ') + ((e && e.message) || String(e)));
+      await fetchAndRenderTeam(session);
+    } finally {
+      _teamCmdToggleBusy.delete(steamId);
+    }
   }
 
   function formatAgo(unixTs) {
