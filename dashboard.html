@@ -438,7 +438,20 @@
     .device-card__header {
       display: flex; align-items: center; gap: 10px;
     }
-    .device-card__icon { font-size: 1.5rem; line-height: 1; }
+    .device-card__icon {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .device-card__icon img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      display: block;
+    }
     .device-card__name { font-weight: 600; font-size: .95rem; color: var(--text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .device-card__type { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
     .device-card__status {
@@ -5316,7 +5329,10 @@
           initMapPanelOnce();
         }
         if (id === 'devices') {
-          loadDevices();
+          loadDevices({ manual: true });
+          startDevicesAutoRefresh();
+        } else {
+          stopDevicesAutoRefresh();
         }
         if (id === 'coins') {
           loadCoinsPanel();
@@ -5331,6 +5347,7 @@
     stopAdminChatPoll();
     closeAdminUserChat();
     stopTeamAutoRefresh();
+    stopDevicesAutoRefresh();
     localStorage.removeItem('ri_session');
     window.location.href = 'index.html';
   });
@@ -5428,7 +5445,7 @@
     if (activeId === 'panel-team') {
       fetchAndRenderTeam(session).catch(() => {});
     } else if (activeId === 'panel-devices') {
-      loadDevices();
+      loadDevices({ showLoading: false });
     } else if (activeId === 'panel-coins') {
       loadCoinsPanel();
     } else if (activeId === 'panel-admin' && String(_dashDiscordId || '') === ADMIN_DISCORD_ID) {
@@ -6285,11 +6302,24 @@
 
   /* ── Devices panel ── */
   let _devSession = null;
-  let _devAutoRefresh = null;
+  let _devAutoRefreshTimer = null;
+  let _devLoadBusy = false;
+  const DEVICES_REFRESH_MS = 4000;
 
   const DEVICE_TYPE_LABEL = { 1: 'dev.type_switch', 2: 'dev.type_alarm', 3: 'dev.type_storage' };
   const DEVICE_TYPE_CLASS  = { 1: 'switch', 2: 'alarm', 3: 'storage' };
-  const DEVICE_TYPE_ICON   = { 1: '💡', 2: '🔔', 3: '📦' };
+  const DEVICE_TYPE_ICON_FILE = {
+    1: 'smart.switch.png',
+    2: 'smart.alarm.png',
+    3: 'storage.monitor.png',
+  };
+
+  function deviceIconHtml(entityType) {
+    const file = DEVICE_TYPE_ICON_FILE[entityType] || DEVICE_TYPE_ICON_FILE[1];
+    const localSrc = `images/${file}`;
+    const fallbackSrc = `${API_BASE}/static/items/${file}`;
+    return `<img src="${localSrc}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${fallbackSrc}'">`;
+  }
 
   function formatProtection(secs) {
     if (!secs) return '';
@@ -6323,7 +6353,7 @@
     }
     grid.innerHTML = devices.map(dev => {
       const typeClass = DEVICE_TYPE_CLASS[dev.entity_type] || 'switch';
-      const icon      = DEVICE_TYPE_ICON[dev.entity_type] || '🔌';
+      const icon      = deviceIconHtml(dev.entity_type);
       const typeLabel = t(DEVICE_TYPE_LABEL[dev.entity_type] || 'dev.type_switch');
       const name      = dev.custom_name || dev.entity_name || `Device ${dev.entity_id}`;
 
@@ -6373,20 +6403,41 @@
     }).join('');
   }
 
-  async function loadDevices() {
-    if (!_devSession) return;
+  async function loadDevices(opts = {}) {
+    const session = _dashSessionRef || _devSession;
+    if (!session) return;
+    _devSession = session;
+    if (_devLoadBusy && !opts.force) return;
+    _devLoadBusy = true;
+
     const loading = document.getElementById('devices-loading');
-    if (loading) loading.style.display = 'block';
+    const grid = document.getElementById('devices-grid');
+    const hasCards = !!grid?.querySelector('.device-card');
+    const showSpinner = opts.showLoading !== false && (opts.manual || !hasCards);
+    if (loading && showSpinner) loading.style.display = 'block';
+
     try {
-      const r = await fetch(`${API_BASE}/me/devices?session=${encodeURIComponent(_devSession)}`, { credentials: 'include' });
-      const d = r.ok ? await r.json() : null;
+      const r = await fetch(`${API_BASE}/me/devices?session=${encodeURIComponent(session)}&_t=${Date.now()}`, {
+        credentials: 'include',
+        cache: 'no-store',
+      });
+      const d = r.ok ? await r.json().catch(() => null) : null;
+      if (!r.ok || !d?.ok) {
+        if (opts.manual || !hasCards) {
+          const msg = d?.message || d?.error || (_lang === 'en' ? 'Load error' : 'Ошибка загрузки');
+          if (grid) grid.innerHTML = `<div class="devices-empty">❌ ${escapeHtml(String(msg))}</div>`;
+        }
+        return;
+      }
       renderDevicesLimit(d);
-      renderDevices(d?.devices || []);
+      renderDevices(d.devices || []);
     } catch (_) {
-      const grid = document.getElementById('devices-grid');
-      if (grid) grid.innerHTML = `<div class="devices-empty">❌ ${_lang==='en'?'Load error':'Ошибка загрузки'}</div>`;
+      if (opts.manual || !hasCards) {
+        if (grid) grid.innerHTML = `<div class="devices-empty">❌ ${_lang === 'en' ? 'Load error' : 'Ошибка загрузки'}</div>`;
+      }
     } finally {
-      if (loading) loading.style.display = 'none';
+      if (loading && showSpinner) loading.style.display = 'none';
+      _devLoadBusy = false;
     }
   }
 
@@ -6402,9 +6453,28 @@
         body: JSON.stringify({ value }),
       });
       // Перезагружаем список после небольшой паузы
-      setTimeout(loadDevices, 600);
+      setTimeout(() => loadDevices({ showLoading: false, force: true }), 600);
     } catch (_) {
       document.querySelectorAll(`.device-card[data-eid="${entityId}"] .device-btn`).forEach(b => b.disabled = false);
+    }
+  }
+
+  function startDevicesAutoRefresh() {
+    stopDevicesAutoRefresh();
+    _devAutoRefreshTimer = setInterval(() => {
+      const panel = document.getElementById('panel-devices');
+      if (!panel || !panel.classList.contains('active')) {
+        stopDevicesAutoRefresh();
+        return;
+      }
+      loadDevices({ showLoading: false });
+    }, DEVICES_REFRESH_MS);
+  }
+
+  function stopDevicesAutoRefresh() {
+    if (_devAutoRefreshTimer) {
+      clearInterval(_devAutoRefreshTimer);
+      _devAutoRefreshTimer = null;
     }
   }
 
@@ -6413,7 +6483,10 @@
     const refreshBtn = document.getElementById('btn-devices-refresh');
     if (refreshBtn && !refreshBtn.dataset.bound) {
       refreshBtn.dataset.bound = '1';
-      refreshBtn.addEventListener('click', loadDevices);
+      refreshBtn.addEventListener('click', () => loadDevices({ manual: true, force: true }));
+    }
+    if (document.getElementById('panel-devices')?.classList.contains('active')) {
+      startDevicesAutoRefresh();
     }
   }
 
