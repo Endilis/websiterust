@@ -3996,6 +3996,7 @@
   let _adminChatLastTs = 0;
   let _adminChatPollTimer = null;
   let _adminChatBound = false;
+  const _adminChatSeenKeys = new Set();
   let _teamPanelTimer = null;
   let _teamPanelBound = false;
   let _teamPanelLastServer = null;
@@ -4229,13 +4230,17 @@
      ADMIN CHAT — модалка per-user (новая БД)
      ================================================================ */
 
+  function adminChatMessageKey(m) {
+    return `${m.recorded_at || m.ts || 0}:${m.sender_steam_id || ''}:${m.message || ''}`;
+  }
+
   function stopAdminChatPoll() {
     if (_adminChatPollTimer) { clearInterval(_adminChatPollTimer); _adminChatPollTimer = null; }
   }
 
   function startAdminChatPoll() {
     stopAdminChatPoll();
-    _adminChatPollTimer = setInterval(fetchAdminChatMessages, 3000);
+    _adminChatPollTimer = setInterval(fetchAdminChatMessages, 2000);
   }
 
   function closeAdminUserChat() {
@@ -4247,6 +4252,7 @@
     }
     _adminChatSteamId = null;
     _adminChatLastTs = 0;
+    _adminChatSeenKeys.clear();
   }
 
   function initAdminChatModal() {
@@ -4276,6 +4282,7 @@
 
     _adminChatSteamId = String(steamId);
     _adminChatLastTs = 0;
+    _adminChatSeenKeys.clear();
 
     const modal = document.getElementById('admin-chat-modal');
     const titleEl = document.getElementById('admin-chat-modal-title');
@@ -4301,9 +4308,17 @@
     if (!_adminChatSteamId || !_dashSessionRef) return;
     const statusEl = document.getElementById('admin-chat-status');
     try {
-      const url = `${API_BASE}/admin/chat?session=${encodeURIComponent(_dashSessionRef)}&steam_id=${encodeURIComponent(_adminChatSteamId)}&since=${_adminChatLastTs}`;
+      const url = `${API_BASE}/admin/chat?session=${encodeURIComponent(_dashSessionRef)}&steam_id=${encodeURIComponent(_adminChatSteamId)}&since=${_adminChatLastTs}&_t=${Date.now()}`;
       const resp = await fetch(url, { credentials: 'include', cache: 'no-store' });
-      if (!resp.ok) return;
+      if (resp.status === 401) {
+        if (statusEl) statusEl.textContent = _lang === 'en' ? '🔒 session expired' : '🔒 сессия истекла';
+        stopAdminChatPoll();
+        return;
+      }
+      if (!resp.ok) {
+        if (statusEl) statusEl.textContent = `HTTP ${resp.status}`;
+        return;
+      }
       const data = await resp.json();
       if (!data.ok) return;
 
@@ -4316,42 +4331,51 @@
       const msgs = Array.isArray(data.messages) ? data.messages : [];
       if (!msgs.length) return;
 
-      // Обновляем максимальный ts
-      for (const m of msgs) {
-        if (m.ts > _adminChatLastTs) _adminChatLastTs = m.ts;
-      }
-
       const container = document.getElementById('admin-chat-messages');
       if (!container) return;
       const wasEmpty = container.querySelector('.admin-chat-empty');
       if (wasEmpty) container.innerHTML = '';
 
-      // Сортируем по времени (старые сначала) — API возвращает новые первыми
-      msgs.sort((a, b) => a.ts - b.ts);
+      msgs.sort((a, b) => (a.recorded_at || a.ts || 0) - (b.recorded_at || b.ts || 0));
 
       const atBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 60;
+      let appended = 0;
 
       for (const m of msgs) {
+        const key = adminChatMessageKey(m);
+        if (_adminChatSeenKeys.has(key)) continue;
+        _adminChatSeenKeys.add(key);
+        const cursor = Number(m.recorded_at || m.ts || 0);
+        if (cursor > _adminChatLastTs) _adminChatLastTs = cursor;
+
         const isBot = !m.sender_steam_id || m.sender_name === 'RustInfoBot';
         const d = document.createElement('div');
         d.className = `admin-chat-msg ${isBot ? 'admin-chat-msg--bot' : 'admin-chat-msg--player'}`;
+        d.dataset.chatKey = key;
         const t = m.ts ? new Date(m.ts * 1000).toLocaleTimeString(_lang==='en'?'en-US':'ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
         d.innerHTML =
           `<span class="admin-chat-msg__time">${escapeHtml(t)}</span>` +
           `<span class="admin-chat-msg__name" style="color:${escapeHtml(m.colour || '#34d399')}">${escapeHtml(m.sender_name || '?')}</span>` +
           `<span class="admin-chat-msg__text">: ${escapeHtml(m.message || '')}</span>`;
         container.appendChild(d);
+        appended++;
       }
 
-      // Ограничиваем до 400 DOM-элементов
+      if (!appended) return;
+
       const allMsgs = container.querySelectorAll('.admin-chat-msg');
       if (allMsgs.length > 400) {
-        for (let i = 0; i < allMsgs.length - 400; i++) allMsgs[i].remove();
+        for (let i = 0; i < allMsgs.length - 400; i++) {
+          const k = allMsgs[i].dataset.chatKey;
+          if (k) _adminChatSeenKeys.delete(k);
+          allMsgs[i].remove();
+        }
       }
 
-      // Авто-скролл если были внизу
       if (atBottom) container.scrollTop = container.scrollHeight;
-    } catch (_) {}
+    } catch (_) {
+      if (statusEl) statusEl.textContent = _lang === 'en' ? 'network error' : 'ошибка сети';
+    }
   }
 
   async function sendAdminChatMessage() {
@@ -4375,7 +4399,8 @@
         alert(`${_lang==='en'?'Send error: ':'Ошибка отправки: '}${err || resp.status}`);
       } else {
         // Сразу тянем новые сообщения чтобы показать отправленное
-        setTimeout(fetchAdminChatMessages, 1000);
+        fetchAdminChatMessages();
+        setTimeout(fetchAdminChatMessages, 800);
       }
     } catch (e) {
       alert(`${_lang==='en'?'Network error: ':'Сетевая ошибка: '}${e.message || e}`);
@@ -4436,8 +4461,9 @@
           }
         } else {
           clearAdminPanelPoll();
-          stopAdminChatPoll();
-          closeAdminUserChat();
+          const chatOpen = _adminChatSteamId && !document.getElementById('admin-chat-modal')?.classList.contains('is-hidden');
+          if (chatOpen) startAdminChatPoll();
+          else stopAdminChatPoll();
         }
         if (id === 'team') {
           setupTeamPanel();
@@ -4605,6 +4631,11 @@
     const session = _dashSessionRef || localStorage.getItem('ri_session');
     if (!session) return;
     refreshUserData(null);
+    const chatOpen = _adminChatSteamId && !document.getElementById('admin-chat-modal')?.classList.contains('is-hidden');
+    if (chatOpen) {
+      fetchAdminChatMessages();
+      startAdminChatPoll();
+    }
   });
 
   // Возврат из bfcache (назад/вперёд) — снова тянем свежие данные.
