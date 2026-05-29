@@ -1664,6 +1664,41 @@
       padding-top: 20px;
     }
 
+    /* === Admin embed builder === */
+    .admin-embed-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .admin-embed-toolbar .dash-select {
+      min-width: 220px;
+      max-width: 320px;
+      padding: 8px 12px;
+      font-size: .85rem;
+    }
+    .admin-embed-status {
+      font-size: .82rem;
+      color: var(--muted);
+      min-height: 1.2em;
+    }
+    .admin-embed-status.is-ok { color: #4ade80; }
+    .admin-embed-status.is-err { color: #f87171; }
+    .admin-embed-frame-wrap {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #1e1f22;
+      min-height: 560px;
+    }
+    .admin-embed-frame-wrap iframe {
+      display: block;
+      width: 100%;
+      height: min(72vh, 820px);
+      min-height: 560px;
+      border: 0;
+    }
+
     /* === Admin chat === */
     /* ── Old DB guild cards ── */
     .olddb-grid {
@@ -3408,6 +3443,7 @@
               <button class="admin-tab-btn" data-admin-tab="newdb" role="tab" aria-selected="false" data-i18n="admin.tab.newdb">Новая БД</button>
               <button class="admin-tab-btn" data-admin-tab="guilds" role="tab" aria-selected="false" data-i18n="admin.tab.guilds">Гильдии</button>
               <button class="admin-tab-btn" data-admin-tab="coins" role="tab" aria-selected="false">🪙 Коины</button>
+              <button class="admin-tab-btn" data-admin-tab="embed" role="tab" aria-selected="false" data-i18n="admin.tab.embed">Embed</button>
               <button class="admin-tab-btn" data-admin-tab="olddb" role="tab" aria-selected="false" data-i18n="admin.tab.olddb">Старая БД</button>
             </nav>
 
@@ -3741,6 +3777,37 @@
                 </section>
               </div>
 
+              <!-- ── TAB: Embed ── -->
+              <div class="admin-tab-panel" data-admin-tab-panel="embed">
+                <section class="admin-panel-section">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text" data-i18n="admin.embed.title">Discord Embed · отправка</span>
+                  </h3>
+                  <p class="muted" style="font-size:.82rem;margin:0 0 12px" data-i18n="admin.embed.hint">
+                    Соберите embed в редакторе и отправьте в выбранный канал от имени бота.
+                  </p>
+                  <div class="admin-embed-toolbar">
+                    <select id="admin-embed-guild" class="dash-select" aria-label="Discord server">
+                      <option value="" data-i18n="admin.embed.guild_ph">Сервер…</option>
+                    </select>
+                    <select id="admin-embed-channel" class="dash-select" aria-label="Channel" disabled>
+                      <option value="" data-i18n="admin.embed.channel_ph">Канал…</option>
+                    </select>
+                    <button type="button" class="dash-btn dash-btn--sm" id="admin-embed-send-btn" data-i18n="admin.embed.send_btn">Отправить</button>
+                    <span class="admin-embed-status" id="admin-embed-status" aria-live="polite"></span>
+                  </div>
+                  <div class="admin-embed-frame-wrap" style="margin-top:14px">
+                    <iframe
+                      id="admin-embed-iframe"
+                      title="Embed builder"
+                      src="/embedbuilder/index.html?hidemenu=1&nouser=1&nomultiembedsoption=0"
+                      loading="lazy"
+                      referrerpolicy="no-referrer"
+                    ></iframe>
+                  </div>
+                </section>
+              </div>
+
               <!-- ── TAB: Старая БД ── -->
               <div class="admin-tab-panel" data-admin-tab-panel="olddb">
                 <section class="admin-panel-section">
@@ -4055,7 +4122,23 @@
       'admin.tab.commands': 'Команды',
       'admin.tab.newdb':    'Новая БД',
       'admin.tab.guilds':   'Гильдии',
+      'admin.tab.embed':    'Embed',
       'admin.tab.olddb':   '🗄 Старая БД',
+      'admin.embed.title': 'Discord Embed · отправка',
+      'admin.embed.hint': 'Соберите embed в редакторе и отправьте в выбранный канал от имени бота.',
+      'admin.embed.guild_ph': 'Сервер…',
+      'admin.embed.channel_ph': 'Канал…',
+      'admin.embed.send_btn': 'Отправить',
+      'admin.embed.loading_guilds': 'Загрузка серверов…',
+      'admin.embed.loading_channels': 'Загрузка каналов…',
+      'admin.embed.no_guilds': 'Нет серверов с ботом',
+      'admin.embed.no_channels': 'Нет доступных каналов',
+      'admin.embed.pick_guild': 'Выберите сервер',
+      'admin.embed.pick_channel': 'Выберите канал',
+      'admin.embed.empty': 'Добавьте текст или embed',
+      'admin.embed.sent': 'Отправлено',
+      'admin.embed.sent_id': 'Отправлено · message_id={id}',
+      'admin.embed.err.generic': 'Ошибка отправки',
       'admin.user.chat_btn': 'Чат',
       'admin.user.lang': 'Язык',
       'admin.user.bot_prefix': 'Имя бота в чате',
@@ -4377,7 +4460,23 @@
       'admin.tab.commands': 'Commands',
       'admin.tab.newdb':    'New DB',
       'admin.tab.guilds':   'Guilds',
+      'admin.tab.embed':    'Embed',
       'admin.tab.olddb':   '🗄 Old DB',
+      'admin.embed.title': 'Discord Embed · send',
+      'admin.embed.hint': 'Build an embed in the editor and send it to the selected channel as the bot.',
+      'admin.embed.guild_ph': 'Server…',
+      'admin.embed.channel_ph': 'Channel…',
+      'admin.embed.send_btn': 'Send',
+      'admin.embed.loading_guilds': 'Loading servers…',
+      'admin.embed.loading_channels': 'Loading channels…',
+      'admin.embed.no_guilds': 'No servers with the bot',
+      'admin.embed.no_channels': 'No accessible channels',
+      'admin.embed.pick_guild': 'Select a server',
+      'admin.embed.pick_channel': 'Select a channel',
+      'admin.embed.empty': 'Add message text or an embed',
+      'admin.embed.sent': 'Sent',
+      'admin.embed.sent_id': 'Sent · message_id={id}',
+      'admin.embed.err.generic': 'Send failed',
       'admin.user.chat_btn': 'Chat',
       'admin.user.lang': 'Language',
       'admin.user.bot_prefix': 'Bot chat prefix',
@@ -4617,9 +4716,181 @@
       if (tab === 'coins' && _dashSessionRef) {
         loadAdminCoinsTab(_dashSessionRef);
       }
+      if (tab === 'embed' && _dashSessionRef) {
+        loadAdminEmbedTab(_dashSessionRef);
+      }
       // Не останавливаем поллинг при смене внутренних вкладок —
       // он останавливается только при уходе из всей admin-панели.
     });
+  }
+
+  let _adminEmbedGuildsCache = null;
+
+  function setAdminEmbedStatus(text, kind) {
+    const el = document.getElementById('admin-embed-status');
+    if (!el) return;
+    el.textContent = text || '';
+    el.classList.remove('is-ok', 'is-err');
+    if (kind === 'ok') el.classList.add('is-ok');
+    if (kind === 'err') el.classList.add('is-err');
+  }
+
+  function getAdminEmbedMessagePayload() {
+    const iframe = document.getElementById('admin-embed-iframe');
+    if (!iframe?.contentWindow) return null;
+    try {
+      return iframe.contentWindow.json;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function adminEmbedMessageIsEmpty(msg) {
+    if (!msg || typeof msg !== 'object') return true;
+    const content = msg.content && String(msg.content).trim();
+    if (content) return false;
+    if (Array.isArray(msg.embeds) && msg.embeds.length) return false;
+    if (msg.embed && typeof msg.embed === 'object' && Object.keys(msg.embed).length) return false;
+    return true;
+  }
+
+  async function loadAdminEmbedGuilds(session) {
+    const guildSelect = document.getElementById('admin-embed-guild');
+    const channelSelect = document.getElementById('admin-embed-channel');
+    if (!guildSelect || !channelSelect) return;
+
+    guildSelect.innerHTML = `<option value="">${t('admin.embed.guild_ph')}</option>`;
+    channelSelect.innerHTML = `<option value="">${t('admin.embed.channel_ph')}</option>`;
+    channelSelect.disabled = true;
+    setAdminEmbedStatus(t('admin.embed.loading_guilds'), null);
+
+    try {
+      const r = await fetch(`${API_BASE}/admin/discord/guilds?session=${encodeURIComponent(session)}`, {
+        credentials: 'include',
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok || !data.ok) {
+        setAdminEmbedStatus(data.error || t('admin.embed.err.generic'), 'err');
+        return;
+      }
+      _adminEmbedGuildsCache = data.guilds || [];
+      if (!_adminEmbedGuildsCache.length) {
+        guildSelect.innerHTML = `<option value="">${t('admin.embed.no_guilds')}</option>`;
+        setAdminEmbedStatus('', null);
+        return;
+      }
+      guildSelect.innerHTML = `<option value="">${t('admin.embed.guild_ph')}</option>` +
+        _adminEmbedGuildsCache.map(g => {
+          const label = g.name ? `${g.name} (${g.id})` : g.id;
+          return `<option value="${g.id}">${label.replace(/</g, '&lt;')}</option>`;
+        }).join('');
+      setAdminEmbedStatus('', null);
+    } catch (e) {
+      setAdminEmbedStatus(t('admin.embed.err.generic'), 'err');
+    }
+  }
+
+  async function loadAdminEmbedChannels(session, guildId) {
+    const channelSelect = document.getElementById('admin-embed-channel');
+    if (!channelSelect) return;
+    channelSelect.innerHTML = `<option value="">${t('admin.embed.channel_ph')}</option>`;
+    channelSelect.disabled = true;
+    if (!guildId) return;
+
+    setAdminEmbedStatus(t('admin.embed.loading_channels'), null);
+    try {
+      const r = await fetch(
+        `${API_BASE}/admin/discord/channels?session=${encodeURIComponent(session)}&guild_id=${encodeURIComponent(guildId)}`,
+        { credentials: 'include' },
+      );
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok || !data.ok) {
+        setAdminEmbedStatus(data.error || t('admin.embed.err.generic'), 'err');
+        return;
+      }
+      const channels = data.channels || [];
+      if (!channels.length) {
+        channelSelect.innerHTML = `<option value="">${t('admin.embed.no_channels')}</option>`;
+        setAdminEmbedStatus('', null);
+        return;
+      }
+      channelSelect.innerHTML = `<option value="">${t('admin.embed.channel_ph')}</option>` +
+        channels.map(ch => {
+          const prefix = ch.category ? `${ch.category} / ` : '';
+          const label = `${prefix}#${ch.name}`;
+          return `<option value="${ch.id}">${label.replace(/</g, '&lt;')}</option>`;
+        }).join('');
+      channelSelect.disabled = false;
+      setAdminEmbedStatus('', null);
+    } catch (e) {
+      setAdminEmbedStatus(t('admin.embed.err.generic'), 'err');
+    }
+  }
+
+  async function sendAdminEmbed(session) {
+    const guildId = document.getElementById('admin-embed-guild')?.value || '';
+    const channelId = document.getElementById('admin-embed-channel')?.value || '';
+    const btn = document.getElementById('admin-embed-send-btn');
+
+    if (!guildId) {
+      setAdminEmbedStatus(t('admin.embed.pick_guild'), 'err');
+      return;
+    }
+    if (!channelId) {
+      setAdminEmbedStatus(t('admin.embed.pick_channel'), 'err');
+      return;
+    }
+
+    const message = getAdminEmbedMessagePayload();
+    if (adminEmbedMessageIsEmpty(message)) {
+      setAdminEmbedStatus(t('admin.embed.empty'), 'err');
+      return;
+    }
+
+    if (btn) btn.disabled = true;
+    setAdminEmbedStatus(t('admin.embed.send_btn') + '…', null);
+    try {
+      const r = await fetch(`${API_BASE}/admin/discord/send-embed?session=${encodeURIComponent(session)}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guild_id: guildId, channel_id: channelId, message }),
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok || !data.ok) {
+        const err = data.error || data.message || t('admin.embed.err.generic');
+        setAdminEmbedStatus(err, 'err');
+        return;
+      }
+      const okText = data.message_id
+        ? t('admin.embed.sent_id').replace('{id}', data.message_id)
+        : t('admin.embed.sent');
+      setAdminEmbedStatus(okText, 'ok');
+    } catch (e) {
+      setAdminEmbedStatus(t('admin.embed.err.generic'), 'err');
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  function setupAdminEmbedHandlers() {
+    const guildSelect = document.getElementById('admin-embed-guild');
+    const sendBtn = document.getElementById('admin-embed-send-btn');
+    if (!guildSelect || guildSelect.dataset.bound === '1') return;
+    guildSelect.dataset.bound = '1';
+
+    guildSelect.addEventListener('change', () => {
+      if (_dashSessionRef) loadAdminEmbedChannels(_dashSessionRef, guildSelect.value);
+    });
+    sendBtn?.addEventListener('click', () => {
+      if (_dashSessionRef) sendAdminEmbed(_dashSessionRef);
+    });
+  }
+
+  function loadAdminEmbedTab(session) {
+    if (!session || String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
+    setupAdminEmbedHandlers();
+    loadAdminEmbedGuilds(session);
   }
 
   const ADMIN_COIN_ENTRY_LABELS = {
