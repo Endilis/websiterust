@@ -2002,23 +2002,70 @@
     .sponsor-chat-locked h3 { margin: 0 0 8px; color: var(--text); }
 
     @media (max-width: 768px) {
-      body.sponsor-chat-active #dashboard > header { display: none !important; }
-      body.sponsor-chat-active .dash-sidebar { display: none !important; }
-      body.sponsor-chat-active main { padding: 0 !important; max-width: none !important; }
-      body.sponsor-chat-active .dashboard-body { display: block; margin: 0; }
-      body.sponsor-chat-active .dash-panels { margin: 0; }
-      body.sponsor-chat-active #panel-chat.active {
+      body.sponsor-chat-active {
+        overflow: hidden;
         position: fixed;
         inset: 0;
-        z-index: 600;
+        width: 100%;
+        height: 100%;
+        overscroll-behavior: none;
+        -webkit-overflow-scrolling: auto;
+      }
+      body.sponsor-chat-active #dashboard {
+        height: 100%;
+        max-height: 100dvh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      body.sponsor-chat-active #dashboard > header { display: none !important; }
+      body.sponsor-chat-active .dash-sidebar { display: none !important; }
+      body.sponsor-chat-active main {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: none !important;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      body.sponsor-chat-active .dashboard-body {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
         margin: 0;
+        overflow: hidden;
+      }
+      body.sponsor-chat-active .dash-panels {
+        flex: 1;
+        min-height: 0;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      body.sponsor-chat-active #panel-chat.active {
+        position: relative;
+        inset: auto;
+        flex: 1;
+        min-height: 0;
+        z-index: 1;
+        margin: 0;
+        padding: 0;
         max-height: none;
-        height: 100dvh;
-        height: 100vh;
+        height: auto;
+        overflow: hidden;
+        display: flex !important;
+        flex-direction: column;
       }
       body.sponsor-chat-active .sponsor-chat {
+        flex: 1;
+        min-height: 0;
         max-height: none;
-        height: 100%;
+        height: auto;
         border: none;
         border-radius: 0;
       }
@@ -2605,7 +2652,7 @@
         <nav class="dash-nav" aria-label="Разделы панели">
           <button type="button" class="dash-nav-btn active" data-panel="account" data-i18n="nav.account">Аккаунт</button>
           <button type="button" class="dash-nav-btn" data-panel="rust" data-i18n="nav.rust">Сервер</button>
-          <button type="button" class="dash-nav-btn" data-panel="chat" id="nav-chat-btn" style="display:none">💬 Чат</button>
+          <button type="button" class="dash-nav-btn" data-panel="chat" id="nav-chat-btn" style="display:none" data-i18n="nav.chat">💬 Чат</button>
           <button type="button" class="dash-nav-btn" data-panel="team" data-i18n="nav.team">Команда</button>
           <button type="button" class="dash-nav-btn" data-panel="commands" data-i18n="nav.commands">Команды</button>
           <button type="button" class="dash-nav-btn" data-panel="devices" data-i18n="nav.devices">Устройства</button>
