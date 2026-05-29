@@ -1852,6 +1852,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       overflow: hidden;
       max-height: calc(100vh - var(--nav-h) - 48px);
+      height: 100%;
     }
     .sponsor-chat__header {
       display: flex; align-items: center; gap: 8px;
@@ -1972,13 +1973,16 @@
     }
     .sponsor-chat__team-state { font-size: .72rem; color: var(--rp-muted); flex-shrink: 0; }
     .sponsor-chat__messages {
-      flex: 1; min-height: 0;
+      flex: 1 1 0;
+      min-height: 0;
       overflow-y: auto;
       overflow-x: hidden;
       padding: 14px 16px 18px;
       display: flex; flex-direction: column; gap: 10px;
       background: var(--rp-bg);
       -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
     }
     .sponsor-chat__messages::-webkit-scrollbar { width: 4px; }
     .sponsor-chat__messages::-webkit-scrollbar-thumb {
@@ -2003,6 +2007,8 @@
       background: var(--rp-bar);
       border-top: 1px solid var(--rp-border);
       flex-shrink: 0;
+      position: relative;
+      z-index: 3;
     }
     .sponsor-chat__input-wrap {
       flex: 1; min-width: 0;
@@ -2046,7 +2052,8 @@
     .sponsor-chat-locked h3 { margin: 0 0 8px; color: var(--text); }
 
     @media (min-width: 769px) {
-      #panel-chat.active { align-items: center; justify-content: center; padding: 12px; }
+      #panel-chat.active { align-items: center; justify-content: center; padding: 12px; position: relative; }
+      #panel-chat { position: relative; }
       .sponsor-chat {
         width: min(720px, 100%);
         max-height: calc(100vh - var(--nav-h) - 72px);
@@ -2067,67 +2074,89 @@
         inset: 0;
         width: 100%;
         height: 100%;
+        height: 100dvh;
         overscroll-behavior: none;
         -webkit-overflow-scrolling: auto;
         background: #0a0a0a;
       }
-      body.sponsor-chat-active #dashboard {
+      body.sponsor-chat-active > nav {
+        display: none !important;
+      }
+      body.sponsor-chat-active main {
+        padding: 0 !important;
+        margin: 0 !important;
+        flex: 1;
+        min-height: 0;
         height: 100%;
         max-height: 100dvh;
         overflow: hidden;
         display: flex;
         flex-direction: column;
       }
-      body.sponsor-chat-active #dashboard > header { display: none !important; }
-      body.sponsor-chat-active .dash-sidebar { display: none !important; }
-      body.sponsor-chat-active main {
-        padding: 0 !important;
-        margin: 0 !important;
-        max-width: none !important;
+      body.sponsor-chat-active #dashboard {
         flex: 1;
         min-height: 0;
+        height: 100%;
+        max-height: 100dvh;
         overflow: hidden;
         display: flex;
         flex-direction: column;
       }
+      body.sponsor-chat-active .dash-sidebar { display: none !important; }
       body.sponsor-chat-active .dashboard-body {
         display: flex;
         flex-direction: column;
         flex: 1;
         min-height: 0;
+        height: 100%;
         margin: 0;
         overflow: hidden;
       }
       body.sponsor-chat-active .dash-panels {
         flex: 1;
         min-height: 0;
+        height: 100%;
         margin: 0;
         padding: 0;
+        border: none;
+        border-radius: 0;
+        background: #0a0a0a;
         overflow: hidden;
-        display: flex;
-        flex-direction: column;
+        max-height: none;
       }
       body.sponsor-chat-active #panel-chat.active {
-        position: relative;
-        inset: auto;
-        flex: 1;
-        min-height: 0;
-        z-index: 1;
+        position: fixed;
+        inset: 0;
+        z-index: 9000;
         margin: 0;
         padding: 0;
-        max-height: none;
-        height: auto;
+        width: 100%;
+        height: 100%;
+        height: 100dvh;
+        max-height: 100dvh;
         overflow: hidden;
         display: flex !important;
         flex-direction: column;
+        background: #0a0a0a;
       }
       body.sponsor-chat-active .sponsor-chat {
         flex: 1;
         min-height: 0;
-        max-height: none;
-        height: auto;
+        height: 100%;
+        max-height: 100%;
         border: none;
         border-radius: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      body.sponsor-chat-active .sponsor-chat__messages {
+        flex: 1 1 0;
+        min-height: 0;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      body.sponsor-chat-active .sponsor-chat__composer {
+        flex-shrink: 0;
       }
       .sponsor-chat__back { display: inline-flex; align-items: center; }
       .sponsor-chat__team-pop {
@@ -2137,15 +2166,17 @@
         border-radius: 16px 16px 0 0;
         max-height: min(70vh, 520px);
         border-bottom: none;
+        z-index: 10050;
       }
       .sponsor-chat__team-pop-grab { display: block; }
       .sponsor-chat__team-pop-backdrop {
         display: none;
         position: fixed; inset: 0;
-        background: rgba(0,0,0,.45);
-        z-index: 19;
+        background: rgba(0,0,0,.55);
+        z-index: 10040;
       }
       body.sponsor-chat-team-open .sponsor-chat__team-pop-backdrop { display: block; }
+      body.sponsor-chat-team-open .sponsor-chat__team-pop.is-open { display: block; }
     }
     @media (min-width: 769px) {
       .sponsor-chat__team-pop-backdrop { display: none !important; }
@@ -2996,14 +3027,8 @@
               </div>
               <div class="sponsor-chat__team-wrap">
                 <button type="button" class="sponsor-chat__team-btn" id="sponsor-chat-team-btn" aria-expanded="false">—</button>
-                <div class="sponsor-chat__team-pop" id="sponsor-chat-team-pop" role="dialog" aria-label="Команда">
-                  <div class="sponsor-chat__team-pop-grab" aria-hidden="true"></div>
-                  <div class="sponsor-chat__team-pop-head" data-i18n="chat.team_title">Команда</div>
-                  <div class="sponsor-chat__team-list" id="sponsor-chat-team-list"></div>
-                </div>
               </div>
             </header>
-            <div class="sponsor-chat__team-pop-backdrop" id="sponsor-chat-team-backdrop"></div>
             <div class="sponsor-chat__conn" id="sponsor-chat-conn" hidden aria-live="polite"></div>
             <div class="sponsor-chat__messages" id="sponsor-chat-messages">
               <div class="sponsor-chat__empty" id="sponsor-chat-empty" data-i18n="chat.loading">Загрузка…</div>
@@ -3020,6 +3045,12 @@
                 </svg>
               </button>
             </div>
+          </div>
+          <div class="sponsor-chat__team-pop-backdrop" id="sponsor-chat-team-backdrop"></div>
+          <div class="sponsor-chat__team-pop" id="sponsor-chat-team-pop" role="dialog" aria-label="Команда">
+            <div class="sponsor-chat__team-pop-grab" aria-hidden="true"></div>
+            <div class="sponsor-chat__team-pop-head" data-i18n="chat.team_title">Команда</div>
+            <div class="sponsor-chat__team-list" id="sponsor-chat-team-list"></div>
           </div>
           <div class="sponsor-chat-locked" id="sponsor-chat-locked" style="display:none">
             <h3 data-i18n="chat.sponsor_only_title">Чат для спонсоров</h3>
@@ -4650,6 +4681,7 @@
   let _sponsorChatPollTimer = null;
   let _sponsorChatSeenKeys = new Set();
   let _sponsorChatBound = false;
+  let _sponsorChatResizeBound = false;
   let _sponsorChatMeta = null;
 
   function sponsorChatMessageKey(m) {
@@ -4665,10 +4697,41 @@
     _sponsorChatPollTimer = setInterval(fetchSponsorChat, 2000);
   }
 
+  function resetSponsorChatTeamPopPosition() {
+    const pop = document.getElementById('sponsor-chat-team-pop');
+    if (!pop) return;
+    pop.style.position = '';
+    pop.style.top = '';
+    pop.style.right = '';
+    pop.style.left = '';
+    pop.style.bottom = '';
+  }
+
   function closeSponsorChatTeamPop() {
     document.body.classList.remove('sponsor-chat-team-open');
     document.getElementById('sponsor-chat-team-pop')?.classList.remove('is-open');
     document.getElementById('sponsor-chat-team-btn')?.setAttribute('aria-expanded', 'false');
+    resetSponsorChatTeamPopPosition();
+  }
+
+  function positionSponsorChatTeamPop() {
+    const pop = document.getElementById('sponsor-chat-team-pop');
+    const btn = document.getElementById('sponsor-chat-team-btn');
+    if (!pop || !btn || !pop.classList.contains('is-open')) return;
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      pop.style.position = '';
+      pop.style.top = '';
+      pop.style.right = '';
+      pop.style.left = '';
+      pop.style.bottom = '';
+      return;
+    }
+    const r = btn.getBoundingClientRect();
+    pop.style.position = 'fixed';
+    pop.style.top = `${Math.round(r.bottom + 8)}px`;
+    pop.style.right = `${Math.round(window.innerWidth - r.right)}px`;
+    pop.style.left = 'auto';
+    pop.style.bottom = 'auto';
   }
 
   function toggleSponsorChatTeamPop() {
@@ -4680,6 +4743,11 @@
     document.body.classList.toggle('sponsor-chat-team-open', open);
     if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     if (open && _sponsorChatMeta) renderSponsorChatTeamList(_sponsorChatMeta);
+    if (open) {
+      requestAnimationFrame(positionSponsorChatTeamPop);
+    } else {
+      positionSponsorChatTeamPop();
+    }
   }
 
   function renderSponsorChatTeamList(meta) {
@@ -4762,8 +4830,13 @@
     });
     document.getElementById('sponsor-chat-team-backdrop')?.addEventListener('click', closeSponsorChatTeamPop);
     document.addEventListener('click', (e) => {
+      const pop = document.getElementById('sponsor-chat-team-pop');
+      if (!pop?.classList.contains('is-open')) return;
       const wrap = document.querySelector('.sponsor-chat__team-wrap');
-      if (wrap && !wrap.contains(e.target)) closeSponsorChatTeamPop();
+      const btn = document.getElementById('sponsor-chat-team-btn');
+      const target = e.target;
+      if (wrap?.contains(target) || pop.contains(target) || btn?.contains(target)) return;
+      closeSponsorChatTeamPop();
     });
 
     const input = document.getElementById('sponsor-chat-input');
@@ -4772,6 +4845,15 @@
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendSponsorChatMessage(); }
     });
     sendBtn?.addEventListener('click', sendSponsorChatMessage);
+
+    if (!_sponsorChatResizeBound) {
+      _sponsorChatResizeBound = true;
+      window.addEventListener('resize', () => {
+        if (document.getElementById('sponsor-chat-team-pop')?.classList.contains('is-open')) {
+          positionSponsorChatTeamPop();
+        }
+      }, { passive: true });
+    }
   }
 
   function resetSponsorChatView() {
