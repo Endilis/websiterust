@@ -93,6 +93,46 @@
       .nav-refresh__label { display: none; }
       .nav-refresh { padding: 6px 9px; }
     }
+    @media (max-width: 768px) {
+      nav {
+        position: relative;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        padding: 10px 12px 8px;
+        padding-top: max(10px, env(safe-area-inset-top));
+        padding-right: max(12px, env(safe-area-inset-right));
+        padding-left: max(12px, env(safe-area-inset-left));
+        row-gap: 8px;
+      }
+      .nav-logo {
+        flex: 1 1 auto;
+        min-width: 0;
+        max-width: calc(100% - 76px);
+        font-size: 0.95rem;
+        padding-right: 4px;
+      }
+      .nav-logo img { width: 28px; height: 28px; }
+      .nav-user {
+        flex: 1 1 100%;
+        justify-content: flex-end;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        min-width: 0;
+      }
+      .nav-user > span#nav-username { display: none !important; }
+      .nav-logout {
+        position: absolute;
+        top: max(10px, env(safe-area-inset-top));
+        right: max(12px, env(safe-area-inset-right));
+        z-index: 5;
+        flex-shrink: 0;
+        padding: 7px 12px;
+        font-size: 0.82rem;
+        white-space: nowrap;
+      }
+      body.dashboard-page { --nav-h: 104px; }
+    }
     .nav-lang-btn {
       display: inline-flex; align-items: center; justify-content: center;
       padding: 5px 10px; border-radius: 8px; min-width: 38px;
