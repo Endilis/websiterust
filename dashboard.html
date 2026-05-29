@@ -1833,18 +1833,22 @@
     .admin-chat-empty { color: var(--text2); font-size: .82rem; padding: 8px 0; }
 
     /* === Sponsor chat — Rust+ companion style === */
-    #panel-chat { padding: 0; background: #0a0a0a; }
+    #panel-chat { padding: 0; background: #121212; }
     #panel-chat.active { display: flex; flex-direction: column; min-height: 0; }
     .sponsor-chat {
-      --rp-bg: #0a0a0a;
-      --rp-surface: #141414;
+      --rp-bg: #121212;
+      --rp-surface: #1a1a1a;
       --rp-bar: #181818;
-      --rp-input: #242424;
-      --rp-border: #2a2a2a;
-      --rp-text: rgba(255,255,255,.92);
-      --rp-muted: rgba(255,255,255,.45);
-      --rp-accent: #cd412b;
-      --rp-accent-dim: rgba(205,65,43,.35);
+      --rp-input: #2a2a2a;
+      --rp-border: rgba(255,255,255,.08);
+      --rp-msg-bg: #1e1e1e;
+      --rp-msg-border: rgba(255,255,255,.06);
+      --rp-text: #e6e6e6;
+      --rp-muted: rgba(255,255,255,.5);
+      --rp-accent: #ce422f;
+      --rp-accent-hover: #d94a36;
+      --rp-accent-dim: rgba(206,66,47,.4);
+      --rp-sheet: #222222;
       display: flex; flex-direction: column;
       flex: 1; min-height: 0;
       background: var(--rp-bg);
@@ -1890,7 +1894,7 @@
       box-shadow: 0 0 0 2px rgba(92,184,92,.25);
     }
     .sponsor-chat__status-dot.is-off {
-      background: #cd412b;
+      background: var(--rp-accent);
       box-shadow: 0 0 0 2px var(--rp-accent-dim);
     }
     .sponsor-chat__server-name {
@@ -1921,7 +1925,7 @@
       white-space: nowrap;
       font-variant-numeric: tabular-nums;
     }
-    .sponsor-chat__team-btn:active { background: #1f1f1f; }
+    .sponsor-chat__team-btn:active { background: #252525; }
     .sponsor-chat__team-pop {
       display: none;
       position: absolute;
@@ -1929,11 +1933,11 @@
       right: 0;
       min-width: 260px;
       max-width: min(340px, 92vw);
-      background: var(--rp-bar);
+      background: var(--rp-sheet);
       border: 1px solid var(--rp-border);
-      border-radius: 12px;
-      box-shadow: 0 16px 48px rgba(0,0,0,.55);
-      z-index: 20;
+      border-radius: 14px;
+      box-shadow: 0 20px 56px rgba(0,0,0,.65);
+      z-index: 10050;
       overflow: hidden;
     }
     .sponsor-chat__team-pop.is-open { display: block; }
@@ -1965,8 +1969,8 @@
     .sponsor-chat__team-dot {
       width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
     }
-    .sponsor-chat__team-dot.is-on { background: #5cb85c; }
-    .sponsor-chat__team-dot.is-off { background: #555; }
+    .sponsor-chat__team-dot.is-on { background: #6dd06d; }
+    .sponsor-chat__team-dot.is-off { background: #666; }
     .sponsor-chat__team-name {
       flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
       font-weight: 600;
@@ -1977,8 +1981,8 @@
       min-height: 0;
       overflow-y: auto;
       overflow-x: hidden;
-      padding: 14px 16px 18px;
-      display: flex; flex-direction: column; gap: 10px;
+      padding: 12px 14px 16px;
+      display: flex; flex-direction: column; gap: 8px;
       background: var(--rp-bg);
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
@@ -1989,14 +1993,32 @@
       background: rgba(255,255,255,.14); border-radius: 4px;
     }
     .sponsor-chat__msg {
-      font-size: .94rem;
-      line-height: 1.45;
+      background: var(--rp-msg-bg);
+      border: 1px solid var(--rp-msg-border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: .92rem;
+      line-height: 1.4;
       word-break: break-word;
     }
-    .sponsor-chat__msg-name { font-weight: 700; }
-    .sponsor-chat__msg-colon { color: var(--rp-muted); }
-    .sponsor-chat__msg-body { color: var(--rp-text); }
-    .sponsor-chat__msg--bot .sponsor-chat__msg-name { color: #7eb8ff !important; }
+    .sponsor-chat__msg-name {
+      display: block;
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .01em;
+      margin-bottom: 4px;
+    }
+    .sponsor-chat__msg-body {
+      display: block;
+      color: var(--rp-text);
+      font-size: .92rem;
+      line-height: 1.45;
+    }
+    .sponsor-chat__msg--bot {
+      background: rgba(30, 38, 52, .95);
+      border-color: rgba(100, 149, 237, .18);
+    }
+    .sponsor-chat__msg--bot .sponsor-chat__msg-name { color: #8ec5ff !important; }
     .sponsor-chat__empty {
       margin: auto; text-align: center; color: var(--rp-muted);
       font-size: .88rem; padding: 32px 20px;
@@ -2038,8 +2060,9 @@
       display: flex; align-items: center; justify-content: center;
       cursor: pointer;
       flex-shrink: 0;
-      box-shadow: 0 2px 8px rgba(205,65,43,.35);
+      box-shadow: 0 2px 10px rgba(206,66,47,.4);
     }
+    .sponsor-chat__send:hover { background: var(--rp-accent-hover); }
     .sponsor-chat__send:active { transform: scale(.96); }
     .sponsor-chat__send:disabled {
       opacity: .35; cursor: default; box-shadow: none; transform: none;
@@ -2047,9 +2070,24 @@
     .sponsor-chat__send svg { width: 18px; height: 18px; margin-left: 2px; }
     .sponsor-chat-locked {
       padding: 32px 20px; text-align: center; color: var(--text2);
-      background: #0a0a0a;
+      background: #121212;
     }
-    .sponsor-chat-locked h3 { margin: 0 0 8px; color: var(--text); }
+    .sponsor-chat__team-pop-backdrop {
+      display: block;
+      position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 10040;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .22s ease, visibility .22s ease;
+    }
+    body.sponsor-chat-team-open .sponsor-chat__team-pop-backdrop {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    body.sponsor-chat-team-open .sponsor-chat__team-pop.is-open { display: block; }
 
     @media (min-width: 769px) {
       #panel-chat.active { align-items: center; justify-content: center; padding: 12px; position: relative; }
@@ -2057,7 +2095,7 @@
       .sponsor-chat {
         width: min(720px, 100%);
         max-height: calc(100vh - var(--nav-h) - 72px);
-        border: 1px solid #2a2a2a;
+        border: 1px solid rgba(255,255,255,.08);
         border-radius: 14px;
         box-shadow: 0 20px 60px rgba(0,0,0,.45);
       }
@@ -2077,7 +2115,7 @@
         height: 100dvh;
         overscroll-behavior: none;
         -webkit-overflow-scrolling: auto;
-        background: #0a0a0a;
+        background: #121212;
       }
       body.sponsor-chat-active > nav {
         display: none !important;
@@ -2120,7 +2158,7 @@
         padding: 0;
         border: none;
         border-radius: 0;
-        background: #0a0a0a;
+        background: #121212;
         overflow: hidden;
         max-height: none;
       }
@@ -2137,7 +2175,7 @@
         overflow: hidden;
         display: flex !important;
         flex-direction: column;
-        background: #0a0a0a;
+        background: #121212;
       }
       body.sponsor-chat-active .sponsor-chat {
         flex: 1;
@@ -2169,18 +2207,9 @@
         z-index: 10050;
       }
       .sponsor-chat__team-pop-grab { display: block; }
-      .sponsor-chat__team-pop-backdrop {
-        display: none;
-        position: fixed; inset: 0;
-        background: rgba(0,0,0,.55);
-        z-index: 10040;
-      }
-      body.sponsor-chat-team-open .sponsor-chat__team-pop-backdrop { display: block; }
-      body.sponsor-chat-team-open .sponsor-chat__team-pop.is-open { display: block; }
     }
-    @media (min-width: 769px) {
-      .sponsor-chat__team-pop-backdrop { display: none !important; }
-    }
+
+    .sponsor-chat-locked h3 { margin: 0 0 8px; color: var(--text); }
 
     .admin-panel-section { display: flex; flex-direction: column; gap: 12px; }
     .admin-panel-section__title {
@@ -4914,10 +4943,9 @@
         const row = document.createElement('div');
         row.className = `sponsor-chat__msg ${isBot ? 'sponsor-chat__msg--bot' : ''}`;
         row.dataset.chatKey = key;
-        const nameColor = m.colour || (isBot ? '#7eb8ff' : '#ffffff');
+        const nameColor = m.colour || (isBot ? '#8ec5ff' : '#6dd06d');
         row.innerHTML =
           `<span class="sponsor-chat__msg-name" style="color:${escapeHtml(nameColor)}">${escapeHtml(m.sender_name || '?')}</span>` +
-          `<span class="sponsor-chat__msg-colon">: </span>` +
           `<span class="sponsor-chat__msg-body">${escapeHtml(m.message || '')}</span>`;
         container.appendChild(row);
         added++;
