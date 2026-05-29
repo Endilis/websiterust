@@ -463,7 +463,7 @@
     .device-btn--off { background: #c85050; color: #fff; }
     .device-btn:disabled { opacity: .45; cursor: default; }
 
-    /* ── Coins / VIP panel ── */
+    /* ── Coins panel ── */
     .coins-balance {
       font-size: 2rem;
       font-weight: 700;
@@ -500,9 +500,15 @@
     }
     .coins-vip-row {
       display: flex;
-      gap: 8px;
+      gap: 12px;
       flex-wrap: wrap;
+      align-items: center;
       margin-top: 12px;
+    }
+    .coins-sponsor-price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
     }
     .coins-msg {
       margin-top: 10px;
@@ -2817,7 +2823,7 @@
           <button type="button" class="dash-nav-btn" data-panel="team" data-i18n="nav.team">Команда</button>
           <button type="button" class="dash-nav-btn" data-panel="commands" data-i18n="nav.commands">Команды</button>
           <button type="button" class="dash-nav-btn" data-panel="devices" data-i18n="nav.devices">Устройства</button>
-          <button type="button" class="dash-nav-btn" data-panel="coins" id="nav-coins-btn" style="display:none">🪙 Коины / VIP</button>
+          <button type="button" class="dash-nav-btn" data-panel="coins" id="nav-coins-btn" style="display:none" data-i18n="nav.coins">🪙 Коины</button>
           <div class="dash-nav-label" data-i18n="nav.wip">🚧 В разработке</div>
           <button type="button" class="dash-nav-btn sub" data-panel="map" data-i18n="nav.map">🗺️ Карта</button>
           <button type="button" class="dash-nav-btn sub dash-nav-btn--wip" data-panel="notify-game" data-i18n="nav.notify">🔔 Уведомления</button>
@@ -2945,7 +2951,7 @@
                 </div>
                 <p class="dash-muted" id="prefix-save-msg" style="flex:1 0 100%;font-size:.8rem;margin:4px 0 0;display:none"></p>
                 <p class="dash-muted" id="prefix-sponsor-hint" style="flex:1 0 100%;font-size:.8rem;margin:4px 0 0;display:none;color:var(--text2)">
-                  Изменить имя бота могут только спонсоры. Статус «Спонсор» — во вкладке «🪙 Коины / VIP».
+                  Изменить имя бота могут только спонсоры. Статус «Спонсор» — во вкладке «🪙 Коины».
                 </p>
               </div>
 
@@ -3126,7 +3132,7 @@
           </div>
           <div class="sponsor-chat-locked" id="sponsor-chat-locked" style="display:none">
             <h3 data-i18n="chat.sponsor_only_title">Чат для спонсоров</h3>
-            <p data-i18n="chat.sponsor_only_text">Активируйте статус «Спонсор» во вкладке «🪙 Коины / VIP», чтобы писать в командный чат Rust+.</p>
+            <p data-i18n="chat.sponsor_only_text">Активируйте статус «Спонсор» во вкладке «🪙 Коины», чтобы писать в командный чат Rust+.</p>
           </div>
         </div>
 
@@ -3286,7 +3292,7 @@
           </div>
         </div>
 
-        <!-- PANEL: coins / VIP -->
+        <!-- PANEL: coins -->
         <div id="panel-coins" class="dash-panel" role="tabpanel">
           <div class="dash-panel-inner">
             <div class="card">
@@ -3305,9 +3311,9 @@
             </div>
 
             <div class="card">
-              <div class="card-header"><span>⭐ VIP</span></div>
+              <div class="card-header"><span>⭐ Спонсор</span></div>
               <div class="coins-vip-status" id="coins-vip-status">—</div>
-              <p class="dash-muted" id="coins-vip-price" style="font-size:.82rem;margin:4px 0 0">—</p>
+              <p class="dash-muted" id="coins-vip-price" style="font-size:.82rem;margin:4px 0 0">1 месяц</p>
               <div class="coins-vip-row" id="coins-vip-buttons"></div>
               <p class="coins-msg" id="coins-vip-msg"></p>
             </div>
@@ -3782,12 +3788,7 @@
 
   function updateCoinsNavVisibility(discordId) {
     const btn = document.getElementById('nav-coins-btn');
-    const panel = document.getElementById('panel-coins');
-    const isAdmin = String(discordId || '') === ADMIN_DISCORD_ID;
-    if (btn) btn.style.display = isAdmin ? '' : 'none';
-    if (!isAdmin && panel && panel.classList.contains('active')) {
-      document.querySelector('.dash-nav-btn[data-panel="account"]')?.click();
-    }
+    if (btn) btn.style.display = discordId ? '' : 'none';
   }
 
   function isActiveSponsorData(data) {
@@ -3833,6 +3834,7 @@
       'nav.team':         'Команда',
       'nav.commands':     'Команды',
       'nav.devices':      'Устройства',
+      'nav.coins':        '🪙 Коины',
       'dev.title':        '🔌 Устройства',
       'dev.refresh':      'Обновить',
       'dev.hint':         'Smart Switch — включить/выключить из панели. Storage Monitor — предметы.',
@@ -4101,7 +4103,7 @@
       'chat.loading':        'Загрузка…',
       'chat.empty':          'Сообщений пока нет',
       'chat.sponsor_only_title': 'Чат для спонсоров',
-      'chat.sponsor_only_text':  'Активируйте статус «Спонсор» во вкладке «🪙 Коины / VIP», чтобы писать в командный чат Rust+.',
+      'chat.sponsor_only_text':  'Активируйте статус «Спонсор» во вкладке «🪙 Коины», чтобы писать в командный чат Rust+.',
       'chat.conn_ok':        'Подключено',
       'chat.conn_off':       'Бот не подключён',
       'chat.conn_none':      'Нет активного сервера',
@@ -4149,6 +4151,7 @@
       'nav.team':         'Team',
       'nav.commands':     'Commands',
       'nav.devices':      'Devices',
+      'nav.coins':        '🪙 Coins',
       'dev.title':        '🔌 Devices',
       'dev.refresh':      'Refresh',
       'dev.hint':         'Smart Switch — toggle from panel. Storage Monitor — view items.',
@@ -4236,6 +4239,7 @@
       'acc.evt_crate':         'Locked Crate',
       'acc.evt_deepsea':       'Deep Sea',
       'acc.evt_vendor':        'Traveling Vendor',
+      'acc.evt_team_death':    'Player death',
       'admin.notif.title':           'Notifications',
       'admin.notif.global_lbl':      'Globally enabled',
       'admin.notif.disable_all_btn': 'Disable for all (DB)',
@@ -4416,7 +4420,7 @@
       'chat.loading':        'Loading…',
       'chat.empty':          'No messages yet',
       'chat.sponsor_only_title': 'Sponsor chat',
-      'chat.sponsor_only_text':  'Activate Sponsor status in «🪙 Coins / VIP» to use Rust+ team chat.',
+      'chat.sponsor_only_text':  'Activate Sponsor status in «🪙 Coins» to use Rust+ team chat.',
       'chat.conn_ok':        'Connected',
       'chat.conn_off':       'Bot offline',
       'chat.conn_none':      'No active server',
@@ -5315,9 +5319,7 @@
           loadDevices();
         }
         if (id === 'coins') {
-          if (String(_dashDiscordId || '') === ADMIN_DISCORD_ID) {
-            loadCoinsPanel();
-          }
+          loadCoinsPanel();
         }
       });
     });
@@ -5427,7 +5429,7 @@
       fetchAndRenderTeam(session).catch(() => {});
     } else if (activeId === 'panel-devices') {
       loadDevices();
-    } else if (activeId === 'panel-coins' && String(_dashDiscordId || '') === ADMIN_DISCORD_ID) {
+    } else if (activeId === 'panel-coins') {
       loadCoinsPanel();
     } else if (activeId === 'panel-admin' && String(_dashDiscordId || '') === ADMIN_DISCORD_ID) {
       await loadAdminPanel(session, _dashDiscordId, { force: true });
@@ -6421,7 +6423,7 @@
   const COIN_ENTRY_LABELS = {
     admin_grant: 'Начисление админом',
     code_redeem: 'Пополнение кодом',
-    vip_purchase: 'Покупка VIP',
+    vip_purchase: 'Активация спонсора',
     deposit_bonus: 'Бонус к пополнению',
   };
 
@@ -6467,37 +6469,31 @@
     const vip = merged.vip;
     if (vipEl) {
       if (vip && vip.active) {
-        vipEl.innerHTML = `Активен tier <strong>${vip.tier_slug}</strong> до ${formatCoinTs(vip.expires_at)}`;
+        vipEl.innerHTML = `Спонсор активен до <strong>${formatCoinTs(vip.expires_at)}</strong>`;
       } else {
-        vipEl.textContent = 'VIP не активен';
+        vipEl.textContent = 'Спонсор не активен';
       }
     }
 
     const sponsor = (merged.tiers || []).find(t => t.slug === 'sponsor') || (merged.tiers || [])[0];
     const priceEl = document.getElementById('coins-vip-price');
     const btnWrap = document.getElementById('coins-vip-buttons');
-    if (priceEl && sponsor) {
-      const ppm = Number(sponsor.coin_price_per_month || 0);
-      if (ppm > 0) {
-        priceEl.textContent = `${sponsor.name || sponsor.slug}: ${ppm.toLocaleString('ru-RU')} 🪙 / месяц`;
-      } else {
-        priceEl.textContent = 'Цена Sponsor ещё не установлена (админ: !vip setprice sponsor N)';
-      }
-    }
     if (btnWrap && sponsor) {
       const ppm = Number(sponsor.coin_price_per_month || 0);
       if (ppm > 0) {
-        btnWrap.innerHTML = [1, 3, 6].map(m => {
-          const cost = ppm * m;
-          return `<button type="button" class="dash-btn dash-btn--sm" data-vip-months="${m}" data-vip-tier="${sponsor.slug}">${m} мес. · ${cost.toLocaleString('ru-RU')} 🪙</button>`;
-        }).join('');
-        btnWrap.querySelectorAll('[data-vip-months]').forEach(btn => {
-          if (btn.dataset.bound) return;
-          btn.dataset.bound = '1';
-          btn.addEventListener('click', () => purchaseVipTier(btn.getAttribute('data-vip-tier'), Number(btn.getAttribute('data-vip-months'))));
-        });
+        if (priceEl) priceEl.textContent = '1 месяц';
+        btnWrap.innerHTML = `
+          <span class="coins-sponsor-price">${ppm.toLocaleString('ru-RU')} 🪙</span>
+          <button type="button" class="dash-btn" data-vip-tier="${sponsor.slug}">Активировать</button>
+        `;
+        const activateBtn = btnWrap.querySelector('[data-vip-tier]');
+        if (activateBtn && !activateBtn.dataset.bound) {
+          activateBtn.dataset.bound = '1';
+          activateBtn.addEventListener('click', () => purchaseVipTier(activateBtn.getAttribute('data-vip-tier')));
+        }
       } else {
-        btnWrap.innerHTML = '<span class="dash-muted">Покупка недоступна — цена не задана</span>';
+        if (priceEl) priceEl.textContent = 'Цена ещё не установлена';
+        btnWrap.innerHTML = '<span class="dash-muted">Активация недоступна — цена не задана</span>';
       }
     }
   }
@@ -6544,7 +6540,6 @@
 
   async function loadCoinsPanel() {
     if (!_coinsSession) return;
-    if (String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
     const loading = document.getElementById('coins-history-loading');
     if (loading) loading.style.display = 'block';
     try {
@@ -6600,12 +6595,13 @@
     }
   }
 
-  async function purchaseVipTier(tier, months) {
+  async function purchaseVipTier(tier) {
     if (!_coinsSession || !tier) return;
+    const months = 1;
     const msg = document.getElementById('coins-vip-msg');
     const ppm = Number((_coinsData?.tiers || []).find(t => t.slug === tier)?.coin_price_per_month || 0);
     const cost = ppm * months;
-    if (!confirm(`Купить ${tier} на ${months} мес. за ${cost.toLocaleString('ru-RU')} 🪙?`)) return;
+    if (!confirm(`Активировать спонсора на 1 месяц за ${cost.toLocaleString('ru-RU')} 🪙?`)) return;
     if (msg) { msg.textContent = ''; msg.className = 'coins-msg'; }
     try {
       const r = await fetch(`${API_BASE}/me/vip/purchase?session=${encodeURIComponent(_coinsSession)}`, {
@@ -6617,7 +6613,7 @@
       const d = await r.json().catch(() => ({}));
       if (r.ok && d.ok) {
         if (msg) {
-          msg.textContent = `VIP активен до ${formatCoinTs(d.purchase?.expires_at || d.vip?.expires_at)}`;
+          msg.textContent = `Спонсор активен до ${formatCoinTs(d.purchase?.expires_at || d.vip?.expires_at)}`;
           msg.className = 'coins-msg ok';
         }
         renderCoinsPanel(d);
@@ -6643,7 +6639,7 @@
         }
       } else {
         if (msg) {
-          msg.textContent = d.message || d.error || 'Не удалось купить VIP';
+          msg.textContent = d.message || d.error || 'Не удалось активировать спонсора';
           msg.className = 'coins-msg err';
         }
       }
@@ -6676,7 +6672,6 @@
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState !== 'visible') return;
         if (!document.getElementById('panel-coins')?.classList.contains('active')) return;
-        if (String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
         loadCoinsPanel();
       });
     }
