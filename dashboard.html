@@ -1015,6 +1015,46 @@
       color: var(--text); line-height: 1.25; margin: 0 0 4px;
     }
     .account-handle { font-size: 0.9rem; color: var(--text2); margin: 0; }
+    #profile-sponsor-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 10px;
+    }
+    .profile-sponsor-active {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .profile-sponsor-free {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .profile-free-tier {
+      font-size: .82rem;
+      color: var(--text2);
+      font-weight: 500;
+    }
+    .profile-sponsor-pitch {
+      font-size: .82rem;
+      color: var(--text2);
+      cursor: pointer;
+    }
+    .profile-sponsor-pitch:hover { color: var(--text1); }
+    .profile-sponsor-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: .78rem;
+      font-weight: 700;
+      background: rgba(251,191,36,.15);
+      color: #fbbf24;
+      border: 1px solid rgba(251,191,36,.35);
+      vertical-align: baseline;
+    }
 
     /* Настройки / inline-edit строка */
     .setting-row {
@@ -3412,8 +3452,16 @@
                 <p class="account-handle" id="profile-discord-id" style="font-family:ui-monospace,Consolas,monospace;font-size:0.8rem;color:var(--text2);margin:0"></p>
                 <p id="profile-registered-row" style="display:none;font-size:0.75rem;color:var(--text2);margin:2px 0 0"><span data-i18n="acc.registered_since">В панели с</span> <span id="profile-registered">—</span></p>
                 <p id="profile-sponsor-row" style="display:none;margin:6px 0 0;font-size:.85rem">
-                  <span class="dash-badge" id="profile-sponsor-badge" style="background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.35)">⭐ Спонсор</span>
-                  <span class="dash-muted" id="profile-sponsor-expires" style="margin-left:8px;font-size:.8rem"></span>
+                  <span class="profile-sponsor-active" id="profile-sponsor-active" style="display:none">
+                    <span class="dash-badge profile-sponsor-badge" id="profile-sponsor-badge" data-i18n="acc.sponsor_badge">Спонсор</span>
+                    <span class="dash-muted" id="profile-sponsor-expires" style="font-size:.8rem"></span>
+                  </span>
+                  <span class="profile-sponsor-free" id="profile-sponsor-free" style="display:none">
+                    <span class="profile-free-tier" data-i18n="acc.free_tier">Бесплатная версия</span>
+                    <span class="profile-sponsor-pitch" id="profile-sponsor-pitch" role="button" tabindex="0" data-i18n-title="acc.sponsor_pitch_title">
+                      <span data-i18n="acc.sponsor_pitch_before">Поддержи проект, стань </span><span class="profile-sponsor-badge" data-i18n="acc.sponsor_pitch_word">спонсором</span>
+                    </span>
+                  </span>
                 </p>
               </div>
               <span class="dash-badge dash-badge--ok" data-i18n="acc.badge">Авторизован</span>
@@ -3911,7 +3959,7 @@
           </div>
         </div>
 
-        <!-- PANEL: sponsor (admin-only preview) -->
+        <!-- PANEL: sponsor -->
         <div id="panel-sponsor" class="dash-panel" role="tabpanel">
           <div class="sponsor-page">
             <div class="sponsor-hero">
@@ -4512,17 +4560,17 @@
     if (btn) btn.style.display = discordId ? '' : 'none';
   }
 
+  function updateSponsorNavVisibility(discordId) {
+    const btn = document.getElementById('nav-sponsor-btn');
+    if (btn) btn.style.display = discordId ? '' : 'none';
+  }
+
   function updateAdminOnlyNavVisibility(discordId) {
     const isAdmin = String(discordId || '') === ADMIN_DISCORD_ID;
     const adminBtn = document.getElementById('nav-admin-btn');
-    const sponsorBtn = document.getElementById('nav-sponsor-btn');
     if (adminBtn) adminBtn.style.display = isAdmin ? '' : 'none';
-    if (sponsorBtn) sponsorBtn.style.display = isAdmin ? '' : 'none';
-    if (!isAdmin) {
-      const activePanel = document.querySelector('.dash-panel.active')?.id || '';
-      if (activePanel === 'panel-admin' || activePanel === 'panel-sponsor') {
-        document.querySelector('.dash-nav-btn[data-panel="account"]')?.click();
-      }
+    if (!isAdmin && document.getElementById('panel-admin')?.classList.contains('active')) {
+      document.querySelector('.dash-nav-btn[data-panel="account"]')?.click();
     }
   }
 
@@ -4658,6 +4706,11 @@
       /* account */
       'acc.badge':            'Авторизован',
       'acc.registered_since': 'В панели с',
+      'acc.sponsor_badge':    'Спонсор',
+      'acc.free_tier':        'Бесплатная версия',
+      'acc.sponsor_pitch_before': 'Поддержи проект, стань ',
+      'acc.sponsor_pitch_word':   'спонсором',
+      'acc.sponsor_pitch_title':  'Открыть вкладку «Спонсор»',
       'acc.rust_fcm':         'Rust+ · FCM и серверы',
       'acc.paired_servers':   'Запэйренные серверы',
       'acc.auto_toggle':      'Авто-переключение',
@@ -5045,6 +5098,11 @@
       /* account */
       'acc.badge':            'Authorized',
       'acc.registered_since': 'In panel since',
+      'acc.sponsor_badge':    'Sponsor',
+      'acc.free_tier':        'Free tier',
+      'acc.sponsor_pitch_before': 'Support the project — become a ',
+      'acc.sponsor_pitch_word':   'sponsor',
+      'acc.sponsor_pitch_title':  'Open Sponsor tab',
       'acc.rust_fcm':         'Rust+ · FCM & Servers',
       'acc.paired_servers':   'Paired Servers',
       'acc.auto_toggle':      'Auto-switch',
@@ -5381,10 +5439,12 @@
       renderTeamPanel(_teamPanelLastServer);
     }
     renderRustServerCards();
+    if (_lastMeData) updateSponsorAccountUI(_lastMeData);
   }
 
   document.getElementById('btn-lang-toggle').addEventListener('click', toggleLang);
 
+  let _lastMeData = null;
   let _lastDashboardGuildId = null;
   let _dashSessionRef = null;
   let _dashDiscordId = null;
@@ -7039,24 +7099,44 @@
 
   function updateSponsorAccountUI(data) {
     const row = document.getElementById('profile-sponsor-row');
-    const badge = document.getElementById('profile-sponsor-badge');
+    const activeWrap = document.getElementById('profile-sponsor-active');
+    const freeWrap = document.getElementById('profile-sponsor-free');
     const expEl = document.getElementById('profile-sponsor-expires');
     if (!row) return;
     const sponsor = data?.sponsor;
     const active = sponsor && Number(sponsor.expires_at) * 1000 > Date.now();
+    row.style.display = 'flex';
     if (active) {
-      row.style.display = 'block';
-      if (badge) badge.textContent = '⭐ Спонсор';
+      if (activeWrap) activeWrap.style.display = 'inline-flex';
+      if (freeWrap) freeWrap.style.display = 'none';
       if (expEl) {
+        const prefix = _lang === 'en' ? 'until ' : 'до ';
         const dt = new Date(Number(sponsor.expires_at) * 1000);
-        expEl.textContent = `до ${dt.toLocaleString(_lang === 'en' ? 'en-US' : 'ru-RU', { dateStyle: 'long', timeStyle: 'short' })}`;
+        expEl.textContent = prefix + dt.toLocaleString(_lang === 'en' ? 'en-US' : 'ru-RU', { dateStyle: 'long', timeStyle: 'short' });
       }
     } else {
-      row.style.display = 'none';
+      if (activeWrap) activeWrap.style.display = 'none';
+      if (freeWrap) freeWrap.style.display = 'inline-flex';
       if (expEl) expEl.textContent = '';
     }
     applyPrefixEditAccess(!!data?.can_edit_bot_prefix && active);
     updateSponsorChatNavVisibility(data);
+  }
+
+  let _sponsorPitchInitDone = false;
+  function initSponsorPitchLink() {
+    if (_sponsorPitchInitDone) return;
+    _sponsorPitchInitDone = true;
+    const pitch = document.getElementById('profile-sponsor-pitch');
+    if (!pitch) return;
+    const goSponsor = () => document.querySelector('.dash-nav-btn[data-panel="sponsor"]')?.click();
+    pitch.addEventListener('click', goSponsor);
+    pitch.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        goSponsor();
+      }
+    });
   }
 
   function initPrefixSettings(session) {
@@ -9885,12 +9965,15 @@
     document.getElementById('loading').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
 
+    _lastMeData = data;
     _lastDashboardGuildId = data.guild_id || null;
     _dashSessionRef = session;
     _dashDiscordId = data.discord_id;
     updateCoinsNavVisibility(data.discord_id);
+    updateSponsorNavVisibility(data.discord_id);
     updateAdminOnlyNavVisibility(data.discord_id);
     updateSponsorAccountUI(data);
+    initSponsorPitchLink();
     updateSponsorChatNavVisibility(data);
     initSponsorChatPanel();
     setupFcmPasteOnce();
