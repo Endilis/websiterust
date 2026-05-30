@@ -600,14 +600,11 @@
     .sponsor-hero {
       position: relative;
       overflow: hidden;
-      border-radius: 16px;
-      padding: 28px 26px 24px;
+      border-radius: 14px;
+      padding: 24px 26px 22px;
       margin-bottom: 20px;
-      background:
-        radial-gradient(ellipse 80% 120% at 100% 0%, rgba(255,107,53,.22), transparent 55%),
-        radial-gradient(ellipse 60% 80% at 0% 100%, rgba(251,191,36,.12), transparent 50%),
-        linear-gradient(145deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      border: 1px solid rgba(255,107,53,.28);
+      background: linear-gradient(135deg, rgba(88,101,242,.14) 0%, rgba(88,101,242,.05) 100%);
+      border: 1px solid rgba(88,101,242,.35);
     }
     .sponsor-hero__badge {
       display: inline-flex;
@@ -619,9 +616,9 @@
       font-weight: 700;
       letter-spacing: .04em;
       text-transform: uppercase;
-      color: #ffb347;
-      background: rgba(251,191,36,.14);
-      border: 1px solid rgba(251,191,36,.35);
+      color: #818cf8;
+      background: rgba(88,101,242,.2);
+      border: 1px solid rgba(88,101,242,.45);
       margin-bottom: 12px;
     }
     .sponsor-hero__title {
@@ -630,6 +627,7 @@
       font-weight: 800;
       letter-spacing: -.02em;
       line-height: 1.2;
+      color: var(--text1);
     }
     .sponsor-hero__sub {
       margin: 0;
@@ -644,51 +642,62 @@
       align-items: baseline;
       gap: 8px;
       padding: 10px 16px;
-      border-radius: 12px;
-      background: rgba(0,0,0,.25);
-      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 10px;
+      background: rgba(88,101,242,.12);
+      border: 1px solid rgba(88,101,242,.3);
     }
     .sponsor-hero__price-val {
       font-size: 1.5rem;
       font-weight: 800;
-      color: #ffd080;
+      color: #a5b4fc;
     }
     .sponsor-hero__price-note {
       font-size: .82rem;
-      color: var(--muted);
+      color: var(--text2);
     }
     .sponsor-perks {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 12px;
       margin-bottom: 22px;
     }
     .sponsor-perk {
-      padding: 16px 16px 14px;
+      padding: 18px 20px 16px;
       border-radius: 14px;
-      background: var(--card-bg, rgba(255,255,255,.04));
-      border: 1px solid rgba(255,255,255,.07);
-      transition: border-color .2s, transform .15s;
+      background: linear-gradient(135deg, rgba(88,101,242,.12) 0%, rgba(88,101,242,.04) 100%);
+      border: 1px solid rgba(88,101,242,.35);
+      transition: border-color .2s, background .2s;
     }
     .sponsor-perk:hover {
-      border-color: rgba(255,107,53,.35);
-      transform: translateY(-1px);
-    }
-    .sponsor-perk__icon {
-      font-size: 1.35rem;
-      line-height: 1;
-      margin-bottom: 8px;
+      border-color: rgba(88,101,242,.55);
+      background: linear-gradient(135deg, rgba(88,101,242,.16) 0%, rgba(88,101,242,.06) 100%);
     }
     .sponsor-perk__title {
-      margin: 0 0 6px;
-      font-size: .92rem;
+      margin: 0 0 8px;
+      font-size: .95rem;
       font-weight: 700;
+      color: var(--text1);
     }
+    .sponsor-perk__title.is-purple { color: #a78bfa; }
     .sponsor-perk__text {
       margin: 0;
-      font-size: .78rem;
+      font-size: .82rem;
       color: var(--text2);
-      line-height: 1.45;
+      line-height: 1.5;
+    }
+    .sponsor-perk__list {
+      margin: 0;
+      padding: 0 0 0 18px;
+      font-size: .82rem;
+      color: var(--text2);
+      line-height: 1.55;
+    }
+    .sponsor-perk__list li { margin: 0 0 4px; }
+    .sponsor-perk__list li:last-child { margin-bottom: 0; }
+    .sponsor-perk--accent .sponsor-perk__text {
+      font-size: .9rem;
+      font-weight: 600;
+      color: #a5b4fc;
     }
     .sponsor-compare-wrap {
       border-radius: 16px;
@@ -723,11 +732,10 @@
       width: 22%;
     }
     .sponsor-compare-table thead th.col-sponsor {
-      color: #ffd080;
-      background:
-        linear-gradient(180deg, rgba(255,107,53,.18), rgba(255,107,53,.06));
-      border-left: 1px solid rgba(255,107,53,.25);
-      border-right: 1px solid rgba(255,107,53,.25);
+      color: #a5b4fc;
+      background: linear-gradient(180deg, rgba(88,101,242,.2), rgba(88,101,242,.08));
+      border-left: 1px solid rgba(88,101,242,.3);
+      border-right: 1px solid rgba(88,101,242,.3);
       width: 22%;
     }
     .sponsor-compare-table tbody tr {
@@ -756,9 +764,9 @@
       width: 22%;
     }
     .sponsor-compare-table td.col-sponsor {
-      background: rgba(255,107,53,.04);
-      border-left: 1px solid rgba(255,107,53,.12);
-      border-right: 1px solid rgba(255,107,53,.12);
+      background: rgba(88,101,242,.05);
+      border-left: 1px solid rgba(88,101,242,.12);
+      border-right: 1px solid rgba(88,101,242,.12);
     }
     .sponsor-compare-table tbody tr:last-child td {
       border-bottom: none;
@@ -789,10 +797,17 @@
       width: 26px;
       height: 26px;
       border-radius: 50%;
-      background: rgba(255,255,255,.05);
-      color: rgba(255,255,255,.25);
-      font-weight: 700;
-      font-size: .85rem;
+      background: rgba(239,68,68,.15);
+      color: #ef4444;
+      font-weight: 800;
+      font-size: .9rem;
+      line-height: 1;
+    }
+    .sponsor-cmp-limited {
+      font-size: .78rem;
+      font-weight: 600;
+      color: #94a3b8;
+      letter-spacing: .01em;
     }
     .sponsor-cmp-val {
       font-weight: 700;
@@ -800,7 +815,7 @@
       color: var(--text2);
     }
     .sponsor-cmp-val.is-highlight {
-      color: #ffb347;
+      color: #a5b4fc;
       font-weight: 800;
     }
     .sponsor-compare-foot {
@@ -3278,7 +3293,7 @@
           <button type="button" class="dash-nav-btn" data-panel="commands" data-i18n="nav.commands">Команды</button>
           <button type="button" class="dash-nav-btn" data-panel="devices" data-i18n="nav.devices">Устройства</button>
           <button type="button" class="dash-nav-btn" data-panel="coins" id="nav-coins-btn" style="display:none" data-i18n="nav.coins">🪙 Коины</button>
-          <button type="button" class="dash-nav-btn" data-panel="sponsor" id="nav-sponsor-btn" style="display:none" data-i18n="nav.sponsor">⭐ Спонсор</button>
+          <button type="button" class="dash-nav-btn" data-panel="sponsor" id="nav-sponsor-btn" style="display:none" data-i18n="nav.sponsor">Спонсор</button>
           <div class="dash-nav-label" data-i18n="nav.wip">🚧 В разработке</div>
           <button type="button" class="dash-nav-btn sub" data-panel="map" data-i18n="nav.map">🗺️ Карта</button>
           <button type="button" class="dash-nav-btn sub dash-nav-btn--wip" data-panel="notify-game" data-i18n="nav.notify">🔔 Уведомления</button>
@@ -3805,31 +3820,40 @@
               <h2 class="sponsor-hero__title" data-i18n="sponsor.title">Спонсор RustInfo</h2>
               <p class="sponsor-hero__sub" data-i18n="sponsor.subtitle">Расширенные возможности для активных игроков: больше устройств, чат из браузера и полный контроль над ботом в команде.</p>
               <div class="sponsor-hero__price">
-                <span class="sponsor-hero__price-val">100 🪙</span>
+                <span class="sponsor-hero__price-val" data-i18n="sponsor.price_val">100 коинов</span>
                 <span class="sponsor-hero__price-note" data-i18n="sponsor.price_note">за 1 месяц · активация во вкладке «Коины»</span>
               </div>
             </div>
 
             <div class="sponsor-perks">
               <article class="sponsor-perk">
-                <div class="sponsor-perk__icon">💬</div>
-                <h3 class="sponsor-perk__title" data-i18n="sponsor.perk.chat.title">Чат Rust+ в панели</h3>
-                <p class="sponsor-perk__text" data-i18n="sponsor.perk.chat.text">Пишите в командный чат прямо из браузера — без переключения в игру.</p>
+                <h3 class="sponsor-perk__title" data-i18n="sponsor.perk.chat.title">Игровой чат</h3>
+                <ul class="sponsor-perk__list">
+                  <li data-i18n="sponsor.perk.chat.l1">Доступ из панели</li>
+                  <li data-i18n="sponsor.perk.chat.l2">Удобно с ПК и телефона</li>
+                  <li data-i18n="sponsor.perk.chat.l3">Используйте команды</li>
+                  <li data-i18n="sponsor.perk.chat.l4">Узнавайте актуальную информацию о сервере</li>
+                </ul>
               </article>
               <article class="sponsor-perk">
-                <div class="sponsor-perk__icon">✏️</div>
                 <h3 class="sponsor-perk__title" data-i18n="sponsor.perk.prefix.title">Своё имя бота</h3>
-                <p class="sponsor-perk__text" data-i18n="sponsor.perk.prefix.text">Замените стандартный префикс [rustinfo.online] на свой текст в игровом чате.</p>
+                <p class="sponsor-perk__text" data-i18n="sponsor.perk.prefix.text">Возможность изменить префикс бота на что угодно</p>
               </article>
               <article class="sponsor-perk">
-                <div class="sponsor-perk__icon">🔌</div>
                 <h3 class="sponsor-perk__title" data-i18n="sponsor.perk.devices.title">До 5 устройств</h3>
                 <p class="sponsor-perk__text" data-i18n="sponsor.perk.devices.text">Smart Switch и Storage Monitor — в пять раз больше слотов, чем у бесплатного аккаунта.</p>
               </article>
               <article class="sponsor-perk">
-                <div class="sponsor-perk__icon">🛡️</div>
                 <h3 class="sponsor-perk__title" data-i18n="sponsor.perk.team.title">Контроль команд</h3>
                 <p class="sponsor-perk__text" data-i18n="sponsor.perk.team.text">Отключайте команды бота для отдельных тиммейтов — переключатель на карточке игрока.</p>
+              </article>
+              <article class="sponsor-perk sponsor-perk--discord">
+                <h3 class="sponsor-perk__title is-purple" data-i18n="sponsor.perk.discord.title">Роль Спонсор в Discord</h3>
+                <p class="sponsor-perk__text" data-i18n="sponsor.perk.discord.text">Ты будешь выше всех</p>
+              </article>
+              <article class="sponsor-perk sponsor-perk--accent">
+                <h3 class="sponsor-perk__title" data-i18n="sponsor.perk.price.title">Выгодная цена</h3>
+                <p class="sponsor-perk__text" data-i18n="sponsor.perk.price.text">Спонсор дешевле чашки американо!</p>
               </article>
             </div>
 
@@ -3837,55 +3861,55 @@
               <table class="sponsor-compare-table">
                 <thead>
                   <tr>
-                    <th data-i18n="sponsor.table.feature">Возможность</th>
-                    <th class="col-free" data-i18n="sponsor.table.free">Бесплатно</th>
-                    <th class="col-sponsor">⭐ <span data-i18n="sponsor.table.sponsor">Спонсор</span></th>
+                    <th data-i18n="sponsor.table.feature">Возможности</th>
+                    <th class="col-free" data-i18n="sponsor.table.free">бесплатно</th>
+                    <th class="col-sponsor" data-i18n="sponsor.table.sponsor">спонсор</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td data-i18n="sponsor.row.commands">Команды Rust+ и Discord</td>
-                    <td class="col-free"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-yes" aria-label="yes">✓</span></span></td>
+                    <td data-i18n="sponsor.row.commands">Команды Rust+</td>
+                    <td class="col-free"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-limited" data-i18n="sponsor.cmp.limited">ограничено</span></span></td>
                     <td class="col-sponsor"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-yes" aria-label="yes">✓</span></span></td>
                   </tr>
                   <tr>
-                    <td data-i18n="sponsor.row.servers">Привязка серверов и FCM</td>
-                    <td class="col-free"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-yes" aria-label="yes">✓</span></span></td>
+                    <td data-i18n="sponsor.row.panel">Панель управления</td>
+                    <td class="col-free"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-limited" data-i18n="sponsor.cmp.limited">ограничено</span></span></td>
                     <td class="col-sponsor"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-yes" aria-label="yes">✓</span></span></td>
                   </tr>
                   <tr>
-                    <td data-i18n="sponsor.row.team">Панель команды (онлайн, AFK)</td>
-                    <td class="col-free"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-yes" aria-label="yes">✓</span></span></td>
-                    <td class="col-sponsor"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-yes" aria-label="yes">✓</span></span></td>
-                  </tr>
-                  <tr>
-                    <td data-i18n="sponsor.row.events">Уведомления о событиях</td>
-                    <td class="col-free"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-yes" aria-label="yes">✓</span></span></td>
-                    <td class="col-sponsor"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-yes" aria-label="yes">✓</span></span></td>
-                  </tr>
-                  <tr>
-                    <td data-i18n="sponsor.row.devices">Smart Switch / Storage Monitor</td>
+                    <td data-i18n="sponsor.row.devices">Устройства</td>
                     <td class="col-free"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-val">1</span></span></td>
                     <td class="col-sponsor"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-val is-highlight">5</span></span></td>
                   </tr>
                   <tr>
-                    <td data-i18n="sponsor.row.chat">Чат Rust+ в веб-панели</td>
-                    <td class="col-free"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-no" aria-label="no">—</span></span></td>
+                    <td data-i18n="sponsor.row.chat">Чат в панели</td>
+                    <td class="col-free"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-no" aria-label="no">×</span></span></td>
                     <td class="col-sponsor"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-yes" aria-label="yes">✓</span></span></td>
                   </tr>
                   <tr>
-                    <td data-i18n="sponsor.row.prefix">Своё имя бота в игровом чате</td>
-                    <td class="col-free"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-no" aria-label="no">—</span></span></td>
+                    <td data-i18n="sponsor.row.prefix">Префикс бота</td>
+                    <td class="col-free"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-no" aria-label="no">×</span></span></td>
                     <td class="col-sponsor"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-yes" aria-label="yes">✓</span></span></td>
                   </tr>
                   <tr>
-                    <td data-i18n="sponsor.row.team_cmd">Блокировка команд тиммейтам</td>
-                    <td class="col-free"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-no" aria-label="no">—</span></span></td>
+                    <td data-i18n="sponsor.row.team_cmd">Блокировка команд</td>
+                    <td class="col-free"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-no" aria-label="no">×</span></span></td>
                     <td class="col-sponsor"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-yes" aria-label="yes">✓</span></span></td>
                   </tr>
                   <tr>
-                    <td data-i18n="sponsor.row.badge">Значок «Спонсор» в профиле</td>
-                    <td class="col-free"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-no" aria-label="no">—</span></span></td>
+                    <td data-i18n="sponsor.row.badge">Значок спонсора</td>
+                    <td class="col-free"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-no" aria-label="no">×</span></span></td>
+                    <td class="col-sponsor"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-yes" aria-label="yes">✓</span></span></td>
+                  </tr>
+                  <tr>
+                    <td data-i18n="sponsor.row.discord_role">Роль в Discord</td>
+                    <td class="col-free"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-no" aria-label="no">×</span></span></td>
+                    <td class="col-sponsor"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-yes" aria-label="yes">✓</span></span></td>
+                  </tr>
+                  <tr>
+                    <td data-i18n="sponsor.row.secret_chat">Секретный чат</td>
+                    <td class="col-free"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-no" aria-label="no">×</span></span></td>
                     <td class="col-sponsor"><span class="sponsor-cmp-cell"><span class="sponsor-cmp-yes" aria-label="yes">✓</span></span></td>
                   </tr>
                 </tbody>
@@ -4437,7 +4461,7 @@
       'nav.commands':     'Команды',
       'nav.devices':      'Устройства',
       'nav.coins':        '🪙 Коины',
-      'nav.sponsor':      '⭐ Спонсор',
+      'nav.sponsor':      'Спонсор',
       'dev.title':        '🔌 Устройства',
       'dev.refresh':      'Обновить',
       'dev.hint':         'Smart Switch — включить/выключить из панели. Storage Monitor — предметы.',
@@ -4465,27 +4489,36 @@
       'sponsor.badge':           'VIP-статус',
       'sponsor.title':           'Спонсор RustInfo',
       'sponsor.subtitle':        'Расширенные возможности для активных игроков: больше устройств, чат из браузера и полный контроль над ботом в команде.',
+      'sponsor.price_val':       '100 коинов',
       'sponsor.price_note':      'за 1 месяц · активация во вкладке «Коины»',
-      'sponsor.perk.chat.title':   'Чат Rust+ в панели',
-      'sponsor.perk.chat.text':    'Пишите в командный чат прямо из браузера — без переключения в игру.',
+      'sponsor.perk.chat.title':   'Игровой чат',
+      'sponsor.perk.chat.l1':      'Доступ из панели',
+      'sponsor.perk.chat.l2':      'Удобно с ПК и телефона',
+      'sponsor.perk.chat.l3':      'Используйте команды',
+      'sponsor.perk.chat.l4':      'Узнавайте актуальную информацию о сервере',
       'sponsor.perk.prefix.title': 'Своё имя бота',
-      'sponsor.perk.prefix.text':  'Замените стандартный префикс [rustinfo.online] на свой текст в игровом чате.',
+      'sponsor.perk.prefix.text':  'Возможность изменить префикс бота на что угодно',
       'sponsor.perk.devices.title':'До 5 устройств',
       'sponsor.perk.devices.text': 'Smart Switch и Storage Monitor — в пять раз больше слотов, чем у бесплатного аккаунта.',
       'sponsor.perk.team.title':   'Контроль команд',
       'sponsor.perk.team.text':    'Отключайте команды бота для отдельных тиммейтов — переключатель на карточке игрока.',
-      'sponsor.table.feature':     'Возможность',
-      'sponsor.table.free':        'Бесплатно',
-      'sponsor.table.sponsor':     'Спонсор',
-      'sponsor.row.commands':      'Команды Rust+ и Discord',
-      'sponsor.row.servers':       'Привязка серверов и FCM',
-      'sponsor.row.team':          'Панель команды (онлайн, AFK)',
-      'sponsor.row.events':        'Уведомления о событиях',
-      'sponsor.row.devices':       'Smart Switch / Storage Monitor',
-      'sponsor.row.chat':          'Чат Rust+ в веб-панели',
-      'sponsor.row.prefix':        'Своё имя бота в игровом чате',
-      'sponsor.row.team_cmd':      'Блокировка команд тиммейтам',
-      'sponsor.row.badge':         'Значок «Спонсор» в профиле',
+      'sponsor.perk.discord.title':'Роль Спонсор в Discord',
+      'sponsor.perk.discord.text': 'Ты будешь выше всех',
+      'sponsor.perk.price.title':  'Выгодная цена',
+      'sponsor.perk.price.text':   'Спонсор дешевле чашки американо!',
+      'sponsor.table.feature':     'Возможности',
+      'sponsor.table.free':        'бесплатно',
+      'sponsor.table.sponsor':     'спонсор',
+      'sponsor.cmp.limited':       'ограничено',
+      'sponsor.row.commands':      'Команды Rust+',
+      'sponsor.row.panel':         'Панель управления',
+      'sponsor.row.devices':       'Устройства',
+      'sponsor.row.chat':          'Чат в панели',
+      'sponsor.row.prefix':        'Префикс бота',
+      'sponsor.row.team_cmd':      'Блокировка команд',
+      'sponsor.row.badge':         'Значок спонсора',
+      'sponsor.row.discord_role':  'Роль в Discord',
+      'sponsor.row.secret_chat':   'Секретный чат',
       'sponsor.table.footnote':    'Спонсорство продлевается коинами. При истечении срока префикс бота и доступ к чату отключаются автоматически.',
       /* dash header */
       'dash.title':       'Панель управления',
@@ -4813,7 +4846,7 @@
       'nav.commands':     'Commands',
       'nav.devices':      'Devices',
       'nav.coins':        '🪙 Coins',
-      'nav.sponsor':      '⭐ Sponsor',
+      'nav.sponsor':      'Sponsor',
       'dev.title':        '🔌 Devices',
       'dev.refresh':      'Refresh',
       'dev.hint':         'Smart Switch — toggle from panel. Storage Monitor — view items.',
@@ -4841,27 +4874,36 @@
       'sponsor.badge':           'VIP status',
       'sponsor.title':           'RustInfo Sponsor',
       'sponsor.subtitle':        'Extra perks for active players: more devices, in-browser chat, and full control over the bot in your team.',
+      'sponsor.price_val':       '100 coins',
       'sponsor.price_note':      'per month · activate in the Coins tab',
-      'sponsor.perk.chat.title':   'Rust+ chat in panel',
-      'sponsor.perk.chat.text':    'Write to team chat from your browser — no need to alt-tab into the game.',
+      'sponsor.perk.chat.title':   'In-game chat',
+      'sponsor.perk.chat.l1':      'Access from the panel',
+      'sponsor.perk.chat.l2':      'Works on PC and phone',
+      'sponsor.perk.chat.l3':      'Use commands',
+      'sponsor.perk.chat.l4':      'Get up-to-date server info',
       'sponsor.perk.prefix.title': 'Custom bot name',
-      'sponsor.perk.prefix.text':  'Replace the default [rustinfo.online] prefix with your own text in in-game chat.',
+      'sponsor.perk.prefix.text':  'Change the bot prefix to anything you want',
       'sponsor.perk.devices.title':'Up to 5 devices',
       'sponsor.perk.devices.text': 'Smart Switch and Storage Monitor — five times more slots than the free tier.',
       'sponsor.perk.team.title':   'Command control',
       'sponsor.perk.team.text':    'Disable bot commands for specific teammates — toggle on their player card.',
-      'sponsor.table.feature':     'Feature',
-      'sponsor.table.free':        'Free',
-      'sponsor.table.sponsor':     'Sponsor',
-      'sponsor.row.commands':      'Rust+ and Discord commands',
-      'sponsor.row.servers':       'Server pairing and FCM',
-      'sponsor.row.team':          'Team panel (online, AFK)',
-      'sponsor.row.events':        'Event notifications',
-      'sponsor.row.devices':       'Smart Switch / Storage Monitor',
-      'sponsor.row.chat':          'Rust+ chat in web panel',
-      'sponsor.row.prefix':        'Custom bot name in in-game chat',
-      'sponsor.row.team_cmd':      'Block commands for teammates',
-      'sponsor.row.badge':         '«Sponsor» badge in profile',
+      'sponsor.perk.discord.title':'Sponsor role on Discord',
+      'sponsor.perk.discord.text': 'You will be above everyone else',
+      'sponsor.perk.price.title':  'Great value',
+      'sponsor.perk.price.text':   'Sponsor costs less than a cup of americano!',
+      'sponsor.table.feature':     'Features',
+      'sponsor.table.free':        'free',
+      'sponsor.table.sponsor':     'sponsor',
+      'sponsor.cmp.limited':       'limited',
+      'sponsor.row.commands':      'Rust+ commands',
+      'sponsor.row.panel':         'Control panel',
+      'sponsor.row.devices':       'Devices',
+      'sponsor.row.chat':          'Panel chat',
+      'sponsor.row.prefix':        'Bot prefix',
+      'sponsor.row.team_cmd':      'Command blocking',
+      'sponsor.row.badge':         'Sponsor badge',
+      'sponsor.row.discord_role':  'Discord role',
+      'sponsor.row.secret_chat':   'Secret chat',
       'sponsor.table.footnote':    'Sponsorship is renewed with coins. When it expires, bot prefix and chat access are revoked automatically.',
       /* dash header */
       'dash.title':       'Control Panel',
