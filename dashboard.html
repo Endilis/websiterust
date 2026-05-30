@@ -793,6 +793,15 @@
     .rust-srv-empty__text {
       margin: 0; font-size: 0.88rem; line-height: 1.65; color: var(--text2);
     }
+    .rust-srv-empty__img {
+      display: block;
+      width: 100%;
+      max-width: 680px;
+      margin: 14px auto 0;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      box-shadow: 0 6px 28px rgba(0, 0, 0, 0.35);
+    }
     .rust-srv-empty--warn .rust-srv-empty__text { color: #fbbf24; font-weight: 600; }
 
     .rust-srv-grid {
@@ -4089,6 +4098,7 @@
       'acc.srv_hint_auto':    'Авто-режим: активный сервер выбирается автоматически при паринге через игру. Ручной выбор отключён.',
       'acc.srv_empty_title':  'Ваши сервера',
       'acc.srv_empty_fcm_ok': 'На данный момент нет подключенных серверов.<br>Вам нужно зайти на сервер в игре Rust.<br>И в меню игры связать сервер, вы увидите ваш сервер в этом меню.',
+      'acc.srv_empty_img_alt': 'Привязка сервера в меню Rust — кнопка «Привязка»',
       'acc.srv_empty_fcm_bad':'Пожалуйста авторизуйтесь через специальное расширение. Rust Info Bot',
       'acc.srv_wait_footnote':'Если статус «ожидание» — пожалуйста, перезайдите в панель.',
       'acc.srv_delete_btn':   'Удалить',
@@ -4430,6 +4440,7 @@
       'acc.srv_hint_auto':    'Auto mode: active server is selected automatically when pairing from the game. Manual selection is disabled.',
       'acc.srv_empty_title':  'Your servers',
       'acc.srv_empty_fcm_ok': 'There are no connected servers at the moment.<br>You need to join a server in Rust.<br>Then link the server in the in-game menu — it will appear here.',
+      'acc.srv_empty_img_alt': 'In-game Rust pairing — «Pairing» button',
       'acc.srv_empty_fcm_bad':'Please sign in using the Rust Info Bot browser extension.',
       'acc.srv_wait_footnote':'If the status shows «waiting», please re-enter the panel.',
       'acc.srv_delete_btn':   'Delete',
@@ -5617,9 +5628,9 @@
         const d = document.createElement('div');
         d.className = `admin-chat-msg ${isBot ? 'admin-chat-msg--bot' : 'admin-chat-msg--player'}`;
         d.dataset.chatKey = key;
-        const t = m.ts ? new Date(m.ts * 1000).toLocaleTimeString(_lang==='en'?'en-US':'ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
+        const timeLabel = formatChatMessageTime(m);
         d.innerHTML =
-          `<span class="admin-chat-msg__time">${escapeHtml(t)}</span>` +
+          `<span class="admin-chat-msg__time">${escapeHtml(timeLabel)}</span>` +
           `<span class="admin-chat-msg__name" style="color:${escapeHtml(m.colour || '#34d399')}">${escapeHtml(m.sender_name || '?')}</span>` +
           `<span class="admin-chat-msg__text">: ${escapeHtml(m.message || '')}</span>`;
         container.appendChild(d);
@@ -6737,6 +6748,11 @@
   };
   // Bump when replacing files in /images/ (Pages serves PNG with immutable 1y cache).
   const DEVICE_ICONS_V = 'f47e782';
+  const INGAME_PAIR_IMG_V = '439ff9b';
+
+  function ingamePairHintImgHtml() {
+    return `<img class="rust-srv-empty__img" src="/images/ingame_pair.png?v=${INGAME_PAIR_IMG_V}" alt="${escapeHtml(t('acc.srv_empty_img_alt'))}" loading="lazy">`;
+  }
 
   function deviceIconHtml(entityType) {
     const file = DEVICE_TYPE_ICON_FILE[entityType] || DEVICE_TYPE_ICON_FILE[1];
@@ -8932,6 +8948,7 @@
           <div class="rust-srv-empty">
             <h4 class="rust-srv-empty__title">${escapeHtml(t('acc.srv_empty_title'))}</h4>
             <p class="dash-muted rust-srv-empty__text">${t('acc.srv_empty_fcm_ok')}</p>
+            ${ingamePairHintImgHtml()}
           </div>`;
       } else {
         wrap.innerHTML = `
