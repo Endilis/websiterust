@@ -596,7 +596,7 @@
     .coins-history-table .amt-neg { color: #c85050; font-weight: 600; }
 
     /* ── Sponsor comparison (admin preview) ── */
-    .sponsor-page { max-width: 920px; }
+    .sponsor-page { width: 100%; max-width: none; }
     .sponsor-hero {
       position: relative;
       overflow: hidden;
@@ -606,6 +606,7 @@
       background: linear-gradient(135deg, rgba(88,101,242,.14) 0%, rgba(88,101,242,.05) 100%);
       border: 1px solid rgba(88,101,242,.35);
     }
+    .sponsor-hero__main { min-width: 0; }
     .sponsor-hero__badge {
       display: inline-flex;
       align-items: center;
@@ -637,7 +638,6 @@
       line-height: 1.55;
     }
     .sponsor-hero__price {
-      margin-top: 18px;
       display: inline-flex;
       align-items: baseline;
       gap: 8px;
@@ -645,6 +645,7 @@
       border-radius: 10px;
       background: rgba(88,101,242,.12);
       border: 1px solid rgba(88,101,242,.3);
+      flex-wrap: wrap;
     }
     .sponsor-hero__price-val {
       font-size: 1.5rem;
@@ -654,6 +655,54 @@
     .sponsor-hero__price-note {
       font-size: .82rem;
       color: var(--text2);
+    }
+    .sponsor-hero__actions {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .sponsor-buy-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border-radius: 10px;
+      background: rgba(88,101,242,.28);
+      border: 1px solid rgba(88,101,242,.55);
+      color: #e0e7ff;
+      font-size: .92rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .15s, border-color .15s, color .15s, transform .12s;
+      white-space: nowrap;
+    }
+    .sponsor-buy-btn:hover {
+      background: rgba(88,101,242,.42);
+      border-color: rgba(129,140,248,.75);
+      color: #fff;
+    }
+    .sponsor-buy-btn:active { transform: scale(.98); }
+    .sponsor-cta-bottom {
+      margin-top: 20px;
+      padding: 22px 26px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(88,101,242,.12) 0%, rgba(88,101,242,.04) 100%);
+      border: 1px solid rgba(88,101,242,.35);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 14px;
+    }
+    .sponsor-cta-bottom__text {
+      margin: 0;
+      max-width: 48ch;
+      font-size: .88rem;
+      color: var(--text2);
+      line-height: 1.55;
     }
     .sponsor-perks {
       display: grid;
@@ -825,6 +874,56 @@
       border-top: 1px solid rgba(255,255,255,.06);
       background: rgba(0,0,0,.15);
       line-height: 1.5;
+    }
+    @media (min-width: 900px) {
+      .sponsor-hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-rows: auto auto;
+        gap: 8px 40px;
+        padding: 28px 32px 26px;
+        align-items: end;
+      }
+      .sponsor-hero__badge { grid-column: 1; grid-row: 1; margin-bottom: 0; }
+      .sponsor-hero__main { grid-column: 1; grid-row: 2; }
+      .sponsor-hero__actions {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        margin-top: 0;
+        align-self: center;
+        min-width: 240px;
+      }
+      .sponsor-hero__title { font-size: 1.75rem; }
+      .sponsor-hero__sub { max-width: none; font-size: .95rem; }
+      .sponsor-hero__price {
+        margin-top: 0;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        width: 100%;
+      }
+      .sponsor-perks {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+      .sponsor-compare-table { font-size: .92rem; }
+      .sponsor-compare-table thead th,
+      .sponsor-compare-table td { padding: 15px 22px; }
+      .sponsor-compare-table thead th:first-child { width: 46%; }
+      .sponsor-compare-table thead th.col-free,
+      .sponsor-compare-table thead th.col-sponsor { width: 18%; }
+      .sponsor-cta-bottom {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+        padding: 20px 28px;
+      }
+      .sponsor-cta-bottom__text { max-width: none; flex: 1; }
+      .sponsor-cta-bottom .sponsor-buy-btn { flex-shrink: 0; }
+    }
+    @media (min-width: 1200px) {
+      .sponsor-perks { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
     @media (max-width: 640px) {
       .sponsor-hero { padding: 22px 18px 18px; }
@@ -3817,11 +3916,16 @@
           <div class="sponsor-page">
             <div class="sponsor-hero">
               <div class="sponsor-hero__badge" data-i18n="sponsor.badge">VIP-статус</div>
-              <h2 class="sponsor-hero__title" data-i18n="sponsor.title">Спонсор RustInfo</h2>
-              <p class="sponsor-hero__sub" data-i18n="sponsor.subtitle">Расширенные возможности для активных игроков: больше устройств, чат из браузера и полный контроль над ботом в команде.</p>
-              <div class="sponsor-hero__price">
-                <span class="sponsor-hero__price-val" data-i18n="sponsor.price_val">100 коинов</span>
-                <span class="sponsor-hero__price-note" data-i18n="sponsor.price_note">за 1 месяц · активация во вкладке «Коины»</span>
+              <div class="sponsor-hero__main">
+                <h2 class="sponsor-hero__title" data-i18n="sponsor.title">Спонсор RustInfo</h2>
+                <p class="sponsor-hero__sub" data-i18n="sponsor.subtitle">Расширенные возможности для активных игроков: больше устройств, чат из браузера и полный контроль над ботом в команде.</p>
+              </div>
+              <div class="sponsor-hero__actions">
+                <div class="sponsor-hero__price">
+                  <span class="sponsor-hero__price-val" data-i18n="sponsor.price_val">100 коинов</span>
+                  <span class="sponsor-hero__price-note" data-i18n="sponsor.price_note">за 1 месяц · активация во вкладке «Коины»</span>
+                </div>
+                <a class="sponsor-buy-btn" href="https://funpay.com/lots/offer?id=69972556" target="_blank" rel="noopener noreferrer" data-i18n="sponsor.buy_btn">Купить коины</a>
               </div>
             </div>
 
@@ -3915,6 +4019,11 @@
                 </tbody>
               </table>
               <p class="sponsor-compare-foot" data-i18n="sponsor.table.footnote">Спонсорство продлевается коинами. При истечении срока префикс бота и доступ к чату отключаются автоматически.</p>
+            </div>
+
+            <div class="sponsor-cta-bottom">
+              <p class="sponsor-cta-bottom__text" data-i18n="sponsor.buy_hint">Пополните баланс на FunPay, затем активируйте спонсора во вкладке «Коины».</p>
+              <a class="sponsor-buy-btn" href="https://funpay.com/lots/offer?id=69972556" target="_blank" rel="noopener noreferrer" data-i18n="sponsor.buy_btn">Купить коины</a>
             </div>
           </div>
         </div>
@@ -4491,6 +4600,8 @@
       'sponsor.subtitle':        'Расширенные возможности для активных игроков: больше устройств, чат из браузера и полный контроль над ботом в команде.',
       'sponsor.price_val':       '100 коинов',
       'sponsor.price_note':      'за 1 месяц · активация во вкладке «Коины»',
+      'sponsor.buy_btn':         'Купить коины',
+      'sponsor.buy_hint':        'Пополните баланс на FunPay, затем активируйте спонсора во вкладке «Коины».',
       'sponsor.perk.chat.title':   'Игровой чат',
       'sponsor.perk.chat.l1':      'Доступ из панели',
       'sponsor.perk.chat.l2':      'Удобно с ПК и телефона',
@@ -4876,6 +4987,8 @@
       'sponsor.subtitle':        'Extra perks for active players: more devices, in-browser chat, and full control over the bot in your team.',
       'sponsor.price_val':       '100 coins',
       'sponsor.price_note':      'per month · activate in the Coins tab',
+      'sponsor.buy_btn':         'Buy coins',
+      'sponsor.buy_hint':        'Top up on FunPay, then activate sponsor in the Coins tab.',
       'sponsor.perk.chat.title':   'In-game chat',
       'sponsor.perk.chat.l1':      'Access from the panel',
       'sponsor.perk.chat.l2':      'Works on PC and phone',
