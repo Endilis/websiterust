@@ -787,14 +787,26 @@
       display: grid;
       grid-template-columns: minmax(200px, 0.85fr) minmax(340px, 1.35fr);
       gap: 18px 22px;
-      align-items: center;
-      padding: 18px 20px;
+      align-items: stretch;
+      padding: 0;
+      border: none;
+      background: transparent;
     }
     .rust-srv-empty__copy {
       min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .rust-srv-empty__copy .team-notice,
+    .rust-srv-empty__copy .beta-notice {
+      width: 100%;
+      max-width: none;
+      margin: 0;
     }
     .rust-srv-empty__visual {
       min-width: 0;
+      align-self: center;
       padding: 10px;
       border-radius: 12px;
       border: 1px solid var(--border);
@@ -4126,6 +4138,13 @@
       'acc.srv_hint':         'Бот использует сервер, отмеченный как «активный». Нажмите карточку, чтобы переключиться.',
       'acc.srv_hint_auto':    'Авто-режим: активный сервер выбирается автоматически при паринге через игру. Ручной выбор отключён.',
       'acc.srv_empty_title':  'Ваши сервера',
+      'acc.srv_empty_ready_title': 'FCM подключён',
+      'acc.srv_empty_ready_sub': 'Осталось привязать сервер в игре Rust',
+      'acc.srv_empty_steps_title': 'Как привязать сервер',
+      'acc.srv_empty_steps_body': 'Пока нет запэйренных серверов. Выполните шаги в игре — сервер появится в этом списке.',
+      'acc.srv_empty_step1': 'Зайдите на сервер в Rust',
+      'acc.srv_empty_step2': 'Нажмите Esc → «Текущий сервер»',
+      'acc.srv_empty_step3': 'Нажмите «Привязка»',
       'acc.srv_empty_fcm_ok': 'На данный момент нет подключенных серверов.<br>Вам нужно зайти на сервер в игре Rust.<br>И в меню игры связать сервер, вы увидите ваш сервер в этом меню.',
       'acc.srv_empty_img_alt': 'Привязка сервера в меню Rust — кнопка «Привязка»',
       'acc.srv_empty_fcm_bad':'Пожалуйста авторизуйтесь через специальное расширение. Rust Info Bot',
@@ -4468,6 +4487,13 @@
       'acc.srv_hint':         'The bot uses the server marked as «active». Click a card to switch.',
       'acc.srv_hint_auto':    'Auto mode: active server is selected automatically when pairing from the game. Manual selection is disabled.',
       'acc.srv_empty_title':  'Your servers',
+      'acc.srv_empty_ready_title': 'FCM connected',
+      'acc.srv_empty_ready_sub': 'Link a server in Rust to finish setup',
+      'acc.srv_empty_steps_title': 'How to pair a server',
+      'acc.srv_empty_steps_body': 'No paired servers yet. Complete these steps in-game — the server will show up here.',
+      'acc.srv_empty_step1': 'Join a Rust server',
+      'acc.srv_empty_step2': 'Press Esc → «Current Server»',
+      'acc.srv_empty_step3': 'Press «Pairing»',
       'acc.srv_empty_fcm_ok': 'There are no connected servers at the moment.<br>You need to join a server in Rust.<br>Then link the server in the in-game menu — it will appear here.',
       'acc.srv_empty_img_alt': 'In-game Rust pairing — «Pairing» button',
       'acc.srv_empty_fcm_bad':'Please sign in using the Rust Info Bot browser extension.',
@@ -6783,6 +6809,36 @@
     return `<img class="rust-srv-empty__img" src="/images/ingame_pair.png?v=${INGAME_PAIR_IMG_V}" alt="${escapeHtml(t('acc.srv_empty_img_alt'))}" loading="lazy">`;
   }
 
+  function ingamePairHintCopyHtml() {
+    const step = (num, key) => `
+      <div class="beta-notice__step">
+        <span class="beta-notice__step-num">${num}</span>
+        <span>${t(key)}</span>
+      </div>`;
+    return `
+      <div class="team-notice">
+        <div class="team-notice__icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+        </div>
+        <div class="team-notice__text">
+          <strong>${escapeHtml(t('acc.srv_empty_ready_title'))}</strong>
+          <span>${escapeHtml(t('acc.srv_empty_ready_sub'))}</span>
+        </div>
+      </div>
+      <div class="beta-notice">
+        <div class="beta-notice__header">
+          <p class="beta-notice__title">${escapeHtml(t('acc.srv_empty_steps_title'))}</p>
+        </div>
+        <p class="beta-notice__body">${t('acc.srv_empty_steps_body')}</p>
+        ${step(1, 'acc.srv_empty_step1')}
+        ${step(2, 'acc.srv_empty_step2')}
+        ${step(3, 'acc.srv_empty_step3')}
+      </div>`;
+  }
+
   function deviceIconHtml(entityType) {
     const file = DEVICE_TYPE_ICON_FILE[entityType] || DEVICE_TYPE_ICON_FILE[1];
     const src = `/images/${file}?v=${DEVICE_ICONS_V}`;
@@ -8976,8 +9032,7 @@
         wrap.innerHTML = `
           <div class="rust-srv-empty rust-srv-empty--split">
             <div class="rust-srv-empty__copy">
-              <h4 class="rust-srv-empty__title">${escapeHtml(t('acc.srv_empty_title'))}</h4>
-              <p class="dash-muted rust-srv-empty__text">${t('acc.srv_empty_fcm_ok')}</p>
+              ${ingamePairHintCopyHtml()}
             </div>
             <div class="rust-srv-empty__visual">
               ${ingamePairHintImgHtml()}
