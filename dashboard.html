@@ -801,12 +801,11 @@
       gap: 10px;
     }
     .rust-srv-card {
-      display: flex; flex-direction: column; gap: 6px;
+      display: flex; flex-direction: column; gap: 8px;
       padding: 14px 16px;
       border: 1px solid var(--border);
       border-radius: 12px;
       background: rgba(255,255,255,0.03);
-      cursor: pointer;
       text-align: left;
       font-family: inherit;
       color: var(--text);
@@ -814,11 +813,43 @@
       position: relative;
       overflow: hidden;
     }
+    .rust-srv-card__select {
+      display: flex; flex-direction: column; gap: 6px;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      color: inherit;
+    }
     .rust-srv-card:hover:not(.is-disabled) {
       border-color: rgba(255, 107, 53, 0.45);
       background: rgba(255, 107, 53, 0.04);
     }
-    .rust-srv-card:active:not(.is-disabled) { transform: translateY(1px); }
+    .rust-srv-card__select:active:not(:disabled) { transform: translateY(1px); }
+    .rust-srv-card__delete {
+      align-self: flex-end;
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(248, 113, 113, 0.35);
+      background: rgba(248, 113, 113, 0.08);
+      color: #f87171;
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background .15s, border-color .15s;
+    }
+    .rust-srv-card__delete:hover:not(:disabled) {
+      background: rgba(248, 113, 113, 0.16);
+      border-color: rgba(248, 113, 113, 0.55);
+    }
+    .rust-srv-card__delete:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
     .rust-srv-card.is-active {
       border-color: rgba(255, 107, 53, 0.7);
       background: rgba(255, 107, 53, 0.07);
@@ -4048,6 +4079,9 @@
       'acc.srv_empty_fcm_ok': 'На данный момент нет подключенных серверов.<br>Вам нужно зайти на сервер в игре Rust.<br>И в меню игры связать сервер, вы увидите ваш сервер в этом меню.',
       'acc.srv_empty_fcm_bad':'Пожалуйста авторизуйтесь через специальное расширение. Rust Info Bot',
       'acc.srv_wait_footnote':'Если статус «ожидание» — пожалуйста, перезайдите в панель.',
+      'acc.srv_delete_btn':   'Удалить',
+      'acc.srv_delete_confirm':'Удалить сервер «{name}» из базы?\n\nСервер и его история событий будут удалены. Соединение Rust+ будет разорвано.',
+      'acc.srv_delete_err':   'Не удалось удалить сервер',
       'acc.discord_connect':  'Подключение Discord',
       'acc.wip_badge':        'В разработке',
       'acc.discord_hint':     'Серверы Discord, где у вас есть права администратора. Кнопка «Использовать» привязывает гильдию к боту, «Пригласить» добавляет бота на сервер.',
@@ -4386,6 +4420,9 @@
       'acc.srv_empty_fcm_ok': 'There are no connected servers at the moment.<br>You need to join a server in Rust.<br>Then link the server in the in-game menu — it will appear here.',
       'acc.srv_empty_fcm_bad':'Please sign in using the Rust Info Bot browser extension.',
       'acc.srv_wait_footnote':'If the status shows «waiting», please re-enter the panel.',
+      'acc.srv_delete_btn':   'Delete',
+      'acc.srv_delete_confirm':'Delete server «{name}» from the database?\n\nThe server and its event history will be removed. The Rust+ connection will be closed.',
+      'acc.srv_delete_err':   'Failed to delete server',
       'acc.discord_connect':  'Discord Connection',
       'acc.wip_badge':        'In Development',
       'acc.discord_hint':     'Discord servers where you have admin rights. «Use» button links the guild to the bot, «Invite» adds the bot to the server.',
@@ -8900,21 +8937,25 @@
         pending ? 'is-pending' : '',
       ].filter(Boolean).join(' ');
 
-      return `<button type="button"
-          class="${cls}"
+      return `<div class="${cls}" data-srv-id="${escapeHtml(sid)}">
+        <button type="button"
+          class="rust-srv-card__select"
           data-srv-id="${escapeHtml(sid)}"
           data-srv-addr="${escapeHtml(addr)}"
-          ${auto ? 'aria-disabled="true"' : ''}
+          ${auto ? 'disabled aria-disabled="true"' : ''}
           ${pending ? 'disabled' : ''}>
-        <div class="rust-srv-card__top">
-          <div class="rust-srv-card__name">${escapeHtml(String(s.server_name || addr))}</div>
-          <div class="rust-srv-card__badges">${badges.join('')}</div>
-        </div>
-        <div class="rust-srv-card__meta">
-          <span class="ip">${escapeHtml(addr)}</span>
-          <span>Steam: ${escapeHtml(String(s.player_id || '—'))}</span>
-        </div>
-      </button>`;
+          <div class="rust-srv-card__top">
+            <div class="rust-srv-card__name">${escapeHtml(String(s.server_name || addr))}</div>
+            <div class="rust-srv-card__badges">${badges.join('')}</div>
+          </div>
+          <div class="rust-srv-card__meta">
+            <span class="ip">${escapeHtml(addr)}</span>
+            <span>Steam: ${escapeHtml(String(s.player_id || '—'))}</span>
+          </div>
+        </button>
+        <button type="button" class="rust-srv-card__delete" data-srv-id="${escapeHtml(sid)}"
+          ${pending ? 'disabled' : ''}>${escapeHtml(t('acc.srv_delete_btn'))}</button>
+      </div>`;
     });
     wrap.innerHTML = cards.join('');
     if (waitFootnote) {
@@ -8969,14 +9010,58 @@
     }
   }
 
+  async function deletePairedServer(session, internalId) {
+    const st = _rustServersState;
+    const target = st.servers.find(s => String(s.internal_id) === String(internalId));
+    if (!target) return;
+    const label = String(target.server_name || `${target.server_ip}:${target.server_port}`);
+    if (!confirm(t('acc.srv_delete_confirm').replace('{name}', label))) return;
+
+    const wrap = document.getElementById('rust-v2-servers');
+    const delBtn = wrap?.querySelector(`.rust-srv-card__delete[data-srv-id="${CSS.escape(String(internalId))}"]`);
+    if (delBtn) delBtn.disabled = true;
+
+    try {
+      const r = await fetch(`${API_BASE}/me/server/delete?session=${encodeURIComponent(session)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ server_internal_id: internalId }),
+      });
+      const body = await r.json().catch(() => ({}));
+      if (!r.ok || !body.ok) {
+        const msg = body.error || body.message || t('acc.srv_delete_err');
+        alert(msg);
+        if (delBtn) delBtn.disabled = false;
+        return;
+      }
+      try { await loadDashboard(session, { force: true }); } catch (_) {}
+    } catch (err) {
+      alert(t('acc.srv_delete_err') + ': ' + ((err && err.message) || String(err)));
+      if (delBtn) delBtn.disabled = false;
+    }
+  }
+
   function setupRustServerGridOnce() {
     if (window._rustSrvGridBound) return;
     const wrap = document.getElementById('rust-v2-servers');
     if (!wrap) return;
     window._rustSrvGridBound = true;
     wrap.addEventListener('click', (ev) => {
-      const card = ev.target.closest('.rust-srv-card');
-      if (!card || card.classList.contains('is-pending') || card.classList.contains('is-disabled')) return;
+      const delBtn = ev.target.closest('.rust-srv-card__delete');
+      if (delBtn) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        if (delBtn.disabled) return;
+        const sid = delBtn.getAttribute('data-srv-id');
+        const session = _dashSessionRef;
+        if (sid && session) deletePairedServer(session, sid);
+        return;
+      }
+      const card = ev.target.closest('.rust-srv-card__select');
+      if (!card || card.disabled) return;
+      const parent = card.closest('.rust-srv-card');
+      if (parent?.classList.contains('is-pending') || parent?.classList.contains('is-disabled')) return;
       const sid = card.getAttribute('data-srv-id');
       if (!sid) return;
       const session = _dashSessionRef;
