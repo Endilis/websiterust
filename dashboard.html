@@ -2142,11 +2142,23 @@
       word-break: break-word;
     }
     .sponsor-chat__msg-name {
-      display: block;
       font-size: .8rem;
       font-weight: 700;
       letter-spacing: .01em;
+    }
+    .sponsor-chat__msg-head {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 6px 8px;
       margin-bottom: 4px;
+    }
+    .sponsor-chat__msg-time {
+      font-size: .72rem;
+      font-weight: 500;
+      color: var(--rp-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .sponsor-chat__msg-body {
       display: block;
@@ -5176,6 +5188,19 @@
     return `${m.recorded_at || m.ts || 0}:${m.sender_steam_id || ''}:${m.message || ''}`;
   }
 
+  function formatChatMessageTime(m) {
+    const recorded = Number(m?.recorded_at || 0);
+    const ts = Number(m?.ts || 0);
+    const unixSec = recorded > 1e9 ? recorded : (ts > 1e9 ? ts : 0);
+    if (!unixSec) return '—';
+    const locale = _lang === 'en' ? 'en-US' : 'ru-RU';
+    return new Date(unixSec * 1000).toLocaleTimeString(locale, {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+  }
+
   function stopSponsorChatPoll() {
     if (_sponsorChatPollTimer) { clearInterval(_sponsorChatPollTimer); _sponsorChatPollTimer = null; }
   }
@@ -5403,8 +5428,12 @@
         row.className = `sponsor-chat__msg ${isBot ? 'sponsor-chat__msg--bot' : ''}`;
         row.dataset.chatKey = key;
         const nameColor = m.colour || (isBot ? '#8ec5ff' : '#6dd06d');
+        const timeLabel = formatChatMessageTime(m);
         row.innerHTML =
-          `<span class="sponsor-chat__msg-name" style="color:${escapeHtml(nameColor)}">${escapeHtml(m.sender_name || '?')}</span>` +
+          `<div class="sponsor-chat__msg-head">` +
+            `<span class="sponsor-chat__msg-time">${escapeHtml(timeLabel)}</span>` +
+            `<span class="sponsor-chat__msg-name" style="color:${escapeHtml(nameColor)}">${escapeHtml(m.sender_name || '?')}</span>` +
+          `</div>` +
           `<span class="sponsor-chat__msg-body">${escapeHtml(m.message || '')}</span>`;
         container.appendChild(row);
         added++;
