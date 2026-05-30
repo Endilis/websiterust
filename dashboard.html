@@ -203,6 +203,18 @@
       box-shadow: inset 0 0 0 1px rgba(232,68,42,.25);
     }
     .dash-nav-btn.sub { padding-left: 18px; font-size: 0.85rem; font-weight: 500; }
+    .dash-nav-btn--with-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dash-nav-btn__icon {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      flex-shrink: 0;
+      border-radius: 4px;
+    }
     .dash-nav-btn--wip { opacity: 0.6; }
     .dash-nav-btn--wip::after { content: ' скоро'; font-size: 0.7rem; opacity: 0.7; }
 
@@ -3030,7 +3042,10 @@
         <nav class="dash-nav" aria-label="Разделы панели">
           <button type="button" class="dash-nav-btn active" data-panel="account" data-i18n="nav.account">Аккаунт</button>
           <button type="button" class="dash-nav-btn" data-panel="rust" data-i18n="nav.rust">Сервер</button>
-          <button type="button" class="dash-nav-btn" data-panel="chat" id="nav-chat-btn" style="display:none" data-i18n="nav.chat">💬 Чат</button>
+          <button type="button" class="dash-nav-btn dash-nav-btn--with-icon" data-panel="chat" id="nav-chat-btn" style="display:none">
+            <img class="dash-nav-btn__icon" src="/images/bot_chat.png?v=1" alt="" width="20" height="20" loading="lazy" />
+            <span data-i18n="nav.chat">Чат</span>
+          </button>
           <button type="button" class="dash-nav-btn" data-panel="team" data-i18n="nav.team">Команда</button>
           <button type="button" class="dash-nav-btn" data-panel="commands" data-i18n="nav.commands">Команды</button>
           <button type="button" class="dash-nav-btn" data-panel="devices" data-i18n="nav.devices">Устройства</button>
@@ -4076,7 +4091,7 @@
       'nav.logout':       'Выйти',
       'nav.account':      'Аккаунт',
       'nav.rust':         'Сервер',
-      'nav.chat':         '💬 Чат',
+      'nav.chat':         'Чат',
       'nav.team':         'Команда',
       'nav.commands':     'Команды',
       'nav.devices':      'Устройства',
@@ -4425,7 +4440,7 @@
       'nav.logout':       'Log out',
       'nav.account':      'Account',
       'nav.rust':         'Server',
-      'nav.chat':         '💬 Chat',
+      'nav.chat':         'Chat',
       'nav.team':         'Team',
       'nav.commands':     'Commands',
       'nav.devices':      'Devices',
