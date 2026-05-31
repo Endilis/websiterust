@@ -1121,16 +1121,31 @@
     }
     .watch-add-card__label { font-size: .78rem; font-weight: 600; }
     .watch-add-preview { margin-top: 12px; }
-    .watch-add-preview__name { font-weight: 700; font-size: 1rem; margin-bottom: 10px; }
-    .watch-add-preview__rows { display: grid; gap: 6px; font-size: .82rem; }
+    .watch-add-preview-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+      max-height: min(58vh, 560px);
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+    .watch-add-preview-card {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .watch-add-preview__name { font-weight: 700; font-size: .92rem; margin-bottom: 8px; line-height: 1.25; word-break: break-word; }
+    .watch-add-preview__rows { display: grid; gap: 4px; font-size: .78rem; }
     .watch-add-preview__row {
-      display: flex; justify-content: space-between; gap: 12px;
-      padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,.05);
+      display: flex; justify-content: space-between; gap: 10px;
+      padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,.05);
     }
     .watch-add-preview__row:last-child { border-bottom: none; }
     .watch-add-preview__label { color: var(--muted); flex-shrink: 0; }
     .watch-add-preview__value { color: var(--text2); text-align: right; min-width: 0; word-break: break-word; }
-    .watch-add-preview__actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+    .watch-add-preview__actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
     .watch-empty { text-align: center; color: var(--muted); padding: 24px 0; font-size: .88rem; }
     .watch-msg { font-size: .78rem; margin-top: 6px; min-height: 1.2em; }
     .watch-msg.is-error { color: #f87171; }
@@ -8321,13 +8336,7 @@
     bindWatchGridActions(grid);
   }
 
-  function renderWatchAddPreview(result) {
-    const box = document.getElementById('watch-add-preview');
-    if (!box) return;
-    if (!result) {
-      box.innerHTML = '';
-      return;
-    }
+  function renderWatchAddPreviewCard(result) {
     const prev = result.preview || {};
     const status = prev.status_label || result.status_label || '—';
     const lastServer = prev.last_server || result.server_name || '—';
@@ -8336,7 +8345,7 @@
     const canAddActive = _watchLimits && _watchLimits.can_activate;
     const oldNamesText = oldNames.length ? oldNames.map(n => escapeHtml(String(n))).join(', ') : '—';
     const rows = [
-      [t('watch.status') || 'Статус', status],
+      [t('watch.status'), status],
       [t('watch.preview_last_server'), lastServer !== '—' ? escapeHtml(String(lastServer)) : '—'],
       [t('watch.preview_names'), oldNamesText],
       [t('watch.last_seen'), lastSeen ? formatWatchLastSeen(lastSeen) : '—'],
@@ -8346,15 +8355,26 @@
         <span class="watch-add-preview__label">${escapeHtml(label)}</span>
         <span class="watch-add-preview__value">${value}</span>
       </div>`).join('');
-    box.innerHTML = `
-      <div class="watch-add-preview">
+    return `
+      <article class="watch-add-preview-card">
         <div class="watch-add-preview__name">${escapeHtml(result.player_name || '—')}</div>
         <div class="watch-add-preview__rows">${rowsHtml}</div>
         <div class="watch-add-preview__actions">
           <button type="button" class="watch-pill watch-pill--save watch-add-from-preview" data-bm-id="${escapeHtml(result.bm_player_id)}" data-name="${escapeHtml(result.player_name)}" data-activate="0">${escapeHtml(t('watch.add'))}</button>
           ${canAddActive ? `<button type="button" class="watch-pill watch-pill--activate watch-add-from-preview" data-bm-id="${escapeHtml(result.bm_player_id)}" data-name="${escapeHtml(result.player_name)}" data-activate="1">${escapeHtml(t('watch.add_active'))}</button>` : ''}
         </div>
-      </div>`;
+      </article>`;
+  }
+
+  function renderWatchAddPreviews(results) {
+    const box = document.getElementById('watch-add-preview');
+    if (!box) return;
+    const list = (results || []).slice(0, 10);
+    if (!list.length) {
+      box.innerHTML = '';
+      return;
+    }
+    box.innerHTML = `<div class="watch-add-preview-list">${list.map(renderWatchAddPreviewCard).join('')}</div>`;
     box.querySelectorAll('.watch-add-from-preview').forEach(btn => {
       btn.addEventListener('click', async () => {
         await watchAddPlayer(btn.dataset.bmId, btn.dataset.name, btn.dataset.activate === '1');
@@ -8632,7 +8652,7 @@
         return;
       }
       setWatchSearchMsg('');
-      renderWatchAddPreview(results[0]);
+      renderWatchAddPreviews(results);
     } catch {
       setWatchSearchMsg(_lang === 'en' ? 'Search error' : 'Ошибка поиска', false);
       if (preview) preview.innerHTML = '';
