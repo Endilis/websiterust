@@ -1144,6 +1144,40 @@
     .dash-btn--danger:hover { background: rgba(239, 68, 68, 0.22); color: #fff; border-color: #ef4444; }
     .dash-btn--danger[disabled] { opacity: .55; cursor: progress; }
 
+    .account-disconnect-box {
+      max-width: 560px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      border-radius: 12px;
+      background: rgba(239,68,68,.08);
+      border: 1px solid rgba(239,68,68,.28);
+    }
+    .account-disconnect-box p {
+      margin: 0 0 10px;
+      font-size: .85rem;
+      color: var(--text2);
+      line-height: 1.55;
+    }
+    .account-disconnect-list {
+      margin: 0 0 10px;
+      padding-left: 20px;
+      font-size: .85rem;
+      color: var(--text2);
+      line-height: 1.55;
+    }
+    .account-disconnect-list li { margin: 0 0 4px; }
+    .account-disconnect-coins {
+      margin: 0 !important;
+      font-size: .82rem !important;
+      color: #a5b4fc !important;
+    }
+    .account-disconnect-success {
+      margin-top: 10px;
+      font-size: .85rem;
+      color: #6ee7b7;
+      max-width: 560px;
+    }
+
     /* Legacy таблица серверов — оставлена на случай fallback-рендера, но не используется. */
     .rust-srv-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin-top: 4px; }
     .rust-srv-table th, .rust-srv-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; }
@@ -3678,14 +3712,17 @@
             <hr class="dash-sep"/>
 
             <section class="dash-section" id="account-self-disable" style="display:none" aria-labelledby="acc-self-disable-title">
-              <h2 class="dash-section-title" id="acc-self-disable-title" data-i18n="acc.danger_zone">Опасная зона</h2>
-              <p class="dash-muted" style="margin:0 0 12px;font-size:.85rem;max-width:560px" data-i18n="acc.danger_hint">
-                Отключить FCM и Rust+ сокет и заблокировать автоматическое восстановление после перезапуска бота.
-              </p>
-              <button type="button" class="dash-btn dash-btn--danger" id="btn-account-disable-forever" data-i18n="acc.btn_disable">
-                Отключить навсегда
-              </button>
-              <p class="dash-muted" id="account-disable-forever-note" style="margin-top:10px;font-size:.85rem;display:none;max-width:560px"></p>
+              <h2 class="dash-section-title" id="acc-self-disable-title" data-i18n="acc.disconnect_title">Отключение и удаление</h2>
+              <div class="account-disconnect-box">
+                <p data-i18n="acc.disconnect_warn">Внимание! Нажав кнопку отключить, будут удалены следующие данные.</p>
+                <ul class="account-disconnect-list">
+                  <li data-i18n="acc.disconnect_li1">Удалён токен подключения.</li>
+                  <li data-i18n="acc.disconnect_li2">Данные о серверах, подключениях, игроках, статистика и подобное.</li>
+                </ul>
+                <p class="account-disconnect-coins" data-i18n="acc.disconnect_coins">Коины и бонусы удалены не будут.</p>
+              </div>
+              <button type="button" class="dash-btn dash-btn--danger" id="btn-account-disable-forever" data-i18n="acc.btn_disconnect">Отключить</button>
+              <p class="account-disconnect-success" id="account-disconnect-success-note" style="display:none"></p>
             </section>
 
           </div>
@@ -4814,9 +4851,14 @@
       'acc.btn_edit':         'Изменить',
       'acc.btn_save':         'Сохранить',
       'acc.btn_cancel':       'Отмена',
-      'acc.danger_zone':      'Опасная зона',
-      'acc.danger_hint':      'Отключить FCM и Rust+ сокет и заблокировать автоматическое восстановление после перезапуска бота.',
-      'acc.btn_disable':      'Отключить навсегда',
+      'acc.disconnect_title':   'Отключение и удаление',
+      'acc.disconnect_warn':    'Внимание! Нажав кнопку отключить, будут удалены следующие данные.',
+      'acc.disconnect_li1':     'Удалён токен подключения.',
+      'acc.disconnect_li2':     'Данные о серверах, подключениях, игроках, статистика и подобное.',
+      'acc.disconnect_coins':   'Коины и бонусы удалены не будут.',
+      'acc.btn_disconnect':     'Отключить',
+      'acc.disconnect_confirm': 'Отключить Rust+ и удалить все данные о серверах и устройствах?\n\nКоины и бонусы сохранятся. Для повторного использования потребуется заново привязать Rust+.',
+      'acc.disconnect_ok':      'Отключено. Данные удалены. Можно заново привязать Rust+.',
       'acc.token_expires':    'Истекает',
       'acc.token_days':       'Осталось дней',
       /* rust panel */
@@ -5206,9 +5248,14 @@
       'acc.btn_edit':         'Edit',
       'acc.btn_save':         'Save',
       'acc.btn_cancel':       'Cancel',
-      'acc.danger_zone':      'Danger Zone',
-      'acc.danger_hint':      'Disable FCM and Rust+ socket and block automatic recovery after bot restart.',
-      'acc.btn_disable':      'Disable Forever',
+      'acc.disconnect_title':   'Disconnect and remove',
+      'acc.disconnect_warn':    'Warning! Pressing Disconnect will remove the following data.',
+      'acc.disconnect_li1':     'Connection token will be removed.',
+      'acc.disconnect_li2':     'Server, pairing, player, stats and related data.',
+      'acc.disconnect_coins':   'Coins and bonuses will not be removed.',
+      'acc.btn_disconnect':     'Disconnect',
+      'acc.disconnect_confirm': 'Disconnect Rust+ and delete all server and device data?\n\nCoins and bonuses will be kept. You will need to link Rust+ again.',
+      'acc.disconnect_ok':      'Disconnected. Data removed. You can link Rust+ again.',
       'acc.token_expires':    'Expires',
       'acc.token_days':       'Days remaining',
       /* rust panel */
@@ -7051,24 +7098,17 @@
 
   function updateAccountSelfDisableUI(data) {
     const sec = document.getElementById('account-self-disable');
-    const btn = document.getElementById('btn-account-disable-forever');
-    const note = document.getElementById('account-disable-forever-note');
-    if (!sec || !btn || !note) return;
+    const successNote = document.getElementById('account-disconnect-success-note');
+    if (!sec) return;
     const ru = data.rust_user;
     if (!ru || ru.internal_id == null) {
       sec.style.display = 'none';
       return;
     }
     sec.style.display = '';
-    if (ru.admin_disabled) {
-      btn.style.display = 'none';
-      note.style.display = 'block';
-      note.textContent = _lang==='en'?'Auto-recovery is disabled.':'Авто-восстановление отключено.';
-    } else {
-      btn.style.display = '';
-      btn.disabled = false;
-      note.style.display = 'none';
-      note.textContent = '';
+    if (successNote && successNote.dataset.pending !== '1') {
+      successNote.style.display = 'none';
+      successNote.textContent = '';
     }
   }
 
@@ -7079,13 +7119,15 @@
     const btn = document.getElementById('btn-account-disable-forever');
     if (!btn) return;
     btn.addEventListener('click', async () => {
-      const msg = _lang === 'en'
-        ? 'Disable FCM+socket and block auto-recovery? The bot will not reconnect after restart.'
-        : 'Отключить FCM+сокет и заблокировать авто-восстановление? Бот не будет переподключаться после перезапуска.';
-      if (!confirm(msg)) return;
+      if (!confirm(t('acc.disconnect_confirm'))) return;
       const session = _dashSessionRef || localStorage.getItem('ri_session');
       if (!session) return;
+      const successNote = document.getElementById('account-disconnect-success-note');
       btn.disabled = true;
+      if (successNote) {
+        successNote.style.display = 'none';
+        successNote.dataset.pending = '1';
+      }
       try {
         const resp = await fetch(
           `${API_BASE}/me/disable_forever?session=${encodeURIComponent(session)}`,
@@ -7096,10 +7138,11 @@
           d = await resp.json();
         } catch (_) {}
         if (resp.ok && d.ok) {
-          await loadDashboard(session, { force: true });
-          return;
-        }
-        if (resp.status === 409 && d.error === 'already_disabled') {
+          if (successNote) {
+            successNote.textContent = t('acc.disconnect_ok');
+            successNote.style.display = 'block';
+            delete successNote.dataset.pending;
+          }
           await loadDashboard(session, { force: true });
           return;
         }
@@ -7107,6 +7150,7 @@
       } catch (_) {
         alert(_lang==='en'?'Network error':'Сетевая ошибка');
       } finally {
+        if (successNote) delete successNote.dataset.pending;
         btn.disabled = false;
       }
     });
