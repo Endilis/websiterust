@@ -1121,20 +1121,15 @@
     }
     .watch-add-card__label { font-size: .78rem; font-weight: 600; }
     .watch-add-preview { margin-top: 12px; }
-    .watch-add-preview__head {
-      display: flex; align-items: center; justify-content: space-between; gap: 10px;
-      margin-bottom: 10px;
+    .watch-add-preview__name { font-weight: 700; font-size: 1rem; margin-bottom: 10px; }
+    .watch-add-preview__rows { display: grid; gap: 6px; font-size: .82rem; }
+    .watch-add-preview__row {
+      display: flex; justify-content: space-between; gap: 12px;
+      padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,.05);
     }
-    .watch-add-preview__name { font-weight: 700; font-size: 1rem; }
-    .watch-add-preview__status { font-size: .82rem; color: var(--text2); }
-    .watch-add-preview__section { margin-top: 12px; }
-    .watch-add-preview__title {
-      font-size: .72rem; font-weight: 700; color: var(--muted);
-      text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px;
-    }
-    .watch-add-preview__list { font-size: .8rem; color: var(--text2); }
-    .watch-add-preview__list div { padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
-    .watch-add-preview__list div:last-child { border-bottom: none; }
+    .watch-add-preview__row:last-child { border-bottom: none; }
+    .watch-add-preview__label { color: var(--muted); flex-shrink: 0; }
+    .watch-add-preview__value { color: var(--text2); text-align: right; min-width: 0; word-break: break-word; }
     .watch-add-preview__actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
     .watch-empty { text-align: center; color: var(--muted); padding: 24px 0; font-size: .88rem; }
     .watch-msg { font-size: .78rem; margin-top: 6px; min-height: 1.2em; }
@@ -5028,7 +5023,7 @@
       'watch.add_player':   'Добавить',
       'watch.add_modal_title': 'Добавить игрока',
       'watch.add_modal_hint': 'Точный ник в Rust — как на BattleMetrics',
-      'watch.preview_servers': 'Серверы',
+      'watch.preview_last_server': 'Последний сервер',
       'watch.preview_names': 'Старые ники',
       'watch.preview_empty': 'Игрок не найден',
       'watch.preview_searching': 'Поиск…',
@@ -5040,6 +5035,7 @@
       'watch.add_active': 'Добавить и следить',
       'watch.not_found':  'Игроки не найдены',
       'watch.server':     'Сервер',
+      'watch.status':     'Статус',
       'watch.last_seen':  'Последний вход',
       'watch.time_played':'На сервере',
       'watch.stats':      'Статистика',
@@ -5494,7 +5490,7 @@
       'watch.add_player':   'Add player',
       'watch.add_modal_title': 'Add player',
       'watch.add_modal_hint': 'Exact Rust nickname — as on BattleMetrics',
-      'watch.preview_servers': 'Servers',
+      'watch.preview_last_server': 'Last server',
       'watch.preview_names': 'Previous names',
       'watch.preview_empty': 'Player not found',
       'watch.preview_searching': 'Searching…',
@@ -5506,6 +5502,7 @@
       'watch.add_active': 'Add & track',
       'watch.not_found':  'No players found',
       'watch.server':     'Server',
+      'watch.status':     'Status',
       'watch.last_seen':  'Last seen',
       'watch.time_played':'Time on server',
       'watch.stats':      'Statistics',
@@ -8268,12 +8265,13 @@
     const cardsHtml = list.map(p => {
       const active = !!p.is_active;
       const status = p.status_label || (p.status === 'online' ? '🟢 Онлайн' : p.status === 'offline' ? '🔴 Оффлайн' : '—');
+      const serverLabel = p.server && !['—', 'Неизвестно', 'Не играет'].includes(String(p.server)) ? String(p.server) : null;
       const metaParts = [];
-      if (p.server && !['—', 'Неизвестно', 'Не играет'].includes(String(p.server))) {
-        metaParts.push(`${t('watch.server')}: ${escapeHtml(String(p.server))}`);
+      if (serverLabel) metaParts.push(`${t('watch.server')}: ${escapeHtml(serverLabel)}`);
+      if (p.last_seen && p.last_seen !== '—' && p.last_seen !== 'Неизвестно') {
+        metaParts.push(`${t('watch.last_seen')}: ${formatWatchLastSeen(p.last_seen)}`);
       }
       if (p.time_played_fmt) metaParts.push(`${t('watch.time_played')}: ${escapeHtml(String(p.time_played_fmt))}`);
-      if (p.last_seen) metaParts.push(`${t('watch.last_seen')}: ${formatWatchLastSeen(p.last_seen)}`);
       const metaHtml = metaParts.length ? `<div class="watch-card__meta">${metaParts.join(' · ')}</div>` : '';
       const canActivate = _watchLimits && _watchLimits.can_activate;
       const bmUrl = watchCardBmUrl(p);
@@ -8332,31 +8330,26 @@
     }
     const prev = result.preview || {};
     const status = prev.status_label || result.status_label || '—';
-    const servers = prev.servers || [];
-    const oldNames = prev.old_names || [];
+    const lastServer = prev.last_server || result.server_name || '—';
+    const lastSeen = prev.last_seen || result.last_seen;
+    const oldNames = (prev.old_names || []).slice(0, 3);
     const canAddActive = _watchLimits && _watchLimits.can_activate;
-    const srvHtml = servers.length
-      ? servers.map(s => `<div>${s.online ? '🟢' : '🔴'} ${escapeHtml(s.name || '—')}${s.time_played_fmt ? ` · ${escapeHtml(s.time_played_fmt)}` : ''}${s.last_seen ? ` · ${formatWatchLastSeen(s.last_seen)}` : ''}</div>`).join('')
-      : `<div>${escapeHtml(result.server_name || '—')}</div>`;
-    const namesHtml = oldNames.length
-      ? oldNames.map(n => `<div>${escapeHtml(n.name || '—')}${n.last_seen ? ` · ${formatWatchLastSeen(n.last_seen)}` : ''}</div>`).join('')
-      : `<div>—</div>`;
+    const oldNamesText = oldNames.length ? oldNames.map(n => escapeHtml(String(n))).join(', ') : '—';
+    const rows = [
+      [t('watch.status') || 'Статус', status],
+      [t('watch.preview_last_server'), lastServer !== '—' ? escapeHtml(String(lastServer)) : '—'],
+      [t('watch.preview_names'), oldNamesText],
+      [t('watch.last_seen'), lastSeen ? formatWatchLastSeen(lastSeen) : '—'],
+    ];
+    const rowsHtml = rows.map(([label, value]) => `
+      <div class="watch-add-preview__row">
+        <span class="watch-add-preview__label">${escapeHtml(label)}</span>
+        <span class="watch-add-preview__value">${value}</span>
+      </div>`).join('');
     box.innerHTML = `
       <div class="watch-add-preview">
-        <div class="watch-add-preview__head">
-          <div>
-            <div class="watch-add-preview__name">${escapeHtml(result.player_name || '—')}</div>
-            <div class="watch-add-preview__status">${escapeHtml(status)}${prev.current_server ? ` · ${escapeHtml(prev.current_server)}` : ''}</div>
-          </div>
-        </div>
-        <div class="watch-add-preview__section">
-          <div class="watch-add-preview__title">${escapeHtml(t('watch.preview_servers'))}</div>
-          <div class="watch-add-preview__list">${srvHtml}</div>
-        </div>
-        <div class="watch-add-preview__section">
-          <div class="watch-add-preview__title">${escapeHtml(t('watch.preview_names'))}</div>
-          <div class="watch-add-preview__list">${namesHtml}</div>
-        </div>
+        <div class="watch-add-preview__name">${escapeHtml(result.player_name || '—')}</div>
+        <div class="watch-add-preview__rows">${rowsHtml}</div>
         <div class="watch-add-preview__actions">
           <button type="button" class="watch-pill watch-pill--save watch-add-from-preview" data-bm-id="${escapeHtml(result.bm_player_id)}" data-name="${escapeHtml(result.player_name)}" data-activate="0">${escapeHtml(t('watch.add'))}</button>
           ${canAddActive ? `<button type="button" class="watch-pill watch-pill--activate watch-add-from-preview" data-bm-id="${escapeHtml(result.bm_player_id)}" data-name="${escapeHtml(result.player_name)}" data-activate="1">${escapeHtml(t('watch.add_active'))}</button>` : ''}
