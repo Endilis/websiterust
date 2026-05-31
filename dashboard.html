@@ -992,6 +992,77 @@
       background: rgba(206,66,47,.18); color: #f0a090; border: 1px solid rgba(206,66,47,.35);
     }
     .devices-limit__hint { font-size: .78rem; color: var(--text2); }
+
+    /* ── Watch players panel ── */
+    .watch-limit {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;
+      margin: 12px 0 4px; padding: 10px 14px;
+      background: var(--bg3); border: 1px solid var(--border); border-radius: 10px;
+      font-size: .82rem;
+    }
+    .watch-limit__badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border-radius: 999px; font-weight: 700;
+      background: rgba(232, 68, 42, .12); color: var(--accent, #e8442a);
+    }
+    .watch-limit__badge.is-full { background: rgba(251, 191, 36, .15); color: #fbbf24; }
+    .watch-search-row {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px;
+    }
+    .watch-search-row input {
+      flex: 1; min-width: 180px; padding: 10px 14px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg2); color: var(--text);
+      font-family: inherit; font-size: .9rem;
+    }
+    .watch-search-results {
+      margin-top: 12px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .watch-search-item {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg2);
+    }
+    .watch-search-item__meta { flex: 1; min-width: 140px; font-size: .85rem; color: var(--text2); }
+    .watch-search-item__name { font-weight: 700; color: var(--text); font-size: .95rem; }
+    .watch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px; margin-top: 16px;
+    }
+    .watch-card {
+      background: var(--card-bg2, rgba(255,255,255,.05));
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .watch-card.is-inactive { opacity: .72; }
+    .watch-card__head {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+    }
+    .watch-card__name { font-weight: 700; font-size: 1rem; }
+    .watch-card__status { font-size: .82rem; color: var(--text2); }
+    .watch-card__server { font-size: .8rem; color: var(--muted); word-break: break-word; }
+    .watch-toggle {
+      display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+      font-size: .82rem; font-weight: 600; user-select: none;
+    }
+    .watch-toggle input { width: 16px; height: 16px; accent-color: var(--accent, #e8442a); }
+    .watch-field label {
+      display: block; font-size: .72rem; font-weight: 600; color: var(--text2);
+      margin-bottom: 4px; text-transform: uppercase; letter-spacing: .04em;
+    }
+    .watch-field input, .watch-field textarea {
+      width: 100%; padding: 8px 10px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--bg2); color: var(--text);
+      font-family: inherit; font-size: .85rem;
+    }
+    .watch-field textarea { min-height: 64px; resize: vertical; }
+    .watch-card__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .watch-empty { text-align: center; color: var(--muted); padding: 36px 0; font-size: .95rem; }
+    .watch-msg { font-size: .82rem; margin-top: 8px; min-height: 1.2em; }
+    .watch-msg.is-error { color: #f87171; }
+    .watch-msg.is-ok { color: #34d399; }
+
     .account-sheet {
       border-radius: 16px;
       border: 1px solid var(--border);
@@ -3494,6 +3565,7 @@
           <button type="button" class="dash-nav-btn" data-panel="team" data-i18n="nav.team">Команда</button>
           <button type="button" class="dash-nav-btn" data-panel="commands" data-i18n="nav.commands">Команды</button>
           <button type="button" class="dash-nav-btn" data-panel="devices" data-i18n="nav.devices">Устройства</button>
+          <button type="button" class="dash-nav-btn" data-panel="watch" data-i18n="nav.watch">Слежка</button>
           <button type="button" class="dash-nav-btn" data-panel="coins" id="nav-coins-btn" style="display:none" data-i18n="nav.coins">🪙 Коины</button>
           <button type="button" class="dash-nav-btn" data-panel="sponsor" id="nav-sponsor-btn" style="display:none" data-i18n="nav.sponsor">Спонсор</button>
           <div class="dash-nav-label" data-i18n="nav.wip">🚧 В разработке</div>
@@ -3975,6 +4047,29 @@
             <div id="devices-limit" class="devices-limit" style="display:none"></div>
             <div id="devices-loading" style="display:none;padding:20px 0;text-align:center;color:var(--muted)" data-i18n="dev.loading">Загрузка...</div>
             <div id="devices-grid" class="devices-grid"></div>
+          </div>
+        </div>
+
+        <!-- PANEL: watch players -->
+        <div id="panel-watch" class="dash-panel" role="tabpanel">
+          <div class="card full-card">
+            <div class="card-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <span data-i18n="watch.title">Слежка за игроками</span>
+              <button type="button" class="dash-btn dash-btn--sm" id="btn-watch-refresh" style="margin-left:auto" data-i18n="watch.refresh">Обновить</button>
+            </div>
+            <p class="dash-muted" style="font-size:.82rem;margin:4px 0 0" data-i18n="watch.hint">
+              Добавьте до 10 игроков. Активная слежка обновляет статус через BattleMetrics: бесплатно — 2, спонсор — 5.
+            </p>
+            <div id="watch-limit" class="watch-limit" style="display:none"></div>
+            <div class="watch-search-row">
+              <input type="text" id="watch-search-input" maxlength="64" autocomplete="off" spellcheck="false" data-i18n-placeholder="watch.search_ph" placeholder="Точный ник в Rust" />
+              <button type="button" class="dash-btn" id="btn-watch-search" data-i18n="watch.search_btn">Найти</button>
+            </div>
+            <div id="watch-search-msg" class="watch-msg"></div>
+            <div id="watch-search-results" class="watch-search-results"></div>
+            <div id="watch-loading" style="display:none;padding:20px 0;text-align:center;color:var(--muted)" data-i18n="watch.loading">Загрузка...</div>
+            <div id="watch-grid" class="watch-grid"></div>
           </div>
         </div>
 
@@ -4723,6 +4818,28 @@
       'dev.btn_off':      'Выключить',
       'dev.protection':   'Защита: ',
       'dev.no_items':     'Нет предметов',
+      'nav.watch':        'Слежка',
+      'watch.title':      'Слежка за игроками',
+      'watch.refresh':    'Обновить',
+      'watch.hint':       'Добавьте до 10 игроков. Активная слежка: бесплатно — 2, спонсор — 5.',
+      'watch.search_ph':  'Точный ник в Rust',
+      'watch.search_btn': 'Найти',
+      'watch.loading':    'Загрузка...',
+      'watch.empty':      'Список пуст. Найдите игрока по нику и добавьте в список.',
+      'watch.limit_list': 'В списке',
+      'watch.limit_active': 'Активная слежка',
+      'watch.limit_free': 'Бесплатно: до 2 активных. Спонсор — до 5.',
+      'watch.limit_sponsor': 'Спонсор: до {limit} активных.',
+      'watch.active_label': 'Слежка',
+      'watch.steam_id':   'Steam ID',
+      'watch.notes':      'Примечание',
+      'watch.save':       'Сохранить',
+      'watch.delete':     'Удалить',
+      'watch.add':        'Добавить',
+      'watch.add_active': 'Добавить и следить',
+      'watch.not_found':  'Игроки не найдены',
+      'watch.server':     'Сервер',
+      'watch.last_seen':  'Последний вход',
       'nav.wip':          '🚧 В разработке',
       'nav.map':          '🗺️ Карта',
       'nav.notify':       '🔔 Уведомления',
@@ -5120,6 +5237,28 @@
       'dev.btn_off':      'Turn Off',
       'dev.protection':   'Protection: ',
       'dev.no_items':     'No items',
+      'nav.watch':        'Watch',
+      'watch.title':      'Player watch',
+      'watch.refresh':    'Refresh',
+      'watch.hint':       'Up to 10 players in list. Active tracking: free — 2, sponsor — 5.',
+      'watch.search_ph':  'Exact Rust nickname',
+      'watch.search_btn': 'Search',
+      'watch.loading':    'Loading...',
+      'watch.empty':      'List is empty. Search by nickname to add a player.',
+      'watch.limit_list': 'In list',
+      'watch.limit_active': 'Active tracking',
+      'watch.limit_free': 'Free: up to 2 active. Sponsor — up to 5.',
+      'watch.limit_sponsor': 'Sponsor: up to {limit} active.',
+      'watch.active_label': 'Tracking',
+      'watch.steam_id':   'Steam ID',
+      'watch.notes':      'Notes',
+      'watch.save':       'Save',
+      'watch.delete':     'Remove',
+      'watch.add':        'Add',
+      'watch.add_active': 'Add & track',
+      'watch.not_found':  'No players found',
+      'watch.server':     'Server',
+      'watch.last_seen':  'Last seen',
       'nav.wip':          '🚧 In Development',
       'nav.map':          '🗺️ Map',
       'nav.notify':       '🔔 Notifications',
@@ -6543,6 +6682,12 @@
         } else {
           stopDevicesAutoRefresh();
         }
+        if (id === 'watch') {
+          loadWatchPanel({ manual: true });
+          startWatchAutoRefresh();
+        } else {
+          stopWatchAutoRefresh();
+        }
         if (id === 'coins') {
           loadCoinsPanel();
         }
@@ -6561,6 +6706,7 @@
     closeAdminUserChat();
     stopTeamAutoRefresh();
     stopDevicesAutoRefresh();
+    stopWatchAutoRefresh();
     localStorage.removeItem('ri_session');
     window.location.href = 'index.html';
   });
@@ -6659,6 +6805,8 @@
       fetchAndRenderTeam(session).catch(() => {});
     } else if (activeId === 'panel-devices') {
       loadDevices({ showLoading: false });
+    } else if (activeId === 'panel-watch') {
+      loadWatchPanel({ showLoading: false });
     } else if (activeId === 'panel-coins') {
       loadCoinsPanel();
     } else if (activeId === 'panel-admin' && String(_dashDiscordId || '') === ADMIN_DISCORD_ID) {
@@ -7536,6 +7684,12 @@
   let _devLoadBusy = false;
   const DEVICES_REFRESH_MS = 4000;
 
+  let _watchSession = null;
+  let _watchLimits = null;
+  let _watchAutoRefreshTimer = null;
+  let _watchLoadBusy = false;
+  const WATCH_REFRESH_MS = 60000;
+
   const DEVICE_TYPE_LABEL = { 1: 'dev.type_switch', 2: 'dev.type_alarm', 3: 'dev.type_storage' };
   const DEVICE_TYPE_CLASS  = { 1: 'switch', 2: 'alarm', 3: 'storage' };
   const DEVICE_TYPE_ICON_FILE = {
@@ -7741,6 +7895,319 @@
     if (_devAutoRefreshTimer) {
       clearInterval(_devAutoRefreshTimer);
       _devAutoRefreshTimer = null;
+    }
+  }
+
+  function renderWatchLimit(limits) {
+    const el = document.getElementById('watch-limit');
+    if (!el || !limits) return;
+    _watchLimits = limits;
+    el.style.display = 'flex';
+    const listFull = limits.list_count >= limits.list_max;
+    const activeFull = limits.active_count >= limits.active_limit;
+    const hint = limits.is_sponsor
+      ? (t('watch.limit_sponsor') || '').replace('{limit}', String(limits.active_limit))
+      : (t('watch.limit_free') || '');
+    el.innerHTML =
+      `<span class="watch-limit__badge${listFull ? ' is-full' : ''}">${t('watch.limit_list')}: ${limits.list_count} / ${limits.list_max}</span>` +
+      `<span class="watch-limit__badge${activeFull ? ' is-full' : ''}">${t('watch.limit_active')}: ${limits.active_count} / ${limits.active_limit}</span>` +
+      `<span class="devices-limit__hint">${escapeHtml(hint)}</span>`;
+  }
+
+  function formatWatchLastSeen(raw) {
+    if (!raw || raw === 'Неизвестно') return '—';
+    const s = String(raw).replace('Z', '').slice(0, 19);
+    const d = new Date(s);
+    if (Number.isNaN(d.getTime())) return escapeHtml(String(raw));
+    return d.toLocaleString(_lang === 'en' ? 'en-GB' : 'ru-RU', { dateStyle: 'short', timeStyle: 'short' });
+  }
+
+  function renderWatchCards(players) {
+    const grid = document.getElementById('watch-grid');
+    if (!grid) return;
+    if (!players || players.length === 0) {
+      grid.innerHTML = `<div class="watch-empty">${t('watch.empty')}</div>`;
+      return;
+    }
+    grid.innerHTML = players.map(p => {
+      const active = !!p.is_active;
+      const status = p.status_label || (p.status === 'online' ? '🟢 Онлайн' : p.status === 'offline' ? '🔴 Оффлайн' : '—');
+      const server = p.server ? `${t('watch.server')}: ${escapeHtml(String(p.server))}` : '';
+      const lastSeen = p.last_seen ? `${t('watch.last_seen')}: ${formatWatchLastSeen(p.last_seen)}` : '';
+      const canToggle = active || (_watchLimits && _watchLimits.can_activate);
+      return `
+        <article class="watch-card${active ? '' : ' is-inactive'}" data-watch-id="${p.id}">
+          <div class="watch-card__head">
+            <div>
+              <div class="watch-card__name">${escapeHtml(p.player_name || '—')}</div>
+              <div class="watch-card__status">${escapeHtml(status)}</div>
+              ${server ? `<div class="watch-card__server">${server}</div>` : ''}
+              ${lastSeen ? `<div class="watch-card__server">${lastSeen}</div>` : ''}
+            </div>
+            <label class="watch-toggle" title="${escapeHtml(t('watch.active_label'))}">
+              <input type="checkbox" class="watch-active-toggle" data-id="${p.id}" ${active ? 'checked' : ''} ${canToggle || active ? '' : 'disabled'} />
+              ${escapeHtml(t('watch.active_label'))}
+            </label>
+          </div>
+          <div class="watch-field">
+            <label>${escapeHtml(t('watch.steam_id'))}</label>
+            <input type="text" class="watch-steam-input" data-id="${p.id}" value="${escapeHtml(p.steam_id || '')}" placeholder="7656119…" inputmode="numeric" />
+          </div>
+          <div class="watch-field">
+            <label>${escapeHtml(t('watch.notes'))}</label>
+            <textarea class="watch-notes-input" data-id="${p.id}" maxlength="500">${escapeHtml(p.notes || '')}</textarea>
+          </div>
+          <div class="watch-card__actions">
+            <button type="button" class="dash-btn dash-btn--sm watch-save-btn" data-id="${p.id}">${escapeHtml(t('watch.save'))}</button>
+            <button type="button" class="dash-btn dash-btn--sm dash-btn--danger watch-delete-btn" data-id="${p.id}">${escapeHtml(t('watch.delete'))}</button>
+          </div>
+        </article>`;
+    }).join('');
+
+    grid.querySelectorAll('.watch-active-toggle').forEach(inp => {
+      inp.addEventListener('change', () => watchSetActive(inp.dataset.id, inp.checked, inp));
+    });
+    grid.querySelectorAll('.watch-save-btn').forEach(btn => {
+      btn.addEventListener('click', () => watchSaveCard(btn.dataset.id));
+    });
+    grid.querySelectorAll('.watch-delete-btn').forEach(btn => {
+      btn.addEventListener('click', () => watchDeletePlayer(btn.dataset.id));
+    });
+  }
+
+  function renderWatchSearchResults(results) {
+    const box = document.getElementById('watch-search-results');
+    const msg = document.getElementById('watch-search-msg');
+    if (!box) return;
+    if (!results || results.length === 0) {
+      box.innerHTML = '';
+      if (msg) {
+        msg.textContent = t('watch.not_found');
+        msg.className = 'watch-msg is-error';
+      }
+      return;
+    }
+    if (msg) { msg.textContent = ''; msg.className = 'watch-msg'; }
+    const canAddActive = _watchLimits && _watchLimits.can_activate;
+    box.innerHTML = results.map(r => `
+      <div class="watch-search-item">
+        <div class="watch-search-item__meta">
+          <div class="watch-search-item__name">${escapeHtml(r.player_name)}</div>
+          <div>${escapeHtml(r.status_label || '')} · ${escapeHtml(r.server_name || '—')}</div>
+        </div>
+        <button type="button" class="dash-btn dash-btn--sm watch-add-btn" data-bm-id="${escapeHtml(r.bm_player_id)}" data-name="${escapeHtml(r.player_name)}" data-activate="0">${escapeHtml(t('watch.add'))}</button>
+        ${canAddActive ? `<button type="button" class="dash-btn dash-btn--sm watch-add-btn" data-bm-id="${escapeHtml(r.bm_player_id)}" data-name="${escapeHtml(r.player_name)}" data-activate="1">${escapeHtml(t('watch.add_active'))}</button>` : ''}
+      </div>
+    `).join('');
+    box.querySelectorAll('.watch-add-btn').forEach(btn => {
+      btn.addEventListener('click', () => watchAddPlayer(btn.dataset.bmId, btn.dataset.name, btn.dataset.activate === '1'));
+    });
+  }
+
+  function setWatchSearchMsg(text, ok) {
+    const msg = document.getElementById('watch-search-msg');
+    if (!msg) return;
+    msg.textContent = text || '';
+    msg.className = 'watch-msg' + (text ? (ok ? ' is-ok' : ' is-error') : '');
+  }
+
+  async function loadWatchPanel(opts = {}) {
+    const session = _watchSession || _dashSessionRef;
+    if (!session || _watchLoadBusy) return;
+    _watchLoadBusy = true;
+    const showLoading = opts.showLoading !== false && (opts.manual || !document.getElementById('watch-grid')?.innerHTML);
+    const loading = document.getElementById('watch-loading');
+    const grid = document.getElementById('watch-grid');
+    if (showLoading && loading) loading.style.display = 'block';
+    if (showLoading && grid) grid.innerHTML = '';
+    try {
+      const r = await fetch(`${API_BASE}/me/watched-players?session=${encodeURIComponent(session)}&_t=${Date.now()}`, {
+        credentials: 'include', cache: 'no-store',
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.ok) {
+        const msg = d.message || d.error || (_lang === 'en' ? 'Load error' : 'Ошибка загрузки');
+        if (grid) grid.innerHTML = `<div class="watch-empty">❌ ${escapeHtml(String(msg))}</div>`;
+        return;
+      }
+      renderWatchLimit(d.limits || {});
+      renderWatchCards(d.players || []);
+    } catch {
+      if (grid) grid.innerHTML = `<div class="watch-empty">❌ ${_lang === 'en' ? 'Load error' : 'Ошибка загрузки'}</div>`;
+    } finally {
+      if (loading) loading.style.display = 'none';
+      _watchLoadBusy = false;
+    }
+  }
+
+  async function watchSearchPlayers() {
+    const session = _watchSession || _dashSessionRef;
+    const input = document.getElementById('watch-search-input');
+    const nickname = (input?.value || '').trim();
+    if (!session || !nickname) return;
+    setWatchSearchMsg('');
+    const box = document.getElementById('watch-search-results');
+    if (box) box.innerHTML = `<div class="watch-empty">${t('watch.loading')}</div>`;
+    try {
+      const r = await fetch(`${API_BASE}/me/watched-players?session=${encodeURIComponent(session)}&search=${encodeURIComponent(nickname)}&_t=${Date.now()}`, {
+        credentials: 'include', cache: 'no-store',
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.ok) {
+        setWatchSearchMsg(d.message || d.error || 'Error', false);
+        if (box) box.innerHTML = '';
+        return;
+      }
+      renderWatchSearchResults(d.results || []);
+    } catch {
+      setWatchSearchMsg(_lang === 'en' ? 'Search error' : 'Ошибка поиска', false);
+      if (box) box.innerHTML = '';
+    }
+  }
+
+  async function watchAddPlayer(bmId, name, activate) {
+    const session = _watchSession || _dashSessionRef;
+    if (!session) return;
+    try {
+      const r = await fetch(`${API_BASE}/me/watched-players?session=${encodeURIComponent(session)}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bm_player_id: bmId, player_name: name, activate: !!activate }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.ok) {
+        setWatchSearchMsg(d.message || d.error || 'Error', false);
+        return;
+      }
+      setWatchSearchMsg(_lang === 'en' ? 'Added' : 'Добавлено', true);
+      if (d.player && d.player.activate_requested && !d.player.activated) {
+        setWatchSearchMsg(
+          _lang === 'en'
+            ? 'Added to list (active limit reached — enable tracking manually)'
+            : 'Добавлен в список (лимит активной слежки — включите вручную)',
+          true
+        );
+      }
+      document.getElementById('watch-search-results').innerHTML = '';
+      const input = document.getElementById('watch-search-input');
+      if (input) input.value = '';
+      renderWatchLimit(d.limits || {});
+      await loadWatchPanel({ showLoading: false });
+    } catch {
+      setWatchSearchMsg(_lang === 'en' ? 'Error' : 'Ошибка', false);
+    }
+  }
+
+  async function watchSetActive(id, active, inputEl) {
+    const session = _watchSession || _dashSessionRef;
+    if (!session) return;
+    try {
+      const r = await fetch(`${API_BASE}/me/watched-players/${id}?session=${encodeURIComponent(session)}`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_active: !!active }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.ok) {
+        if (inputEl) inputEl.checked = !active;
+        alert(d.message || d.error || 'Error');
+        return;
+      }
+      renderWatchLimit(d.limits || {});
+      await loadWatchPanel({ showLoading: false });
+    } catch {
+      if (inputEl) inputEl.checked = !active;
+    }
+  }
+
+  async function watchSaveCard(id) {
+    const session = _watchSession || _dashSessionRef;
+    if (!session) return;
+    const card = document.querySelector(`.watch-card[data-watch-id="${id}"]`);
+    const steam = card?.querySelector('.watch-steam-input')?.value ?? '';
+    const notes = card?.querySelector('.watch-notes-input')?.value ?? '';
+    try {
+      const r = await fetch(`${API_BASE}/me/watched-players/${id}?session=${encodeURIComponent(session)}`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ steam_id: steam, notes }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.ok) {
+        alert(d.message || d.error || 'Error');
+        return;
+      }
+      renderWatchLimit(d.limits || {});
+      await loadWatchPanel({ showLoading: false });
+    } catch {
+      alert(_lang === 'en' ? 'Save error' : 'Ошибка сохранения');
+    }
+  }
+
+  async function watchDeletePlayer(id) {
+    const session = _watchSession || _dashSessionRef;
+    if (!session) return;
+    if (!confirm(_lang === 'en' ? 'Remove this player?' : 'Удалить игрока из списка?')) return;
+    try {
+      const r = await fetch(`${API_BASE}/me/watched-players/${id}?session=${encodeURIComponent(session)}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.ok) {
+        alert(d.message || d.error || 'Error');
+        return;
+      }
+      renderWatchLimit(d.limits || {});
+      await loadWatchPanel({ showLoading: false });
+    } catch {
+      alert(_lang === 'en' ? 'Delete error' : 'Ошибка удаления');
+    }
+  }
+
+  function startWatchAutoRefresh() {
+    stopWatchAutoRefresh();
+    _watchAutoRefreshTimer = setInterval(() => {
+      const panel = document.getElementById('panel-watch');
+      if (!panel || !panel.classList.contains('active')) {
+        stopWatchAutoRefresh();
+        return;
+      }
+      loadWatchPanel({ showLoading: false });
+    }, WATCH_REFRESH_MS);
+  }
+
+  function stopWatchAutoRefresh() {
+    if (_watchAutoRefreshTimer) {
+      clearInterval(_watchAutoRefreshTimer);
+      _watchAutoRefreshTimer = null;
+    }
+  }
+
+  function initWatchPanel(session) {
+    _watchSession = session;
+    const refreshBtn = document.getElementById('btn-watch-refresh');
+    if (refreshBtn && !refreshBtn.dataset.bound) {
+      refreshBtn.dataset.bound = '1';
+      refreshBtn.addEventListener('click', () => loadWatchPanel({ manual: true, showLoading: true }));
+    }
+    const searchBtn = document.getElementById('btn-watch-search');
+    const searchInput = document.getElementById('watch-search-input');
+    if (searchBtn && !searchBtn.dataset.bound) {
+      searchBtn.dataset.bound = '1';
+      searchBtn.addEventListener('click', () => watchSearchPlayers());
+    }
+    if (searchInput && !searchInput.dataset.bound) {
+      searchInput.dataset.bound = '1';
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); watchSearchPlayers(); }
+      });
+    }
+    if (document.getElementById('panel-watch')?.classList.contains('active')) {
+      startWatchAutoRefresh();
     }
   }
 
@@ -10113,6 +10580,7 @@
     initCmdDelaySettings(session, data.discord_id || _dashDiscordId);
     initIngameNotifToggle(session, data.discord_id || _dashDiscordId);
     initDevicesPanel(session);
+    initWatchPanel(session);
     initCoinsPanel(session);
     initEventHistory(session);
     setupAccountDisableForeverOnce();
