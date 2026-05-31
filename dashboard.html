@@ -1062,6 +1062,82 @@
     .watch-msg { font-size: .82rem; margin-top: 8px; min-height: 1.2em; }
     .watch-msg.is-error { color: #f87171; }
     .watch-msg.is-ok { color: #34d399; }
+    .watch-stats-modal {
+      position: fixed; inset: 0; z-index: 1200;
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .watch-stats-modal.is-hidden { display: none; }
+    .watch-stats-modal__backdrop {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,.65);
+    }
+    .watch-stats-modal__panel {
+      position: relative; z-index: 1;
+      width: min(920px, 100%);
+      max-height: min(90vh, 900px);
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      background: var(--card, #1a1d24);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      box-shadow: 0 24px 48px rgba(0,0,0,.45);
+    }
+    .watch-stats-modal__head {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .watch-stats-modal__head-main { flex: 1; min-width: 0; }
+    .watch-stats-modal__title { font-weight: 700; font-size: 1.05rem; }
+    .watch-stats-modal__sub { font-size: .8rem; color: var(--muted); margin-top: 4px; }
+    .watch-stats-modal__actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .watch-stats-modal__close {
+      width: 32px; height: 32px; border: none; border-radius: 8px;
+      background: rgba(255,255,255,.06); color: var(--text2); cursor: pointer; font-size: 1.2rem;
+    }
+    .watch-stats-modal__close:hover { background: rgba(255,255,255,.12); color: var(--text); }
+    .watch-stats-modal__body {
+      overflow: auto; padding: 14px 18px 18px;
+    }
+    .watch-stats-loading { text-align: center; color: var(--muted); padding: 40px 0; }
+    .watch-stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px; margin-bottom: 16px;
+    }
+    .watch-stats-kv {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 8px; padding: 10px 12px;
+    }
+    .watch-stats-kv__label { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    .watch-stats-kv__val { font-size: .92rem; margin-top: 4px; word-break: break-word; }
+    .watch-stats-section { margin-top: 18px; }
+    .watch-stats-section__title {
+      font-size: .85rem; font-weight: 700; margin-bottom: 8px;
+      color: var(--text2);
+    }
+    .watch-stats-table {
+      width: 100%; border-collapse: collapse; font-size: .82rem;
+    }
+    .watch-stats-table th, .watch-stats-table td {
+      text-align: left; padding: 7px 8px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .watch-stats-table th { color: var(--muted); font-weight: 600; font-size: .75rem; }
+    .watch-stats-table tr:last-child td { border-bottom: none; }
+    .watch-stats-empty { color: var(--muted); font-size: .82rem; padding: 8px 0; }
+    .watch-stats-errors {
+      margin-top: 12px; padding: 10px 12px; border-radius: 8px;
+      background: rgba(248,113,113,.1); color: #f87171; font-size: .8rem;
+    }
+    .watch-stats-link { color: var(--accent, #e8442a); text-decoration: none; }
+    .watch-stats-link:hover { text-decoration: underline; }
+    .watch-stats-bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .watch-stats-bar {
+      flex: 1; height: 6px; background: rgba(255,255,255,.08); border-radius: 3px; overflow: hidden;
+    }
+    .watch-stats-bar__fill { height: 100%; background: var(--accent, #e8442a); border-radius: 3px; }
 
     .account-sheet {
       border-radius: 16px;
@@ -4073,6 +4149,26 @@
           </div>
         </div>
 
+        <!-- MODAL: watch player stats -->
+        <div id="watch-stats-modal" class="watch-stats-modal is-hidden" aria-hidden="true">
+          <div class="watch-stats-modal__backdrop" id="watch-stats-modal-backdrop"></div>
+          <div class="watch-stats-modal__panel" role="dialog" aria-labelledby="watch-stats-modal-title">
+            <div class="watch-stats-modal__head">
+              <div class="watch-stats-modal__head-main">
+                <div class="watch-stats-modal__title" id="watch-stats-modal-title" data-i18n="watch.stats_title">Статистика игрока</div>
+                <div class="watch-stats-modal__sub" id="watch-stats-modal-sub"></div>
+              </div>
+              <div class="watch-stats-modal__actions">
+                <button type="button" class="dash-btn dash-btn--sm" id="watch-stats-refresh-btn" data-i18n="watch.stats_refresh">Обновить</button>
+                <button type="button" class="watch-stats-modal__close" id="watch-stats-modal-close" aria-label="Close">×</button>
+              </div>
+            </div>
+            <div class="watch-stats-modal__body" id="watch-stats-modal-body">
+              <div class="watch-stats-loading" data-i18n="watch.stats_loading">Загрузка статистики…</div>
+            </div>
+          </div>
+        </div>
+
         <!-- PANEL: coins -->
         <div id="panel-coins" class="dash-panel" role="tabpanel">
           <div class="dash-panel-inner">
@@ -4840,6 +4936,39 @@
       'watch.not_found':  'Игроки не найдены',
       'watch.server':     'Сервер',
       'watch.last_seen':  'Последний вход',
+      'watch.time_played':'На сервере',
+      'watch.stats':      'Статистика',
+      'watch.stats_title':'Статистика игрока',
+      'watch.stats_loading':'Загрузка статистики…',
+      'watch.stats_refresh':'Обновить',
+      'watch.stats_profile':'Профиль',
+      'watch.stats_status':'Статус',
+      'watch.stats_bm_id':'BattleMetrics ID',
+      'watch.stats_steam':'Steam ID',
+      'watch.stats_total_time':'Всего на серверах',
+      'watch.stats_servers_count':'Серверов',
+      'watch.stats_created':'Профиль создан',
+      'watch.stats_private':'Приватный профиль',
+      'watch.stats_yes':'Да',
+      'watch.stats_no':'Нет',
+      'watch.stats_current_server':'Текущий сервер',
+      'watch.stats_first_seen':'Первый вход',
+      'watch.stats_rank':'Место в топе',
+      'watch.stats_time_14d':'За 14 дней',
+      'watch.stats_identifiers':'Идентификаторы',
+      'watch.stats_servers':'Серверы',
+      'watch.stats_sessions':'Последние сессии',
+      'watch.stats_coplay':'Играл вместе (30 дн.)',
+      'watch.stats_related_players':'Связанные игроки',
+      'watch.stats_related_ids':'Связанные ID',
+      'watch.stats_notes':'Ваше примечание',
+      'watch.stats_bm_link':'Открыть на BattleMetrics',
+      'watch.stats_duration':'Длительность',
+      'watch.stats_playtime':'Время',
+      'watch.stats_players':'Игроков',
+      'watch.stats_country':'Страна',
+      'watch.stats_errors':'Часть данных недоступна',
+      'watch.stats_fetched':'Обновлено',
       'nav.wip':          '🚧 В разработке',
       'nav.map':          '🗺️ Карта',
       'nav.notify':       '🔔 Уведомления',
@@ -5259,6 +5388,39 @@
       'watch.not_found':  'No players found',
       'watch.server':     'Server',
       'watch.last_seen':  'Last seen',
+      'watch.time_played':'Time on server',
+      'watch.stats':      'Statistics',
+      'watch.stats_title':'Player statistics',
+      'watch.stats_loading':'Loading statistics…',
+      'watch.stats_refresh':'Refresh',
+      'watch.stats_profile':'Profile',
+      'watch.stats_status':'Status',
+      'watch.stats_bm_id':'BattleMetrics ID',
+      'watch.stats_steam':'Steam ID',
+      'watch.stats_total_time':'Total on servers',
+      'watch.stats_servers_count':'Servers',
+      'watch.stats_created':'Profile created',
+      'watch.stats_private':'Private profile',
+      'watch.stats_yes':'Yes',
+      'watch.stats_no':'No',
+      'watch.stats_current_server':'Current server',
+      'watch.stats_first_seen':'First seen',
+      'watch.stats_rank':'Leaderboard rank',
+      'watch.stats_time_14d':'Last 14 days',
+      'watch.stats_identifiers':'Identifiers',
+      'watch.stats_servers':'Servers',
+      'watch.stats_sessions':'Recent sessions',
+      'watch.stats_coplay':'Played together (30d)',
+      'watch.stats_related_players':'Related players',
+      'watch.stats_related_ids':'Related IDs',
+      'watch.stats_notes':'Your notes',
+      'watch.stats_bm_link':'Open on BattleMetrics',
+      'watch.stats_duration':'Duration',
+      'watch.stats_playtime':'Playtime',
+      'watch.stats_players':'Players',
+      'watch.stats_country':'Country',
+      'watch.stats_errors':'Some data unavailable',
+      'watch.stats_fetched':'Updated',
       'nav.wip':          '🚧 In Development',
       'nav.map':          '🗺️ Map',
       'nav.notify':       '🔔 Notifications',
@@ -7685,6 +7847,8 @@
   const DEVICES_REFRESH_MS = 4000;
 
   let _watchSession = null;
+  let _watchStatsPlayerId = null;
+  let _watchStatsBusy = false;
   let _watchLimits = null;
   let _watchAutoRefreshTimer = null;
   let _watchLoadBusy = false;
@@ -7934,6 +8098,7 @@
       const status = p.status_label || (p.status === 'online' ? '🟢 Онлайн' : p.status === 'offline' ? '🔴 Оффлайн' : '—');
       const server = p.server ? `${t('watch.server')}: ${escapeHtml(String(p.server))}` : '';
       const lastSeen = p.last_seen ? `${t('watch.last_seen')}: ${formatWatchLastSeen(p.last_seen)}` : '';
+      const timePlayed = p.time_played_fmt ? `${t('watch.time_played')}: ${escapeHtml(String(p.time_played_fmt))}` : '';
       const canToggle = active || (_watchLimits && _watchLimits.can_activate);
       return `
         <article class="watch-card${active ? '' : ' is-inactive'}" data-watch-id="${p.id}">
@@ -7942,6 +8107,7 @@
               <div class="watch-card__name">${escapeHtml(p.player_name || '—')}</div>
               <div class="watch-card__status">${escapeHtml(status)}</div>
               ${server ? `<div class="watch-card__server">${server}</div>` : ''}
+              ${timePlayed ? `<div class="watch-card__server">${timePlayed}</div>` : ''}
               ${lastSeen ? `<div class="watch-card__server">${lastSeen}</div>` : ''}
             </div>
             <label class="watch-toggle" title="${escapeHtml(t('watch.active_label'))}">
@@ -7951,13 +8117,14 @@
           </div>
           <div class="watch-field">
             <label>${escapeHtml(t('watch.steam_id'))}</label>
-            <input type="text" class="watch-steam-input" data-id="${p.id}" value="${escapeHtml(p.steam_id || '')}" placeholder="7656119…" inputmode="numeric" />
+            <input type="text" class="watch-steam-input" data-id="${p.id}" value="${escapeHtml(p.steam_id || p.steam_id_bm || '')}" placeholder="7656119…" inputmode="numeric" />
           </div>
           <div class="watch-field">
             <label>${escapeHtml(t('watch.notes'))}</label>
             <textarea class="watch-notes-input" data-id="${p.id}" maxlength="500">${escapeHtml(p.notes || '')}</textarea>
           </div>
           <div class="watch-card__actions">
+            <button type="button" class="dash-btn dash-btn--sm watch-stats-btn" data-id="${p.id}" data-name="${escapeHtml(p.player_name || '')}">${escapeHtml(t('watch.stats'))}</button>
             <button type="button" class="dash-btn dash-btn--sm watch-save-btn" data-id="${p.id}">${escapeHtml(t('watch.save'))}</button>
             <button type="button" class="dash-btn dash-btn--sm dash-btn--danger watch-delete-btn" data-id="${p.id}">${escapeHtml(t('watch.delete'))}</button>
           </div>
@@ -7973,6 +8140,189 @@
     grid.querySelectorAll('.watch-delete-btn').forEach(btn => {
       btn.addEventListener('click', () => watchDeletePlayer(btn.dataset.id));
     });
+    grid.querySelectorAll('.watch-stats-btn').forEach(btn => {
+      btn.addEventListener('click', () => openWatchStatsModal(btn.dataset.id, btn.dataset.name));
+    });
+  }
+
+  function watchStatsKv(label, value, rawHtml) {
+    return `<div class="watch-stats-kv"><div class="watch-stats-kv__label">${escapeHtml(label)}</div><div class="watch-stats-kv__val">${rawHtml ? value : escapeHtml(String(value ?? '—'))}</div></div>`;
+  }
+
+  function watchStatsSection(title, innerHtml) {
+    if (!innerHtml) return '';
+    return `<section class="watch-stats-section"><div class="watch-stats-section__title">${escapeHtml(title)}</div>${innerHtml}</section>`;
+  }
+
+  function watchStatsTable(headers, rows) {
+    if (!rows || rows.length === 0) return `<div class="watch-stats-empty">—</div>`;
+    const th = headers.map(h => `<th>${escapeHtml(h)}</th>`).join('');
+    const tr = rows.map(cells => `<tr>${cells.map(c => `<td>${c}</td>`).join('')}</tr>`).join('');
+    return `<table class="watch-stats-table"><thead><tr>${th}</tr></thead><tbody>${tr}</tbody></table>`;
+  }
+
+  function renderWatchStatsBody(data) {
+    const profile = data.profile || {};
+    const player = data.player || {};
+    const primary = data.primary_server || {};
+    const related = data.related || {};
+    const cur = profile.current_server || {};
+    const statusLabel = profile.is_online ? '🟢 ' + (_lang === 'en' ? 'Online' : 'Онлайн') : '🔴 ' + (_lang === 'en' ? 'Offline' : 'Оффлайн');
+    const steamId = player.steam_id || profile.steam_id || '—';
+    const bmLink = profile.bm_url
+      ? `<a class="watch-stats-link" href="${escapeHtml(profile.bm_url)}" target="_blank" rel="noopener">${escapeHtml(t('watch.stats_bm_link'))}</a>`
+      : '—';
+
+    let kv = watchStatsKv(t('watch.stats_status'), statusLabel);
+    kv += watchStatsKv(t('watch.stats_bm_id'), profile.bm_player_id || player.bm_player_id || '—');
+    kv += watchStatsKv(t('watch.stats_steam'), steamId);
+    kv += watchStatsKv(t('watch.stats_total_time'), profile.total_time_played_fmt || '—');
+    kv += watchStatsKv(t('watch.stats_servers_count'), profile.servers_count ?? '—');
+    kv += watchStatsKv(t('watch.stats_created'), formatWatchLastSeen(profile.created_at));
+    kv += watchStatsKv(t('watch.stats_private'), profile.private_profile ? t('watch.stats_yes') : t('watch.stats_no'));
+    kv += watchStatsKv('BattleMetrics', bmLink, true);
+
+    let currentHtml = '';
+    if (cur && cur.name) {
+      const srvLink = cur.bm_url
+        ? `<a class="watch-stats-link" href="${escapeHtml(cur.bm_url)}" target="_blank" rel="noopener">${escapeHtml(cur.name)}</a>`
+        : escapeHtml(cur.name);
+      currentHtml = watchStatsTable(
+        [t('watch.server'), t('watch.stats_playtime'), t('watch.last_seen'), t('watch.stats_players'), t('watch.stats_country')],
+        [[
+          srvLink,
+          escapeHtml(cur.time_played_fmt || '—'),
+          escapeHtml(formatWatchLastSeen(cur.last_seen)),
+          escapeHtml(cur.players != null && cur.max_players != null ? `${cur.players}/${cur.max_players}` : '—'),
+          escapeHtml(cur.country || '—'),
+        ]],
+      );
+      const det = primary.detail || {};
+      const lb = primary.leaderboard || {};
+      const hist = (primary.time_history_14d || {});
+      if (det.first_seen || lb.rank || hist.total_fmt) {
+        currentHtml += '<div class="watch-stats-grid" style="margin-top:10px">';
+        if (det.first_seen) currentHtml += watchStatsKv(t('watch.stats_first_seen'), formatWatchLastSeen(det.first_seen));
+        if (lb.rank) currentHtml += watchStatsKv(t('watch.stats_rank'), `#${lb.rank} · ${escapeHtml(lb.time_played_fmt || '—')}`);
+        if (hist.total_fmt) currentHtml += watchStatsKv(t('watch.stats_time_14d'), hist.total_fmt);
+        currentHtml += '</div>';
+      }
+    }
+
+    const idRows = (profile.identifiers || []).slice(0, 20).map(i => [
+      escapeHtml(i.type || '—'),
+      escapeHtml(i.value || '—'),
+      escapeHtml(formatWatchLastSeen(i.last_seen)),
+    ]);
+    const srvRows = (profile.servers || []).slice(0, 15).map(s => {
+      const nm = s.bm_url
+        ? `<a class="watch-stats-link" href="${escapeHtml(s.bm_url)}" target="_blank" rel="noopener">${escapeHtml(s.name || '—')}</a>`
+        : escapeHtml(s.name || '—');
+      return [
+        nm,
+        escapeHtml(s.time_played_fmt || '—'),
+        escapeHtml(formatWatchLastSeen(s.last_seen)),
+        s.online ? '🟢' : '🔴',
+      ];
+    });
+    const sessRows = (data.sessions || []).slice(0, 15).map(s => [
+      escapeHtml(s.server_name || '—'),
+      escapeHtml(formatWatchLastSeen(s.start)),
+      escapeHtml(formatWatchLastSeen(s.stop)),
+      escapeHtml(s.duration_fmt || '—'),
+    ]);
+    const coplayRows = (data.coplay || []).slice(0, 15).map(c => [
+      escapeHtml(c.name || '—'),
+      escapeHtml(c.duration_fmt || '—'),
+    ]);
+    const relPlayerRows = (related.related_players || []).slice(0, 15).map(p => {
+      const nm = p.bm_url
+        ? `<a class="watch-stats-link" href="${escapeHtml(p.bm_url)}" target="_blank" rel="noopener">${escapeHtml(p.name || '—')}</a>`
+        : escapeHtml(p.name || '—');
+      return [nm];
+    });
+    const relIdRows = (related.related_identifiers || []).slice(0, 15).map(i => [
+      escapeHtml(i.type || '—'),
+      escapeHtml(i.value || '—'),
+      escapeHtml(formatWatchLastSeen(i.last_seen)),
+    ]);
+
+    let html = `<div class="watch-stats-grid">${kv}</div>`;
+    if (player.notes) {
+      html += watchStatsSection(t('watch.stats_notes'), `<div class="watch-stats-kv"><div class="watch-stats-kv__val">${escapeHtml(player.notes)}</div></div>`);
+    }
+    if (currentHtml) html += watchStatsSection(t('watch.stats_current_server'), currentHtml);
+    html += watchStatsSection(t('watch.stats_identifiers'), watchStatsTable([_lang === 'en' ? 'Type' : 'Тип', 'ID', t('watch.last_seen')], idRows));
+    html += watchStatsSection(t('watch.stats_servers'), watchStatsTable([t('watch.server'), t('watch.stats_playtime'), t('watch.last_seen'), t('watch.stats_status')], srvRows));
+    html += watchStatsSection(t('watch.stats_sessions'), watchStatsTable([t('watch.server'), t('watch.stats_first_seen'), t('watch.last_seen'), t('watch.stats_duration')], sessRows));
+    html += watchStatsSection(t('watch.stats_coplay'), watchStatsTable([_lang === 'en' ? 'Player' : 'Игрок', t('watch.stats_playtime')], coplayRows));
+    if (relPlayerRows.length) {
+      html += watchStatsSection(t('watch.stats_related_players'), watchStatsTable([_lang === 'en' ? 'Player' : 'Игрок'], relPlayerRows));
+    }
+    if (relIdRows.length) {
+      html += watchStatsSection(t('watch.stats_related_ids'), watchStatsTable([t('watch.stats_related_ids'), 'ID', t('watch.last_seen')], relIdRows));
+    }
+    const errs = data.fetch_errors && Object.keys(data.fetch_errors).length
+      ? Object.entries(data.fetch_errors).map(([k, v]) => `${k}: ${v}`).join('; ')
+      : '';
+    if (errs) {
+      html += `<div class="watch-stats-errors">${escapeHtml(t('watch.stats_errors'))}: ${escapeHtml(errs)}</div>`;
+    }
+    if (data.fetched_at) {
+      const dt = new Date(data.fetched_at * 1000);
+      html += `<div class="watch-stats-empty" style="margin-top:10px">${escapeHtml(t('watch.stats_fetched'))}: ${escapeHtml(dt.toLocaleString(_lang === 'en' ? 'en-GB' : 'ru-RU'))}</div>`;
+    }
+    return html;
+  }
+
+  function closeWatchStatsModal() {
+    const modal = document.getElementById('watch-stats-modal');
+    if (modal) {
+      modal.classList.add('is-hidden');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+    _watchStatsPlayerId = null;
+  }
+
+  async function loadWatchStats(playerId, opts = {}) {
+    const session = _watchSession || _dashSessionRef;
+    const body = document.getElementById('watch-stats-modal-body');
+    if (!session || !playerId || !body || _watchStatsBusy) return;
+    _watchStatsBusy = true;
+    if (opts.showLoading !== false) {
+      body.innerHTML = `<div class="watch-stats-loading">${escapeHtml(t('watch.stats_loading'))}</div>`;
+    }
+    try {
+      const force = opts.force ? '&force=1' : '';
+      const r = await fetch(`${API_BASE}/me/watched-players/${playerId}/stats?session=${encodeURIComponent(session)}${force}&_t=${Date.now()}`, {
+        credentials: 'include', cache: 'no-store',
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.ok) {
+        body.innerHTML = `<div class="watch-stats-loading">❌ ${escapeHtml(d.message || d.error || (_lang === 'en' ? 'Load error' : 'Ошибка загрузки'))}</div>`;
+        return;
+      }
+      body.innerHTML = renderWatchStatsBody(d);
+      const sub = document.getElementById('watch-stats-modal-sub');
+      const name = d.profile?.name || d.player?.player_name || '';
+      if (sub) sub.textContent = name;
+    } catch {
+      body.innerHTML = `<div class="watch-stats-loading">❌ ${_lang === 'en' ? 'Load error' : 'Ошибка загрузки'}</div>`;
+    } finally {
+      _watchStatsBusy = false;
+    }
+  }
+
+  function openWatchStatsModal(playerId, playerName) {
+    _watchStatsPlayerId = String(playerId);
+    const modal = document.getElementById('watch-stats-modal');
+    const titleEl = document.getElementById('watch-stats-modal-title');
+    const sub = document.getElementById('watch-stats-modal-sub');
+    if (titleEl) titleEl.textContent = t('watch.stats_title');
+    if (sub) sub.textContent = playerName || '';
+    modal?.classList.remove('is-hidden');
+    modal?.setAttribute('aria-hidden', 'false');
+    loadWatchStats(_watchStatsPlayerId);
   }
 
   function renderWatchSearchResults(results) {
@@ -8193,6 +8543,23 @@
     if (refreshBtn && !refreshBtn.dataset.bound) {
       refreshBtn.dataset.bound = '1';
       refreshBtn.addEventListener('click', () => loadWatchPanel({ manual: true, showLoading: true }));
+    }
+    const statsClose = document.getElementById('watch-stats-modal-close');
+    const statsBackdrop = document.getElementById('watch-stats-modal-backdrop');
+    const statsRefresh = document.getElementById('watch-stats-refresh-btn');
+    if (statsClose && !statsClose.dataset.bound) {
+      statsClose.dataset.bound = '1';
+      statsClose.addEventListener('click', closeWatchStatsModal);
+    }
+    if (statsBackdrop && !statsBackdrop.dataset.bound) {
+      statsBackdrop.dataset.bound = '1';
+      statsBackdrop.addEventListener('click', closeWatchStatsModal);
+    }
+    if (statsRefresh && !statsRefresh.dataset.bound) {
+      statsRefresh.dataset.bound = '1';
+      statsRefresh.addEventListener('click', () => {
+        if (_watchStatsPlayerId) loadWatchStats(_watchStatsPlayerId, { force: true });
+      });
     }
     const searchBtn = document.getElementById('btn-watch-search');
     const searchInput = document.getElementById('watch-search-input');
