@@ -6859,7 +6859,7 @@
           stopDevicesAutoRefresh();
         }
         if (id === 'watch') {
-          loadWatchPanel({ manual: true });
+          loadWatchPanel({ manual: true, force: false });
           startWatchAutoRefresh();
         } else {
           stopWatchAutoRefresh();
@@ -7866,7 +7866,7 @@
   let _watchLimits = null;
   let _watchAutoRefreshTimer = null;
   let _watchLoadBusy = false;
-  const WATCH_REFRESH_MS = 60000;
+  const WATCH_REFRESH_MS = 90000;
 
   const DEVICE_TYPE_LABEL = { 1: 'dev.type_switch', 2: 'dev.type_alarm', 3: 'dev.type_storage' };
   const DEVICE_TYPE_CLASS  = { 1: 'switch', 2: 'alarm', 3: 'storage' };
@@ -8436,7 +8436,8 @@
     if (showLoading && loading) loading.style.display = 'block';
     if (showLoading && grid) grid.innerHTML = '';
     try {
-      const r = await fetch(`${API_BASE}/me/watched-players?session=${encodeURIComponent(session)}&_t=${Date.now()}`, {
+      const forceQ = opts.force ? '&force=1' : '';
+      const r = await fetch(`${API_BASE}/me/watched-players?session=${encodeURIComponent(session)}${forceQ}&_t=${Date.now()}`, {
         credentials: 'include', cache: 'no-store',
       });
       const d = await r.json().catch(() => ({}));
@@ -8607,7 +8608,7 @@
     const refreshBtn = document.getElementById('btn-watch-refresh');
     if (refreshBtn && !refreshBtn.dataset.bound) {
       refreshBtn.dataset.bound = '1';
-      refreshBtn.addEventListener('click', () => loadWatchPanel({ manual: true, showLoading: true }));
+      refreshBtn.addEventListener('click', () => loadWatchPanel({ manual: true, force: true, showLoading: true }));
     }
     const statsClose = document.getElementById('watch-stats-modal-close');
     const statsBackdrop = document.getElementById('watch-stats-modal-backdrop');
