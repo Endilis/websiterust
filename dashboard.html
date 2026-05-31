@@ -1026,84 +1026,118 @@
     .watch-search-item__name { font-weight: 700; color: var(--text); font-size: .95rem; }
     .watch-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px; margin-top: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 10px; margin-top: 12px;
     }
     .watch-card {
       background: var(--card-bg2, rgba(255,255,255,.05));
       border: 1px solid var(--border);
-      border-radius: 12px; padding: 16px;
-      display: flex; flex-direction: column; gap: 10px;
-      position: relative;
+      border-radius: 10px; padding: 10px 11px;
+      display: flex; flex-direction: column; gap: 6px;
+      position: relative; min-height: 0;
     }
-    .watch-card.is-active {
-      border-color: rgba(52, 211, 153, .28);
-    }
+    .watch-card.is-active { border-color: rgba(251, 191, 36, .28); }
     .watch-card__head {
-      display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
-      position: relative; z-index: 2;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      position: relative; z-index: 3;
     }
-    .watch-card__head-aside { flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+    .watch-card__head-aside {
+      flex-shrink: 0; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; justify-content: flex-end;
+    }
     .watch-card__body {
-      display: flex; flex-direction: column; gap: 10px;
+      display: flex; flex-direction: column; gap: 5px;
       transition: filter .2s ease, opacity .2s ease;
     }
     .watch-card.is-inactive .watch-card__body {
-      filter: blur(5px);
-      opacity: .45;
+      filter: blur(4px);
+      opacity: .42;
       pointer-events: none;
       user-select: none;
     }
+    .watch-card__foot {
+      display: flex; flex-wrap: wrap; gap: 5px;
+      position: relative; z-index: 3;
+      margin-top: 2px;
+    }
     .watch-card__badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 5px 11px; border-radius: 999px;
-      font-size: .72rem; font-weight: 700; letter-spacing: .03em;
-      text-transform: uppercase;
-      background: rgba(52, 211, 153, .14);
-      color: #34d399;
-      border: 1px solid rgba(52, 211, 153, .35);
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: .72rem;
+      font-weight: 700;
+      background: rgba(251,191,36,.15);
+      color: #fbbf24;
+      border: 1px solid rgba(251,191,36,.35);
       white-space: nowrap;
+      line-height: 1.35;
     }
-    .watch-card__badge::before {
-      content: '👁';
-      font-size: .85rem; line-height: 1;
+    .watch-pill {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 4px 9px; border-radius: 6px;
+      font-size: .68rem; font-weight: 700; line-height: 1.2;
+      border: 1px solid transparent; cursor: pointer;
+      font-family: inherit; white-space: nowrap;
+      transition: opacity .15s, transform .1s;
     }
-    .watch-card__deactivate {
-      border: none; background: none; padding: 0;
-      font-size: .72rem; color: var(--muted); cursor: pointer;
-      text-decoration: underline; text-underline-offset: 2px;
-    }
-    .watch-card__deactivate:hover { color: var(--text2); }
-    .watch-card__activate {
-      white-space: nowrap;
-    }
-    .watch-card__activate:disabled {
-      opacity: .5; cursor: not-allowed;
-    }
-    .watch-card__name { font-weight: 700; font-size: 1rem; }
+    .watch-pill:hover:not(:disabled) { opacity: .88; transform: translateY(-1px); }
+    .watch-pill:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+    .watch-pill--stats { background: rgba(96,165,250,.12); color: #93c5fd; border-color: rgba(96,165,250,.28); }
+    .watch-pill--save { background: rgba(52,211,153,.12); color: #6ee7b7; border-color: rgba(52,211,153,.28); }
+    .watch-pill--stop { background: rgba(251,191,36,.12); color: #fcd34d; border-color: rgba(251,191,36,.28); }
+    .watch-pill--delete { background: rgba(248,113,113,.12); color: #fca5a5; border-color: rgba(248,113,113,.28); }
+    .watch-pill--activate { background: rgba(251,191,36,.15); color: #fbbf24; border-color: rgba(251,191,36,.35); }
+    .watch-card__name { font-weight: 700; font-size: .92rem; line-height: 1.25; min-width: 0; }
     .watch-card__name a { color: inherit; text-decoration: none; }
     .watch-card__name a:hover { color: var(--accent, #e8442a); text-decoration: underline; }
-    .watch-card__links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; font-size: .78rem; }
-    .watch-card__links a { color: var(--accent, #e8442a); text-decoration: none; }
-    .watch-card__links a:hover { text-decoration: underline; }
-    .watch-steam-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; font-size: .75rem; }
-    .watch-steam-links a { color: var(--accent, #e8442a); text-decoration: none; }
-    .watch-steam-links a:hover { text-decoration: underline; }
-    .watch-card__status { font-size: .82rem; color: var(--text2); }
-    .watch-card__server { font-size: .8rem; color: var(--muted); word-break: break-word; }
+    .watch-card__meta { font-size: .74rem; color: var(--muted); line-height: 1.35; }
+    .watch-card__status { font-size: .76rem; color: var(--text2); }
     .watch-field label {
-      display: block; font-size: .72rem; font-weight: 600; color: var(--text2);
-      margin-bottom: 4px; text-transform: uppercase; letter-spacing: .04em;
+      display: block; font-size: .65rem; font-weight: 600; color: var(--text2);
+      margin-bottom: 2px; text-transform: uppercase; letter-spacing: .04em;
     }
     .watch-field input, .watch-field textarea {
-      width: 100%; padding: 8px 10px; border-radius: 8px;
+      width: 100%; padding: 5px 8px; border-radius: 6px;
       border: 1px solid var(--border); background: var(--bg2); color: var(--text);
-      font-family: inherit; font-size: .85rem;
+      font-family: inherit; font-size: .78rem;
     }
-    .watch-field textarea { min-height: 64px; resize: vertical; }
-    .watch-card__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
-    .watch-empty { text-align: center; color: var(--muted); padding: 36px 0; font-size: .95rem; }
-    .watch-msg { font-size: .82rem; margin-top: 8px; min-height: 1.2em; }
+    .watch-field textarea { min-height: 44px; resize: vertical; }
+    .watch-add-card {
+      min-height: 140px;
+      border: 1px dashed rgba(255,255,255,.18);
+      border-radius: 10px;
+      background: rgba(255,255,255,.02);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 6px; cursor: pointer; color: var(--muted);
+      transition: border-color .15s, color .15s, background .15s;
+      font-family: inherit; padding: 12px;
+    }
+    .watch-add-card:hover {
+      border-color: rgba(251,191,36,.45);
+      color: #fbbf24;
+      background: rgba(251,191,36,.06);
+    }
+    .watch-add-card__plus {
+      font-size: 1.75rem; line-height: 1; font-weight: 300;
+    }
+    .watch-add-card__label { font-size: .78rem; font-weight: 600; }
+    .watch-add-preview { margin-top: 12px; }
+    .watch-add-preview__head {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      margin-bottom: 10px;
+    }
+    .watch-add-preview__name { font-weight: 700; font-size: 1rem; }
+    .watch-add-preview__status { font-size: .82rem; color: var(--text2); }
+    .watch-add-preview__section { margin-top: 12px; }
+    .watch-add-preview__title {
+      font-size: .72rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px;
+    }
+    .watch-add-preview__list { font-size: .8rem; color: var(--text2); }
+    .watch-add-preview__list div { padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
+    .watch-add-preview__list div:last-child { border-bottom: none; }
+    .watch-add-preview__actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+    .watch-empty { text-align: center; color: var(--muted); padding: 24px 0; font-size: .88rem; }
+    .watch-msg { font-size: .78rem; margin-top: 6px; min-height: 1.2em; }
     .watch-msg.is-error { color: #f87171; }
     .watch-msg.is-ok { color: #34d399; }
     .watch-stats-modal {
@@ -4182,14 +4216,30 @@
               Добавьте до 10 игроков. Активная слежка обновляет статус через BattleMetrics: бесплатно — 2, спонсор — 5.
             </p>
             <div id="watch-limit" class="watch-limit" style="display:none"></div>
-            <div class="watch-search-row">
-              <input type="text" id="watch-search-input" maxlength="64" autocomplete="off" spellcheck="false" data-i18n-placeholder="watch.search_ph" placeholder="Точный ник в Rust" />
-              <button type="button" class="dash-btn" id="btn-watch-search" data-i18n="watch.search_btn">Найти</button>
-            </div>
-            <div id="watch-search-msg" class="watch-msg"></div>
-            <div id="watch-search-results" class="watch-search-results"></div>
-            <div id="watch-loading" style="display:none;padding:20px 0;text-align:center;color:var(--muted)" data-i18n="watch.loading">Загрузка...</div>
+            <div id="watch-loading" style="display:none;padding:16px 0;text-align:center;color:var(--muted);font-size:.85rem" data-i18n="watch.loading">Загрузка...</div>
             <div id="watch-grid" class="watch-grid"></div>
+          </div>
+        </div>
+
+        <!-- MODAL: add watched player -->
+        <div id="watch-add-modal" class="watch-stats-modal is-hidden" aria-hidden="true">
+          <div class="watch-stats-modal__backdrop" id="watch-add-modal-backdrop"></div>
+          <div class="watch-stats-modal__panel" role="dialog" aria-labelledby="watch-add-modal-title">
+            <div class="watch-stats-modal__head">
+              <div class="watch-stats-modal__head-main">
+                <div class="watch-stats-modal__title" id="watch-add-modal-title" data-i18n="watch.add_modal_title">Добавить игрока</div>
+                <div class="watch-stats-modal__sub" data-i18n="watch.add_modal_hint">Точный ник в Rust — как на BattleMetrics</div>
+              </div>
+              <button type="button" class="watch-stats-modal__close" id="watch-add-modal-close" aria-label="Close">×</button>
+            </div>
+            <div class="watch-stats-modal__body">
+              <div class="watch-search-row">
+                <input type="text" id="watch-search-input" maxlength="64" autocomplete="off" spellcheck="false" data-i18n-placeholder="watch.search_ph" placeholder="Точный ник в Rust" />
+                <button type="button" class="dash-btn" id="btn-watch-search" data-i18n="watch.search_btn">Найти</button>
+              </div>
+              <div id="watch-search-msg" class="watch-msg"></div>
+              <div id="watch-add-preview"></div>
+            </div>
           </div>
         </div>
 
@@ -4973,8 +5023,15 @@
       'watch.active_label': 'Слежка',
       'watch.active_badge': 'Слежка',
       'watch.activate_btn': 'Активировать',
-      'watch.deactivate_btn': 'Выключить',
+      'watch.deactivate_btn': 'Прекратить слежку',
       'watch.activate_limit': 'Лимит активной слежки',
+      'watch.add_player':   'Добавить',
+      'watch.add_modal_title': 'Добавить игрока',
+      'watch.add_modal_hint': 'Точный ник в Rust — как на BattleMetrics',
+      'watch.preview_servers': 'Серверы',
+      'watch.preview_names': 'Старые ники',
+      'watch.preview_empty': 'Игрок не найден',
+      'watch.preview_searching': 'Поиск…',
       'watch.steam_id':   'Steam ID',
       'watch.notes':      'Примечание',
       'watch.save':       'Сохранить',
@@ -5432,8 +5489,15 @@
       'watch.active_label': 'Tracking',
       'watch.active_badge': 'Tracking',
       'watch.activate_btn': 'Activate',
-      'watch.deactivate_btn': 'Disable',
+      'watch.deactivate_btn': 'Stop tracking',
       'watch.activate_limit': 'Active tracking limit reached',
+      'watch.add_player':   'Add player',
+      'watch.add_modal_title': 'Add player',
+      'watch.add_modal_hint': 'Exact Rust nickname — as on BattleMetrics',
+      'watch.preview_servers': 'Servers',
+      'watch.preview_names': 'Previous names',
+      'watch.preview_empty': 'Player not found',
+      'watch.preview_searching': 'Searching…',
       'watch.steam_id':   'Steam ID',
       'watch.notes':      'Notes',
       'watch.save':       'Save',
@@ -8164,78 +8228,15 @@
     return p.steam_profile_url || (sid ? `https://steamcommunity.com/profiles/${sid}` : null);
   }
 
-  function renderWatchCards(players) {
-    const grid = document.getElementById('watch-grid');
-    if (!grid) return;
-    if (!players || players.length === 0) {
-      grid.innerHTML = `<div class="watch-empty">${t('watch.empty')}</div>`;
-      return;
-    }
-    grid.innerHTML = players.map(p => {
-      const active = !!p.is_active;
-      const status = p.status_label || (p.status === 'online' ? '🟢 Онлайн' : p.status === 'offline' ? '🔴 Оффлайн' : '—');
-      const serverLabel = p.server && !['—', 'Неизвестно', 'Не играет'].includes(String(p.server))
-        ? `${t('watch.server')}: ${escapeHtml(String(p.server))}` : '';
-      const lastSeenLabel = p.last_seen
-        ? `${t('watch.last_seen')}: ${formatWatchLastSeen(p.last_seen)}` : '';
-      const timePlayed = p.time_played_fmt ? `${t('watch.time_played')}: ${escapeHtml(String(p.time_played_fmt))}` : '';
-      const canActivate = _watchLimits && _watchLimits.can_activate;
-      const bmUrl = watchCardBmUrl(p);
-      const playerName = escapeHtml(p.player_name || '—');
-      const nameHtml = bmUrl
-        ? `<a href="${escapeHtml(bmUrl)}" target="_blank" rel="noopener">${playerName}</a>`
-        : playerName;
-      const steamId = watchCardSteamId(p);
-      const steamBmUrl = watchCardSteamBmUrl(p);
-      const steamProfileUrl = watchCardSteamProfileUrl(p);
-      const linkParts = [];
-      if (bmUrl) linkParts.push(`<a href="${escapeHtml(bmUrl)}" target="_blank" rel="noopener">${escapeHtml(t('watch.bm_profile'))}</a>`);
-      if (steamBmUrl) linkParts.push(`<a href="${escapeHtml(steamBmUrl)}" target="_blank" rel="noopener">${escapeHtml(t('watch.steam_bm'))}</a>`);
-      if (steamProfileUrl) linkParts.push(`<a href="${escapeHtml(steamProfileUrl)}" target="_blank" rel="noopener">${escapeHtml(t('watch.steam_profile'))}</a>`);
-      const linksHtml = linkParts.length ? `<div class="watch-card__links">${linkParts.join(' · ')}</div>` : '';
-      const steamLinksHtml = steamId && (steamBmUrl || steamProfileUrl)
-        ? `<div class="watch-steam-links">${[
-            steamBmUrl ? `<a href="${escapeHtml(steamBmUrl)}" target="_blank" rel="noopener">BM: ${escapeHtml(steamId)}</a>` : '',
-            steamProfileUrl ? `<a href="${escapeHtml(steamProfileUrl)}" target="_blank" rel="noopener">Steam</a>` : '',
-          ].filter(Boolean).join(' · ')}</div>` : '';
-      const headAside = active
-        ? `<div class="watch-card__head-aside">
-            <span class="watch-card__badge">${escapeHtml(t('watch.active_badge'))}</span>
-            <button type="button" class="watch-card__deactivate watch-deactivate-btn" data-id="${p.id}">${escapeHtml(t('watch.deactivate_btn'))}</button>
-          </div>`
-        : `<div class="watch-card__head-aside">
-            <button type="button" class="dash-btn dash-btn--sm watch-card__activate watch-activate-btn" data-id="${p.id}" ${canActivate ? '' : 'disabled title="' + escapeHtml(t('watch.activate_limit')) + '"'}>${escapeHtml(t('watch.activate_btn'))}</button>
-          </div>`;
-      return `
-        <article class="watch-card${active ? ' is-active' : ' is-inactive'}" data-watch-id="${p.id}">
-          <div class="watch-card__head">
-            <div class="watch-card__name">${nameHtml}</div>
-            ${headAside}
-          </div>
-          <div class="watch-card__body">
-            <div class="watch-card__status">${escapeHtml(status)}</div>
-            ${serverLabel ? `<div class="watch-card__server">${serverLabel}</div>` : ''}
-            ${timePlayed ? `<div class="watch-card__server">${timePlayed}</div>` : ''}
-            ${lastSeenLabel ? `<div class="watch-card__server">${lastSeenLabel}</div>` : ''}
-            ${linksHtml}
-            <div class="watch-field">
-              <label>${escapeHtml(t('watch.steam_id'))}</label>
-              <input type="text" class="watch-steam-input" data-id="${p.id}" value="${escapeHtml(steamId)}" placeholder="7656119…" inputmode="numeric" />
-              ${steamLinksHtml}
-            </div>
-            <div class="watch-field">
-              <label>${escapeHtml(t('watch.notes'))}</label>
-              <textarea class="watch-notes-input" data-id="${p.id}" maxlength="500">${escapeHtml(p.notes || '')}</textarea>
-            </div>
-            <div class="watch-card__actions">
-              <button type="button" class="dash-btn dash-btn--sm watch-stats-btn" data-id="${p.id}" data-name="${escapeHtml(p.player_name || '')}">${escapeHtml(t('watch.stats'))}</button>
-              <button type="button" class="dash-btn dash-btn--sm watch-save-btn" data-id="${p.id}">${escapeHtml(t('watch.save'))}</button>
-              <button type="button" class="dash-btn dash-btn--sm dash-btn--danger watch-delete-btn" data-id="${p.id}">${escapeHtml(t('watch.delete'))}</button>
-            </div>
-          </div>
-        </article>`;
-    }).join('');
+  function renderWatchAddCard() {
+    return `<button type="button" class="watch-add-card" id="watch-open-add-modal" aria-label="${escapeHtml(t('watch.add_player'))}">
+      <span class="watch-add-card__plus">+</span>
+      <span class="watch-add-card__label">${escapeHtml(t('watch.add_player'))}</span>
+    </button>`;
+  }
 
+  function bindWatchGridActions(grid) {
+    if (!grid) return;
     grid.querySelectorAll('.watch-activate-btn').forEach(btn => {
       btn.addEventListener('click', () => watchSetActive(btn.dataset.id, true, btn));
     });
@@ -8251,6 +8252,140 @@
     grid.querySelectorAll('.watch-stats-btn').forEach(btn => {
       btn.addEventListener('click', () => openWatchStatsModal(btn.dataset.id, btn.dataset.name));
     });
+    const addBtn = grid.querySelector('#watch-open-add-modal');
+    if (addBtn) addBtn.addEventListener('click', openWatchAddModal);
+  }
+
+  function renderWatchCards(players) {
+    const grid = document.getElementById('watch-grid');
+    if (!grid) return;
+    const canAdd = _watchLimits && _watchLimits.can_add;
+    const list = players || [];
+    if (!list.length && !canAdd) {
+      grid.innerHTML = `<div class="watch-empty">${t('watch.empty')}</div>`;
+      return;
+    }
+    const cardsHtml = list.map(p => {
+      const active = !!p.is_active;
+      const status = p.status_label || (p.status === 'online' ? '🟢 Онлайн' : p.status === 'offline' ? '🔴 Оффлайн' : '—');
+      const metaParts = [];
+      if (p.server && !['—', 'Неизвестно', 'Не играет'].includes(String(p.server))) {
+        metaParts.push(`${t('watch.server')}: ${escapeHtml(String(p.server))}`);
+      }
+      if (p.time_played_fmt) metaParts.push(`${t('watch.time_played')}: ${escapeHtml(String(p.time_played_fmt))}`);
+      if (p.last_seen) metaParts.push(`${t('watch.last_seen')}: ${formatWatchLastSeen(p.last_seen)}`);
+      const metaHtml = metaParts.length ? `<div class="watch-card__meta">${metaParts.join(' · ')}</div>` : '';
+      const canActivate = _watchLimits && _watchLimits.can_activate;
+      const bmUrl = watchCardBmUrl(p);
+      const playerName = escapeHtml(p.player_name || '—');
+      const nameHtml = bmUrl
+        ? `<a href="${escapeHtml(bmUrl)}" target="_blank" rel="noopener">${playerName}</a>`
+        : playerName;
+      const steamId = watchCardSteamId(p);
+      const headBadge = active
+        ? `<span class="watch-card__badge">${escapeHtml(t('watch.active_badge'))}</span>`
+        : '';
+      const headActions = active ? headBadge : (
+        `<button type="button" class="watch-pill watch-pill--activate watch-activate-btn" data-id="${p.id}" ${canActivate ? '' : 'disabled title="' + escapeHtml(t('watch.activate_limit')) + '"'}>${escapeHtml(t('watch.activate_btn'))}</button>`
+      );
+      const footActive = active ? `
+        <div class="watch-card__foot">
+          <button type="button" class="watch-pill watch-pill--stats watch-stats-btn" data-id="${p.id}" data-name="${escapeHtml(p.player_name || '')}">${escapeHtml(t('watch.stats'))}</button>
+          <button type="button" class="watch-pill watch-pill--save watch-save-btn" data-id="${p.id}">${escapeHtml(t('watch.save'))}</button>
+          <button type="button" class="watch-pill watch-pill--stop watch-deactivate-btn" data-id="${p.id}">${escapeHtml(t('watch.deactivate_btn'))}</button>
+          <button type="button" class="watch-pill watch-pill--delete watch-delete-btn" data-id="${p.id}">${escapeHtml(t('watch.delete'))}</button>
+        </div>` : `
+        <div class="watch-card__foot">
+          <button type="button" class="watch-pill watch-pill--delete watch-delete-btn" data-id="${p.id}">${escapeHtml(t('watch.delete'))}</button>
+        </div>`;
+      return `
+        <article class="watch-card${active ? ' is-active' : ' is-inactive'}" data-watch-id="${p.id}">
+          <div class="watch-card__head">
+            <div class="watch-card__name">${nameHtml}</div>
+            <div class="watch-card__head-aside">${headActions}</div>
+          </div>
+          <div class="watch-card__body">
+            <div class="watch-card__status">${escapeHtml(status)}</div>
+            ${metaHtml}
+            <div class="watch-field">
+              <label>${escapeHtml(t('watch.steam_id'))}</label>
+              <input type="text" class="watch-steam-input" data-id="${p.id}" value="${escapeHtml(steamId)}" placeholder="7656119…" inputmode="numeric" />
+            </div>
+            <div class="watch-field">
+              <label>${escapeHtml(t('watch.notes'))}</label>
+              <textarea class="watch-notes-input" data-id="${p.id}" maxlength="500">${escapeHtml(p.notes || '')}</textarea>
+            </div>
+          </div>
+          ${footActive}
+        </article>`;
+    }).join('');
+    grid.innerHTML = cardsHtml + (canAdd ? renderWatchAddCard() : '');
+    bindWatchGridActions(grid);
+  }
+
+  function renderWatchAddPreview(result) {
+    const box = document.getElementById('watch-add-preview');
+    if (!box) return;
+    if (!result) {
+      box.innerHTML = '';
+      return;
+    }
+    const prev = result.preview || {};
+    const status = prev.status_label || result.status_label || '—';
+    const servers = prev.servers || [];
+    const oldNames = prev.old_names || [];
+    const canAddActive = _watchLimits && _watchLimits.can_activate;
+    const srvHtml = servers.length
+      ? servers.map(s => `<div>${s.online ? '🟢' : '🔴'} ${escapeHtml(s.name || '—')}${s.time_played_fmt ? ` · ${escapeHtml(s.time_played_fmt)}` : ''}${s.last_seen ? ` · ${formatWatchLastSeen(s.last_seen)}` : ''}</div>`).join('')
+      : `<div>${escapeHtml(result.server_name || '—')}</div>`;
+    const namesHtml = oldNames.length
+      ? oldNames.map(n => `<div>${escapeHtml(n.name || '—')}${n.last_seen ? ` · ${formatWatchLastSeen(n.last_seen)}` : ''}</div>`).join('')
+      : `<div>—</div>`;
+    box.innerHTML = `
+      <div class="watch-add-preview">
+        <div class="watch-add-preview__head">
+          <div>
+            <div class="watch-add-preview__name">${escapeHtml(result.player_name || '—')}</div>
+            <div class="watch-add-preview__status">${escapeHtml(status)}${prev.current_server ? ` · ${escapeHtml(prev.current_server)}` : ''}</div>
+          </div>
+        </div>
+        <div class="watch-add-preview__section">
+          <div class="watch-add-preview__title">${escapeHtml(t('watch.preview_servers'))}</div>
+          <div class="watch-add-preview__list">${srvHtml}</div>
+        </div>
+        <div class="watch-add-preview__section">
+          <div class="watch-add-preview__title">${escapeHtml(t('watch.preview_names'))}</div>
+          <div class="watch-add-preview__list">${namesHtml}</div>
+        </div>
+        <div class="watch-add-preview__actions">
+          <button type="button" class="watch-pill watch-pill--save watch-add-from-preview" data-bm-id="${escapeHtml(result.bm_player_id)}" data-name="${escapeHtml(result.player_name)}" data-activate="0">${escapeHtml(t('watch.add'))}</button>
+          ${canAddActive ? `<button type="button" class="watch-pill watch-pill--activate watch-add-from-preview" data-bm-id="${escapeHtml(result.bm_player_id)}" data-name="${escapeHtml(result.player_name)}" data-activate="1">${escapeHtml(t('watch.add_active'))}</button>` : ''}
+        </div>
+      </div>`;
+    box.querySelectorAll('.watch-add-from-preview').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await watchAddPlayer(btn.dataset.bmId, btn.dataset.name, btn.dataset.activate === '1');
+        closeWatchAddModal();
+      });
+    });
+  }
+
+  function openWatchAddModal() {
+    const modal = document.getElementById('watch-add-modal');
+    const input = document.getElementById('watch-search-input');
+    const preview = document.getElementById('watch-add-preview');
+    if (input) input.value = '';
+    if (preview) preview.innerHTML = '';
+    setWatchSearchMsg('');
+    modal?.classList.remove('is-hidden');
+    modal?.setAttribute('aria-hidden', 'false');
+    setTimeout(() => input?.focus(), 50);
+  }
+
+  function closeWatchAddModal() {
+    const modal = document.getElementById('watch-add-modal');
+    modal?.classList.add('is-hidden');
+    modal?.setAttribute('aria-hidden', 'true');
   }
 
   function watchStatsKv(label, value, rawHtml) {
@@ -8442,35 +8577,6 @@
     loadWatchStats(_watchStatsPlayerId);
   }
 
-  function renderWatchSearchResults(results) {
-    const box = document.getElementById('watch-search-results');
-    const msg = document.getElementById('watch-search-msg');
-    if (!box) return;
-    if (!results || results.length === 0) {
-      box.innerHTML = '';
-      if (msg) {
-        msg.textContent = t('watch.not_found');
-        msg.className = 'watch-msg is-error';
-      }
-      return;
-    }
-    if (msg) { msg.textContent = ''; msg.className = 'watch-msg'; }
-    const canAddActive = _watchLimits && _watchLimits.can_activate;
-    box.innerHTML = results.map(r => `
-      <div class="watch-search-item">
-        <div class="watch-search-item__meta">
-          <div class="watch-search-item__name">${escapeHtml(r.player_name)}</div>
-          <div>${escapeHtml(r.status_label || '')} · ${escapeHtml(r.server_name || '—')}</div>
-        </div>
-        <button type="button" class="dash-btn dash-btn--sm watch-add-btn" data-bm-id="${escapeHtml(r.bm_player_id)}" data-name="${escapeHtml(r.player_name)}" data-activate="0">${escapeHtml(t('watch.add'))}</button>
-        ${canAddActive ? `<button type="button" class="dash-btn dash-btn--sm watch-add-btn" data-bm-id="${escapeHtml(r.bm_player_id)}" data-name="${escapeHtml(r.player_name)}" data-activate="1">${escapeHtml(t('watch.add_active'))}</button>` : ''}
-      </div>
-    `).join('');
-    box.querySelectorAll('.watch-add-btn').forEach(btn => {
-      btn.addEventListener('click', () => watchAddPlayer(btn.dataset.bmId, btn.dataset.name, btn.dataset.activate === '1'));
-    });
-  }
-
   function setWatchSearchMsg(text, ok) {
     const msg = document.getElementById('watch-search-msg');
     if (!msg) return;
@@ -8514,22 +8620,29 @@
     const nickname = (input?.value || '').trim();
     if (!session || !nickname) return;
     setWatchSearchMsg('');
-    const box = document.getElementById('watch-search-results');
-    if (box) box.innerHTML = `<div class="watch-empty">${t('watch.loading')}</div>`;
+    const preview = document.getElementById('watch-add-preview');
+    if (preview) preview.innerHTML = `<div class="watch-stats-loading">${escapeHtml(t('watch.preview_searching'))}</div>`;
     try {
-      const r = await fetch(`${API_BASE}/me/watched-players?session=${encodeURIComponent(session)}&search=${encodeURIComponent(nickname)}&_t=${Date.now()}`, {
+      const r = await fetch(`${API_BASE}/me/watched-players?session=${encodeURIComponent(session)}&search=${encodeURIComponent(nickname)}&preview=1&_t=${Date.now()}`, {
         credentials: 'include', cache: 'no-store',
       });
       const d = await r.json().catch(() => ({}));
       if (!r.ok || !d.ok) {
         setWatchSearchMsg(d.message || d.error || 'Error', false);
-        if (box) box.innerHTML = '';
+        if (preview) preview.innerHTML = '';
         return;
       }
-      renderWatchSearchResults(d.results || []);
+      const results = d.results || [];
+      if (!results.length) {
+        setWatchSearchMsg(t('watch.preview_empty'), false);
+        if (preview) preview.innerHTML = '';
+        return;
+      }
+      setWatchSearchMsg('');
+      renderWatchAddPreview(results[0]);
     } catch {
       setWatchSearchMsg(_lang === 'en' ? 'Search error' : 'Ошибка поиска', false);
-      if (box) box.innerHTML = '';
+      if (preview) preview.innerHTML = '';
     }
   }
 
@@ -8557,11 +8670,9 @@
           true
         );
       }
-      document.getElementById('watch-search-results').innerHTML = '';
-      const input = document.getElementById('watch-search-input');
-      if (input) input.value = '';
+      closeWatchAddModal();
       renderWatchLimit(d.limits || {});
-      await loadWatchPanel({ showLoading: false });
+      await loadWatchPanel({ showLoading: false, force: true });
     } catch {
       setWatchSearchMsg(_lang === 'en' ? 'Error' : 'Ошибка', false);
     }
@@ -8680,6 +8791,16 @@
       statsRefresh.addEventListener('click', () => {
         if (_watchStatsPlayerId) loadWatchStats(_watchStatsPlayerId, { force: true });
       });
+    }
+    const addClose = document.getElementById('watch-add-modal-close');
+    const addBackdrop = document.getElementById('watch-add-modal-backdrop');
+    if (addClose && !addClose.dataset.bound) {
+      addClose.dataset.bound = '1';
+      addClose.addEventListener('click', closeWatchAddModal);
+    }
+    if (addBackdrop && !addBackdrop.dataset.bound) {
+      addBackdrop.dataset.bound = '1';
+      addBackdrop.addEventListener('click', closeWatchAddModal);
     }
     const searchBtn = document.getElementById('btn-watch-search');
     const searchInput = document.getElementById('watch-search-input');
