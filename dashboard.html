@@ -1036,9 +1036,15 @@
       gap: 8px;
     }
     .profile-free-tier {
-      font-size: .82rem;
-      color: var(--text2);
-      font-weight: 500;
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: .78rem;
+      font-weight: 700;
+      background: rgba(148,163,184,.12);
+      color: #94a3b8;
+      border: 1px solid rgba(148,163,184,.35);
+      vertical-align: baseline;
     }
     .profile-sponsor-pitch {
       font-size: .82rem;
@@ -3086,6 +3092,27 @@
       background: rgba(100,116,139,.25); color: #94a3b8;
       font-size: .72rem; font-weight: 600; letter-spacing: .03em;
       vertical-align: middle;
+    }
+    .site-db-disabled-note {
+      display: block;
+      font-size: .72rem;
+      color: #94a3b8;
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+    .site-db-disabled-notice {
+      grid-column: 1 / -1;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: .82rem;
+      line-height: 1.45;
+      color: #cbd5e1;
+      background: rgba(148,163,184,.1);
+      border: 1px solid rgba(148,163,184,.28);
+    }
+    .site-db-disabled-notice strong {
+      color: #94a3b8;
+      margin-right: 6px;
     }
 
     /* Admin action buttons */
@@ -8760,6 +8787,30 @@
     return `<code>${escapeHtml(String(lc.command))}</code> <span class="muted" style="font-size:.76rem">(${escapeHtml(when)}${srv})</span>`;
   }
 
+  function fmtAdminDisabledNote(u) {
+    if (!u || !u.admin_disabled) return '';
+    const when = u.admin_disabled_at ? fmtTs(u.admin_disabled_at) : '—';
+    const by = String(u.admin_disabled_by || '').trim().toLowerCase();
+    if (by === 'user') {
+      return _lang === 'en'
+        ? `Disabled by the user · ${when}`
+        : `Отключил пользователь (сам) · ${when}`;
+    }
+    if (by === 'admin') {
+      return _lang === 'en'
+        ? `Disabled by administrator · ${when}`
+        : `Отключил администратор · ${when}`;
+    }
+    if (by === 'nuke') {
+      return _lang === 'en'
+        ? `After full reset · ${when}`
+        : `После полного сброса · ${when}`;
+    }
+    return _lang === 'en'
+      ? `Auto-reconnect blocked · ${when} (source unknown)`
+      : `Автовосстановление отключено · ${when} (источник неизвестен)`;
+  }
+
   function siteDbRowMatchesSearch(u, q) {
     if (!q) return true;
     const hay = [
@@ -8793,7 +8844,10 @@
         ? '<span class="site-db-ban-chip" title="Забанен">BAN</span>'
         : '';
       const disabledChip = u.admin_disabled
-        ? '<span class="site-db-badge--disabled" title="Авто-восстановление отключено администратором">OFF</span>'
+        ? `<span class="site-db-badge--disabled" title="${escapeHtml(fmtAdminDisabledNote(u))}">OFF</span>`
+        : '';
+      const disabledNote = u.admin_disabled
+        ? `<span class="site-db-disabled-note">${escapeHtml(fmtAdminDisabledNote(u))}</span>`
         : '';
       const activeSrv = u.active_server;
       const serversCell = (u.servers_count > 0)
@@ -8805,7 +8859,7 @@
         `<tr class="site-db-row${open ? ' is-open' : ''}${rowExtraCls}" data-row-id="${escapeHtml(rowId)}">`,
           `<td style="text-align:center"><span class="site-db-caret">▸</span></td>`,
           `<td class="mono">${escapeHtml(String(u.internal_id))}</td>`,
-          `<td>${socketDot}${banChip}${disabledChip}${escapeHtml(String(u.discord_username || '—'))}<br/><span class="muted mono" style="font-size:0.76rem">${escapeHtml(String(u.discord_id || ''))}</span></td>`,
+          `<td>${socketDot}${banChip}${disabledChip}${escapeHtml(String(u.discord_username || '—'))}<br/><span class="muted mono" style="font-size:0.76rem">${escapeHtml(String(u.discord_id || ''))}</span>${disabledNote ? `<br/>${disabledNote}` : ''}</td>`,
           `<td class="mono">${u.steam_id ? steamProfileLink(u.steam_id) : '<span class="muted">—</span>'}</td>`,
           `<td>${fcmBadgeHtml(u.fcm_status)}</td>`,
           `<td class="mono">${escapeHtml(String(u.guild_id || '—'))}</td>`,
@@ -8910,6 +8964,8 @@
             banned_at: data.user.banned_at ?? null,
             banned_reason: data.user.banned_reason ?? null,
             admin_disabled: !!data.user.admin_disabled,
+            admin_disabled_by: data.user.admin_disabled_by ?? null,
+            admin_disabled_at: data.user.admin_disabled_at ?? null,
             has_active_socket: !!data.user.has_active_socket,
             has_rustplus_token: !!data.user.has_rustplus_token,
             servers_count: data.user.servers_count ?? 0,
@@ -8949,6 +9005,10 @@
       </div>` : '';
 
     const actions = `
+      ${u.admin_disabled ? `
+      <div class="site-db-disabled-notice">
+        <strong>OFF</strong>${escapeHtml(fmtAdminDisabledNote(u))}
+      </div>` : ''}
       <div class="site-db-detail-kv site-db-actions" style="grid-column:1/-1">
         <h4>Действия</h4>
         <div class="site-db-actions__row">
@@ -9012,6 +9072,7 @@
           ${kv(_lang==='en'?'Created':'Создан', escapeHtml(fmtTs(u.created_at)))}
           ${kv('Linked', escapeHtml(fmtTs(u.rustplus_linked_at)))}
           ${kv('Updated', escapeHtml(fmtTs(u.updated_at)))}
+          ${u.admin_disabled ? kv(_lang==='en'?'OFF status':'Статус OFF', escapeHtml(fmtAdminDisabledNote(u))) : ''}
         </dl>
       </div>`;
 
