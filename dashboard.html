@@ -1040,6 +1040,14 @@
       display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
     }
     .watch-card__name { font-weight: 700; font-size: 1rem; }
+    .watch-card__name a { color: inherit; text-decoration: none; }
+    .watch-card__name a:hover { color: var(--accent, #e8442a); text-decoration: underline; }
+    .watch-card__links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; font-size: .78rem; }
+    .watch-card__links a { color: var(--accent, #e8442a); text-decoration: none; }
+    .watch-card__links a:hover { text-decoration: underline; }
+    .watch-steam-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; font-size: .75rem; }
+    .watch-steam-links a { color: var(--accent, #e8442a); text-decoration: none; }
+    .watch-steam-links a:hover { text-decoration: underline; }
     .watch-card__status { font-size: .82rem; color: var(--text2); }
     .watch-card__server { font-size: .8rem; color: var(--muted); word-break: break-word; }
     .watch-toggle {
@@ -4969,6 +4977,9 @@
       'watch.stats_country':'Страна',
       'watch.stats_errors':'Часть данных недоступна',
       'watch.stats_fetched':'Обновлено',
+      'watch.bm_profile': 'BattleMetrics',
+      'watch.steam_bm':   'Steam на BM',
+      'watch.steam_profile': 'Steam профиль',
       'nav.wip':          '🚧 В разработке',
       'nav.map':          '🗺️ Карта',
       'nav.notify':       '🔔 Уведомления',
@@ -5421,6 +5432,9 @@
       'watch.stats_country':'Country',
       'watch.stats_errors':'Some data unavailable',
       'watch.stats_fetched':'Updated',
+      'watch.bm_profile': 'BattleMetrics',
+      'watch.steam_bm':   'Steam on BM',
+      'watch.steam_profile': 'Steam profile',
       'nav.wip':          '🚧 In Development',
       'nav.map':          '🗺️ Map',
       'nav.notify':       '🔔 Notifications',
@@ -8080,10 +8094,30 @@
 
   function formatWatchLastSeen(raw) {
     if (!raw || raw === 'Неизвестно') return '—';
-    const s = String(raw).replace('Z', '').slice(0, 19);
+    let s = String(raw).trim().replace('Z', '');
+    if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(s)) s = s.replace(' ', 'T');
+    s = s.slice(0, 19);
     const d = new Date(s);
     if (Number.isNaN(d.getTime())) return escapeHtml(String(raw));
     return d.toLocaleString(_lang === 'en' ? 'en-GB' : 'ru-RU', { dateStyle: 'short', timeStyle: 'short' });
+  }
+
+  function watchCardBmUrl(p) {
+    return p.bm_url || (p.bm_player_id ? `https://www.battlemetrics.com/players/${p.bm_player_id}` : null);
+  }
+
+  function watchCardSteamId(p) {
+    return String(p.steam_id || p.steam_id_bm || '').trim();
+  }
+
+  function watchCardSteamBmUrl(p) {
+    const sid = watchCardSteamId(p);
+    return p.steam_bm_url || (sid ? `https://www.battlemetrics.com/players?filter[search]="${sid}"` : null);
+  }
+
+  function watchCardSteamProfileUrl(p) {
+    const sid = watchCardSteamId(p);
+    return p.steam_profile_url || (sid ? `https://steamcommunity.com/profiles/${sid}` : null);
   }
 
   function renderWatchCards(players) {
@@ -8096,19 +8130,40 @@
     grid.innerHTML = players.map(p => {
       const active = !!p.is_active;
       const status = p.status_label || (p.status === 'online' ? '🟢 Онлайн' : p.status === 'offline' ? '🔴 Оффлайн' : '—');
-      const server = p.server ? `${t('watch.server')}: ${escapeHtml(String(p.server))}` : '';
-      const lastSeen = p.last_seen ? `${t('watch.last_seen')}: ${formatWatchLastSeen(p.last_seen)}` : '';
+      const serverLabel = p.server && !['—', 'Неизвестно', 'Не играет'].includes(String(p.server))
+        ? `${t('watch.server')}: ${escapeHtml(String(p.server))}` : '';
+      const lastSeenLabel = p.last_seen
+        ? `${t('watch.last_seen')}: ${formatWatchLastSeen(p.last_seen)}` : '';
       const timePlayed = p.time_played_fmt ? `${t('watch.time_played')}: ${escapeHtml(String(p.time_played_fmt))}` : '';
       const canToggle = active || (_watchLimits && _watchLimits.can_activate);
+      const bmUrl = watchCardBmUrl(p);
+      const playerName = escapeHtml(p.player_name || '—');
+      const nameHtml = bmUrl
+        ? `<a href="${escapeHtml(bmUrl)}" target="_blank" rel="noopener">${playerName}</a>`
+        : playerName;
+      const steamId = watchCardSteamId(p);
+      const steamBmUrl = watchCardSteamBmUrl(p);
+      const steamProfileUrl = watchCardSteamProfileUrl(p);
+      const linkParts = [];
+      if (bmUrl) linkParts.push(`<a href="${escapeHtml(bmUrl)}" target="_blank" rel="noopener">${escapeHtml(t('watch.bm_profile'))}</a>`);
+      if (steamBmUrl) linkParts.push(`<a href="${escapeHtml(steamBmUrl)}" target="_blank" rel="noopener">${escapeHtml(t('watch.steam_bm'))}</a>`);
+      if (steamProfileUrl) linkParts.push(`<a href="${escapeHtml(steamProfileUrl)}" target="_blank" rel="noopener">${escapeHtml(t('watch.steam_profile'))}</a>`);
+      const linksHtml = linkParts.length ? `<div class="watch-card__links">${linkParts.join(' · ')}</div>` : '';
+      const steamLinksHtml = steamId && (steamBmUrl || steamProfileUrl)
+        ? `<div class="watch-steam-links">${[
+            steamBmUrl ? `<a href="${escapeHtml(steamBmUrl)}" target="_blank" rel="noopener">BM: ${escapeHtml(steamId)}</a>` : '',
+            steamProfileUrl ? `<a href="${escapeHtml(steamProfileUrl)}" target="_blank" rel="noopener">Steam</a>` : '',
+          ].filter(Boolean).join(' · ')}</div>` : '';
       return `
         <article class="watch-card${active ? '' : ' is-inactive'}" data-watch-id="${p.id}">
           <div class="watch-card__head">
             <div>
-              <div class="watch-card__name">${escapeHtml(p.player_name || '—')}</div>
+              <div class="watch-card__name">${nameHtml}</div>
               <div class="watch-card__status">${escapeHtml(status)}</div>
-              ${server ? `<div class="watch-card__server">${server}</div>` : ''}
+              ${serverLabel ? `<div class="watch-card__server">${serverLabel}</div>` : ''}
               ${timePlayed ? `<div class="watch-card__server">${timePlayed}</div>` : ''}
-              ${lastSeen ? `<div class="watch-card__server">${lastSeen}</div>` : ''}
+              ${lastSeenLabel ? `<div class="watch-card__server">${lastSeenLabel}</div>` : ''}
+              ${linksHtml}
             </div>
             <label class="watch-toggle" title="${escapeHtml(t('watch.active_label'))}">
               <input type="checkbox" class="watch-active-toggle" data-id="${p.id}" ${active ? 'checked' : ''} ${canToggle || active ? '' : 'disabled'} />
@@ -8117,7 +8172,8 @@
           </div>
           <div class="watch-field">
             <label>${escapeHtml(t('watch.steam_id'))}</label>
-            <input type="text" class="watch-steam-input" data-id="${p.id}" value="${escapeHtml(p.steam_id || p.steam_id_bm || '')}" placeholder="7656119…" inputmode="numeric" />
+            <input type="text" class="watch-steam-input" data-id="${p.id}" value="${escapeHtml(steamId)}" placeholder="7656119…" inputmode="numeric" />
+            ${steamLinksHtml}
           </div>
           <div class="watch-field">
             <label>${escapeHtml(t('watch.notes'))}</label>
@@ -8169,13 +8225,22 @@
     const cur = profile.current_server || {};
     const statusLabel = profile.is_online ? '🟢 ' + (_lang === 'en' ? 'Online' : 'Онлайн') : '🔴 ' + (_lang === 'en' ? 'Offline' : 'Оффлайн');
     const steamId = player.steam_id || profile.steam_id || '—';
-    const bmLink = profile.bm_url
-      ? `<a class="watch-stats-link" href="${escapeHtml(profile.bm_url)}" target="_blank" rel="noopener">${escapeHtml(t('watch.stats_bm_link'))}</a>`
+    const steamBmUrl = profile.steam_bm_url || player.steam_bm_url || watchCardSteamBmUrl({ steam_id: steamId, steam_bm_url: profile.steam_bm_url });
+    const steamProfileUrl = profile.steam_profile_url || player.steam_profile_url || watchCardSteamProfileUrl({ steam_id: steamId });
+    const bmLink = profile.bm_url || watchCardBmUrl({ bm_player_id: profile.bm_player_id || player.bm_player_id })
+      ? `<a class="watch-stats-link" href="${escapeHtml(profile.bm_url || watchCardBmUrl({ bm_player_id: profile.bm_player_id || player.bm_player_id }))}" target="_blank" rel="noopener">${escapeHtml(t('watch.stats_bm_link'))}</a>`
+      : '—';
+    const steamHtml = steamId && steamId !== '—'
+      ? [
+          escapeHtml(steamId),
+          steamBmUrl ? `<a class="watch-stats-link" href="${escapeHtml(steamBmUrl)}" target="_blank" rel="noopener">${escapeHtml(t('watch.steam_bm'))}</a>` : '',
+          steamProfileUrl ? `<a class="watch-stats-link" href="${escapeHtml(steamProfileUrl)}" target="_blank" rel="noopener">${escapeHtml(t('watch.steam_profile'))}</a>` : '',
+        ].filter(Boolean).join(' · ')
       : '—';
 
     let kv = watchStatsKv(t('watch.stats_status'), statusLabel);
     kv += watchStatsKv(t('watch.stats_bm_id'), profile.bm_player_id || player.bm_player_id || '—');
-    kv += watchStatsKv(t('watch.stats_steam'), steamId);
+    kv += watchStatsKv(t('watch.stats_steam'), steamHtml, true);
     kv += watchStatsKv(t('watch.stats_total_time'), profile.total_time_played_fmt || '—');
     kv += watchStatsKv(t('watch.stats_servers_count'), profile.servers_count ?? '—');
     kv += watchStatsKv(t('watch.stats_created'), formatWatchLastSeen(profile.created_at));
