@@ -4631,6 +4631,26 @@
     if (btn) btn.style.display = discordId ? '' : 'none';
   }
 
+  let _sponsorNotifyInitDone = false;
+  function notifySponsorEvent(event) {
+    const session = _dashSessionRef || localStorage.getItem('ri_session');
+    if (!session) return;
+    fetch(`${API_BASE}/me/sponsor/notify?session=${encodeURIComponent(session)}`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event }),
+    }).catch(() => {});
+  }
+
+  function initSponsorNotifyHooks() {
+    if (_sponsorNotifyInitDone) return;
+    _sponsorNotifyInitDone = true;
+    document.querySelectorAll('.sponsor-buy-btn').forEach(btn => {
+      btn.addEventListener('click', () => notifySponsorEvent('buy_coins'));
+    });
+  }
+
   function updateAdminOnlyNavVisibility(discordId) {
     const isAdmin = String(discordId || '') === ADMIN_DISCORD_ID;
     const adminBtn = document.getElementById('nav-admin-btn');
@@ -6525,6 +6545,10 @@
         }
         if (id === 'coins') {
           loadCoinsPanel();
+        }
+        if (id === 'sponsor') {
+          notifySponsorEvent('tab_view');
+          initSponsorNotifyHooks();
         }
       });
     });
