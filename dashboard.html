@@ -8169,9 +8169,9 @@
         document.querySelectorAll('.relay-evt-cb').forEach(cb => {
           config[cb.dataset.event] = cb.checked;
         });
-        const guildId = guildSel.value ? Number(guildSel.value) : null;
+        const guildId = guildSel.value ? String(guildSel.value).trim() : null;
         const chSel = document.getElementById('relay-channel-select');
-        const channelId = chSel?.value ? Number(chSel.value) : null;
+        const channelId = chSel?.value ? String(chSel.value).trim() : null;
         const enabled = !!masterCb.checked;
         const body = {
           enabled: enabled && !!guildId && !!channelId,
