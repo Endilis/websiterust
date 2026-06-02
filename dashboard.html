@@ -8214,23 +8214,33 @@
           });
           const d = await r.json();
           const diag = d.diagnostics || {};
+          console.warn('[relay test diagnostics]', diag);
           if (msgEl) {
             if (d.ok) {
-              msgEl.textContent = _lang === 'en' ? '✅ Test message sent' : '✅ Тестовое сообщение отправлено';
+              const ingame = diag.ingame_probe_ok === true
+                ? (_lang === 'en' ? ' · in-game path OK' : ' · in-game путь OK')
+                : '';
+              msgEl.textContent = (_lang === 'en' ? '✅ Test message sent' : '✅ Тестовое сообщение отправлено') + ingame;
             } else {
               const err = diag.error || d.error || 'send_failed';
               const extra = [
                 diag.relay_bot_ready === false ? 'relay_not_ready' : null,
                 diag.relay_bot_in_selected_guild === false ? 'relay_not_in_guild' : null,
                 !diag.relay_channel_id ? 'no_channel' : null,
+                diag.ingame_probe_ok === false ? 'ingame_path_failed' : null,
+                !diag.ingame_resolved_discord_id ? 'no_discord_link' : null,
+                !diag.ingame_socket_key ? 'no_rust_socket' : null,
               ].filter(Boolean).join(', ');
               const hint = diag.relay_bot_in_selected_guild === false
                 ? (_lang === 'en'
                   ? ' · add **RustInfo Alerts** bot (not the main bot), pick server, Save'
                   : ' · добавьте бота **RustInfo Alerts** (не основного), выберите сервер, Сохранить')
-                : '';
+                : diag.error === 'ingame_path_failed'
+                  ? (_lang === 'en'
+                    ? ' · panel OK but in-game path failed — redeploy notification_relay.py + plus.py, restart bot'
+                    : ' · панель OK, in-game путь нет — залей notification_relay.py + plus.py, перезапуск')
+                  : '';
               msgEl.textContent = `❌ ${err}${extra ? ' (' + extra + ')' : ''}${hint}`;
-              console.warn('[relay test diagnostics]', diag);
             }
             setTimeout(() => { if (msgEl) msgEl.textContent = ''; }, 5000);
           }
