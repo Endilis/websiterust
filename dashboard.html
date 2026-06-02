@@ -8220,11 +8220,16 @@
             } else {
               const err = diag.error || d.error || 'send_failed';
               const extra = [
-                diag.relay_bot_ready === false ? 'bot_not_ready' : null,
-                diag.relay_bot_in_selected_guild === false ? 'bot_not_in_guild' : null,
+                diag.relay_bot_ready === false ? 'relay_not_ready' : null,
+                diag.relay_bot_in_selected_guild === false ? 'relay_not_in_guild' : null,
                 !diag.relay_channel_id ? 'no_channel' : null,
               ].filter(Boolean).join(', ');
-              msgEl.textContent = `❌ ${err}${extra ? ' (' + extra + ')' : ''}`;
+              const hint = diag.relay_bot_in_selected_guild === false
+                ? (_lang === 'en'
+                  ? ' · add **RustInfo Alerts** bot (not the main bot), pick server, Save'
+                  : ' · добавьте бота **RustInfo Alerts** (не основного), выберите сервер, Сохранить')
+                : '';
+              msgEl.textContent = `❌ ${err}${extra ? ' (' + extra + ')' : ''}${hint}`;
               console.warn('[relay test diagnostics]', diag);
             }
             setTimeout(() => { if (msgEl) msgEl.textContent = ''; }, 5000);
