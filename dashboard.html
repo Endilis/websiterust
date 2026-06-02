@@ -10147,7 +10147,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify({ discord_id: discordId, guild_id: Number(guildId), wipe_old_db: wipeOld }),
+          body: JSON.stringify({ discord_id: discordId, guild_id: guildId, wipe_old_db: wipeOld }),
         });
         const d = await r.json().catch(() => ({}));
         if (!r.ok || !d.ok) {
