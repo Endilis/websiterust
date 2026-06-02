@@ -8187,8 +8187,15 @@
           });
           const d = await r.json();
           if (msgEl) {
-            msgEl.textContent = d.ok ? (_lang === 'en' ? '✅ Saved' : '✅ Сохранено') : '❌ ' + (d.error || '');
-            setTimeout(() => { if (msgEl) msgEl.textContent = ''; }, 2500);
+            if (d.ok) {
+              let txt = _lang === 'en' ? '✅ Saved' : '✅ Сохранено';
+              if (d.welcome_sent) txt += _lang === 'en' ? ' · test message sent' : ' · тестовое сообщение отправлено';
+              else if (d.welcome_error) txt += _lang === 'en' ? ' · channel test failed' : ' · не удалось отправить в канал';
+              msgEl.textContent = txt;
+            } else {
+              msgEl.textContent = '❌ ' + (d.error || '');
+            }
+            setTimeout(() => { if (msgEl) msgEl.textContent = ''; }, 3500);
           }
         } catch (_) {
           if (msgEl) msgEl.textContent = _lang === 'en' ? '❌ Error' : '❌ Ошибка';
