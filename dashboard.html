@@ -4206,6 +4206,7 @@
 
             <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
               <button type="button" class="dash-btn dash-btn--primary" id="btn-relay-save" data-i18n="acc.btn_save">Сохранить</button>
+              <button type="button" class="dash-btn" id="btn-relay-test" data-i18n="relay.test_btn">Тест уведомления</button>
               <span id="relay-save-msg" style="font-size:.8rem;color:var(--muted)"></span>
             </div>
           </div>
@@ -5353,6 +5354,7 @@
       'relay.channel_ph': '— сначала сервер —',
       'relay.events_hint': 'События для Discord:',
       'relay.no_relay_bot': '⚠ relay-бот не на сервере',
+      'relay.test_btn': 'Тест уведомления',
       /* admin panel */
       'admin.panel_title':  'Полная админ-панель',
       'admin.loading':      'Загрузка данных...',
@@ -5831,6 +5833,7 @@
       'relay.channel_ph': '— select server first —',
       'relay.events_hint': 'Events for Discord:',
       'relay.no_relay_bot': '⚠ relay bot not on server',
+      'relay.test_btn': 'Test notification',
       /* admin panel */
       'admin.panel_title':  'Full Admin Panel',
       'admin.loading':      'Loading data...',
@@ -8196,6 +8199,29 @@
               msgEl.textContent = '❌ ' + (d.error || '');
             }
             setTimeout(() => { if (msgEl) msgEl.textContent = ''; }, 3500);
+          }
+        } catch (_) {
+          if (msgEl) msgEl.textContent = _lang === 'en' ? '❌ Error' : '❌ Ошибка';
+        }
+      });
+      document.getElementById('btn-relay-test')?.addEventListener('click', async () => {
+        const msgEl = document.getElementById('relay-save-msg');
+        if (msgEl) msgEl.textContent = _lang === 'en' ? 'Sending test…' : 'Отправка теста…';
+        try {
+          const r = await fetch(`${API_BASE}/me/relay/test?session=${encodeURIComponent(_relaySession)}`, {
+            method: 'POST',
+            credentials: 'include',
+          });
+          const d = await r.json();
+          const diag = d.diagnostics || {};
+          if (msgEl) {
+            if (d.ok) {
+              msgEl.textContent = _lang === 'en' ? '✅ Test message sent' : '✅ Тестовое сообщение отправлено';
+            } else {
+              msgEl.textContent = `❌ ${diag.error || d.error || 'send_failed'}`;
+              console.warn('[relay test]', diag);
+            }
+            setTimeout(() => { if (msgEl) msgEl.textContent = ''; }, 5000);
           }
         } catch (_) {
           if (msgEl) msgEl.textContent = _lang === 'en' ? '❌ Error' : '❌ Ошибка';
