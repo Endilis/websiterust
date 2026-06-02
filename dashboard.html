@@ -8218,8 +8218,14 @@
             if (d.ok) {
               msgEl.textContent = _lang === 'en' ? '✅ Test message sent' : '✅ Тестовое сообщение отправлено';
             } else {
-              msgEl.textContent = `❌ ${diag.error || d.error || 'send_failed'}`;
-              console.warn('[relay test]', diag);
+              const err = diag.error || d.error || 'send_failed';
+              const extra = [
+                diag.relay_bot_ready === false ? 'bot_not_ready' : null,
+                diag.relay_bot_in_selected_guild === false ? 'bot_not_in_guild' : null,
+                !diag.relay_channel_id ? 'no_channel' : null,
+              ].filter(Boolean).join(', ');
+              msgEl.textContent = `❌ ${err}${extra ? ' (' + extra + ')' : ''}`;
+              console.warn('[relay test diagnostics]', diag);
             }
             setTimeout(() => { if (msgEl) msgEl.textContent = ''; }, 5000);
           }
