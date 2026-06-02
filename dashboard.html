@@ -4164,7 +4164,7 @@
             <p class="dash-muted" style="font-size:.82rem;margin:0 0 12px" data-i18n="relay.hint">
               Добавьте relay-бота на свой сервер и выберите канал. In-game и Discord включаются отдельно.
             </p>
-            <a id="relay-invite-link" href="#" target="_blank" rel="noreferrer" class="dash-btn dash-btn--discord" style="display:inline-flex;align-items:center;gap:8px;margin-bottom:16px;text-decoration:none">
+            <a id="relay-invite-link" href="https://discord.com/oauth2/authorize?client_id=778935136405291008&permissions=3072&integration_type=0&scope=bot" target="_blank" rel="noreferrer" class="dash-btn dash-btn--discord" style="display:inline-flex;align-items:center;gap:8px;margin-bottom:16px;text-decoration:none">
               <span data-i18n="relay.invite_btn">➕ Пригласить relay-бота</span>
             </a>
 
@@ -5030,6 +5030,8 @@
   const OAUTH_URL = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify%20guilds`;
 
   const INVITE_BOT_URL = 'https://discord.com/oauth2/authorize?client_id=1334943377124495421&permissions=8&integration_type=0&scope=bot';
+  const RELAY_BOT_CLIENT_ID = '778935136405291008';
+  const RELAY_INVITE_URL = `https://discord.com/oauth2/authorize?client_id=${RELAY_BOT_CLIENT_ID}&permissions=3072&integration_type=0&scope=bot`;
 
   /* ══════════════════════════════════════════
      i18n — multilanguage support
@@ -8122,7 +8124,11 @@
       if (!d.ok) return;
       const s = d.settings || {};
       _relayEventMeta = d.event_meta || {};
-      if (inviteLink && d.relay_invite_url) inviteLink.href = d.relay_invite_url;
+      if (inviteLink) {
+        const apiUrl = d.relay_invite_url || '';
+        const badId = apiUrl.includes('778935136401291008');
+        inviteLink.href = (apiUrl && !badId) ? apiUrl : RELAY_INVITE_URL;
+      }
 
       masterCb.checked = !!(s.enabled && s.discord_notifications);
       if (masterLbl) {
