@@ -8227,11 +8227,16 @@
                 diag.relay_bot_ready === false ? 'relay_not_ready' : null,
                 diag.relay_bot_in_selected_guild === false ? 'relay_not_in_guild' : null,
                 !diag.relay_channel_id ? 'no_channel' : null,
+                err === 'master_off' ? 'master_off' : null,
                 diag.ingame_probe_ok === false ? 'ingame_path_failed' : null,
                 !diag.ingame_resolved_discord_id ? 'no_discord_link' : null,
                 !diag.ingame_socket_key ? 'no_rust_socket' : null,
               ].filter(Boolean).join(', ');
-              const hint = diag.relay_bot_in_selected_guild === false
+              const hint = err === 'master_off'
+                ? (_lang === 'en'
+                  ? ' · turn on notifications, pick server + channel, click Save'
+                  : ' · включите уведомления, выберите сервер и канал, нажмите Сохранить')
+                : diag.relay_bot_in_selected_guild === false
                 ? (_lang === 'en'
                   ? ' · add **RustInfo Alerts** bot (not the main bot), pick server, Save'
                   : ' · добавьте бота **RustInfo Alerts** (не основного), выберите сервер, Сохранить')
