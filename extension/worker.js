@@ -1,12 +1,12 @@
 /**
- * Продакшен: false. Локальная разработка: true (бот на localhost:8080, дашборд localhost:3000).
+ * Продакшен: false. Локальная разработка: true (панель на localhost:8090).
  * На странице логина можно добавить ?loc=local — тоже включит локальный режим.
  */
 const USE_LOCAL_DEV = false;
-const AUTH_BASE_PROD = "https://bot.rustinfo.online";
-const AUTH_BASE_LOCAL = "http://localhost:8080";
-const DASHBOARD_LOCAL = "http://localhost:3000/dashboard.html";
-const DASHBOARD_PROD = "https://rustinfo.online/dashboard.html";
+const AUTH_BASE_PROD = "https://panel.rustinfo.online/api";
+const AUTH_BASE_LOCAL = "http://localhost:8090/api";
+const DASHBOARD_LOCAL = "http://localhost:8090/";
+const DASHBOARD_PROD = "https://panel.rustinfo.online/";
 const isLocalMode = (function () {
     if (typeof window === "undefined") return false;
     if (/[?&]loc=local\b/.test(window.location.search || "")) return true;
@@ -136,7 +136,7 @@ setInterval(installInterceptor, delay);
 (function interceptFetch() {
     var origFetch = window.fetch;
     if (!origFetch) return;
-    var ourHost = isLocalMode ? "localhost:8080" : "bot.rustinfo.online";
+    var ourHost = isLocalMode ? "localhost:8090" : "panel.rustinfo.online";
     window.fetch = function(url, opts) {
         var urlStr = (typeof url === "string" ? url : (url && url.url)) || "";
         if (urlStr && urlStr.indexOf(ourHost) >= 0) return origFetch.apply(this, arguments);
@@ -168,7 +168,7 @@ setInterval(installInterceptor, delay);
 (function interceptXHR() {
     var OrigXHR = window.XMLHttpRequest;
     if (!OrigXHR) return;
-    var ourHost = isLocalMode ? "localhost:8080" : "bot.rustinfo.online";
+    var ourHost = isLocalMode ? "localhost:8090" : "panel.rustinfo.online";
     window.XMLHttpRequest = function() {
         var xhr = new OrigXHR();
         var xhrUrl = "";

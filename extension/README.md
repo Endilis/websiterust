@@ -75,13 +75,13 @@ window.location.href = `${AUTH_BASE}/auth?token=<token>&steamId=<steam_id>`
 
 ## Режимы
 
-- **Prod** (`USE_LOCAL_DEV = false`): обращается к `https://bot.rustinfo.online`,
-  редирект на `https://rustinfo.online/dashboard.html`.
+- **Prod** (`USE_LOCAL_DEV = false`): обращается к `https://panel.rustinfo.online/api`,
+  редирект на `https://panel.rustinfo.online/`.
 - **Local dev** (`USE_LOCAL_DEV = true` или добавить `?loc=local` к URL логина):
-  `http://localhost:8080` + `http://localhost:3000/dashboard.html`.
+  `http://localhost:8090/api` + `http://localhost:8090/`.
 
 ## Публикация / сборка
 
 Никаких билд-скриптов; папка загружается как есть:
-- Chrome Web Store (текущая версия 1.0) — для пользователей.
+- Chrome Web Store (загружать `rustinfo-bot-extension-1.0.2.zip`) — для пользователей.
 - Developer mode → Load unpacked (указать эту папку) — для локальной отладки.

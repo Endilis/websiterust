@@ -1,7 +1,7 @@
 {
    "action": {
       "default_icon": "icons/rustinfo_256.png",
-      "default_title": "LOGIN to rustInfo.online"
+      "default_title": "LOGIN to RustInfo Panel"
    },
    "background": {
       "service_worker": "background.js"
@@ -12,6 +12,7 @@
    }, {
       "js": [ "dashboard-bridge.js" ],
       "matches": [
+         "https://panel.rustinfo.online/*",
          "https://rustinfo.online/*",
          "https://www.rustinfo.online/*",
          "http://localhost/*",
@@ -31,9 +32,10 @@
    "manifest_version": 3,
    "name": "RustInfo Bot",
    "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "1.0.1",
+   "version": "1.0.2",
    "externally_connectable": {
       "matches": [
+         "https://panel.rustinfo.online/*",
          "https://rustinfo.online/*",
          "https://www.rustinfo.online/*",
          "http://localhost/*",
@@ -45,6 +47,7 @@
       "resources": [ "worker.js" ]
    }, {
       "matches": [
+         "https://panel.rustinfo.online/*",
          "https://rustinfo.online/*",
          "https://www.rustinfo.online/*",
          "http://localhost/*",

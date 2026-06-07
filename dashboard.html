@@ -2,6 +2,11 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8"/>
+  <script>
+    if (location.hostname === "rustinfo.online") {
+      location.replace("https://panel.rustinfo.online/" + location.search + location.hash);
+    }
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
   <meta http-equiv="Pragma" content="no-cache"/>
@@ -2299,6 +2304,181 @@
     }
     .admin-stat-cores-labels > span { flex: 1; text-align: center; min-width: 6px; }
 
+    .admin-host-wrap { display: flex; flex-direction: column; gap: 16px; }
+    .admin-host-charts {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    @media (min-width: 960px) {
+      .admin-host-charts--split {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .admin-host-chart-card {
+      padding: 12px 14px 10px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.025);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
+    .admin-host-chart-card--wide { grid-column: 1 / -1; }
+    .admin-host-chart-card__head {
+      display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+      flex-wrap: wrap;
+    }
+    .admin-host-chart-card__title {
+      margin: 0;
+      font-size: .78rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .05em;
+      color: var(--text);
+    }
+    .admin-host-chart-card__meta {
+      font-size: .72rem; color: var(--text2); font-variant-numeric: tabular-nums;
+    }
+    .admin-host-chart-svg {
+      width: 100%; height: auto; max-height: 220px;
+      display: block;
+      border-radius: 8px;
+      background: rgba(0,0,0,.18);
+    }
+    .admin-host-chart-grid {
+      stroke: rgba(255,255,255,.06);
+      stroke-width: 1;
+    }
+    .admin-host-chart-axis {
+      fill: var(--text2);
+      font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    .admin-host-chart-legend {
+      display: flex; flex-wrap: wrap; gap: 6px 12px;
+      font-size: .68rem; color: var(--text2);
+    }
+    .admin-host-chart-legend__item {
+      display: inline-flex; align-items: center; gap: 5px;
+      max-width: 100%;
+    }
+    .admin-host-chart-legend__item > i {
+      width: 10px; height: 3px; border-radius: 2px; flex-shrink: 0;
+    }
+    .admin-host-core-table {
+      display: flex; flex-direction: column; gap: 6px;
+      max-height: 320px; overflow: auto;
+    }
+    .admin-host-core-row {
+      display: grid;
+      grid-template-columns: 52px 1fr 52px auto;
+      align-items: center; gap: 8px;
+      font-size: .74rem; font-variant-numeric: tabular-nums;
+    }
+    .admin-host-core-row__id { color: var(--text2); font-weight: 600; }
+    .admin-host-core-row__bar {
+      position: relative; height: 8px;
+      background: rgba(255,255,255,.06);
+      border-radius: 4px; overflow: hidden;
+    }
+    .admin-host-core-row__bar > i {
+      display: block; height: 100%; border-radius: 4px;
+      background: #34d399; transition: width .25s;
+    }
+    .admin-host-core-row.admin-stat--warn .admin-host-core-row__bar > i { background: #fbbf24; }
+    .admin-host-core-row.admin-stat--bad .admin-host-core-row__bar > i { background: #ef4444; }
+    .admin-host-core-row__val { text-align: right; color: var(--text); font-weight: 700; white-space: nowrap; }
+    .admin-host-core-row__freq { color: var(--text2); font-size: .68rem; white-space: nowrap; }
+    .admin-host-core-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+      gap: 8px;
+    }
+    .admin-host-core-chip {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px; padding: 8px 6px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+      min-width: 0;
+    }
+    .admin-host-core-chip__id {
+      font-size: .66rem; font-weight: 700; color: var(--text2);
+      letter-spacing: .03em;
+    }
+    .admin-host-core-chip__val {
+      font-size: .95rem; font-weight: 800; font-variant-numeric: tabular-nums;
+      color: var(--text); line-height: 1.1;
+    }
+    .admin-host-core-chip__freq {
+      font-size: .62rem; color: var(--text2); font-variant-numeric: tabular-nums;
+    }
+    .admin-host-core-chip.admin-stat--warn { border-color: rgba(251,191,36,.35); }
+    .admin-host-core-chip.admin-stat--bad { border-color: rgba(239,68,68,.4); }
+    .admin-host-heatmap-wrap { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .admin-host-heatmap-scale {
+      display: flex; align-items: center; gap: 8px;
+      font-size: .66rem; color: var(--text2);
+    }
+    .admin-host-heatmap-scale__bar {
+      flex: 1; max-width: 180px; height: 8px; border-radius: 4px;
+      background: linear-gradient(90deg, #3b82f6 0%, #34d399 35%, #fbbf24 75%, #ef4444 100%);
+    }
+    .admin-host-heatmap-scroll {
+      overflow-x: auto; max-width: 100%;
+      padding-bottom: 2px;
+    }
+    .admin-host-heatmap { display: flex; flex-direction: column; gap: 4px; min-width: min-content; }
+    .admin-host-heatmap__row {
+      display: grid;
+      grid-template-columns: 58px minmax(120px, 1fr);
+      gap: 8px; align-items: center;
+    }
+    .admin-host-heatmap__label {
+      font-size: .68rem; font-weight: 600; color: var(--text2);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .admin-host-heatmap__track {
+      display: flex; flex-wrap: nowrap; gap: 2px; align-items: center;
+    }
+    .admin-host-heatmap__cell {
+      flex: 0 0 11px;
+      width: 11px; height: 15px;
+      border-radius: 2px;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.12);
+    }
+    .admin-host-heatmap-hint {
+      font-size: .66rem; color: var(--text2);
+    }
+    .admin-host-temp-table {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .admin-host-temp-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: center; gap: 10px;
+      font-size: .78rem;
+    }
+    .admin-host-temp-row__label {
+      color: var(--text2);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .admin-host-temp-row__bar {
+      width: 88px; height: 6px;
+      background: rgba(255,255,255,.06);
+      border-radius: 3px; overflow: hidden;
+    }
+    .admin-host-temp-row__bar > i {
+      display: block; height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, #34d399, #fbbf24 70%, #ef4444);
+    }
+    .admin-host-temp-row__val {
+      font-weight: 700; font-variant-numeric: tabular-nums;
+      min-width: 52px; text-align: right;
+    }
+    .admin-host-temp-row.admin-stat--warn .admin-host-temp-row__val { color: #fbbf24; }
+    .admin-host-temp-row.admin-stat--bad .admin-host-temp-row__val { color: #ef4444; }
+
     .admin-host-header {
       display: flex; align-items: center; justify-content: space-between;
       flex-wrap: wrap; gap: 8px;
@@ -2423,11 +2603,11 @@
     /* === Admin tabs === */
     .admin-tabs-nav {
       display: flex;
-      overflow-x: auto;
+      flex-wrap: wrap;
+      overflow-x: visible;
       gap: 2px;
       padding: 0 24px;
       border-bottom: 1px solid var(--border);
-      scrollbar-width: none;
     }
     .admin-tabs-nav::-webkit-scrollbar { display: none; }
     .admin-tab-btn {
@@ -3631,7 +3811,7 @@
 <body class="dashboard-page">
 
 <nav>
-  <a class="nav-logo" href="index.html">
+  <a class="nav-logo" href="/">
     <img src="images/icon.png" alt="RustInfo"/>
     RustInfo Bot
   </a>
@@ -4502,6 +4682,7 @@
               <button class="admin-tab-btn" data-admin-tab="commands" role="tab" aria-selected="false" data-i18n="admin.tab.commands">Команды</button>
               <button class="admin-tab-btn" data-admin-tab="newdb" role="tab" aria-selected="false" data-i18n="admin.tab.newdb">Новая БД</button>
               <button class="admin-tab-btn" data-admin-tab="guilds" role="tab" aria-selected="false" data-i18n="admin.tab.guilds">Гильдии</button>
+              <button class="admin-tab-btn" data-admin-tab="tickets" role="tab" aria-selected="false" data-i18n="admin.tab.tickets">🎫 Тикеты</button>
               <button class="admin-tab-btn" data-admin-tab="coins" role="tab" aria-selected="false">🪙 Коины</button>
               <button class="admin-tab-btn" data-admin-tab="embed" role="tab" aria-selected="false" data-i18n="admin.tab.embed">Embed</button>
               <button class="admin-tab-btn" data-admin-tab="olddb" role="tab" aria-selected="false" data-i18n="admin.tab.olddb">Старая БД</button>
@@ -4868,6 +5049,99 @@
                 </section>
               </div>
 
+              <!-- ── TAB: Тикеты ── -->
+              <div class="admin-tab-panel" data-admin-tab-panel="tickets">
+                <section class="admin-panel-section">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text">🎫 Тикет-бот · настройки</span>
+                  </h3>
+                  <p class="muted" style="font-size:.82rem;margin:0 0 12px">
+                    Отдельный Discord-бот для support-тикетов. Доступно только администратору панели.
+                  </p>
+                  <div id="admin-tickets-status" class="admin-embed-status" style="margin-bottom:12px" aria-live="polite"></div>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
+                    <a id="admin-tickets-invite" href="#" target="_blank" rel="noopener" class="dash-btn dash-btn--sm" style="display:none">Пригласить бота</a>
+                    <span id="admin-tickets-bot-tag" class="muted" style="font-size:.82rem"></span>
+                  </div>
+                  <div class="admin-panel-table-wrap" style="margin-bottom:14px">
+                    <table class="admin-panel-table">
+                      <tbody id="admin-tickets-stats-body">
+                        <tr><td colspan="2" class="muted">Статистика загружается…</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <form id="admin-tickets-form" style="display:grid;gap:12px;max-width:720px">
+                    <label style="display:flex;align-items:center;gap:8px;font-size:.88rem;cursor:pointer">
+                      <input type="checkbox" id="admin-tickets-enabled" />
+                      <span>Включить тикет-бот</span>
+                    </label>
+                    <div style="display:grid;gap:6px">
+                      <label for="admin-tickets-guild" style="font-size:.75rem;color:var(--muted)">Guild ID (support-сервер)</label>
+                      <input type="text" id="admin-tickets-guild" class="dash-select" placeholder="Discord Guild ID" />
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                      <div style="display:grid;gap:6px">
+                        <label for="admin-tickets-panel-channel" style="font-size:.75rem;color:var(--muted)">Канал панели</label>
+                        <select id="admin-tickets-panel-channel" class="dash-select"><option value="">—</option></select>
+                      </div>
+                      <div style="display:grid;gap:6px">
+                        <label for="admin-tickets-category" style="font-size:.75rem;color:var(--muted)">Категория тикетов</label>
+                        <select id="admin-tickets-category" class="dash-select"><option value="">—</option></select>
+                      </div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                      <div style="display:grid;gap:6px">
+                        <label for="admin-tickets-log-channel" style="font-size:.75rem;color:var(--muted)">Log-канал</label>
+                        <select id="admin-tickets-log-channel" class="dash-select"><option value="">—</option></select>
+                      </div>
+                      <div style="display:grid;gap:6px">
+                        <label for="admin-tickets-ratings-channel" style="font-size:.75rem;color:var(--muted)">Канал оценок</label>
+                        <select id="admin-tickets-ratings-channel" class="dash-select"><option value="">—</option></select>
+                      </div>
+                    </div>
+                    <div style="display:grid;gap:6px">
+                      <label for="admin-tickets-staff-roles" style="font-size:.75rem;color:var(--muted)">Staff-роли (Ctrl+клик для нескольких)</label>
+                      <select id="admin-tickets-staff-roles" class="dash-select" multiple size="5"></select>
+                    </div>
+                    <div style="display:grid;gap:6px">
+                      <label for="admin-tickets-panel-title" style="font-size:.75rem;color:var(--muted)">Заголовок панели</label>
+                      <input type="text" id="admin-tickets-panel-title" class="dash-select" placeholder="RustInfo Support" />
+                    </div>
+                    <div style="display:grid;gap:6px">
+                      <label for="admin-tickets-panel-desc" style="font-size:.75rem;color:var(--muted)">Описание панели</label>
+                      <textarea id="admin-tickets-panel-desc" class="dash-select" rows="3" placeholder="Нажмите кнопку, чтобы создать тикет…"></textarea>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+                      <div style="display:grid;gap:6px">
+                        <label for="admin-tickets-color" style="font-size:.75rem;color:var(--muted)">Цвет embed</label>
+                        <input type="text" id="admin-tickets-color" class="dash-select" placeholder="#5eb131" />
+                      </div>
+                      <div style="display:grid;gap:6px">
+                        <label for="admin-tickets-lang" style="font-size:.75rem;color:var(--muted)">Язык бота</label>
+                        <select id="admin-tickets-lang" class="dash-select">
+                          <option value="en">English</option>
+                          <option value="de">Deutsch</option>
+                        </select>
+                      </div>
+                      <div style="display:grid;gap:6px">
+                        <label for="admin-tickets-max" style="font-size:.75rem;color:var(--muted)">Макс. тикетов на юзера</label>
+                        <input type="number" id="admin-tickets-max" class="dash-select" min="0" max="10" value="2" />
+                      </div>
+                    </div>
+                    <label style="display:flex;align-items:center;gap:8px;font-size:.88rem;cursor:pointer">
+                      <input type="checkbox" id="admin-tickets-ask-questions" checked />
+                      <span>Спрашивать тему и описание при создании</span>
+                    </label>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+                      <button type="submit" class="dash-btn" id="admin-tickets-save-btn">Сохранить</button>
+                      <button type="button" class="dash-btn dash-btn--sm" id="admin-tickets-panel-btn">Опубликовать панель</button>
+                      <button type="button" class="dash-btn dash-btn--sm" id="admin-tickets-close-all-btn" style="color:#ff6b6b;border-color:rgba(255,80,80,.35)">Закрыть все открытые</button>
+                      <button type="button" class="dash-btn dash-btn--sm" id="admin-tickets-refresh-btn">Обновить</button>
+                    </div>
+                  </form>
+                </section>
+              </div>
+
               <!-- ── TAB: Старая БД ── -->
               <div class="admin-tab-panel" data-admin-tab-panel="olddb">
                 <section class="admin-panel-section">
@@ -5026,8 +5300,8 @@
     if (locked) locked.style.display = canUse ? 'none' : 'block';
   }
   const isLocal = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-  const REDIRECT_URI = isLocal ? 'http://localhost:8080/discord/callback' : 'https://bot.rustinfo.online/discord/callback';
-  const API_BASE = isLocal ? 'http://localhost:8080' : 'https://bot.rustinfo.online';
+  const REDIRECT_URI = `${window.location.origin}/discord/callback`;
+  const API_BASE = '/api';
   const OAUTH_URL = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify%20guilds`;
 
   const INVITE_BOT_URL = 'https://discord.com/oauth2/authorize?client_id=1334943377124495421&permissions=8&integration_type=0&scope=bot';
@@ -5364,6 +5638,7 @@
       'admin.tab.commands': 'Команды',
       'admin.tab.newdb':    'Новая БД',
       'admin.tab.guilds':   'Гильдии',
+      'admin.tab.tickets':  '🎫 Тикеты',
       'admin.tab.embed':    'Embed',
       'admin.tab.olddb':   '🗄 Старая БД',
       'admin.embed.title': 'Discord Embed · отправка',
@@ -5843,6 +6118,7 @@
       'admin.tab.commands': 'Commands',
       'admin.tab.newdb':    'New DB',
       'admin.tab.guilds':   'Guilds',
+      'admin.tab.tickets':  '🎫 Tickets',
       'admin.tab.embed':    'Embed',
       'admin.tab.olddb':   '🗄 Old DB',
       'admin.embed.title': 'Discord Embed · send',
@@ -6055,6 +6331,15 @@
   let _dashDiscordId = null;
   let _adminPanelPollTimer = null;
   let _adminPanelLoading = false;
+  let _hostMetricsHistory = [];
+  let _hostMetricsLastHostname = null;
+  let _hostMetricsPollTimer = null;
+  const HOST_METRICS_POLL_MS = 4000;
+  const HOST_METRICS_HISTORY_MAX = 120;
+  const HOST_CORE_CHART_COLORS = [
+    '#60a5fa', '#34d399', '#fbbf24', '#f472b6', '#a78bfa', '#fb923c',
+    '#22d3ee', '#4ade80', '#facc15', '#e879f9', '#38bdf8', '#86efac',
+  ];
   let _adminGuildsCache = [];
   let _adminToolbarBound = false;
   let _adminSiteDbCache = [];
@@ -6078,6 +6363,542 @@
       clearInterval(_adminPanelPollTimer);
       _adminPanelPollTimer = null;
     }
+  }
+
+  function clearAdminHostMetricsPoll() {
+    if (_hostMetricsPollTimer) {
+      clearInterval(_hostMetricsPollTimer);
+      _hostMetricsPollTimer = null;
+    }
+  }
+
+  function isAdminHostTabActive() {
+    const panel = document.querySelector('.admin-tab-panel[data-admin-tab-panel="host"]');
+    return !!(panel && panel.classList.contains('is-active'));
+  }
+
+  function hostCoreChartColor(i) {
+    return HOST_CORE_CHART_COLORS[i % HOST_CORE_CHART_COLORS.length];
+  }
+
+  function hostTempChartColor(i) {
+    const hues = [8, 28, 205, 275, 145, 42, 320, 185];
+    return `hsl(${hues[i % hues.length]}, 72%, 58%)`;
+  }
+
+  function normalizeHostTemps(h) {
+    const list = Array.isArray(h?.temperatures) ? h.temperatures : [];
+    if (list.length) {
+      return list.map(t => ({
+        id: String(t.id || t.label || 'temp'),
+        label: String(t.label || t.id || 'temp'),
+        c: Number(t.c),
+        high: t.high != null ? Number(t.high) : null,
+        critical: t.critical != null ? Number(t.critical) : null,
+      })).filter(t => isFinite(t.c));
+    }
+    if (h?.cpu_temp_c != null && isFinite(Number(h.cpu_temp_c))) {
+      return [{ id: 'cpu', label: 'CPU', c: Number(h.cpu_temp_c), high: null, critical: null }];
+    }
+    return [];
+  }
+
+  function pushHostMetricsHistory(h) {
+    if (!h || h.error) return;
+    const hostname = h.hostname || '';
+    if (_hostMetricsLastHostname != null && hostname && _hostMetricsLastHostname !== hostname) {
+      _hostMetricsHistory = [];
+    }
+    if (hostname) _hostMetricsLastHostname = hostname;
+    const cores = Array.isArray(h.cpu_per_core) ? h.cpu_per_core.map(v => Number(v) || 0) : [];
+    const temps = normalizeHostTemps(h);
+    const tempMap = {};
+    const tempLabels = {};
+    for (const t of temps) {
+      tempMap[t.id] = t.c;
+      tempLabels[t.id] = t.label;
+    }
+    _hostMetricsHistory.push({
+      ts: Number(h.ts) || Date.now() / 1000,
+      cpu_total: Number(h.cpu_percent) || 0,
+      cores,
+      temps: tempMap,
+      temp_labels: tempLabels,
+    });
+    if (_hostMetricsHistory.length > HOST_METRICS_HISTORY_MAX) {
+      _hostMetricsHistory.splice(0, _hostMetricsHistory.length - HOST_METRICS_HISTORY_MAX);
+    }
+  }
+
+  function formatHostHistorySpan(seconds) {
+    const sec = Math.max(0, Math.round(Number(seconds) || 0));
+    if (sec < 60) return `${sec}${_lang === 'en' ? 's' : 'с'}`;
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return s ? `${m}${_lang === 'en' ? 'm' : 'м'} ${s}${_lang === 'en' ? 's' : 'с'}` : `${m}${_lang === 'en' ? 'm' : 'м'}`;
+  }
+
+  function hostHeatColorCpu(pct) {
+    const v = Math.max(0, Math.min(100, Number(pct) || 0));
+    if (v >= 90) return '#ef4444';
+    if (v >= 70) return '#fbbf24';
+    if (v >= 35) return '#34d399';
+    return '#3b82f6';
+  }
+
+  function hostHeatColorTemp(c) {
+    const v = Number(c) || 0;
+    if (v >= 85) return '#ef4444';
+    if (v >= 70) return '#fbbf24';
+    if (v >= 50) return '#34d399';
+    return '#3b82f6';
+  }
+
+  function shortTempLabel(label) {
+    const l = String(label || '');
+    if (/package/i.test(l)) return 'Pkg';
+    const m = l.match(/core[\s_]*(\d+)/i);
+    if (m) return `C${m[1]}`;
+    if (l.length > 12) return `${l.slice(0, 11)}…`;
+    return l;
+  }
+
+  function buildHostHeatmapHtml(rows, opts = {}) {
+    if (!rows.length) return '';
+    const sampleCount = Math.max(...rows.map(r => r.values.length), 0);
+    if (!sampleCount) return '';
+    const colorFn = opts.colorFn || hostHeatColorCpu;
+    const titleFn = opts.titleFn || ((row, v) => `${row.label}: ${v}`);
+    const scaleLow = opts.scaleLow ?? '0%';
+    const scaleHigh = opts.scaleHigh ?? '100%';
+
+    const body = rows.map(row => {
+      const cells = row.values.map((v, idx) => {
+        const raw = Number(v);
+        if (!isFinite(raw)) {
+          return '<span class="admin-host-heatmap__cell" style="background:rgba(255,255,255,.04)"></span>';
+        }
+        const bg = colorFn(raw);
+        const title = titleFn(row, raw, idx);
+        return `<span class="admin-host-heatmap__cell" style="background:${bg}" title="${escapeHtml(title)}"></span>`;
+      }).join('');
+      return `<div class="admin-host-heatmap__row">
+        <span class="admin-host-heatmap__label" title="${escapeHtml(row.label)}">${escapeHtml(row.shortLabel || row.label)}</span>
+        <div class="admin-host-heatmap__track">${cells}</div>
+      </div>`;
+    }).join('');
+
+    return `<div class="admin-host-heatmap-wrap">
+      <div class="admin-host-heatmap-scale">
+        <span>${escapeHtml(scaleLow)}</span>
+        <span class="admin-host-heatmap-scale__bar" aria-hidden="true"></span>
+        <span>${escapeHtml(scaleHigh)}</span>
+      </div>
+      <div class="admin-host-heatmap-scroll"><div class="admin-host-heatmap">${body}</div></div>
+      <div class="admin-host-heatmap-hint">${escapeHtml(opts.hint || '')}</div>
+    </div>`;
+  }
+
+  function buildHostCpuHeatmapFromHistory() {
+    if (!_hostMetricsHistory.length) return '';
+    const coreCount = Math.max(...hostMetricsHistoryCoreCounts(), 0);
+    if (!coreCount) return '';
+    const rows = [];
+    for (let c = 0; c < coreCount; c++) {
+      rows.push({
+        label: `CPU ${c}`,
+        shortLabel: `#${c}`,
+        values: _hostMetricsHistory.map(p => p.cores[c] ?? 0),
+      });
+    }
+    return buildHostHeatmapHtml(rows, {
+      colorFn: hostHeatColorCpu,
+      titleFn: (row, v) => `${row.label}: ${Number(v).toFixed(1)}%`,
+      scaleLow: '0%',
+      scaleHigh: '100%',
+      hint: _lang === 'en'
+        ? 'Each cell is one sample · hover for value · scroll horizontally for history'
+        : 'Каждая ячейка — один замер · наведите для значения · прокрутка по истории',
+    });
+  }
+
+  function buildHostTempHeatmapFromHistory() {
+    const tempSeries = buildTempSeriesFromHistory();
+    if (!tempSeries.length) return '';
+    const rows = tempSeries.map(s => ({
+      label: s.label,
+      shortLabel: shortTempLabel(s.label),
+      values: s.values.map(v => (isFinite(v) ? v : null)),
+    }));
+    let tMin = 100;
+    let tMax = 20;
+    for (const row of rows) {
+      for (const v of row.values) {
+        if (isFinite(v)) {
+          tMin = Math.min(tMin, v);
+          tMax = Math.max(tMax, v);
+        }
+      }
+    }
+    return buildHostHeatmapHtml(rows, {
+      colorFn: hostHeatColorTemp,
+      titleFn: (row, v) => `${row.label}: ${Number(v).toFixed(1)}°C`,
+      scaleLow: `${Math.floor(tMin)}°C`,
+      scaleHigh: `${Math.ceil(tMax)}°C`,
+      hint: _lang === 'en'
+        ? 'Rows are sensors · left = older, right = newer'
+        : 'Строки — датчики · слева старее, справа новее',
+    });
+  }
+
+  function buildHostTotalCpuLineFromHistory() {
+    if (_hostMetricsHistory.length < 2) return '';
+    const series = [{
+      id: 'total',
+      label: _lang === 'en' ? 'Total avg' : 'Среднее',
+      color: '#f97316',
+      width: 2.6,
+      opacity: 1,
+      values: _hostMetricsHistory.map(p => p.cpu_total),
+    }];
+    return buildHostLineChartSvg(series, {
+      ymin: 0,
+      ymax: 100,
+      title: 'CPU total',
+      historySeconds: hostMetricsHistorySeconds(),
+      height: 160,
+    });
+  }
+
+  function buildHostLineChartSvg(series, opts = {}) {
+    const width = 800;
+    const height = opts.height || 220;
+    const pad = { top: 16, right: 12, bottom: 28, left: 44 };
+    const plotW = width - pad.left - pad.right;
+    const plotH = height - pad.top - pad.bottom;
+    const ymin = opts.ymin ?? 0;
+    let ymax = opts.ymax;
+    if (ymax == null) {
+      ymax = 10;
+      for (const s of series) {
+        for (const v of s.values) {
+          if (isFinite(v)) ymax = Math.max(ymax, Number(v));
+        }
+      }
+      ymax = Math.ceil(ymax / 10) * 10 + 5;
+    }
+    const span = Math.max(0, ymax - ymin) || 1;
+    const pointCount = Math.max(...series.map(s => s.values.length), 1);
+    const xAt = (i) => pad.left + (pointCount <= 1 ? plotW / 2 : (i / (pointCount - 1)) * plotW);
+    const yAt = (v) => {
+      const clamped = Math.max(ymin, Math.min(ymax, Number(v) || 0));
+      return pad.top + plotH - ((clamped - ymin) / span) * plotH;
+    };
+
+    let grid = '';
+    const gridLines = 4;
+    for (let g = 0; g <= gridLines; g++) {
+      const y = pad.top + (plotH * g) / gridLines;
+      const val = ymax - (span * g) / gridLines;
+      grid += `<line x1="${pad.left}" y1="${y}" x2="${width - pad.right}" y2="${y}" class="admin-host-chart-grid"/>`;
+      grid += `<text x="${pad.left - 6}" y="${y + 4}" class="admin-host-chart-axis" text-anchor="end">${val.toFixed(0)}</text>`;
+    }
+
+    let paths = '';
+    for (const s of series) {
+      if (!s.values.length) continue;
+      const pts = s.values
+        .map((v, i) => (isFinite(v) ? `${xAt(i).toFixed(1)},${yAt(v).toFixed(1)}` : null))
+        .filter(Boolean)
+        .join(' ');
+      if (!pts) continue;
+      paths += `<polyline fill="none" stroke="${s.color}" stroke-width="${s.width || 1.8}" stroke-linejoin="round" stroke-linecap="round" points="${pts}" opacity="${s.opacity ?? 0.92}"/>`;
+    }
+
+    const ageLabel = opts.historySeconds
+      ? `${_lang === 'en' ? 'Window' : 'Окно'}: ${formatHostHistorySpan(opts.historySeconds)}`
+      : '';
+
+    return `<svg class="admin-host-chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${escapeHtml(opts.title || '')}">
+      ${grid}
+      ${paths}
+      <text x="${pad.left}" y="${height - 6}" class="admin-host-chart-axis">${escapeHtml(ageLabel)}</text>
+      <text x="${width - pad.right}" y="${height - 6}" class="admin-host-chart-axis" text-anchor="end">${_lang === 'en' ? 'now' : 'сейчас'}</text>
+    </svg>`;
+  }
+
+  function renderHostChartLegend(items) {
+    if (!items.length) return '';
+    return `<div class="admin-host-chart-legend">${items.map(it =>
+      `<span class="admin-host-chart-legend__item"><i style="background:${it.color}"></i>${escapeHtml(it.label)}</span>`
+    ).join('')}</div>`;
+  }
+
+  function buildCpuSeriesFromHistory() {
+    if (!_hostMetricsHistory.length) return [];
+    const coreCount = Math.max(...hostMetricsHistoryCoreCounts(), 0);
+    const series = [];
+    for (let c = 0; c < coreCount; c++) {
+      series.push({
+        id: `core-${c}`,
+        label: `CPU ${c}`,
+        color: hostCoreChartColor(c),
+        values: _hostMetricsHistory.map(p => p.cores[c] ?? 0),
+      });
+    }
+    series.push({
+      id: 'total',
+      label: _lang === 'en' ? 'Total avg' : 'Среднее',
+      color: '#f97316',
+      width: 2.4,
+      opacity: 1,
+      values: _hostMetricsHistory.map(p => p.cpu_total),
+    });
+    return series;
+  }
+
+  function hostMetricsHistoryCoreCounts() {
+    return _hostMetricsHistory.map(p => p.cores.length);
+  }
+
+  function buildTempSeriesFromHistory() {
+    const ids = [];
+    const labels = {};
+    for (const point of _hostMetricsHistory) {
+      for (const [id, label] of Object.entries(point.temp_labels || {})) {
+        if (!labels[id]) {
+          labels[id] = label;
+          ids.push(id);
+        }
+      }
+      for (const id of Object.keys(point.temps || {})) {
+        if (!labels[id]) {
+          labels[id] = id;
+          ids.push(id);
+        }
+      }
+    }
+    return ids.map((id, i) => ({
+      id,
+      label: labels[id] || id,
+      color: hostTempChartColor(i),
+      values: _hostMetricsHistory.map(p => {
+        const v = p.temps[id];
+        return v == null ? null : Number(v);
+      }),
+    })).filter(s => s.values.some(v => isFinite(v)));
+  }
+
+  function hostMetricsHistorySeconds() {
+    if (_hostMetricsHistory.length < 2) return 0;
+    const first = _hostMetricsHistory[0].ts;
+    const last = _hostMetricsHistory[_hostMetricsHistory.length - 1].ts;
+    return Math.max(0, last - first);
+  }
+
+  function renderHostCoreSnapshot(h) {
+    const cores = Array.isArray(h.cpu_per_core) ? h.cpu_per_core : [];
+    const freqs = Array.isArray(h.cpu_freq_mhz) ? h.cpu_freq_mhz : [];
+    if (!cores.length) return `<div class="muted">${_lang === 'en' ? 'No core data' : 'Нет данных по ядрам'}</div>`;
+    const chips = cores.map((v, i) => {
+      const pct = Math.max(0, Math.min(100, Number(v) || 0));
+      const cls = pct >= 90 ? 'admin-stat--bad' : pct >= 70 ? 'admin-stat--warn' : 'admin-stat--ok';
+      const freq = freqs[i];
+      const freqTxt = freq ? `${Math.round(freq)} MHz` : '';
+      return `<div class="admin-host-core-chip ${cls}">
+        <span class="admin-host-core-chip__id">CPU ${i}</span>
+        <span class="admin-host-core-chip__val">${pct.toFixed(1)}%</span>
+        ${freqTxt ? `<span class="admin-host-core-chip__freq">${freqTxt}</span>` : ''}
+      </div>`;
+    }).join('');
+    return `<div class="admin-host-core-grid">${chips}</div>`;
+  }
+
+  function renderHostTempSnapshot(h) {
+    const temps = normalizeHostTemps(h);
+    if (!temps.length) {
+      return `<div class="muted">${_lang === 'en' ? 'No temperature sensors' : 'Датчики температуры недоступны'}</div>`;
+    }
+    const maxScale = Math.max(100, ...temps.map(t => Number(t.critical) || Number(t.high) || (Number(t.c) + 10)));
+    const rows = temps.map(t => {
+      const val = Number(t.c);
+      const cls = val >= 80 ? 'admin-stat--bad' : val >= 65 ? 'admin-stat--warn' : '';
+      const pct = Math.max(0, Math.min(100, (val / maxScale) * 100));
+      return `<div class="admin-host-temp-row ${cls}">
+        <span class="admin-host-temp-row__label" title="${escapeHtml(t.label)}">${escapeHtml(t.label)}</span>
+        <div class="admin-host-temp-row__bar"><i style="width:${pct}%"></i></div>
+        <span class="admin-host-temp-row__val">${val.toFixed(1)}°C</span>
+      </div>`;
+    }).join('');
+    return `<div class="admin-host-temp-table">${rows}</div>`;
+  }
+
+  function renderAdminHostChartsBlock(h) {
+    pushHostMetricsHistory(h);
+    const histSec = hostMetricsHistorySeconds();
+    const histMeta = _hostMetricsHistory.length > 1
+      ? `${_hostMetricsHistory.length} ${_lang === 'en' ? 'samples' : 'замеров'} · ${formatHostHistorySpan(histSec)}`
+      : (_lang === 'en' ? 'Collecting… refresh or wait a few seconds' : 'Сбор данных… подождите несколько секунд');
+
+    const cpuHeatmap = buildHostCpuHeatmapFromHistory();
+    const cpuTotalLine = buildHostTotalCpuLineFromHistory();
+    const tempHeatmap = buildHostTempHeatmapFromHistory();
+
+    return `
+      <div class="admin-host-charts admin-host-charts--split">
+        <section class="admin-host-chart-card admin-host-chart-card--wide">
+          <div class="admin-host-chart-card__head">
+            <h4 class="admin-host-chart-card__title">${_lang === 'en' ? 'CPU load · all cores' : 'Загрузка CPU · все ядра'}</h4>
+            <span class="admin-host-chart-card__meta">${escapeHtml(histMeta)}</span>
+          </div>
+          ${cpuHeatmap || `<div class="muted">${_lang === 'en' ? 'Collecting samples…' : 'Сбор замеров…'}</div>`}
+          ${cpuTotalLine ? `<div class="admin-host-heatmap-hint" style="margin-top:4px">${_lang === 'en' ? 'Average CPU load' : 'Средняя загрузка CPU'}</div>${cpuTotalLine}` : ''}
+        </section>
+        <section class="admin-host-chart-card">
+          <div class="admin-host-chart-card__head">
+            <h4 class="admin-host-chart-card__title">${_lang === 'en' ? 'Cores now' : 'Ядра сейчас'}</h4>
+            <span class="admin-host-chart-card__meta">${Array.isArray(h.cpu_per_core) ? h.cpu_per_core.length : 0} CPU</span>
+          </div>
+          ${renderHostCoreSnapshot(h)}
+        </section>
+        <section class="admin-host-chart-card">
+          <div class="admin-host-chart-card__head">
+            <h4 class="admin-host-chart-card__title">${_lang === 'en' ? 'Temperatures now' : 'Температуры сейчас'}</h4>
+            <span class="admin-host-chart-card__meta">${normalizeHostTemps(h).length} ${_lang === 'en' ? 'sensors' : 'датч.'}</span>
+          </div>
+          ${renderHostTempSnapshot(h)}
+        </section>
+        <section class="admin-host-chart-card admin-host-chart-card--wide">
+          <div class="admin-host-chart-card__head">
+            <h4 class="admin-host-chart-card__title">${_lang === 'en' ? 'Temperature history' : 'История температур'}</h4>
+            <span class="admin-host-chart-card__meta">${escapeHtml(histMeta)}</span>
+          </div>
+          ${tempHeatmap || `<div class="muted">${_lang === 'en' ? 'No sensors' : 'Нет датчиков'}</div>`}
+        </section>
+      </div>`;
+  }
+
+  function renderAdminHostMetricsSection(h) {
+    const pctCls = (v, warn = 70, bad = 90) => {
+      const n = Number(v);
+      if (!isFinite(n)) return '';
+      if (n >= bad) return 'admin-stat--bad';
+      if (n >= warn) return 'admin-stat--warn';
+      return 'admin-stat--ok';
+    };
+    const tempCls = v => {
+      const n = Number(v);
+      if (!isFinite(n)) return '';
+      if (n >= 80) return 'admin-stat--bad';
+      if (n >= 65) return 'admin-stat--warn';
+      return 'admin-stat--ok';
+    };
+    const bar = (v) => {
+      const n = Math.max(0, Math.min(100, Number(v) || 0));
+      return `<div class="admin-stat-bar"><i style="width:${n}%"></i></div>`;
+    };
+    const tile = (label, value, cls = '', extra = '') => `
+      <div class="admin-stat ${cls}">
+        <div class="admin-stat-label">${label}</div>
+        <div class="admin-stat-value">${value}</div>
+        ${extra}
+      </div>
+    `;
+
+    const tiles = [];
+    if (h.hostname) {
+      tiles.push(tile('🖥 Host', escapeHtml(String(h.hostname)), 'admin-stat--info'));
+    }
+    if (h.uptime_seconds != null) {
+      const m = Math.floor(h.uptime_seconds / 60);
+      const hr = Math.floor(m / 60);
+      const d = Math.floor(hr / 24);
+      const hint = _lang === 'en'
+        ? (d > 0 ? `${d}d ${hr % 24}h` : `${m} min total`)
+        : (d > 0 ? `${d}д ${hr % 24}ч` : `${m} мин всего`);
+      tiles.push(tile('⏱ Uptime', `${hr}ч ${m % 60}м`, 'admin-stat--info', `<div class="admin-stat-hint">${hint}</div>`));
+    }
+    if (h.load_avg && h.load_avg['1m'] != null) {
+      const l = h.load_avg;
+      const fmt = v => (v == null ? '—' : Number(v).toFixed(2));
+      const cores = Number(h.cpu_count) || (Array.isArray(h.cpu_per_core) ? h.cpu_per_core.length : 0);
+      const cls = cores > 0 ? pctCls((Number(l['1m']) / cores) * 100, 70, 100) : '';
+      tiles.push(tile(
+        '📈 Load',
+        fmt(l['1m']),
+        cls,
+        `<div class="admin-stat-hint">1м · 5м · 15м → ${fmt(l['1m'])} / ${fmt(l['5m'])} / ${fmt(l['15m'])}${cores ? ` · ${cores} CPU` : ''}</div>`
+      ));
+    }
+    if (h.cpu_percent != null) {
+      tiles.push(tile('🧠 CPU', `${Number(h.cpu_percent).toFixed(1)}%`, pctCls(h.cpu_percent), bar(h.cpu_percent)));
+    }
+    if (h.cpu_temp_c != null) {
+      tiles.push(tile(
+        _lang === 'en' ? '🌡 CPU Temp' : '🌡 Темп. CPU',
+        `${Number(h.cpu_temp_c).toFixed(1)}°C`,
+        tempCls(h.cpu_temp_c),
+        normalizeHostTemps(h).length > 1
+          ? `<div class="admin-stat-hint">${normalizeHostTemps(h).length} ${_lang === 'en' ? 'sensors below' : 'датч. ниже'}</div>`
+          : ''
+      ));
+    }
+    if (h.memory) {
+      const mem = h.memory;
+      tiles.push(tile(
+        '🧮 RAM',
+        `${Number(mem.percent).toFixed(1)}%`,
+        pctCls(mem.percent),
+        `<div class="admin-stat-hint">${mem.used_mb} / ${mem.total_mb} MiB</div>${bar(mem.percent)}`
+      ));
+    }
+    if (h.swap && h.swap.total_mb > 0) {
+      tiles.push(tile(
+        '💾 Swap',
+        `${Number(h.swap.percent).toFixed(1)}%`,
+        pctCls(h.swap.percent, 40, 80),
+        `<div class="admin-stat-hint">${h.swap.used_mb ?? 0} / ${h.swap.total_mb} MiB</div>${bar(h.swap.percent)}`
+      ));
+    } else if (h.swap) {
+      tiles.push(tile('💾 Swap', '0%', 'admin-stat--muted'));
+    }
+    if (h.disk_root) {
+      const d = h.disk_root;
+      tiles.push(tile(
+        '💽 Диск /',
+        `${Number(d.percent).toFixed(0)}%`,
+        pctCls(d.percent, 80, 95),
+        `<div class="admin-stat-hint">${d.used_gb} / ${d.total_gb} GiB</div>${bar(d.percent)}`
+      ));
+    }
+
+    return `<div class="admin-host-wrap">
+      ${tiles.length ? `<div class="admin-stat-grid">${tiles.join('')}</div>` : ''}
+      ${renderAdminHostChartsBlock(h)}
+    </div>`;
+  }
+
+  async function refreshAdminHostMetrics(session) {
+    if (!session || String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
+    try {
+      const resp = await fetch(`${API_BASE}/admin/host/metrics?session=${encodeURIComponent(session)}&_t=${Date.now()}`, {
+        credentials: 'include',
+        cache: 'no-store',
+      });
+      if (!resp.ok) return;
+      const data = await resp.json();
+      if (!data?.ok || !data.host || data.host.error) return;
+      const hostEl = document.getElementById('admin-host-metrics');
+      if (hostEl && isAdminHostTabActive()) {
+        hostEl.innerHTML = renderAdminHostMetricsSection(data.host);
+      }
+    } catch (_) { /* ignore background poll errors */ }
+  }
+
+  function startAdminHostMetricsPoll(session) {
+    clearAdminHostMetricsPoll();
+    if (!session || String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
+    _hostMetricsPollTimer = setInterval(() => refreshAdminHostMetrics(session), HOST_METRICS_POLL_MS);
   }
 
   function setupAdminTabs() {
@@ -6104,8 +6925,17 @@
       if (tab === 'embed' && _dashSessionRef) {
         loadAdminEmbedTab(_dashSessionRef);
       }
-      // Не останавливаем поллинг при смене внутренних вкладок —
-      // он останавливается только при уходе из всей admin-панели.
+      if (tab === 'tickets' && _dashSessionRef) {
+        loadAdminTicketsTab(_dashSessionRef);
+        startAdminTicketsPoll(_dashSessionRef);
+      } else {
+        clearAdminTicketsPoll();
+      }
+      if (tab === 'host' && _dashSessionRef) {
+        startAdminHostMetricsPoll(_dashSessionRef);
+      } else {
+        clearAdminHostMetricsPoll();
+      }
     });
   }
 
@@ -6276,6 +7106,429 @@
     if (!session || String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
     setupAdminEmbedHandlers();
     loadAdminEmbedGuilds(session);
+  }
+
+  let _adminTicketsBound = false;
+  let _adminTicketsSession = null;
+  let _adminTicketsSettingsCache = {};
+  let _adminTicketsPollTimer = null;
+
+  function setAdminTicketsStatus(text, kind) {
+    const el = document.getElementById('admin-tickets-status');
+    if (!el) return;
+    el.textContent = text || '';
+    el.classList.remove('is-ok', 'is-err');
+    if (kind === 'ok') el.classList.add('is-ok');
+    if (kind === 'err') el.classList.add('is-err');
+  }
+
+  function fillAdminTicketsSelect(selectId, items, selectedId, labelFn) {
+    const sel = document.getElementById(selectId);
+    if (!sel) return;
+    const cur = selectedId ? String(selectedId) : '';
+    sel.innerHTML = '<option value="">—</option>' +
+      (items || []).map(item => {
+        const val = String(item.id);
+        const label = labelFn(item).replace(/</g, '&lt;');
+        const selected = val === cur ? ' selected' : '';
+        const disabled = item.usable_for_panel === false ? ' disabled' : '';
+        const suffix = item.usable_for_panel === false ? ' · нет прав' : '';
+        return `<option value="${val}"${selected}${disabled}>${label}${suffix}</option>`;
+      }).join('');
+  }
+
+  function ticketSelectValue(selectId, cacheKey) {
+    const el = document.getElementById(selectId);
+    const value = el?.value || '';
+    if (value) return value;
+    const selected = el?.dataset?.selected || '';
+    if (selected) return selected;
+    return _adminTicketsSettingsCache?.[cacheKey] || null;
+  }
+
+  function ticketSelectHasUsableSelection(selectId) {
+    const el = document.getElementById(selectId);
+    if (!el || !el.value) return false;
+    const opt = el.selectedOptions?.[0];
+    return !opt?.disabled;
+  }
+
+  function adminTicketErrorMessage(data, fallback) {
+    if (!data || typeof data !== 'object') return fallback;
+    const detail = data.detail || {};
+    const nested = detail.detail || data.message || detail.message || data.error;
+    if (nested && String(nested).includes('Missing Access')) {
+      return 'Нет доступа к выбранному каналу. Дайте тикет-боту View Channel, Send Messages и Embed Links или выберите другой канал.';
+    }
+    if (data.error === 'panel_send_failed') {
+      return 'Не удалось отправить панель: ' + (nested || 'проверьте права бота в канале');
+    }
+    if (data.error === 'panel_channel_not_found') {
+      return 'Канал панели не найден или недоступен тикет-боту.';
+    }
+    if (data.error === 'panel_channel_not_set') {
+      return 'Выберите канал панели перед публикацией.';
+    }
+    return nested || data.error || fallback;
+  }
+
+  function getAdminTicketsStaffRoleIds() {
+    const sel = document.getElementById('admin-tickets-staff-roles');
+    if (!sel) return [];
+    return Array.from(sel.selectedOptions).map(o => o.value).filter(Boolean);
+  }
+
+  function setAdminTicketsStaffRoleIds(roleIds) {
+    const sel = document.getElementById('admin-tickets-staff-roles');
+    if (!sel) return;
+    const set = new Set((roleIds || []).map(String));
+    Array.from(sel.options).forEach(opt => {
+      opt.selected = set.has(opt.value);
+    });
+  }
+
+  function renderAdminTicketsStats(stats) {
+    const tbody = document.getElementById('admin-tickets-stats-body');
+    if (!tbody) return;
+    if (!stats) {
+      tbody.innerHTML = '<tr><td colspan="2" class="muted">Статистика недоступна</td></tr>';
+      return;
+    }
+    const row = (k, v) => `<tr><td>${k}</td><td><strong>${v}</strong></td></tr>`;
+    const avgRating = stats.avgRating != null ? Number(stats.avgRating).toFixed(2) : '—';
+    const avgDur = stats.avgDuration != null ? `${Math.round(Number(stats.avgDuration) / 60000)} мин` : '—';
+    tbody.innerHTML = [
+      row('Всего тикетов', stats.total ?? 0),
+      row('Открыто', stats.open ?? 0),
+      row('Закрыто', stats.closed ?? 0),
+      row('Средняя оценка', avgRating),
+      row('Среднее время закрытия', avgDur),
+    ].join('');
+  }
+
+  async function loadAdminTicketsMeta(session, guildId) {
+    if (!guildId) return;
+    try {
+      const r = await fetch(
+        `${API_BASE}/admin/tickets/meta?session=${encodeURIComponent(session)}&guild_id=${encodeURIComponent(guildId)}`,
+        { credentials: 'include' },
+      );
+      const data = await r.json().catch(() => ({}));
+      if (!data.ok) {
+        setAdminTicketsStatus(data.error || 'Не удалось загрузить каналы/роли', 'err');
+        return;
+      }
+      const channels = data.channels || [];
+      const textChannels = channels.filter(ch => String(ch.type) === '0' || ch.type === 0 || !ch.type);
+      fillAdminTicketsSelect('admin-tickets-panel-channel', textChannels, document.getElementById('admin-tickets-panel-channel')?.dataset.selected, ch => `#${ch.name}`);
+      fillAdminTicketsSelect('admin-tickets-log-channel', textChannels, document.getElementById('admin-tickets-log-channel')?.dataset.selected, ch => `#${ch.name}`);
+      fillAdminTicketsSelect('admin-tickets-ratings-channel', textChannels, document.getElementById('admin-tickets-ratings-channel')?.dataset.selected, ch => `#${ch.name}`);
+      fillAdminTicketsSelect('admin-tickets-category', data.categories || [], document.getElementById('admin-tickets-category')?.dataset.selected, c => c.name);
+
+      const rolesSel = document.getElementById('admin-tickets-staff-roles');
+      if (rolesSel) {
+        const selected = rolesSel.dataset.selected ? rolesSel.dataset.selected.split(',').filter(Boolean) : [];
+        rolesSel.innerHTML = (data.roles || []).map(role => {
+          const selectedAttr = selected.includes(String(role.id)) ? ' selected' : '';
+          return `<option value="${role.id}"${selectedAttr}>${String(role.name).replace(/</g, '&lt;')}</option>`;
+        }).join('');
+      }
+    } catch (e) {
+      setAdminTicketsStatus('Ошибка загрузки meta', 'err');
+    }
+  }
+
+  async function loadAdminTicketsStats(session, guildId) {
+    if (!guildId) return;
+    try {
+      const r = await fetch(
+        `${API_BASE}/admin/tickets/stats?session=${encodeURIComponent(session)}&guild_id=${encodeURIComponent(guildId)}`,
+        { credentials: 'include' },
+      );
+      const data = await r.json().catch(() => ({}));
+      renderAdminTicketsStats(data.stats || null);
+    } catch (_) {
+      renderAdminTicketsStats(null);
+    }
+  }
+
+  function applyAdminTicketsSettings(data) {
+    const settings = data.settings || {};
+    _adminTicketsSettingsCache = { ...settings };
+    const guildInput = document.getElementById('admin-tickets-guild');
+    if (guildInput) guildInput.value = settings.guild_id || data.default_guild_id || '';
+
+    document.getElementById('admin-tickets-enabled').checked = !!settings.enabled;
+    document.getElementById('admin-tickets-panel-title').value = settings.panel_title || 'RustInfo Support';
+    document.getElementById('admin-tickets-panel-desc').value = settings.panel_description || '';
+    document.getElementById('admin-tickets-color').value = settings.main_color || '#5eb131';
+    document.getElementById('admin-tickets-lang').value = settings.lang || 'en';
+    document.getElementById('admin-tickets-max').value = settings.max_tickets_per_user ?? 2;
+    document.getElementById('admin-tickets-ask-questions').checked = settings.ask_questions !== false;
+
+    const panelCh = document.getElementById('admin-tickets-panel-channel');
+    const cat = document.getElementById('admin-tickets-category');
+    const logCh = document.getElementById('admin-tickets-log-channel');
+    const ratCh = document.getElementById('admin-tickets-ratings-channel');
+    const rolesSel = document.getElementById('admin-tickets-staff-roles');
+    if (panelCh) panelCh.dataset.selected = settings.panel_channel_id || '';
+    if (cat) cat.dataset.selected = settings.category_id || '';
+    if (logCh) logCh.dataset.selected = settings.log_channel_id || '';
+    if (ratCh) ratCh.dataset.selected = settings.ratings_channel_id || '';
+    if (rolesSel) rolesSel.dataset.selected = (settings.staff_role_ids || []).join(',');
+
+    const invite = document.getElementById('admin-tickets-invite');
+    if (invite && data.invite_url) {
+      invite.href = data.invite_url;
+      invite.style.display = '';
+    }
+
+    const botTag = document.getElementById('admin-tickets-bot-tag');
+    const st = data.bot_status || {};
+    if (botTag) {
+      if (st.ready && st.user && st.guild_present) {
+        const guildName = st.guild?.name ? ` · ${st.guild.name}` : '';
+        botTag.textContent = `Бот онлайн и добавлен: ${st.user.tag || st.user.id}${guildName}`;
+      } else if (st.ready && st.user) {
+        botTag.textContent = `Бот онлайн, но не найден на support-сервере (${st.guild_id || 'Guild ID не задан'})`;
+      } else if (st.error === 'ticket_bot_unreachable') {
+        botTag.textContent = 'Тикет-бот недоступен (проверьте docker ticket-bot)';
+      } else {
+        botTag.textContent = 'Бот офлайн или не настроен';
+      }
+    }
+  }
+
+  function adminTicketsTabActive() {
+    return !!document.querySelector('.admin-tab-panel[data-admin-tab-panel="tickets"].is-active');
+  }
+
+  function clearAdminTicketsPoll() {
+    if (_adminTicketsPollTimer) {
+      clearInterval(_adminTicketsPollTimer);
+      _adminTicketsPollTimer = null;
+    }
+  }
+
+  async function refreshAdminTicketsLive(session) {
+    if (!session || !adminTicketsTabActive()) return;
+    try {
+      const r = await fetch(`${API_BASE}/admin/tickets/settings?session=${encodeURIComponent(session)}`, {
+        credentials: 'include',
+        cache: 'no-store',
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok || !data.ok) return;
+      const statusEl = document.getElementById('admin-tickets-status');
+      const previousStatus = statusEl?.textContent || '';
+      const form = document.getElementById('admin-tickets-form');
+      const editingForm = !!(form && form.contains(document.activeElement));
+      if (!editingForm) {
+        applyAdminTicketsSettings(data);
+      }
+      const guildId = document.getElementById('admin-tickets-guild')?.value?.trim() || data.default_guild_id || '';
+      if (guildId) await loadAdminTicketsStats(session, guildId);
+      if (previousStatus) setAdminTicketsStatus(previousStatus, null);
+    } catch (_) {
+      // Silent refresh should not disturb form editing.
+    }
+  }
+
+  function startAdminTicketsPoll(session) {
+    clearAdminTicketsPoll();
+    if (!session) return;
+    _adminTicketsPollTimer = setInterval(() => refreshAdminTicketsLive(session), 5000);
+  }
+
+  function collectAdminTicketsPayload() {
+    const guildId = document.getElementById('admin-tickets-guild')?.value?.trim() || '';
+    return {
+      guild_id: guildId,
+      enabled: !!document.getElementById('admin-tickets-enabled')?.checked,
+      panel_channel_id: ticketSelectValue('admin-tickets-panel-channel', 'panel_channel_id'),
+      category_id: ticketSelectValue('admin-tickets-category', 'category_id'),
+      log_channel_id: ticketSelectValue('admin-tickets-log-channel', 'log_channel_id'),
+      ratings_channel_id: ticketSelectValue('admin-tickets-ratings-channel', 'ratings_channel_id'),
+      staff_role_ids: getAdminTicketsStaffRoleIds(),
+      panel_title: document.getElementById('admin-tickets-panel-title')?.value?.trim() || null,
+      panel_description: document.getElementById('admin-tickets-panel-desc')?.value?.trim() || null,
+      main_color: document.getElementById('admin-tickets-color')?.value?.trim() || '#5eb131',
+      lang: document.getElementById('admin-tickets-lang')?.value || 'en',
+      max_tickets_per_user: Number(document.getElementById('admin-tickets-max')?.value || 2),
+      ask_questions: !!document.getElementById('admin-tickets-ask-questions')?.checked,
+    };
+  }
+
+  async function saveAdminTicketsSettings(session) {
+    const payload = collectAdminTicketsPayload();
+    if (!payload.guild_id) {
+      setAdminTicketsStatus('Укажите Guild ID', 'err');
+      return;
+    }
+    if (payload.enabled && (!payload.panel_channel_id || !payload.category_id || !payload.log_channel_id)) {
+      setAdminTicketsStatus('Выберите канал панели, категорию тикетов и log-канал перед сохранением.', 'err');
+      return;
+    }
+    if (payload.enabled && !ticketSelectHasUsableSelection('admin-tickets-panel-channel')) {
+      setAdminTicketsStatus('Выбранный канал панели недоступен тикет-боту. Дайте права или выберите другой канал.', 'err');
+      return;
+    }
+    setAdminTicketsStatus('Сохранение…', null);
+    try {
+      const r = await fetch(`${API_BASE}/admin/tickets/settings?session=${encodeURIComponent(session)}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok || !data.ok) {
+        setAdminTicketsStatus(adminTicketErrorMessage(data, 'Ошибка сохранения'), 'err');
+        return;
+      }
+      setAdminTicketsStatus('Сохранено', 'ok');
+      if (data.sync && !data.sync.ok) {
+        setAdminTicketsStatus('Сохранено, но sync в бот не удался: ' + (data.sync.error || ''), 'err');
+      }
+      await loadAdminTicketsTab(session);
+      setAdminTicketsStatus('Сохранено', 'ok');
+    } catch (e) {
+      setAdminTicketsStatus('Ошибка сети', 'err');
+    }
+  }
+
+  async function sendAdminTicketsPanel(session) {
+    const payload = collectAdminTicketsPayload();
+    if (!payload.guild_id) {
+      setAdminTicketsStatus('Укажите Guild ID', 'err');
+      return;
+    }
+    if (!payload.panel_channel_id || !payload.category_id || !payload.log_channel_id) {
+      setAdminTicketsStatus('Выберите канал панели, категорию тикетов и log-канал перед публикацией.', 'err');
+      return;
+    }
+    if (!ticketSelectHasUsableSelection('admin-tickets-panel-channel')) {
+      setAdminTicketsStatus('Выбранный канал панели недоступен тикет-боту. Дайте права или выберите другой канал.', 'err');
+      return;
+    }
+    setAdminTicketsStatus('Публикация панели…', null);
+    try {
+      const r = await fetch(`${API_BASE}/admin/tickets/panel/send?session=${encodeURIComponent(session)}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok || !data.ok) {
+        setAdminTicketsStatus(adminTicketErrorMessage(data, 'Не удалось опубликовать панель'), 'err');
+        return;
+      }
+      setAdminTicketsStatus('Панель опубликована', 'ok');
+      await loadAdminTicketsTab(session);
+      const msgId = data.panel?.messageId || data.panel?.message_id || '';
+      setAdminTicketsStatus(msgId ? `Панель опубликована, message_id: ${msgId}` : 'Панель опубликована', 'ok');
+    } catch (e) {
+      setAdminTicketsStatus('Ошибка сети', 'err');
+    }
+  }
+
+  async function closeAllAdminTickets(session) {
+    const guildId = document.getElementById('admin-tickets-guild')?.value?.trim() || '';
+    if (!guildId) {
+      setAdminTicketsStatus('Укажите Guild ID', 'err');
+      return;
+    }
+    if (!confirm('Закрыть все открытые тикеты на сервере?')) return;
+    setAdminTicketsStatus('Закрытие…', null);
+    try {
+      const r = await fetch(`${API_BASE}/admin/tickets/close-all?session=${encodeURIComponent(session)}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guild_id: guildId }),
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok || !data.ok) {
+        setAdminTicketsStatus(data.error || 'Ошибка', 'err');
+        return;
+      }
+      setAdminTicketsStatus(`Закрыто: ${data.closed ?? 0} / ${data.total ?? 0}`, 'ok');
+      await loadAdminTicketsStats(session, guildId);
+    } catch (e) {
+      setAdminTicketsStatus('Ошибка сети', 'err');
+    }
+  }
+
+  function setupAdminTicketsHandlers() {
+    if (_adminTicketsBound) return;
+    _adminTicketsBound = true;
+    const form = document.getElementById('admin-tickets-form');
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (_adminTicketsSession) saveAdminTicketsSettings(_adminTicketsSession);
+    });
+    document.getElementById('admin-tickets-panel-btn')?.addEventListener('click', () => {
+      if (_adminTicketsSession) sendAdminTicketsPanel(_adminTicketsSession);
+    });
+    document.getElementById('admin-tickets-close-all-btn')?.addEventListener('click', () => {
+      if (_adminTicketsSession) closeAllAdminTickets(_adminTicketsSession);
+    });
+    document.getElementById('admin-tickets-refresh-btn')?.addEventListener('click', () => {
+      if (_adminTicketsSession) loadAdminTicketsTab(_adminTicketsSession);
+    });
+    document.getElementById('admin-tickets-guild')?.addEventListener('change', (e) => {
+      const gid = e.target.value?.trim();
+      if (_adminTicketsSession && gid) {
+        loadAdminTicketsMeta(_adminTicketsSession, gid);
+        loadAdminTicketsStats(_adminTicketsSession, gid);
+      }
+    });
+  }
+
+  async function loadAdminTicketsTab(session) {
+    if (!session || String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
+    _adminTicketsSession = session;
+    setupAdminTicketsHandlers();
+    if (adminTicketsTabActive()) startAdminTicketsPoll(session);
+    setAdminTicketsStatus('Загрузка…', null);
+    try {
+      const r = await fetch(`${API_BASE}/admin/tickets/settings?session=${encodeURIComponent(session)}`, {
+        credentials: 'include',
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok || !data.ok) {
+        setAdminTicketsStatus(data.error || 'Ошибка загрузки', 'err');
+        return;
+      }
+      applyAdminTicketsSettings(data);
+      const guildId = document.getElementById('admin-tickets-guild')?.value?.trim() || data.default_guild_id || '';
+      if (guildId) {
+        await loadAdminTicketsMeta(session, guildId);
+        await loadAdminTicketsStats(session, guildId);
+        const settings = data.settings || {};
+        setAdminTicketsStaffRoleIds(settings.staff_role_ids || []);
+        if (settings.panel_channel_id) {
+          const el = document.getElementById('admin-tickets-panel-channel');
+          if (el) el.value = settings.panel_channel_id;
+        }
+        if (settings.category_id) {
+          const el = document.getElementById('admin-tickets-category');
+          if (el) el.value = settings.category_id;
+        }
+        if (settings.log_channel_id) {
+          const el = document.getElementById('admin-tickets-log-channel');
+          if (el) el.value = settings.log_channel_id;
+        }
+        if (settings.ratings_channel_id) {
+          const el = document.getElementById('admin-tickets-ratings-channel');
+          if (el) el.value = settings.ratings_channel_id;
+        }
+      }
+      setAdminTicketsStatus('', null);
+    } catch (e) {
+      setAdminTicketsStatus('Ошибка сети', 'err');
+    }
   }
 
   const ADMIN_COIN_ENTRY_LABELS = {
@@ -7022,6 +8275,8 @@
           }
         } else {
           clearAdminPanelPoll();
+          clearAdminTicketsPoll();
+          clearAdminHostMetricsPoll();
           const chatOpen = _adminChatSteamId && !document.getElementById('admin-chat-modal')?.classList.contains('is-hidden');
           if (chatOpen) startAdminChatPoll();
           else stopAdminChatPoll();
@@ -7072,13 +8327,15 @@
   document.getElementById('btn-logout').addEventListener('click', e => {
     e.preventDefault();
     clearAdminPanelPoll();
+    clearAdminTicketsPoll();
+    clearAdminHostMetricsPoll();
     stopAdminChatPoll();
     closeAdminUserChat();
     stopTeamAutoRefresh();
     stopDevicesAutoRefresh();
     stopWatchAutoRefresh();
     localStorage.removeItem('ri_session');
-    window.location.href = 'index.html';
+    window.location.href = '/';
   });
   const _btnNavRefresh = document.getElementById('btn-nav-refresh');
   if (_btnNavRefresh) {
@@ -9765,131 +11022,10 @@
         if (h.error) {
           hostEl.innerHTML = `<div class="admin-host-error">${_lang==='en'?'Metrics: ':'Метрики: '}${escapeHtml(String(h.error))}</div>`;
         } else {
-          const pctCls = (v, warn = 70, bad = 90) => {
-            const n = Number(v);
-            if (!isFinite(n)) return '';
-            if (n >= bad) return 'admin-stat--bad';
-            if (n >= warn) return 'admin-stat--warn';
-            return 'admin-stat--ok';
-          };
-          const tempCls = v => {
-            const n = Number(v);
-            if (!isFinite(n)) return '';
-            if (n >= 80) return 'admin-stat--bad';
-            if (n >= 65) return 'admin-stat--warn';
-            return 'admin-stat--ok';
-          };
-          const bar = (v) => {
-            const n = Math.max(0, Math.min(100, Number(v) || 0));
-            return `<div class="admin-stat-bar"><i style="width:${n}%"></i></div>`;
-          };
-          const tile = (label, value, cls = '', extra = '') => `
-            <div class="admin-stat ${cls}">
-              <div class="admin-stat-label">${label}</div>
-              <div class="admin-stat-value">${value}</div>
-              ${extra}
-            </div>
-          `;
-
-          const tiles = [];
-
-          if (h.uptime_seconds != null) {
-            const m = Math.floor(h.uptime_seconds / 60);
-            const hr = Math.floor(m / 60);
-            const d = Math.floor(hr / 24);
-            const hint = _lang==='en'
-              ? (d > 0 ? `${d}d ${hr % 24}h` : `${m} min total`)
-              : (d > 0 ? `${d}д ${hr % 24}ч` : `${m} мин всего`);
-            tiles.push(tile(
-              '⏱ Uptime',
-              `${hr}ч ${m % 60}м`,
-              'admin-stat--info',
-              `<div class="admin-stat-hint">${hint}</div>`
-            ));
+          hostEl.innerHTML = renderAdminHostMetricsSection(h);
+          if (isAdminHostTabActive()) {
+            startAdminHostMetricsPoll(session);
           }
-
-          if (h.load_avg && h.load_avg['1m'] != null) {
-            const l = h.load_avg;
-            const fmt = v => (v == null ? '—' : Number(v).toFixed(2));
-            const cores = Number(h.cpu_count) || (Array.isArray(h.cpu_per_core) ? h.cpu_per_core.length : 0);
-            const cls = cores > 0
-              ? pctCls((Number(l['1m']) / cores) * 100, 70, 100)
-              : '';
-            tiles.push(tile(
-              '📈 Load',
-              fmt(l['1m']),
-              cls,
-              `<div class="admin-stat-hint">1м · 5м · 15м → ${fmt(l['1m'])} / ${fmt(l['5m'])} / ${fmt(l['15m'])}</div>`
-            ));
-          }
-
-          if (h.cpu_percent != null) {
-            tiles.push(tile(
-              '🧠 CPU',
-              `${Number(h.cpu_percent).toFixed(1)}%`,
-              pctCls(h.cpu_percent),
-              bar(h.cpu_percent)
-            ));
-          }
-
-          if (Array.isArray(h.cpu_per_core) && h.cpu_per_core.length) {
-            const bars = h.cpu_per_core.map(v => {
-              const n = Math.max(0, Math.min(100, Number(v) || 0));
-              return `<div class="admin-stat-core"><i style="height:${n}%"></i></div>`;
-            }).join('');
-            const labels = h.cpu_per_core.map(v => `<span>${Number(v).toFixed(0)}%</span>`).join('');
-            const max = Math.max(...h.cpu_per_core.map(v => Number(v) || 0));
-            tiles.push(tile(
-              `💠 Ядра × ${h.cpu_per_core.length}`,
-              `max ${max.toFixed(1)}%`,
-              pctCls(max),
-              `<div class="admin-stat-cores">${bars}</div>
-               <div class="admin-stat-cores-labels">${labels}</div>`
-            ));
-          }
-
-          if (h.cpu_temp_c != null) {
-            tiles.push(tile(
-              _lang==='en'?'🌡 CPU Temp':'🌡 Темп. CPU',
-              `${Number(h.cpu_temp_c).toFixed(1)}°C`,
-              tempCls(h.cpu_temp_c)
-            ));
-          }
-
-          if (h.memory) {
-            const mem = h.memory;
-            tiles.push(tile(
-              '🧮 RAM',
-              `${Number(mem.percent).toFixed(1)}%`,
-              pctCls(mem.percent),
-              `<div class="admin-stat-hint">${mem.used_mb} / ${mem.total_mb} MiB</div>${bar(mem.percent)}`
-            ));
-          }
-
-          if (h.swap && h.swap.total_mb > 0) {
-            tiles.push(tile(
-              '💾 Swap',
-              `${Number(h.swap.percent).toFixed(1)}%`,
-              pctCls(h.swap.percent, 40, 80),
-              `<div class="admin-stat-hint">${h.swap.used_mb ?? 0} / ${h.swap.total_mb} MiB</div>${bar(h.swap.percent)}`
-            ));
-          } else if (h.swap) {
-            tiles.push(tile('💾 Swap', '0%', 'admin-stat--muted'));
-          }
-
-          if (h.disk_root) {
-            const d = h.disk_root;
-            tiles.push(tile(
-              '💽 Диск /',
-              `${Number(d.percent).toFixed(0)}%`,
-              pctCls(d.percent, 80, 95),
-              `<div class="admin-stat-hint">${d.used_gb} / ${d.total_gb} GiB</div>${bar(d.percent)}`
-            ));
-          }
-
-          hostEl.innerHTML = tiles.length
-            ? `<div class="admin-stat-grid">${tiles.join('')}</div>`
-            : '—';
         }
       }
       if (cmdTbody) {
@@ -12407,9 +13543,9 @@
 
   if (sessionFromUrl) {
     localStorage.setItem('ri_session', sessionFromUrl);
-    window.history.replaceState({}, '', 'dashboard.html');
+    window.history.replaceState({}, '', '/');
   } else if (oauthError === 'oauth' && oauthMsg) {
-    window.history.replaceState({}, '', 'dashboard.html');
+    window.history.replaceState({}, '', '/');
   }
 
   const session = localStorage.getItem('ri_session');
