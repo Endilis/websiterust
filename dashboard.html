@@ -3542,6 +3542,12 @@
       font-size: .72rem; font-weight: 600; letter-spacing: .03em;
       vertical-align: middle;
     }
+    .site-db-badge--ok {
+      display: inline-block; padding: 1px 7px; border-radius: 4px;
+      background: rgba(34,197,94,.18); color: #86efac;
+      font-size: .72rem; font-weight: 600; letter-spacing: .03em;
+      vertical-align: middle;
+    }
     .site-db-disabled-note {
       display: block;
       font-size: .72rem;
@@ -3805,6 +3811,102 @@
       border: 1px dashed var(--border);
       border-radius: 12px;
       font-size: .9rem;
+    }
+
+    /* ================================================================
+       Dashboard surface unification.
+       Правая часть панели ведёт себя как вкладка «Аккаунт»: одна спокойная
+       поверхность без «карточка внутри карточки», hover-сдвигов и рельсов.
+       ================================================================ */
+    .dash-panels {
+      padding: 0;
+      overflow: hidden auto;
+    }
+    .dash-panel:not(#panel-account).active {
+      padding: 0;
+    }
+    .dash-panel-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .dash-panel-inner .full-card {
+      width: 100%;
+    }
+    .dash-panel:not(#panel-account):not(#panel-map) .card {
+      margin: 0;
+      padding: 20px 28px 22px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+    .dash-panel:not(#panel-account):not(#panel-map) .card + .card,
+    .dash-panel:not(#panel-account):not(#panel-map) .dash-panel-inner > .card + .card {
+      border-top: 1px solid var(--border);
+    }
+    .dash-panel:not(#panel-account):not(#panel-map) .card-header {
+      margin-bottom: 14px;
+    }
+    .dash-panel:not(#panel-account):not(#panel-map) .admin-panel-card {
+      padding: 0;
+      overflow: visible;
+    }
+    .dash-panel:not(#panel-account):not(#panel-map) .admin-panel-card > .card-header,
+    .dash-panel:not(#panel-account):not(#panel-map) .admin-panel-head,
+    .dash-panel:not(#panel-account):not(#panel-map) .admin-tabs-nav,
+    .dash-panel:not(#panel-account):not(#panel-map) .admin-panel-body {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .dash-panel:not(#panel-account):not(#panel-map) .admin-panel-section,
+    .dash-panel:not(#panel-account):not(#panel-map) .admin-host-control-card,
+    .dash-panel:not(#panel-account):not(#panel-map) .admin-coins-action-card,
+    .dash-panel:not(#panel-account):not(#panel-map) .olddb-card {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .dash-panel:not(#panel-account):not(#panel-map) .admin-panel-section + .admin-panel-section,
+    .dash-panel:not(#panel-account):not(#panel-map) .admin-host-control-card + .admin-host-control-card {
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
+    }
+    .dash-panel:not(#panel-account):not(#panel-map) .admin-host-controls,
+    .dash-panel:not(#panel-account):not(#panel-map) .admin-coins-actions {
+      gap: 0;
+    }
+    .dash-panel:not(#panel-account):not(#panel-map) .admin-host-control-card,
+    .dash-panel:not(#panel-account):not(#panel-map) .admin-coins-action-card {
+      padding: 12px 0;
+    }
+
+    .dash-panels :is(.card, .device-card, .rust-srv-card, .watch-add-card, .team-card, .srv-card, .sponsor-perk, .admin-stat, .olddb-card):hover,
+    .dash-panels :is(.dash-btn, .btn, .watch-pill, .site-db-btn, .sponsor-buy-btn, .sponsor-chat__send):hover,
+    .dash-panels :is(.dash-btn, .btn, .watch-pill, .site-db-btn, .sponsor-buy-btn, .sponsor-chat__send):active {
+      transform: none !important;
+    }
+    .dash-panels :is(.device-card--switch, .device-card--alarm, .device-card--storage) {
+      border-left-width: 1px;
+      border-left-color: var(--border, rgba(255,255,255,.08));
+    }
+    .dash-panels .srv-card::before,
+    .dash-panels .rust-srv-card.is-active::before {
+      display: none;
+    }
+    .dash-panels .srv-head,
+    .dash-panels .srv-row,
+    .dash-panels .team-card,
+    .dash-panels .device-card,
+    .dash-panels .rust-srv-card,
+    .dash-panels .watch-add-card,
+    .dash-panels .sponsor-perk {
+      transition: border-color .15s, background .15s;
+    }
+    .dash-panels :is(.srv-card--shared > .srv-head:hover, .srv-row:hover, .srv-row__team-details summary:hover, .team-card:hover) {
+      background: transparent;
     }
   </style>
 </head>
@@ -4684,6 +4786,7 @@
               <button class="admin-tab-btn" data-admin-tab="guilds" role="tab" aria-selected="false" data-i18n="admin.tab.guilds">Гильдии</button>
               <button class="admin-tab-btn" data-admin-tab="tickets" role="tab" aria-selected="false" data-i18n="admin.tab.tickets">🎫 Тикеты</button>
               <button class="admin-tab-btn" data-admin-tab="coins" role="tab" aria-selected="false">🪙 Коины</button>
+              <button class="admin-tab-btn" data-admin-tab="sponsors" role="tab" aria-selected="false">⭐ Спонсоры</button>
               <button class="admin-tab-btn" data-admin-tab="embed" role="tab" aria-selected="false" data-i18n="admin.tab.embed">Embed</button>
               <button class="admin-tab-btn" data-admin-tab="olddb" role="tab" aria-selected="false" data-i18n="admin.tab.olddb">Старая БД</button>
             </nav>
@@ -5013,6 +5116,49 @@
                         </tr>
                       </thead>
                       <tbody id="admin-coins-ledger-tbody"></tbody>
+                    </table>
+                  </div>
+                </section>
+              </div>
+
+              <!-- ── TAB: Спонсоры ── -->
+              <div class="admin-tab-panel" data-admin-tab-panel="sponsors">
+                <section class="admin-panel-section admin-panel-section--overview">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text">Сводка · спонсоры</span>
+                  </h3>
+                  <div class="admin-stat-grid" id="admin-sponsors-stats">—</div>
+                </section>
+
+                <section class="admin-panel-section">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text">Список спонсоров</span>
+                    <span id="admin-sponsors-count" class="admin-panel-section__title-count">0</span>
+                  </h3>
+                  <div class="admin-panel-site-db__head">
+                    <label class="team-panel__toggle" style="font-size:.82rem">
+                      <input type="checkbox" id="admin-sponsors-include-expired" checked />
+                      <span>Показывать истёкших</span>
+                    </label>
+                    <input type="search" id="admin-sponsors-search" class="admin-panel-search"
+                      placeholder="Поиск: ник, Discord ID, Steam, IP, сервер…" />
+                    <button type="button" class="dash-btn dash-btn--sm" id="admin-sponsors-refresh">Обновить</button>
+                  </div>
+                  <p class="admin-coins-msg" id="admin-sponsors-status"></p>
+                  <div class="admin-panel-table-wrap admin-panel-site-db__wrap">
+                    <table class="admin-panel-table admin-panel-site-db__table">
+                      <thead>
+                        <tr>
+                          <th style="width:28px"></th>
+                          <th>Статус</th>
+                          <th>Пользователь</th>
+                          <th>Период</th>
+                          <th>Баланс</th>
+                          <th>Серверы</th>
+                          <th>Подключение</th>
+                        </tr>
+                      </thead>
+                      <tbody id="admin-sponsors-tbody"></tbody>
                     </table>
                   </div>
                 </section>
@@ -6922,6 +7068,9 @@
       if (tab === 'coins' && _dashSessionRef) {
         loadAdminCoinsTab(_dashSessionRef);
       }
+      if (tab === 'sponsors' && _dashSessionRef) {
+        loadAdminSponsorsTab(_dashSessionRef);
+      }
       if (tab === 'embed' && _dashSessionRef) {
         loadAdminEmbedTab(_dashSessionRef);
       }
@@ -7720,6 +7869,249 @@
       adminCoinsAction('revokevip');
     });
     document.getElementById('admin-coins-ledger-refresh')?.addEventListener('click', () => loadAdminCoinsTab(session, { force: true }));
+  }
+
+  let _adminSponsorsCache = [];
+  let _adminSponsorsSummary = null;
+  let _adminSponsorsOpenIds = new Set();
+  let _adminSponsorsSearch = '';
+  let _adminSponsorsLoading = false;
+
+  function renderAdminSponsorsStats(summary) {
+    const el = document.getElementById('admin-sponsors-stats');
+    if (!el || !summary) return;
+    const tile = (label, value, cls = '') =>
+      `<div class="admin-stat ${cls}"><div class="admin-stat-label">${label}</div><div class="admin-stat-value">${value}</div></div>`;
+    el.innerHTML = [
+      tile('Всего записей', summary.total ?? 0),
+      tile('Активных', summary.active ?? 0, 'admin-stat--ok'),
+      tile('Истёкших', summary.expired ?? 0, 'admin-stat--muted'),
+      tile('Сумма балансов', (summary.total_balance ?? 0) + ' 🪙', 'admin-stat--info'),
+    ].join('');
+  }
+
+  function sponsorRowMatchesSearch(s, q) {
+    if (!q) return true;
+    const hay = [
+      s.discord_username, s.discord_id, s.steam_id, s.guild_id, s.guild_name,
+      s.country, s.first_ip, s.last_ip, s.fcm_status,
+      ...(s.servers || []).flatMap(srv => [srv.server_name, srv.server_ip, srv.player_id]),
+    ].filter(Boolean).join(' ').toLowerCase();
+    return hay.includes(q);
+  }
+
+  function fmtSponsorPeriod(vip) {
+    if (!vip) return '—';
+    const from = fmtTs(vip.started_at);
+    const to = fmtTs(vip.expires_at);
+    const extra = vip.active
+      ? ` · осталось ${vip.days_remaining} дн.`
+      : ' · истёк';
+    return `${from} → ${to}${extra}`;
+  }
+
+  function renderAdminSponsorDetail(s) {
+    const kv = (label, value) =>
+      `<div><dt>${escapeHtml(label)}</dt><dd>${value}</dd></div>`;
+    const mono = (v) => v ? `<code class="mono">${escapeHtml(String(v))}</code>` : '<span class="muted">—</span>';
+    const vip = s.vip || {};
+    const ledger = Array.isArray(s.ledger_recent) ? s.ledger_recent : [];
+    const servers = Array.isArray(s.servers) ? s.servers : [];
+
+    const ledgerHtml = ledger.length
+      ? `<table class="admin-panel-table" style="margin-top:8px;font-size:.78rem">
+          <thead><tr><th>ID</th><th>±</th><th>Баланс</th><th>Тип</th><th>Описание</th><th>Дата</th></tr></thead>
+          <tbody>${ledger.map(e => `
+            <tr>
+              <td>${escapeHtml(String(e.id))}</td>
+              <td>${escapeHtml(String(e.amount))}</td>
+              <td>${escapeHtml(String(e.balance_after))}</td>
+              <td><code>${escapeHtml(String(e.entry_type || ''))}</code></td>
+              <td>${escapeHtml(String(e.description || '—'))}</td>
+              <td>${escapeHtml(fmtTs(e.created_at))}</td>
+            </tr>`).join('')}</tbody></table>`
+      : '<span class="muted">Нет записей</span>';
+
+    const serversHtml = servers.length
+      ? `<div class="site-db-servers">${servers.map(srv => {
+          const online = srv.is_online ? '🟢 online' : '⚫ offline';
+          const active = srv.is_active ? ' · active' : '';
+          return `<div class="site-db-server">
+            <strong>${escapeHtml(String(srv.server_name || srv.server_ip || '—'))}</strong>
+            <span class="mono">${escapeHtml(String(srv.server_ip || '—'))}:${escapeHtml(String(srv.server_port || '—'))}</span>
+            · ${online}${active}
+            · player ${srv.player_id ? steamProfileLink(srv.player_id) : '—'}
+            · seen ${escapeHtml(fmtTs(srv.last_seen_at))}
+          </div>`;
+        }).join('')}</div>`
+      : '<span class="muted">Нет серверов</span>';
+
+    return `<div class="site-db-detail">
+      <div class="site-db-detail-kv">
+        <h4>VIP · спонсор</h4>
+        <dl style="margin:0">
+          ${kv('С', escapeHtml(fmtTs(vip.started_at)))}
+          ${kv('По', escapeHtml(fmtTs(vip.expires_at)))}
+          ${kv('Источник', mono(vip.source))}
+          ${kv('Ref', mono(vip.source_ref))}
+          ${kv('Создан VIP', escapeHtml(fmtTs(vip.created_at)))}
+          ${kv('Обновлён VIP', escapeHtml(fmtTs(vip.updated_at)))}
+        </dl>
+      </div>
+      <div class="site-db-detail-kv">
+        <h4>Профиль</h4>
+        <dl style="margin:0">
+          ${kv('Internal ID', mono(s.internal_id))}
+          ${kv('Discord ID', mono(s.discord_id))}
+          ${kv('Steam ID', s.steam_id ? steamProfileLink(s.steam_id) : '<span class="muted">—</span>')}
+          ${s.socket_steam_id && String(s.socket_steam_id) !== String(s.steam_id || '')
+            ? kv('Steam сокета', steamProfileLink(s.socket_steam_id)) : ''}
+          ${kv('Guild', mono(s.guild_id) + (s.guild_name ? ` · ${escapeHtml(s.guild_name)}` : ''))}
+          ${kv('Страна', escapeHtml(String(s.country || '—')))}
+          ${kv('Last IP', mono(s.last_ip))}
+          ${kv('First IP', mono(s.first_ip))}
+          ${kv('Регистрация', escapeHtml(fmtTs(s.created_at)))}
+          ${kv('Последний вход', escapeHtml(fmtTs(s.last_login_at)))}
+          ${kv('Rust+ linked', escapeHtml(fmtTs(s.rustplus_linked_at)))}
+          ${kv('Префикс', mono(s.ingame_prefix || '[rustinfo.online]'))}
+          ${kv('Язык', fmtIngameLang(s.ingame_language))}
+        </dl>
+      </div>
+      <div class="site-db-detail-kv">
+        <h4>Подключение · FCM</h4>
+        <dl style="margin:0">
+          ${kv('Rust+ token', s.has_rustplus_token ? '✅ есть' : '<span class="muted">нет</span>')}
+          ${kv('Сокет', s.has_active_socket ? '🟢 активен' : '⚫ нет')}
+          ${kv('Онлайн серверов', String(s.online_servers_count ?? 0))}
+          ${kv('Устройств (entities)', String(s.devices_count ?? 0))}
+          ${kv('FCM', fcmBadgeHtml(s.fcm_status))}
+          ${kv('FCM retry', String(s.fcm_retry_count ?? 0))}
+          ${kv('FCM registered', escapeHtml(fmtTs(s.fcm_registered_at)))}
+          ${s.fcm_last_error ? kv('FCM error', `<span style="color:#fca5a5">${escapeHtml(s.fcm_last_error)}</span>`) : ''}
+          ${s.is_banned ? kv('Бан', escapeHtml(fmtTs(s.banned_at)) + (s.banned_reason ? ` · ${escapeHtml(s.banned_reason)}` : '')) : ''}
+          ${s.admin_disabled ? kv('OFF', escapeHtml(fmtAdminDisabledNote(s))) : ''}
+        </dl>
+      </div>
+      <div class="site-db-detail-kv" style="grid-column:1/-1">
+        <h4>Баланс · ${escapeHtml(String(s.balance ?? 0))} 🪙</h4>
+        ${ledgerHtml}
+      </div>
+      <div class="site-db-detail-kv" style="grid-column:1/-1">
+        <h4>Серверы · ${servers.length}</h4>
+        ${serversHtml}
+      </div>
+    </div>`;
+  }
+
+  function renderAdminSponsorsList() {
+    const tbody = document.getElementById('admin-sponsors-tbody');
+    const countEl = document.getElementById('admin-sponsors-count');
+    if (!tbody) return;
+    const list = Array.isArray(_adminSponsorsCache) ? _adminSponsorsCache : [];
+    const q = _adminSponsorsSearch.trim().toLowerCase();
+    const filtered = q ? list.filter(s => sponsorRowMatchesSearch(s, q)) : list;
+    if (countEl) countEl.textContent = String(filtered.length);
+
+    if (!filtered.length) {
+      tbody.innerHTML = `<tr><td colspan="7" style="padding:12px" class="muted">Нет спонсоров${q ? ` по запросу «${escapeHtml(q)}»` : ''}</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(s => {
+      const rowId = 'sponsor-row-' + String(s.internal_id);
+      const open = _adminSponsorsOpenIds.has(rowId);
+      const vip = s.vip || {};
+      const statusChip = vip.active
+        ? '<span class="site-db-badge--ok">ACTIVE</span>'
+        : '<span class="site-db-badge--disabled">EXPIRED</span>';
+      const socketDot = s.has_active_socket
+        ? '<span class="socket-dot" title="Активный Rust+ сокет"></span>'
+        : '<span class="socket-dot socket-dot--off" title="Без сокета"></span>';
+      const activeSrv = s.active_server;
+      const serversCell = (s.servers_count > 0)
+        ? `${s.servers_count}${activeSrv ? ` · ${escapeHtml(String(activeSrv.server_name || activeSrv.server_ip || '—'))}` : ''}`
+        : '<span class="muted">—</span>';
+      const connCell = `${socketDot}${s.online_servers_count > 0 ? ` ${s.online_servers_count} online` : ''}${fcmBadgeHtml(s.fcm_status)}`;
+
+      return [
+        `<tr class="site-db-row${open ? ' is-open' : ''}" data-row-id="${escapeHtml(rowId)}">`,
+          `<td style="text-align:center"><span class="site-db-caret">▸</span></td>`,
+          `<td>${statusChip}</td>`,
+          `<td>${escapeHtml(String(s.discord_username || '—'))}<br/><span class="muted mono" style="font-size:.76rem">${escapeHtml(String(s.discord_id || ''))}</span></td>`,
+          `<td style="font-size:.78rem;white-space:nowrap">${escapeHtml(fmtSponsorPeriod(vip))}</td>`,
+          `<td><strong>${escapeHtml(String(s.balance ?? 0))}</strong> 🪙</td>`,
+          `<td style="font-size:.82rem">${serversCell}</td>`,
+          `<td style="font-size:.82rem">${connCell}</td>`,
+        `</tr>`,
+        `<tr class="site-db-detail-row${open ? '' : ' is-hidden'}" data-row-id="${escapeHtml(rowId)}">`,
+          `<td colspan="7">${renderAdminSponsorDetail(s)}</td>`,
+        `</tr>`,
+      ].join('');
+    }).join('');
+
+    if (!tbody._sponsorsBound) {
+      tbody.addEventListener('click', (e) => {
+        if (e.target.closest('a, button, input, select, textarea')) return;
+        const row = e.target.closest('tr.site-db-row');
+        if (!row) return;
+        const id = row.getAttribute('data-row-id');
+        if (!id) return;
+        const detail = tbody.querySelector(`tr.site-db-detail-row[data-row-id="${CSS.escape(id)}"]`);
+        if (_adminSponsorsOpenIds.has(id)) {
+          _adminSponsorsOpenIds.delete(id);
+          row.classList.remove('is-open');
+          if (detail) detail.classList.add('is-hidden');
+        } else {
+          _adminSponsorsOpenIds.add(id);
+          row.classList.add('is-open');
+          if (detail) detail.classList.remove('is-hidden');
+        }
+      });
+      tbody._sponsorsBound = true;
+    }
+  }
+
+  async function loadAdminSponsorsTab(session, opts = {}) {
+    if (!session || _adminSponsorsLoading) return;
+    const statusEl = document.getElementById('admin-sponsors-status');
+    const includeExpired = document.getElementById('admin-sponsors-include-expired')?.checked !== false;
+    try {
+      _adminSponsorsLoading = true;
+      if (statusEl) statusEl.textContent = 'Загрузка…';
+      const resp = await fetch(
+        `${API_BASE}/admin/sponsors?session=${encodeURIComponent(session)}&include_expired=${includeExpired ? '1' : '0'}&_t=${Date.now()}`,
+        { credentials: 'include', cache: 'no-store' }
+      );
+      const d = await resp.json().catch(() => ({}));
+      if (!resp.ok || !d.ok) throw new Error(d.error || d.message || `HTTP ${resp.status}`);
+      _adminSponsorsCache = Array.isArray(d.sponsors) ? d.sponsors : [];
+      _adminSponsorsSummary = d.summary || null;
+      renderAdminSponsorsStats(_adminSponsorsSummary);
+      renderAdminSponsorsList();
+      if (statusEl) {
+        const ts = d.generated_at ? fmtTs(d.generated_at) : '—';
+        statusEl.textContent = `Обновлено: ${ts}`;
+      }
+    } catch (err) {
+      if (statusEl) statusEl.textContent = '❌ ' + ((err && err.message) || String(err));
+    } finally {
+      _adminSponsorsLoading = false;
+    }
+  }
+
+  function setupAdminSponsorsTab() {
+    if (window._adminSponsorsTabBound) return;
+    window._adminSponsorsTabBound = true;
+    document.getElementById('admin-sponsors-search')?.addEventListener('input', (e) => {
+      _adminSponsorsSearch = String(e.target.value || '');
+      renderAdminSponsorsList();
+    });
+    document.getElementById('admin-sponsors-include-expired')?.addEventListener('change', () => {
+      if (_dashSessionRef) loadAdminSponsorsTab(_dashSessionRef, { force: true });
+    });
+    document.getElementById('admin-sponsors-refresh')?.addEventListener('click', () => {
+      if (_dashSessionRef) loadAdminSponsorsTab(_dashSessionRef, { force: true });
+    });
   }
 
   /* ================================================================
@@ -10935,6 +11327,7 @@
     if (btn) btn.style.display = '';
     setupAdminPanelRefreshButton();
     setupAdminTabs();
+    setupAdminSponsorsTab();
     if (_adminPanelLoading && !opts.force) {
       return;
     }
