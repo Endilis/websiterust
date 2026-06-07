@@ -1135,8 +1135,8 @@
       item.classList.toggle('open');
     }
 
-    /* ── Stats: через proxy панели (/api/metrics) ── */
-    const METRICS_URL = '/api/metrics';
+    /* ── Stats: API на panel.rustinfo.online ── */
+    const METRICS_URL = 'https://panel.rustinfo.online/api/metrics';
     function animateCounter(el, target) {
       if (!el) return;
       const dur = 2000, start = 0, step = target / (dur / 16);
