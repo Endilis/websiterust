@@ -397,6 +397,40 @@
       font-family: inherit; box-sizing: border-box;
     }
     .map-search-bar input:focus { outline: none; border-color: var(--accent); }
+    .map-layers {
+      display: flex; flex-direction: column; gap: 6px;
+      padding: 8px 4px 12px; border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+    .map-layers-title {
+      font-size: 0.78rem; font-weight: 700; color: var(--text2);
+      text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px;
+    }
+    .map-layer-row {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.82rem; color: var(--text); cursor: pointer; user-select: none;
+    }
+    .map-layer-row input { accent-color: var(--accent); cursor: pointer; }
+    .map-grid-overlay {
+      position: absolute; left: 0; top: 0; pointer-events: none;
+      z-index: 2; opacity: 0.55;
+    }
+    .map-grid-overlay.hidden { display: none; }
+    .map-marker.map-marker--monument { z-index: 4; }
+    .map-marker.map-marker--monument .map-marker-icon {
+      width: 28px; height: 28px; border-color: rgba(255,255,255,.35);
+      background: rgba(15,23,42,.55);
+    }
+    .map-marker.map-marker--monument .map-marker-icon img { width: 22px; height: 22px; }
+    .map-monument-label {
+      position: absolute; transform: translate(-50%, 14px);
+      font-size: 0.62rem; font-weight: 600; color: #e2e8f0;
+      text-shadow: 0 1px 3px rgba(0,0,0,.9); white-space: nowrap;
+      pointer-events: none; z-index: 3;
+    }
+    .map-marker.map-marker--active-ev .map-marker-icon {
+      border-color: #fbbf24; background: rgba(251,191,36,.25);
+    }
     .map-search-results {
       flex: 1; overflow-y: auto; padding: 6px 8px; display: flex; flex-direction: column; gap: 6px;
     }
@@ -1375,7 +1409,7 @@
     .dash-btn--discord { background: #5865f2; color: #fff; }
     .dash-btn--discord:hover { filter: brightness(1.06); }
     .dash-btn--block { width: 100%; max-width: 320px; }
-    .dash-btn--small { padding: 6px 12px; font-size: 0.82rem; }
+    .dash-btn--small, .dash-btn--sm { padding: 6px 12px; font-size: 0.82rem; }
     .dash-btn--danger {
       background: rgba(239, 68, 68, 0.12);
       color: #fca5a5;
@@ -2636,6 +2670,76 @@
       padding-top: 20px;
     }
 
+    .admin-rag-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(280px, .9fr);
+      gap: 14px;
+    }
+    @media (max-width: 920px) {
+      .admin-rag-layout { grid-template-columns: 1fr; }
+    }
+    .admin-rag-card {
+      background: rgba(255,255,255,.025);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .admin-rag-question {
+      min-height: 92px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+    .admin-rag-answer {
+      min-height: 76px;
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.06);
+      color: var(--text);
+      font-size: .95rem;
+      white-space: pre-wrap;
+    }
+    .admin-rag-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: .75rem;
+      color: var(--text2);
+    }
+    .admin-rag-chip {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .admin-rag-hits {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 420px;
+      overflow: auto;
+    }
+    .admin-rag-hit {
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.025);
+      border: 1px solid rgba(255,255,255,.06);
+      font-size: .8rem;
+    }
+    .admin-rag-hit__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 5px;
+      color: var(--text);
+      font-weight: 700;
+    }
+    .admin-rag-hit__text { color: var(--text2); }
+
     /* === Admin embed builder === */
     .admin-embed-toolbar {
       display: flex;
@@ -3522,6 +3626,48 @@
       color: #fca5a5;
       vertical-align: middle;
     }
+    .site-db-reassign-chip {
+      display: inline-block;
+      padding: 1px 6px;
+      margin-right: 6px;
+      border-radius: 4px;
+      font-size: .66rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      background: rgba(251,191,36,.16);
+      color: #fcd34d;
+      vertical-align: middle;
+    }
+    .site-db-reassign-note {
+      display: block;
+      margin-top: 3px;
+      font-size: .72rem;
+      color: #fcd34d;
+      line-height: 1.35;
+    }
+    .admin-panel-site-db__table tbody tr.site-db-row.is-reassigned {
+      background: rgba(251,191,36,.04);
+    }
+    .admin-panel-site-db__table tbody tr.site-db-row.is-reassigned:hover {
+      background: rgba(251,191,36,.08);
+    }
+    .site-db-relay-chip {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-size: .66rem;
+      font-weight: 800;
+      letter-spacing: .05em;
+      vertical-align: middle;
+    }
+    .site-db-relay-chip--on {
+      background: rgba(34,197,94,.18);
+      color: #86efac;
+    }
+    .site-db-relay-chip--off {
+      background: rgba(239,68,68,.18);
+      color: #fca5a5;
+    }
     .admin-panel-site-db__table tbody tr.site-db-row.is-banned {
       background: rgba(239,68,68,.05);
     }
@@ -3908,9 +4054,30 @@
     .dash-panels :is(.srv-card--shared > .srv-head:hover, .srv-row:hover, .srv-row__team-details summary:hover, .team-card:hover) {
       background: transparent;
     }
+
+    /* Dev panel top banner */
+    .dev-panel-banner {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      width: 100%;
+      padding: 9px 20px;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #fbbf24;
+      background: linear-gradient(90deg, rgba(251,191,36,.2) 0%, rgba(251,146,60,.14) 50%, rgba(251,191,36,.2) 100%);
+      border-bottom: 1px solid rgba(251,191,36,.45);
+      box-shadow: 0 4px 20px rgba(0,0,0,.25);
+    }
+    .dev-panel-banner.is-visible { display: block; }
   </style>
 </head>
 <body class="dashboard-page">
+
+<div id="dev-panel-banner" class="dev-panel-banner">Тестовая панель Dev version</div>
 
 <nav>
   <a class="nav-logo" href="/">
@@ -4012,12 +4179,15 @@
           <button type="button" class="dash-nav-btn" data-panel="commands" data-i18n="nav.commands">Команды</button>
           <button type="button" class="dash-nav-btn" data-panel="devices" data-i18n="nav.devices">Устройства</button>
           <button type="button" class="dash-nav-btn" data-panel="watch" data-i18n="nav.watch">Слежка</button>
+          <button type="button" class="dash-nav-btn dash-nav-btn--with-icon" data-panel="notify-discord" id="nav-notify-discord-btn">
+            <svg class="dash-nav-btn__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+            <span data-i18n="nav.discord_notify">Alerts</span>
+          </button>
           <button type="button" class="dash-nav-btn" data-panel="coins" id="nav-coins-btn" style="display:none" data-i18n="nav.coins">🪙 Коины</button>
           <button type="button" class="dash-nav-btn" data-panel="sponsor" id="nav-sponsor-btn" style="display:none" data-i18n="nav.sponsor">Спонсор</button>
           <div class="dash-nav-label" data-i18n="nav.wip">🚧 В разработке</div>
           <button type="button" class="dash-nav-btn sub" data-panel="map" data-i18n="nav.map">🗺️ Карта</button>
           <button type="button" class="dash-nav-btn sub dash-nav-btn--wip" data-panel="notify-game" data-i18n="nav.notify">🔔 Уведомления</button>
-          <button type="button" class="dash-nav-btn sub" data-panel="notify-discord" id="nav-notify-discord-btn" style="display:none" data-i18n="nav.discord_notify">💬 Discord</button>
           <button type="button" class="dash-nav-btn" data-panel="admin" id="nav-admin-btn" style="display:none" data-i18n="nav.admin">Админ панель</button>
         </nav>
       </aside>
@@ -4395,6 +4565,7 @@
                   <div class="map-viewport" id="map-viewport">
                     <div class="map-canvas" id="map-canvas">
                       <img id="map-img" src="" alt="Карта сервера" draggable="false"/>
+                      <svg id="map-grid-overlay" class="map-grid-overlay hidden" aria-hidden="true"></svg>
                     </div>
                     <!-- Маркеры вне canvas — фиксированный размер иконок при любом зуме -->
                     <div id="map-markers"></div>
@@ -4409,6 +4580,17 @@
 
               <!-- Правая панель: магазины -->
               <div class="map-panel-right" id="map-panel-right">
+                <div class="map-layers" id="map-layers">
+                  <div class="map-layers-title" data-i18n="map.layers">Слои</div>
+                  <label class="map-layer-row"><input type="checkbox" id="layer-grid" checked><span data-i18n="map.layer_grid">Сетка</span></label>
+                  <label class="map-layer-row"><input type="checkbox" id="layer-events" checked><span data-i18n="map.layer_events">Ивенты</span></label>
+                  <label class="map-layer-row"><input type="checkbox" id="layer-shops" checked><span data-i18n="map.layer_shops">Магазины</span></label>
+                  <label class="map-layer-row"><input type="checkbox" id="layer-team" checked><span data-i18n="map.layer_team">Команда</span></label>
+                  <label class="map-layer-row"><input type="checkbox" id="layer-players" checked><span data-i18n="map.layer_players">Игроки</span></label>
+                  <label class="map-layer-row"><input type="checkbox" id="layer-monuments" checked><span data-i18n="map.layer_monuments">Монументы</span></label>
+                  <label class="map-layer-row"><input type="checkbox" id="layer-monument-labels" checked><span data-i18n="map.layer_monument_labels">Названия монументов</span></label>
+                  <label class="map-layer-row"><input type="checkbox" id="layer-active-events" checked><span data-i18n="map.layer_active_events">Активные события</span></label>
+                </div>
                 <div class="map-sidebar-title" data-i18n="map.shops">🛒 Магазины</div>
                 <div class="map-search-bar">
                   <input type="text" id="map-search-input" data-i18n-placeholder="map.search_ph" placeholder="Товар или квадрат (например L20)…" autocomplete="off"/>
@@ -4438,58 +4620,335 @@
 
         <!-- PANEL: notify discord -->
         <div id="panel-notify-discord" class="dash-panel" role="tabpanel">
+          <style>
+            /* ── Relay panel styles ── */
+            .relay-section { margin-bottom: 20px; }
+            .relay-section-title {
+              font-size: .7rem; font-weight: 700; letter-spacing: .08em;
+              text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+            }
+            /* master toggle pill */
+            .relay-status-bar {
+              display: flex; align-items: center; gap: 14px;
+              padding: 14px 16px; border-radius: 12px; margin-bottom: 14px;
+              border: 2px solid transparent; transition: background .25s, border-color .25s;
+            }
+            .relay-status-bar--off {
+              background: rgba(240,71,71,.1);
+              border-color: rgba(240,71,71,.35);
+            }
+            .relay-status-bar--on {
+              background: rgba(67,181,129,.12);
+              border-color: rgba(67,181,129,.45);
+            }
+            .relay-status-bar--warn {
+              background: rgba(250,166,26,.1);
+              border-color: rgba(250,166,26,.4);
+            }
+            .relay-status-bar__icon {
+              width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+              display: flex; align-items: center; justify-content: center; font-size: 1.25rem;
+            }
+            .relay-status-bar--off .relay-status-bar__icon { background: rgba(240,71,71,.2); }
+            .relay-status-bar--on .relay-status-bar__icon { background: rgba(67,181,129,.25); }
+            .relay-status-bar--warn .relay-status-bar__icon { background: rgba(250,166,26,.2); }
+            .relay-status-bar__body { flex: 1; min-width: 0; }
+            .relay-status-bar__title { font-weight: 700; font-size: 1rem; margin-bottom: 2px; }
+            .relay-status-bar--off .relay-status-bar__title { color: #f04747; }
+            .relay-status-bar--on .relay-status-bar__title { color: #43b581; }
+            .relay-status-bar--warn .relay-status-bar__title { color: #faa61a; }
+            .relay-status-bar__sub { font-size: .8rem; color: var(--muted); line-height: 1.35; }
+            .relay-status-bar__pill {
+              flex-shrink: 0; padding: 5px 12px; border-radius: 999px;
+              font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+            }
+            .relay-status-bar--off .relay-status-bar__pill { background: rgba(240,71,71,.25); color: #f04747; }
+            .relay-status-bar--on .relay-status-bar__pill { background: rgba(67,181,129,.25); color: #43b581; }
+            .relay-status-bar--warn .relay-status-bar__pill { background: rgba(250,166,26,.25); color: #faa61a; }
+            .relay-master-row {
+              display: flex; align-items: center; justify-content: space-between;
+              padding: 12px 16px; border-radius: 10px;
+              background: var(--card-bg2, rgba(255,255,255,.05));
+              margin-bottom: 14px;
+              border: 1px solid var(--border, rgba(255,255,255,.08));
+              transition: border-color .2s, background .2s;
+            }
+            .relay-master-row--on { border-color: rgba(67,181,129,.35); background: rgba(67,181,129,.06); }
+            .relay-master-row--off { border-color: rgba(240,71,71,.2); }
+            .relay-master-row__left { display: flex; flex-direction: column; gap: 2px; }
+            .relay-master-row__title { font-weight: 600; font-size: .93rem; }
+            .relay-master-row__sub { font-size: .78rem; color: var(--muted); }
+            /* destination card */
+            .relay-dest-card {
+              display: flex; align-items: center; gap: 14px;
+              padding: 14px 16px; border-radius: 10px;
+              background: var(--card-bg2, rgba(255,255,255,.05));
+              border: 1px solid var(--border, rgba(255,255,255,.08));
+              margin-bottom: 6px; flex-wrap: wrap;
+            }
+            .relay-dest-icon {
+              width: 40px; height: 40px; border-radius: 50%;
+              background: var(--accent, #5865f2);
+              display: flex; align-items: center; justify-content: center;
+              flex-shrink: 0; font-size: 1.1rem;
+            }
+            .relay-dest-info { flex: 1; min-width: 0; }
+            .relay-dest-name { font-weight: 600; font-size: .92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .relay-dest-sub { font-size: .76rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .relay-dest-empty { color: var(--muted); font-size: .85rem; font-style: italic; }
+            .relay-change-btn {
+              padding: 6px 14px; border-radius: 7px; font-size: .8rem; font-weight: 600;
+              background: transparent; border: 1px solid var(--border, rgba(255,255,255,.15));
+              color: var(--text, #fff); cursor: pointer; white-space: nowrap;
+              transition: background .15s, border-color .15s;
+            }
+            .relay-change-btn:hover { background: rgba(255,255,255,.08); border-color: var(--accent, #5865f2); }
+            /* relay bot invite card */
+            .relay-bot-card {
+              display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+              padding: 14px 16px; border-radius: 12px;
+              background: linear-gradient(135deg, rgba(88,101,242,.14) 0%, rgba(88,101,242,.06) 100%);
+              border: 1px solid rgba(88,101,242,.28);
+            }
+            .relay-bot-card__avatar {
+              width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+              background: #5865f2; color: #fff;
+              display: flex; align-items: center; justify-content: center;
+              box-shadow: 0 4px 12px rgba(88,101,242,.35);
+            }
+            .relay-bot-card__info { flex: 1; min-width: 140px; }
+            .relay-bot-card__name { font-weight: 700; font-size: .95rem; color: #e8eaff; }
+            .relay-bot-card__desc { font-size: .78rem; color: var(--muted); margin-top: 2px; line-height: 1.35; }
+            .relay-invite-btn {
+              display: inline-flex; align-items: center; gap: 8px;
+              padding: 9px 18px; border-radius: 9px; font-size: .84rem; font-weight: 600;
+              background: #5865f2; color: #fff; text-decoration: none; white-space: nowrap;
+              border: none; cursor: pointer;
+              box-shadow: 0 2px 8px rgba(88,101,242,.4);
+              transition: filter .15s, transform .1s, box-shadow .15s;
+            }
+            .relay-invite-btn:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(88,101,242,.5); }
+            .relay-invite-btn svg { flex-shrink: 0; opacity: .95; }
+            /* picker action buttons */
+            .relay-picker-actions {
+              display: flex; gap: 8px; justify-content: flex-end; margin-top: 2px;
+            }
+            .relay-picker-btn {
+              padding: 8px 16px; border-radius: 8px; font-family: inherit;
+              font-size: .82rem; font-weight: 600; cursor: pointer;
+              border: 1px solid transparent; transition: background .15s, border-color .15s, color .15s;
+            }
+            .relay-picker-btn--apply {
+              background: var(--accent, #5865f2); color: #fff;
+            }
+            .relay-picker-btn--apply:hover { filter: brightness(1.08); }
+            .relay-picker-btn--cancel {
+              background: rgba(255,255,255,.04); color: var(--muted);
+              border-color: var(--border, rgba(255,255,255,.15));
+            }
+            .relay-picker-btn--cancel:hover {
+              background: rgba(255,255,255,.08); color: var(--text, #fff);
+              border-color: rgba(255,255,255,.25);
+            }
+            /* picker overlays */
+            .relay-picker {
+              display: none; flex-direction: column; gap: 8px;
+              padding: 12px; border-radius: 10px;
+              background: var(--card-bg2, rgba(255,255,255,.05));
+              border: 1px solid var(--border, rgba(255,255,255,.08));
+              margin-bottom: 6px;
+            }
+            .relay-picker.open { display: flex; }
+            /* event toggle list */
+            .relay-events-grid {
+              display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px;
+            }
+            @media (max-width: 520px) { .relay-events-grid { grid-template-columns: 1fr; } }
+            .relay-evt-row {
+              display: flex; flex-direction: column; align-items: stretch;
+              padding: 8px 12px; border-radius: 8px;
+              background: var(--card-bg2, rgba(255,255,255,.04));
+              gap: 0;
+            }
+            .relay-evt-header {
+              display: flex; align-items: center; justify-content: space-between;
+            }
+            .relay-evt-row .relay-roles-wrap {
+              margin-top: 8px; padding-top: 7px;
+              border-top: 1px solid rgba(255,255,255,.07);
+            }
+            .relay-evt-name { font-size: .84rem; font-weight: 500; }
+            .relay-evt-dot {
+              width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-right: 8px;
+            }
+            /* roles chip selector */
+            .relay-roles-wrap {
+              display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+            }
+            .relay-role-chip {
+              display: inline-flex; align-items: center; gap: 5px;
+              padding: 3px 10px 3px 8px; border-radius: 999px; font-size: .78rem; font-weight: 600;
+              background: rgba(88,101,242,.25); border: 1px solid rgba(88,101,242,.4); color: #c9ccff;
+              cursor: default;
+            }
+            .relay-role-chip__del {
+              background: none; border: none; padding: 0; margin: 0; cursor: pointer;
+              color: var(--muted); font-size: .9rem; line-height: 1;
+              transition: color .1s;
+            }
+            .relay-role-chip__del:hover { color: #f04747; }
+            .relay-role-add-btn {
+              padding: 3px 10px; border-radius: 999px; font-size: .78rem; font-weight: 600;
+              background: transparent; border: 1px dashed var(--border, rgba(255,255,255,.2));
+              color: var(--muted); cursor: pointer; transition: border-color .15s, color .15s;
+            }
+            .relay-role-add-btn:hover { border-color: var(--accent, #5865f2); color: #c9ccff; }
+            .relay-role-dropdown {
+              position: absolute; z-index: 200; min-width: 180px; max-height: 220px; overflow-y: auto;
+              background: var(--card-bg, #1e2231); border: 1px solid var(--border, rgba(255,255,255,.12));
+              border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.35); padding: 4px 0;
+            }
+            .relay-role-dropdown__item {
+              padding: 7px 14px; font-size: .82rem; cursor: pointer; display: flex; align-items: center; gap: 8px;
+              transition: background .1s;
+            }
+            .relay-role-dropdown__item:hover { background: rgba(255,255,255,.07); }
+            /* toggle switch */
+            .relay-toggle { position: relative; width: 42px; height: 24px; }
+            .relay-toggle input { opacity: 0; width: 0; height: 0; }
+            .relay-toggle__slider {
+              position: absolute; inset: 0; border-radius: 12px; cursor: pointer;
+              background: var(--toggle-off, rgba(255,255,255,.15));
+              transition: background .2s;
+            }
+            .relay-toggle__slider::before {
+              content: ''; position: absolute;
+              width: 18px; height: 18px; border-radius: 50%;
+              background: #fff; left: 3px; top: 3px; transition: transform .2s;
+              box-shadow: 0 1px 3px rgba(0,0,0,.3);
+            }
+            .relay-toggle input:checked + .relay-toggle__slider { background: var(--accent, #5865f2); }
+            .relay-toggle input:checked + .relay-toggle__slider::before { transform: translateX(18px); }
+          </style>
+
           <div class="card full-card">
             <div class="card-header">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-              <span data-i18n="notify.discord_title">Discord уведомления</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+              <span>Discord уведомления</span>
             </div>
-            <p class="dash-muted" style="font-size:.82rem;margin:0 0 12px" data-i18n="relay.hint">
-              Добавьте relay-бота на свой сервер и выберите канал. In-game и Discord включаются отдельно.
-            </p>
-            <a id="relay-invite-link" href="https://discord.com/oauth2/authorize?client_id=778935136405291008&permissions=3072&integration_type=0&scope=bot" target="_blank" rel="noreferrer" class="dash-btn dash-btn--discord" style="display:inline-flex;align-items:center;gap:8px;margin-bottom:16px;text-decoration:none">
-              <span data-i18n="relay.invite_btn">➕ Пригласить relay-бота</span>
-            </a>
 
-            <div class="setting-row" style="margin-bottom:10px">
-              <span class="setting-row__label" data-i18n="relay.master_toggle">Discord-уведомления</span>
-              <label class="team-panel__toggle" style="margin:0">
+            <!-- Статус relay -->
+            <div id="relay-status-bar" class="relay-status-bar relay-status-bar--off">
+              <div class="relay-status-bar__icon">🔕</div>
+              <div class="relay-status-bar__body">
+                <div class="relay-status-bar__title" id="relay-status-title">Уведомления выключены</div>
+                <div class="relay-status-bar__sub" id="relay-status-sub">Включите переключатель ниже и нажмите «Сохранить»</div>
+              </div>
+              <span class="relay-status-bar__pill" id="relay-status-pill">OFF</span>
+            </div>
+
+            <!-- 1. Мастер-переключатель -->
+            <div class="relay-master-row relay-master-row--off" id="relay-master-row">
+              <div class="relay-master-row__left">
+                <span class="relay-master-row__title">Discord уведомления</span>
+                <span class="relay-master-row__sub">Отправлять события в Discord-канал</span>
+              </div>
+              <label class="relay-toggle">
                 <input type="checkbox" id="relay-master-cb" />
-                <span id="relay-master-label" data-i18n="acc.ingame_notif_off">Выключены</span>
+                <span class="relay-toggle__slider"></span>
               </label>
             </div>
 
-            <div class="setting-row" style="margin-bottom:14px;flex-wrap:wrap;gap:10px">
-              <span class="setting-row__label" data-i18n="relay.interval_lbl">Мин. интервал (сек)</span>
-              <input type="number" id="relay-interval-input" min="0" max="3600" step="1" value="0"
-                     class="dash-select" style="width:90px;padding:6px 10px" />
-              <span class="dash-muted" style="font-size:.75rem" data-i18n="relay.interval_hint">0 = без задержки</span>
+            <!-- 2. Relay-бот -->
+            <div class="relay-section">
+              <div class="relay-section-title">Relay-бот</div>
+              <div class="relay-bot-card">
+                <div class="relay-bot-card__avatar">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+                </div>
+                <div class="relay-bot-card__info">
+                  <div class="relay-bot-card__name">RustInfo Alerts</div>
+                  <div class="relay-bot-card__desc">Добавьте бота на Discord-сервер, чтобы получать уведомления в канал</div>
+                </div>
+                <a id="relay-invite-link" href="https://discord.com/oauth2/authorize?client_id=778935136405291008&permissions=3072&integration_type=0&scope=bot" target="_blank" rel="noreferrer" class="relay-invite-btn">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                  Пригласить
+                </a>
+              </div>
             </div>
 
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
-              <div>
-                <label class="info-label" data-i18n="relay.guild_lbl">Discord-сервер</label>
-                <select id="relay-guild-select" class="dash-select" style="width:100%;margin-top:4px">
-                  <option value="" data-i18n="relay.guild_ph">— выберите сервер —</option>
+            <!-- 3. Сервер + канал -->
+            <div class="relay-section">
+              <div class="relay-section-title">Куда отправлять</div>
+
+              <!-- Текущий сервер -->
+              <div id="relay-dest-guild-card" class="relay-dest-card">
+                <div class="relay-dest-icon" id="relay-guild-icon">🏠</div>
+                <div class="relay-dest-info">
+                  <div class="relay-dest-name" id="relay-guild-name-display">—</div>
+                  <div class="relay-dest-sub">Discord-сервер</div>
+                </div>
+                <button class="relay-change-btn" id="btn-relay-guild-change">Изменить</button>
+              </div>
+              <!-- Picker: сервер -->
+              <div id="relay-guild-picker" class="relay-picker">
+                <label class="info-label" style="margin:0 0 4px">Выбрать сервер</label>
+                <select id="relay-guild-select" class="dash-select" style="width:100%">
+                  <option value="">— загрузка… —</option>
                 </select>
+                <div class="relay-picker-actions">
+                  <button type="button" class="relay-picker-btn relay-picker-btn--cancel" id="btn-relay-guild-cancel">Отмена</button>
+                  <button type="button" class="relay-picker-btn relay-picker-btn--apply" id="btn-relay-guild-confirm">Применить</button>
+                </div>
               </div>
-              <div>
-                <label class="info-label" data-i18n="relay.channel_lbl">Текстовый канал</label>
-                <select id="relay-channel-select" class="dash-select" style="width:100%;margin-top:4px" disabled>
-                  <option value="" data-i18n="relay.channel_ph">— сначала сервер —</option>
+
+              <!-- Текущий канал -->
+              <div id="relay-dest-channel-card" class="relay-dest-card" style="margin-top:8px">
+                <div class="relay-dest-icon" style="background:rgba(67,181,129,.25);font-size:1rem">#</div>
+                <div class="relay-dest-info">
+                  <div class="relay-dest-name" id="relay-channel-name-display">—</div>
+                  <div class="relay-dest-sub">Текстовый канал</div>
+                </div>
+                <button class="relay-change-btn" id="btn-relay-channel-change">Изменить</button>
+              </div>
+              <!-- Picker: канал -->
+              <div id="relay-channel-picker" class="relay-picker" style="margin-top:4px">
+                <label class="info-label" style="margin:0 0 4px">Выбрать канал</label>
+                <select id="relay-channel-select" class="dash-select" style="width:100%" disabled>
+                  <option value="">— сначала выберите сервер —</option>
                 </select>
+                <div class="relay-picker-actions">
+                  <button type="button" class="relay-picker-btn relay-picker-btn--cancel" id="btn-relay-channel-cancel">Отмена</button>
+                  <button type="button" class="relay-picker-btn relay-picker-btn--apply" id="btn-relay-channel-confirm">Применить</button>
+                </div>
               </div>
             </div>
 
-            <div id="relay-event-config" style="padding:10px 14px;background:var(--card-bg2,rgba(255,255,255,.04));border-radius:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin-bottom:14px">
-              <div class="setting-row" style="grid-column:1/-1;margin-bottom:2px">
-                <span style="font-size:.8rem;color:var(--muted)" data-i18n="relay.events_hint">События для Discord:</span>
+            <!-- 4. Типы событий -->
+            <div class="relay-section">
+              <div class="relay-section-title" style="display:flex;justify-content:space-between;align-items:center">
+                <span>Типы уведомлений</span>
+                <span style="font-size:.72rem;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">Включить/выключить отдельные события</span>
+              </div>
+              <div id="relay-event-config" class="relay-events-grid"></div>
+            </div>
+
+            <!-- 6. Доп. настройки -->
+            <div class="relay-section">
+              <div class="relay-section-title">Дополнительно</div>
+              <div class="setting-row" style="flex-wrap:wrap;gap:10px">
+                <span class="setting-row__label">Мин. интервал (сек)</span>
+                <input type="number" id="relay-interval-input" min="0" max="3600" step="1" value="0"
+                       class="dash-select" style="width:80px;padding:5px 8px" />
+                <span class="dash-muted" style="font-size:.75rem">0 = без задержки</span>
               </div>
             </div>
 
-            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-              <button type="button" class="dash-btn dash-btn--primary" id="btn-relay-save" data-i18n="acc.btn_save">Сохранить</button>
-              <button type="button" class="dash-btn" id="btn-relay-test" data-i18n="relay.test_btn">Тест уведомления</button>
-              <span id="relay-save-msg" style="font-size:.8rem;color:var(--muted)"></span>
+            <!-- Кнопки -->
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px">
+              <button type="button" class="dash-btn dash-btn--primary" id="btn-relay-save">Сохранить</button>
+              <button type="button" class="dash-btn" id="btn-relay-test">Тест уведомления</button>
+              <span id="relay-save-msg" style="font-size:.82rem;color:var(--muted)"></span>
             </div>
           </div>
         </div>
@@ -4787,6 +5246,7 @@
               <button class="admin-tab-btn" data-admin-tab="tickets" role="tab" aria-selected="false" data-i18n="admin.tab.tickets">🎫 Тикеты</button>
               <button class="admin-tab-btn" data-admin-tab="coins" role="tab" aria-selected="false">🪙 Коины</button>
               <button class="admin-tab-btn" data-admin-tab="sponsors" role="tab" aria-selected="false">⭐ Спонсоры</button>
+              <button class="admin-tab-btn" data-admin-tab="rag" role="tab" aria-selected="false">ИИ Rust</button>
               <button class="admin-tab-btn" data-admin-tab="embed" role="tab" aria-selected="false" data-i18n="admin.tab.embed">Embed</button>
               <button class="admin-tab-btn" data-admin-tab="olddb" role="tab" aria-selected="false" data-i18n="admin.tab.olddb">Старая БД</button>
             </nav>
@@ -4948,6 +5408,9 @@
                             <th>Steam</th>
                             <th>FCM</th>
                             <th>guild_id</th>
+                            <th>Relay</th>
+                            <th>relay guild</th>
+                            <th>relay channel</th>
                             <th data-i18n="tbl.country">Страна</th>
                             <th data-i18n="tbl.servers">Серверы</th>
                             <th data-i18n="tbl.last_login">Последний вход</th>
@@ -5164,6 +5627,37 @@
                 </section>
               </div>
 
+              <!-- ── TAB: ИИ Rust ── -->
+              <div class="admin-tab-panel" data-admin-tab-panel="rag">
+                <section class="admin-panel-section">
+                  <h3 class="admin-panel-section__title">
+                    <span class="admin-panel-section__title-text">ИИ Rust · RAG</span>
+                  </h3>
+                  <p class="muted" style="font-size:.82rem;margin:0">
+                    Тестовый помощник по Rust. Ответ должен быть коротким, без ссылок, с опорой на чистую Qdrant-коллекцию.
+                  </p>
+                  <div class="admin-rag-layout">
+                    <div class="admin-rag-card">
+                      <label for="admin-rag-question" style="font-size:.75rem;color:var(--muted)">Вопрос</label>
+                      <textarea id="admin-rag-question" class="dash-select admin-rag-question" maxlength="500" placeholder="Например: сколько ракет на каменную стенку?"></textarea>
+                      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                        <button type="button" class="dash-btn" id="admin-rag-ask-btn">Спросить</button>
+                        <button type="button" class="dash-btn dash-btn--sm" id="admin-rag-status-btn">Обновить статус</button>
+                        <span id="admin-rag-status" class="admin-embed-status" aria-live="polite"></span>
+                      </div>
+                      <div id="admin-rag-answer" class="admin-rag-answer">—</div>
+                      <div id="admin-rag-meta" class="admin-rag-meta"></div>
+                    </div>
+                    <div class="admin-rag-card">
+                      <h4 style="margin:0;font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text2)">Диагностика retrieval</h4>
+                      <div id="admin-rag-hits" class="admin-rag-hits">
+                        <div class="muted" style="font-size:.82rem">После вопроса здесь появятся найденные чанки.</div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
               <!-- ── TAB: Embed ── -->
               <div class="admin-tab-panel" data-admin-tab-panel="embed">
                 <section class="admin-panel-section">
@@ -5376,6 +5870,15 @@
 </div>
 
 <script>
+  const PANEL_DEV_BUILD = false;
+
+  function initDevPanelBanner() {
+    const isDev = PANEL_DEV_BUILD || location.hostname === 'dev-panel.rustinfo.online';
+    const banner = document.getElementById('dev-panel-banner');
+    if (isDev && banner) banner.classList.add('is-visible');
+  }
+  initDevPanelBanner();
+
   const DISCORD_CLIENT_ID = '1334943377124495421';
   const ADMIN_DISCORD_ID = '348409098640818178';
 
@@ -5413,12 +5916,7 @@
     const isAdmin = String(discordId || '') === ADMIN_DISCORD_ID;
     const adminBtn = document.getElementById('nav-admin-btn');
     if (adminBtn) adminBtn.style.display = isAdmin ? '' : 'none';
-    const relayNav = document.getElementById('nav-notify-discord-btn');
-    if (relayNav) relayNav.style.display = isAdmin ? '' : 'none';
     if (!isAdmin && document.getElementById('panel-admin')?.classList.contains('active')) {
-      document.querySelector('.dash-nav-btn[data-panel="account"]')?.click();
-    }
-    if (!isAdmin && document.getElementById('panel-notify-discord')?.classList.contains('active')) {
       document.querySelector('.dash-nav-btn[data-panel="account"]')?.click();
     }
   }
@@ -5561,7 +6059,7 @@
       'nav.wip':          '🚧 В разработке',
       'nav.map':          '🗺️ Карта',
       'nav.notify':       '🔔 Уведомления',
-      'nav.discord_notify':'💬 Discord',
+      'nav.discord_notify':'Alerts',
       'nav.admin':        'Админ панель',
       /* sponsor panel (admin preview) */
       'sponsor.badge':           'VIP-статус',
@@ -5744,6 +6242,18 @@
       'map.shops':         '🛒 Магазины',
       'map.search_ph':     'Товар или квадрат (например L20)…',
       'map.load_first':    'Загрузите карту для поиска',
+      'map.layers':              'Слои',
+      'map.layer_grid':          'Сетка',
+      'map.layer_events':        'Ивенты',
+      'map.layer_shops':         'Магазины',
+      'map.layer_team':          'Команда',
+      'map.layer_players':       'Игроки',
+      'map.layer_monuments':     'Монументы',
+      'map.layer_monument_labels': 'Названия монументов',
+      'map.layer_active_events': 'Активные события',
+      'map.updated':             'Обновлено',
+      'map.socket_offline':      'Сокет офлайн',
+      'map.from_cache':          'кеш бота',
       /* commands panel */
       'cmd.title':      'Команды (кратко)',
       'cmd.hint':       'В командном чате Rust+ префикс <strong>.</strong> (точка). Команды в Discord — с <strong>!</strong>',
@@ -6041,7 +6551,7 @@
       'nav.wip':          '🚧 In Development',
       'nav.map':          '🗺️ Map',
       'nav.notify':       '🔔 Notifications',
-      'nav.discord_notify':'💬 Discord',
+      'nav.discord_notify':'Alerts',
       'nav.admin':        'Admin Panel',
       /* sponsor panel (admin preview) */
       'sponsor.badge':           'VIP status',
@@ -6224,6 +6734,18 @@
       'map.shops':         '🛒 Shops',
       'map.search_ph':     'Item or grid (e.g. L20)…',
       'map.load_first':    'Load the map to search',
+      'map.layers':              'Layers',
+      'map.layer_grid':          'Grid',
+      'map.layer_events':        'Events',
+      'map.layer_shops':         'Shops',
+      'map.layer_team':          'Team',
+      'map.layer_players':       'Players',
+      'map.layer_monuments':     'Monuments',
+      'map.layer_monument_labels': 'Monument labels',
+      'map.layer_active_events': 'Active events',
+      'map.updated':             'Updated',
+      'map.socket_offline':      'Socket offline',
+      'map.from_cache':          'bot cache',
       /* commands panel */
       'cmd.title':      'Commands (quick ref)',
       'cmd.hint':       'Rust+ team chat prefix is <strong>.</strong> (dot). Discord commands use <strong>!</strong>',
@@ -7074,6 +7596,9 @@
       if (tab === 'embed' && _dashSessionRef) {
         loadAdminEmbedTab(_dashSessionRef);
       }
+      if (tab === 'rag' && _dashSessionRef) {
+        loadAdminRagTab(_dashSessionRef);
+      }
       if (tab === 'tickets' && _dashSessionRef) {
         loadAdminTicketsTab(_dashSessionRef);
         startAdminTicketsPoll(_dashSessionRef);
@@ -7086,6 +7611,130 @@
         clearAdminHostMetricsPoll();
       }
     });
+  }
+
+  function setAdminRagStatus(text, kind) {
+    const el = document.getElementById('admin-rag-status');
+    if (!el) return;
+    el.textContent = text || '';
+    el.classList.remove('is-ok', 'is-err');
+    if (kind === 'ok') el.classList.add('is-ok');
+    if (kind === 'err') el.classList.add('is-err');
+  }
+
+  function renderAdminRagMeta(data) {
+    const el = document.getElementById('admin-rag-meta');
+    if (!el) return;
+    const chips = [];
+    if (data?.model) chips.push(`model: ${data.model}`);
+    if (data?.elapsed_ms != null) chips.push(`${data.elapsed_ms} ms`);
+    if (Array.isArray(data?.hits)) chips.push(`chunks: ${data.hits.length}`);
+    if (data?.collection) chips.push(`collection: ${data.collection}`);
+    if (data?.points_count != null) chips.push(`points: ${data.points_count}`);
+    if (data?.embedding) chips.push(`embedding: ${data.embedding}`);
+    el.innerHTML = chips.map(x => `<span class="admin-rag-chip">${escapeHtml(String(x))}</span>`).join('');
+  }
+
+  function renderAdminRagHits(hits) {
+    const el = document.getElementById('admin-rag-hits');
+    if (!el) return;
+    const list = Array.isArray(hits) ? hits : [];
+    if (!list.length) {
+      el.innerHTML = `<div class="muted" style="font-size:.82rem">Ничего не найдено.</div>`;
+      return;
+    }
+    el.innerHTML = list.map(hit => `
+      <div class="admin-rag-hit">
+        <div class="admin-rag-hit__head">
+          <span>${escapeHtml(hit.title || hit.source || 'Rust')}</span>
+          <span class="mono">${escapeHtml(String(hit.score ?? '—'))}</span>
+        </div>
+        <div class="muted" style="font-size:.74rem;margin-bottom:5px">
+          ${escapeHtml(String(hit.source || '—'))} · ${escapeHtml(String(hit.source_type || '—'))} · priority ${escapeHtml(String(hit.priority ?? '—'))}
+        </div>
+        <div class="admin-rag-hit__text">${escapeHtml(hit.text || '')}</div>
+      </div>
+    `).join('');
+  }
+
+  async function loadAdminRagStatus(session) {
+    if (!session || String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
+    setAdminRagStatus('Проверка…', null);
+    try {
+      const r = await fetch(`${API_BASE}/admin/rag/status?session=${encodeURIComponent(session)}&_t=${Date.now()}`, {
+        credentials: 'include',
+        cache: 'no-store',
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok || data.ok === false) {
+        throw new Error(data.error || `HTTP ${r.status}`);
+      }
+      setAdminRagStatus(`RAG: ${data.points_count || 0} чанков`, 'ok');
+      renderAdminRagMeta(data);
+    } catch (err) {
+      setAdminRagStatus((err && err.message) || 'Ошибка статуса', 'err');
+    }
+  }
+
+  async function askAdminRag(session) {
+    const input = document.getElementById('admin-rag-question');
+    const answerEl = document.getElementById('admin-rag-answer');
+    const btn = document.getElementById('admin-rag-ask-btn');
+    const question = (input?.value || '').trim();
+    if (!session || !question) return;
+    if (btn) btn.disabled = true;
+    if (answerEl) answerEl.textContent = 'Думаю…';
+    setAdminRagStatus('Поиск контекста…', null);
+    try {
+      const r = await fetch(`${API_BASE}/admin/rag/ask?session=${encodeURIComponent(session)}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question }),
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok || data.ok === false) {
+        throw new Error(data.error || `HTTP ${r.status}`);
+      }
+      if (answerEl) answerEl.textContent = data.answer || '—';
+      setAdminRagStatus('Готово', 'ok');
+      renderAdminRagMeta(data);
+      renderAdminRagHits(data.hits || []);
+    } catch (err) {
+      if (answerEl) answerEl.textContent = 'Ошибка: ' + ((err && err.message) || String(err));
+      setAdminRagStatus('Ошибка', 'err');
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  function setupAdminRagHandlers(session) {
+    const askBtn = document.getElementById('admin-rag-ask-btn');
+    const statusBtn = document.getElementById('admin-rag-status-btn');
+    const input = document.getElementById('admin-rag-question');
+    if (askBtn && askBtn.dataset.bound !== '1') {
+      askBtn.dataset.bound = '1';
+      askBtn.addEventListener('click', () => askAdminRag(_dashSessionRef || session));
+    }
+    if (statusBtn && statusBtn.dataset.bound !== '1') {
+      statusBtn.dataset.bound = '1';
+      statusBtn.addEventListener('click', () => loadAdminRagStatus(_dashSessionRef || session));
+    }
+    if (input && input.dataset.bound !== '1') {
+      input.dataset.bound = '1';
+      input.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          askAdminRag(_dashSessionRef || session);
+        }
+      });
+    }
+  }
+
+  function loadAdminRagTab(session) {
+    if (!session || String(_dashDiscordId || '') !== ADMIN_DISCORD_ID) return;
+    setupAdminRagHandlers(session);
+    loadAdminRagStatus(session);
   }
 
   let _adminEmbedGuildsCache = null;
@@ -8690,8 +9339,15 @@
         } else {
           stopTeamAutoRefresh();
         }
+        if (id === 'notify-discord') {
+          initRelayDiscordSettings(_dashSessionRef, _dashDiscordId);
+        }
         if (id === 'map') {
           initMapPanelOnce();
+          startMapAutoRefresh();
+          if (_mapData?.ok) refreshMapLive().catch(() => {});
+        } else {
+          stopMapAutoRefresh();
         }
         if (id === 'devices') {
           loadDevices({ manual: true });
@@ -8828,6 +9484,8 @@
       loadWatchPanel({ showLoading: false });
     } else if (activeId === 'panel-coins') {
       loadCoinsPanel();
+    } else if (activeId === 'panel-account') {
+      reloadPrefixDisplay(session);
     } else if (activeId === 'panel-admin' && String(_dashDiscordId || '') === ADMIN_DISCORD_ID) {
       await loadAdminPanel(session, _dashDiscordId, { force: true });
     }
@@ -8886,7 +9544,10 @@
     return `https://cdn.discordapp.com/avatars/${id}/${hash}.png?size=80`;
   }
 
-  const FACEPUNCH_LOGIN = 'https://companion-rust.facepunch.com/login';
+  const IS_DEV_PANEL = location.hostname === 'dev-panel.rustinfo.online';
+  const FACEPUNCH_LOGIN = IS_DEV_PANEL
+    ? 'https://companion-rust.facepunch.com/login?rustinfo_env=dev'
+    : 'https://companion-rust.facepunch.com/login';
   const CHROME_EXT_ID = 'bnmfocbcaaaimljcchgplaceimiaglha';
   const CHROME_EXT_STORE = 'https://chromewebstore.google.com/detail/rustinfo-bot/bnmfocbcaaaimljcchgplaceimiaglha';
 
@@ -9403,8 +10064,22 @@
     });
   }
 
+  function reloadPrefixDisplay(session) {
+    const displayEl = document.getElementById('bot-prefix-display');
+    if (!displayEl || !session) return;
+    fetch(`${API_BASE}/me/prefix?session=${encodeURIComponent(session)}`, { credentials: 'include' })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (d?.ok && d.prefix) displayEl.textContent = d.prefix;
+        updateSponsorAccountUI({
+          sponsor: d?.sponsor || null,
+          can_edit_bot_prefix: !!d?.can_edit_bot_prefix,
+        });
+      })
+      .catch(() => {});
+  }
+
   function initPrefixSettings(session) {
-    // Загружаем текущий префикс с сервера
     const displayEl = document.getElementById('bot-prefix-display');
     const inputEl   = document.getElementById('bot-prefix-input');
     const wrapEl    = document.getElementById('prefix-input-wrap');
@@ -9414,7 +10089,6 @@
     const cancelBtn = document.getElementById('btn-prefix-cancel');
     if (!displayEl || !editBtn) return;
 
-    // Один раз вешаем обработчики
     if (!_prefixInitDone) {
       _prefixInitDone = true;
       editBtn.addEventListener('click', () => {
@@ -9438,18 +10112,7 @@
       inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') savePrefixSettings(session); });
     }
 
-    // Загрузить текущее значение
-    fetch(`${API_BASE}/me/prefix?session=${encodeURIComponent(session)}`, { credentials: 'include' })
-      .then(r => r.ok ? r.json() : null)
-      .then(d => {
-        if (d?.ok && d.prefix) displayEl.textContent = d.prefix;
-        else displayEl.textContent = '[rustinfo.online]';
-        updateSponsorAccountUI({
-          sponsor: d?.sponsor || null,
-          can_edit_bot_prefix: !!d?.can_edit_bot_prefix,
-        });
-      })
-      .catch(() => { displayEl.textContent = '—'; });
+    reloadPrefixDisplay(session);
   }
 
   async function savePrefixSettings(session) {
@@ -9701,41 +10364,178 @@
   let _relayInitDone = false;
   let _relayEventMeta = {};
   let _relaySession = null;
+  let _relayGuildId = null;
+  let _relayChannelId = null;
+  let _relayGuildData = [];      // [{id,name,icon,has_relay_bot}]
+  let _relayChannelData = [];    // [{id,name,category}]
+  let _relayRoleData = [];       // [{id,name,color}]
+  let _relayMentionRoles = {};   // {event_key: [role_id, ...]}
 
   function _relayEventLabel(key) {
     const m = _relayEventMeta[key] || {};
     return _lang === 'en' ? (m.label_en || key) : (m.label_ru || key);
   }
 
-  function _buildRelayEventCheckboxes(config) {
+  function _relayColorHex(val) {
+    if (!val) return '#5865f2';
+    const n = typeof val === 'number' ? val : parseInt(val);
+    if (isNaN(n) || n === 0) return '#5865f2';
+    return '#' + n.toString(16).padStart(6, '0');
+  }
+
+  function _relayUpdateStatusBadge(enabled) {
+    const bar = document.getElementById('relay-status-bar');
+    const titleEl = document.getElementById('relay-status-title');
+    const subEl = document.getElementById('relay-status-sub');
+    const pillEl = document.getElementById('relay-status-pill');
+    const iconEl = bar?.querySelector('.relay-status-bar__icon');
+    const masterRow = document.getElementById('relay-master-row');
+    if (!bar) return;
+
+    const guild = _relayGuildData.find(x => String(x.id) === String(_relayGuildId));
+    const channel = _relayChannelData.find(x => String(x.id) === String(_relayChannelId));
+    const hasDest = !!(guild && channel);
+
+    let mode = 'off';
+    if (enabled && hasDest) mode = 'on';
+    else if (enabled) mode = 'warn';
+
+    bar.className = 'relay-status-bar relay-status-bar--' + mode;
+    if (masterRow) masterRow.className = 'relay-master-row relay-master-row--' + (enabled ? 'on' : 'off');
+
+    if (mode === 'on') {
+      if (iconEl) iconEl.textContent = '🔔';
+      if (titleEl) titleEl.textContent = 'Уведомления активны';
+      if (subEl) subEl.textContent = `${guild.name} → #${channel.name}`;
+      if (pillEl) pillEl.textContent = 'ON';
+    } else if (mode === 'warn') {
+      if (iconEl) iconEl.textContent = '⚠️';
+      if (titleEl) titleEl.textContent = 'Включено — нужна настройка';
+      if (subEl) {
+        if (!guild && !channel) subEl.textContent = 'Выберите Discord-сервер и текстовый канал, затем сохраните';
+        else if (!channel) subEl.textContent = `Сервер «${guild.name}» выбран — укажите канал и сохраните`;
+        else subEl.textContent = 'Выберите сервер и канал, затем нажмите «Сохранить»';
+      }
+      if (pillEl) pillEl.textContent = 'SETUP';
+    } else {
+      if (iconEl) iconEl.textContent = '🔕';
+      if (titleEl) titleEl.textContent = 'Уведомления выключены';
+      if (subEl) subEl.textContent = 'Включите переключатель ниже и нажмите «Сохранить»';
+      if (pillEl) pillEl.textContent = 'OFF';
+    }
+  }
+
+  function _relayRenderGuildCard(guildId) {
+    const nameEl = document.getElementById('relay-guild-name-display');
+    const iconEl = document.getElementById('relay-guild-icon');
+    const g = _relayGuildData.find(x => String(x.id) === String(guildId));
+    if (g) {
+      if (nameEl) nameEl.textContent = g.name;
+      if (iconEl) {
+        if (g.icon) {
+          iconEl.innerHTML = `<img src="https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png?size=40" style="width:40px;height:40px;border-radius:50%;object-fit:cover" onerror="this.style.display='none'">`;
+        } else {
+          iconEl.textContent = g.name.charAt(0).toUpperCase();
+        }
+      }
+    } else {
+      if (nameEl) nameEl.textContent = guildId ? 'Загрузка…' : '—';
+      if (iconEl) iconEl.textContent = '🏠';
+    }
+  }
+
+  function _relayRenderChannelCard(channelId) {
+    const nameEl = document.getElementById('relay-channel-name-display');
+    const ch = _relayChannelData.find(x => String(x.id) === String(channelId));
+    if (nameEl) {
+      if (ch) nameEl.textContent = `#${ch.name}${ch.category ? ' · ' + ch.category : ''}`;
+      else if (channelId) nameEl.textContent = '#' + channelId;
+      else nameEl.textContent = '—';
+    }
+  }
+
+  /* Chips для ролей конкретного события */
+  function _relayRenderRoleChips(evtKey, container, allRoles) {
+    container.innerHTML = '';
+    const roleIds = (_relayMentionRoles[evtKey] || []);
+    roleIds.forEach(rid => {
+      const r = allRoles.find(x => String(x.id) === String(rid));
+      if (!r) return;
+      const chip = document.createElement('span');
+      chip.className = 'relay-role-chip';
+      const dot = `<span style="width:8px;height:8px;border-radius:50%;background:${r.color ? '#' + r.color.toString(16).padStart(6,'0') : '#5865f2'};flex-shrink:0"></span>`;
+      chip.innerHTML = `${dot}${escapeHtml(r.name)}<button class="relay-role-chip__del" data-rid="${escapeHtml(rid)}" data-evt="${escapeHtml(evtKey)}" title="Убрать">×</button>`;
+      container.appendChild(chip);
+    });
+
+    // кнопка + добавить
+    const addBtn = document.createElement('button');
+    addBtn.className = 'relay-role-add-btn';
+    addBtn.dataset.evt = evtKey;
+    addBtn.textContent = '+ роль';
+    container.appendChild(addBtn);
+  }
+
+  function _relayRenderRolesSection() {
+    const show = !!_relayGuildId;
+    document.querySelectorAll('#relay-event-config .relay-roles-wrap[data-evt]').forEach(wrap => {
+      wrap.style.display = show ? '' : 'none';
+      if (show) _relayRenderRoleChips(wrap.dataset.evt, wrap, _relayRoleData);
+    });
+  }
+
+  function _relayBuildEventToggles(config) {
     const box = document.getElementById('relay-event-config');
     if (!box) return;
-    const hint = box.querySelector('.setting-row');
     box.innerHTML = '';
-    if (hint) box.appendChild(hint);
-    else {
-      const row = document.createElement('div');
-      row.className = 'setting-row';
-      row.style.cssText = 'grid-column:1/-1;margin-bottom:2px';
-      row.innerHTML = `<span style="font-size:.8rem;color:var(--muted)" data-i18n="relay.events_hint">${t('relay.events_hint')}</span>`;
-      box.appendChild(row);
-    }
-    const keys = Object.keys(_relayEventMeta).length
-      ? Object.keys(_relayEventMeta)
-      : Object.keys(config || {});
+    const keys = Object.keys(_relayEventMeta).length ? Object.keys(_relayEventMeta) : Object.keys(config || {});
     keys.forEach(key => {
-      const lbl = document.createElement('label');
-      lbl.className = 'team-panel__toggle';
-      lbl.style.cssText = 'gap:8px;margin:0';
-      lbl.innerHTML = `<input type="checkbox" class="relay-evt-cb" data-event="${key}" ${config?.[key] !== false ? 'checked' : ''} /><span>${escapeHtml(_relayEventLabel(key))}</span>`;
-      box.appendChild(lbl);
+      const meta = _relayEventMeta[key] || {};
+      const color = _relayColorHex(meta.color);
+      const enabled = config ? config[key] !== false : true;
+
+      const row = document.createElement('div');
+      row.className = 'relay-evt-row';
+
+      const header = document.createElement('div');
+      header.className = 'relay-evt-header';
+      header.innerHTML = `
+        <div style="display:flex;align-items:center;gap:0">
+          <span class="relay-evt-dot" style="background:${color}"></span>
+          <span class="relay-evt-name">${escapeHtml(_relayEventLabel(key))}</span>
+        </div>
+        <label class="relay-toggle">
+          <input type="checkbox" class="relay-evt-cb" data-event="${escapeHtml(key)}" ${enabled ? 'checked' : ''}>
+          <span class="relay-toggle__slider"></span>
+        </label>`;
+      row.appendChild(header);
+
+      const rolesWrap = document.createElement('div');
+      rolesWrap.className = 'relay-roles-wrap';
+      rolesWrap.dataset.evt = key;
+      rolesWrap.style.display = _relayGuildId ? '' : 'none';
+      row.appendChild(rolesWrap);
+
+      box.appendChild(row);
     });
+  }
+
+  async function _loadRelayRoles() {
+    if (!_relayGuildId || !_relaySession) { _relayRoleData = []; _relayRenderRolesSection(); return; }
+    try {
+      const r = await fetch(`${API_BASE}/me/relay/roles?session=${encodeURIComponent(_relaySession)}&guild_id=${encodeURIComponent(_relayGuildId)}`, { credentials: 'include' });
+      const d = await r.json();
+      _relayRoleData = d.ok ? (d.roles || []) : [];
+    } catch (_) { _relayRoleData = []; }
+    _relayRenderRolesSection();
   }
 
   async function _loadRelayChannels(session, guildId) {
     const chSel = document.getElementById('relay-channel-select');
     if (!chSel || !guildId) {
-      if (chSel) { chSel.disabled = true; chSel.innerHTML = `<option value="">${t('relay.channel_ph')}</option>`; }
+      if (chSel) { chSel.disabled = true; chSel.innerHTML = `<option value="">— сначала выберите сервер —</option>`; }
+      _relayChannelData = [];
+      _relayRenderChannelCard(_relayChannelId);
       return;
     }
     chSel.disabled = true;
@@ -9743,166 +10543,284 @@
     try {
       const r = await fetch(`${API_BASE}/me/relay/channels?session=${encodeURIComponent(session)}&guild_id=${encodeURIComponent(guildId)}`, { credentials: 'include' });
       const d = await r.json();
-      if (!d.ok) {
-        chSel.innerHTML = `<option value="">❌ ${escapeHtml(d.error || '')}</option>`;
-        return;
-      }
-      chSel.innerHTML = `<option value="">${t('relay.channel_ph')}</option>`;
-      (d.channels || []).forEach(ch => {
+      if (!d.ok) { chSel.innerHTML = `<option value="">❌ ${escapeHtml(d.error || '')}</option>`; return; }
+      _relayChannelData = d.channels || [];
+      chSel.innerHTML = `<option value="">— выберите канал —</option>`;
+      _relayChannelData.forEach(ch => {
         const opt = document.createElement('option');
         opt.value = ch.id;
         opt.textContent = ch.category ? `#${ch.name} (${ch.category})` : `#${ch.name}`;
-        if (String(d.selected_channel_id || '') === String(ch.id)) opt.selected = true;
+        if (String(_relayChannelId || '') === String(ch.id)) opt.selected = true;
         chSel.appendChild(opt);
       });
       chSel.disabled = false;
-    } catch (_) {
-      chSel.innerHTML = `<option value="">❌</option>`;
+      _relayRenderChannelCard(_relayChannelId);
+    } catch (_) { chSel.innerHTML = `<option value="">❌</option>`; }
+  }
+
+  async function _loadRelayGuilds(session, selGuildId) {
+    const guildSel = document.getElementById('relay-guild-select');
+    const msgEl = document.getElementById('relay-save-msg');
+    if (!guildSel || !session) return;
+    guildSel.disabled = true;
+    guildSel.innerHTML = `<option value="">…</option>`;
+    try {
+      const gr = await fetch(`${API_BASE}/me/relay/guilds?session=${encodeURIComponent(session)}`, { credentials: 'include' });
+      const gd = await gr.json().catch(() => ({}));
+      if (!gr.ok || gd.ok === false) {
+        const err = gd.error || `http_${gr.status}`;
+        guildSel.innerHTML = `<option value="">❌ ${escapeHtml(err)}</option>`;
+        if (msgEl) msgEl.textContent = `❌ ${err}`;
+        return;
+      }
+      _relayGuildData = gd.guilds || [];
+      guildSel.innerHTML = `<option value="">— выберите сервер —</option>`;
+      if (!_relayGuildData.length) {
+        guildSel.innerHTML = `<option value="">Нет серверов с правами админа</option>`;
+      }
+      _relayGuildData.forEach(g => {
+        const opt = document.createElement('option');
+        opt.value = g.id;
+        opt.textContent = g.name + (g.has_relay_bot ? '' : ' (нет бота)');
+        if (String(selGuildId || '') === String(g.id)) opt.selected = true;
+        guildSel.appendChild(opt);
+      });
+      guildSel.disabled = false;
+      _relayRenderGuildCard(_relayGuildId);
+      if (_relayGuildId) await _loadRelayChannels(session, String(_relayGuildId));
+    } catch (e) {
+      console.error('[relay guilds]', e);
+      guildSel.innerHTML = `<option value="">❌</option>`;
     }
   }
 
   async function initRelayDiscordSettings(session, discordId) {
-    if (String(discordId || '') !== ADMIN_DISCORD_ID) return;
+    if (!session) return;
     _relaySession = session;
-    const masterCb = document.getElementById('relay-master-cb');
-    const masterLbl = document.getElementById('relay-master-label');
-    const guildSel = document.getElementById('relay-guild-select');
-    const inviteLink = document.getElementById('relay-invite-link');
-    if (!masterCb || !guildSel) return;
 
     try {
       const r = await fetch(`${API_BASE}/me/relay/settings?session=${encodeURIComponent(session)}`, { credentials: 'include' });
       const d = await r.json();
-      if (!d.ok) return;
+      if (!d.ok) {
+        const msgEl = document.getElementById('relay-save-msg');
+        if (msgEl) msgEl.textContent = '❌ ' + (d.error || 'relay_settings_failed');
+        return;
+      }
       const s = d.settings || {};
       _relayEventMeta = d.event_meta || {};
-      if (inviteLink) {
-        const apiUrl = d.relay_invite_url || '';
-        const badId = apiUrl.includes('778935136401291008');
-        inviteLink.href = (apiUrl && !badId) ? apiUrl : RELAY_INVITE_URL;
-      }
+      _relayGuildId = s.relay_guild_id || null;
+      _relayChannelId = s.relay_channel_id || null;
+      _relayMentionRoles = s.mention_roles || {};
 
-      masterCb.checked = !!(s.enabled && s.discord_notifications);
-      if (masterLbl) {
-        masterLbl.textContent = masterCb.checked
-          ? (_lang === 'en' ? 'Enabled' : 'Включены')
-          : (_lang === 'en' ? 'Disabled' : 'Выключены');
-      }
+      const inviteLink = document.getElementById('relay-invite-link');
+      if (inviteLink && d.relay_invite_url) inviteLink.href = d.relay_invite_url;
+
+      const masterCb = document.getElementById('relay-master-cb');
+      if (masterCb) masterCb.checked = !!(s.enabled || s.discord_notifications);
+      _relayUpdateStatusBadge(!!(s.enabled || s.discord_notifications));
+
       const intervalIn = document.getElementById('relay-interval-input');
       if (intervalIn) intervalIn.value = String(s.min_interval_sec ?? 0);
-      _buildRelayEventCheckboxes(s.event_config || {});
 
-      const gr = await fetch(`${API_BASE}/me/relay/guilds?session=${encodeURIComponent(session)}`, { credentials: 'include' });
-      const gd = await gr.json();
-      guildSel.innerHTML = `<option value="">${t('relay.guild_ph')}</option>`;
-      (gd.guilds || []).forEach(g => {
-        const opt = document.createElement('option');
-        opt.value = g.id;
-        opt.textContent = g.name + (g.has_relay_bot ? '' : ` (${t('relay.no_relay_bot')})`);
-        if (String(s.relay_guild_id || '') === String(g.id)) opt.selected = true;
-        guildSel.appendChild(opt);
-      });
-      if (s.relay_guild_id) await _loadRelayChannels(session, String(s.relay_guild_id));
+      _relayBuildEventToggles(s.event_config || {});
+      await _loadRelayGuilds(session, _relayGuildId);
+      await _loadRelayRoles();
+      _relayUpdateStatusBadge(!!(s.enabled || s.discord_notifications));
     } catch (e) {
       console.error('[relay settings]', e);
     }
 
-    if (!_relayInitDone) {
-      _relayInitDone = true;
-      guildSel.addEventListener('change', () => {
-        _loadRelayChannels(_relaySession, guildSel.value);
-      });
-      document.getElementById('btn-relay-save')?.addEventListener('click', async () => {
-        const msgEl = document.getElementById('relay-save-msg');
-        const config = {};
-        document.querySelectorAll('.relay-evt-cb').forEach(cb => {
-          config[cb.dataset.event] = cb.checked;
+    if (_relayInitDone) return;
+    _relayInitDone = true;
+
+    /* ── Master toggle ── */
+    document.getElementById('relay-master-cb')?.addEventListener('change', function () {
+      _relayUpdateStatusBadge(this.checked);
+    });
+
+    /* ── Сервер: открыть picker ── */
+    document.getElementById('btn-relay-guild-change')?.addEventListener('click', () => {
+      document.getElementById('relay-guild-picker')?.classList.toggle('open');
+      document.getElementById('relay-channel-picker')?.classList.remove('open');
+    });
+    document.getElementById('btn-relay-guild-cancel')?.addEventListener('click', () => {
+      document.getElementById('relay-guild-picker')?.classList.remove('open');
+    });
+    document.getElementById('btn-relay-guild-confirm')?.addEventListener('click', async () => {
+      const sel = document.getElementById('relay-guild-select');
+      _relayGuildId = sel?.value || null;
+      _relayChannelId = null;
+      _relayRenderGuildCard(_relayGuildId);
+      _relayRenderChannelCard(null);
+      document.getElementById('relay-guild-picker')?.classList.remove('open');
+      if (_relayGuildId) {
+        await _loadRelayChannels(_relaySession, _relayGuildId);
+        await _loadRelayRoles();
+      }
+      _relayUpdateStatusBadge(!!document.getElementById('relay-master-cb')?.checked);
+    });
+
+    /* ── Канал: открыть picker ── */
+    document.getElementById('btn-relay-channel-change')?.addEventListener('click', async () => {
+      const picker = document.getElementById('relay-channel-picker');
+      const isOpen = picker?.classList.contains('open');
+      document.getElementById('relay-guild-picker')?.classList.remove('open');
+      if (isOpen) { picker?.classList.remove('open'); return; }
+      if (_relayGuildId) await _loadRelayChannels(_relaySession, _relayGuildId);
+      picker?.classList.add('open');
+    });
+    document.getElementById('btn-relay-channel-cancel')?.addEventListener('click', () => {
+      document.getElementById('relay-channel-picker')?.classList.remove('open');
+    });
+    document.getElementById('btn-relay-channel-confirm')?.addEventListener('click', () => {
+      const sel = document.getElementById('relay-channel-select');
+      _relayChannelId = sel?.value || null;
+      _relayRenderChannelCard(_relayChannelId);
+      document.getElementById('relay-channel-picker')?.classList.remove('open');
+      _relayUpdateStatusBadge(!!document.getElementById('relay-master-cb')?.checked);
+    });
+
+    /* ── Роли: клик на чип "удалить" или кнопку "+ роль" ── */
+    document.getElementById('relay-event-config')?.addEventListener('click', e => {
+      // удалить чип
+      const delBtn = e.target.closest('.relay-role-chip__del');
+      if (delBtn) {
+        const rid = delBtn.dataset.rid;
+        const evt = delBtn.dataset.evt;
+        _relayMentionRoles[evt] = (_relayMentionRoles[evt] || []).filter(x => x !== rid);
+        const wrap = document.querySelector(`.relay-roles-wrap[data-evt="${CSS.escape(evt)}"]`);
+        if (wrap) _relayRenderRoleChips(evt, wrap, _relayRoleData);
+        return;
+      }
+      // добавить роль
+      const addBtn = e.target.closest('.relay-role-add-btn');
+      if (addBtn) {
+        const evt = addBtn.dataset.evt;
+        _relayOpenRoleDropdown(addBtn, evt);
+      }
+    });
+
+    /* ── Сохранить ── */
+    document.getElementById('btn-relay-save')?.addEventListener('click', async () => {
+      const msgEl = document.getElementById('relay-save-msg');
+      const config = {};
+      document.querySelectorAll('.relay-evt-cb').forEach(cb => { config[cb.dataset.event] = cb.checked; });
+      const enabled = !!document.getElementById('relay-master-cb')?.checked;
+      const body = {
+        enabled: enabled && !!_relayGuildId && !!_relayChannelId,
+        discord_notifications: enabled,
+        relay_guild_id: _relayGuildId || null,
+        relay_channel_id: _relayChannelId || null,
+        min_interval_sec: parseInt(document.getElementById('relay-interval-input')?.value || '0', 10) || 0,
+        event_config: config,
+        mention_roles: _relayMentionRoles,
+      };
+      try {
+        const r = await fetch(`${API_BASE}/me/relay/settings?session=${encodeURIComponent(_relaySession)}`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          credentials: 'include', body: JSON.stringify(body),
         });
-        const guildId = guildSel.value ? String(guildSel.value).trim() : null;
-        const chSel = document.getElementById('relay-channel-select');
-        const channelId = chSel?.value ? String(chSel.value).trim() : null;
-        const enabled = !!masterCb.checked;
-        const body = {
-          enabled: enabled && !!guildId && !!channelId,
-          discord_notifications: enabled,
-          relay_guild_id: guildId,
-          relay_channel_id: channelId,
-          min_interval_sec: parseInt(document.getElementById('relay-interval-input')?.value || '0', 10) || 0,
-          event_config: config,
-        };
-        try {
-          const r = await fetch(`${API_BASE}/me/relay/settings?session=${encodeURIComponent(_relaySession)}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify(body),
-          });
-          const d = await r.json();
-          if (msgEl) {
-            if (d.ok) {
-              let txt = _lang === 'en' ? '✅ Saved' : '✅ Сохранено';
-              if (d.welcome_sent) txt += _lang === 'en' ? ' · test message sent' : ' · тестовое сообщение отправлено';
-              else if (d.welcome_error) txt += _lang === 'en' ? ' · channel test failed' : ' · не удалось отправить в канал';
-              msgEl.textContent = txt;
-            } else {
-              msgEl.textContent = '❌ ' + (d.error || '');
-            }
-            setTimeout(() => { if (msgEl) msgEl.textContent = ''; }, 3500);
+        const d = await r.json();
+        if (msgEl) {
+          if (d.ok) {
+            _relayUpdateStatusBadge(enabled);
+            let txt = '✅ Сохранено';
+            if (d.welcome_sent) txt += ' · тестовое сообщение отправлено';
+            else if (d.welcome_error) txt += ' · не удалось отправить в канал';
+            msgEl.textContent = txt;
+          } else {
+            msgEl.textContent = '❌ ' + (d.error || '');
           }
-        } catch (_) {
-          if (msgEl) msgEl.textContent = _lang === 'en' ? '❌ Error' : '❌ Ошибка';
+          setTimeout(() => { if (msgEl) msgEl.textContent = ''; }, 3500);
         }
-      });
-      document.getElementById('btn-relay-test')?.addEventListener('click', async () => {
-        const msgEl = document.getElementById('relay-save-msg');
-        if (msgEl) msgEl.textContent = _lang === 'en' ? 'Sending test…' : 'Отправка теста…';
-        try {
-          const r = await fetch(`${API_BASE}/me/relay/test?session=${encodeURIComponent(_relaySession)}`, {
-            method: 'POST',
-            credentials: 'include',
-          });
-          const d = await r.json();
-          const diag = d.diagnostics || {};
-          console.warn('[relay test diagnostics]', diag);
-          if (msgEl) {
-            if (d.ok) {
-              const ingame = diag.ingame_probe_ok === true
-                ? (_lang === 'en' ? ' · in-game path OK' : ' · in-game путь OK')
-                : '';
-              msgEl.textContent = (_lang === 'en' ? '✅ Test message sent' : '✅ Тестовое сообщение отправлено') + ingame;
-            } else {
-              const err = diag.error || d.error || 'send_failed';
-              const extra = [
-                diag.relay_bot_ready === false ? 'relay_not_ready' : null,
-                diag.relay_bot_in_selected_guild === false ? 'relay_not_in_guild' : null,
-                !diag.relay_channel_id ? 'no_channel' : null,
-                err === 'master_off' ? 'master_off' : null,
-                diag.ingame_probe_ok === false ? 'ingame_path_failed' : null,
-                !diag.ingame_resolved_discord_id ? 'no_discord_link' : null,
-                !diag.ingame_socket_key ? 'no_rust_socket' : null,
-              ].filter(Boolean).join(', ');
-              const hint = err === 'master_off'
-                ? (_lang === 'en'
-                  ? ' · turn on notifications, pick server + channel, click Save'
-                  : ' · включите уведомления, выберите сервер и канал, нажмите Сохранить')
-                : diag.relay_bot_in_selected_guild === false
-                ? (_lang === 'en'
-                  ? ' · add **RustInfo Alerts** bot (not the main bot), pick server, Save'
-                  : ' · добавьте бота **RustInfo Alerts** (не основного), выберите сервер, Сохранить')
-                : diag.error === 'ingame_path_failed'
-                  ? (_lang === 'en'
-                    ? ' · panel OK but in-game path failed — redeploy notification_relay.py + plus.py, restart bot'
-                    : ' · панель OK, in-game путь нет — залей notification_relay.py + plus.py, перезапуск')
-                  : '';
-              msgEl.textContent = `❌ ${err}${extra ? ' (' + extra + ')' : ''}${hint}`;
-            }
-            setTimeout(() => { if (msgEl) msgEl.textContent = ''; }, 5000);
+      } catch (_) { if (msgEl) msgEl.textContent = '❌ Ошибка'; }
+    });
+
+    /* ── Тест ── */
+    document.getElementById('btn-relay-test')?.addEventListener('click', async () => {
+      const msgEl = document.getElementById('relay-save-msg');
+      if (msgEl) msgEl.textContent = 'Отправка теста…';
+      try {
+        const r = await fetch(`${API_BASE}/me/relay/test?session=${encodeURIComponent(_relaySession)}`, {
+          method: 'POST', credentials: 'include',
+        });
+        const d = await r.json();
+        const diag = d.diagnostics || {};
+        console.warn('[relay test diagnostics]', diag);
+        if (msgEl) {
+          if (d.ok) {
+            let txt = '✅ Тестовое сообщение отправлено';
+            if (diag.ingame_probe_ok === true) txt += ' · in-game путь OK';
+            else if (diag.ingame_probe_ok === false) txt += ' · in-game путь не прошёл (панель OK)';
+            else if (!diag.settings_active) txt += ' · для live-событий включите уведомления и Сохранить';
+            msgEl.textContent = txt;
+          } else {
+            const err = diag.error || d.error || 'send_failed';
+            const hints = {
+              no_channel: ' · выберите сервер и текстовый канал, нажмите Сохранить',
+              relay_not_in_guild: ' · пригласите бота RustInfo Alerts на сервер',
+              relay_bot_not_ready: ' · relay-бот запускается, повторите через несколько секунд',
+              send_failed: ' · проверьте права бота в канале',
+            };
+            msgEl.textContent = `❌ ${err}${hints[err] || ''}`;
           }
-        } catch (_) {
-          if (msgEl) msgEl.textContent = _lang === 'en' ? '❌ Error' : '❌ Ошибка';
+          setTimeout(() => { if (msgEl) msgEl.textContent = ''; }, 5000);
         }
+      } catch (_) { if (msgEl) msgEl.textContent = '❌ Ошибка'; }
+    });
+  }
+
+  /* Всплывающий выбор роли */
+  let _relayDropdownCleanup = null;
+  function _relayOpenRoleDropdown(anchorBtn, evtKey) {
+    if (_relayDropdownCleanup) { _relayDropdownCleanup(); _relayDropdownCleanup = null; return; }
+    if (!_relayRoleData.length) return;
+    const existing = (_relayMentionRoles[evtKey] || []);
+
+    const dropdown = document.createElement('div');
+    dropdown.className = 'relay-role-dropdown';
+    dropdown.style.position = 'fixed';
+    const rect = anchorBtn.getBoundingClientRect();
+    dropdown.style.top = (rect.bottom + 4) + 'px';
+    dropdown.style.left = rect.left + 'px';
+
+    _relayRoleData.forEach(r => {
+      if (existing.includes(String(r.id))) return;
+      const item = document.createElement('div');
+      item.className = 'relay-role-dropdown__item';
+      const c = r.color ? '#' + r.color.toString(16).padStart(6, '0') : '#5865f2';
+      item.innerHTML = `<span style="width:10px;height:10px;border-radius:50%;background:${c};flex-shrink:0"></span>${escapeHtml(r.name)}`;
+      item.addEventListener('click', e => {
+        e.stopPropagation();
+        if (!_relayMentionRoles[evtKey]) _relayMentionRoles[evtKey] = [];
+        _relayMentionRoles[evtKey].push(String(r.id));
+        const wrap = document.querySelector(`.relay-roles-wrap[data-evt="${CSS.escape(evtKey)}"]`);
+        if (wrap) _relayRenderRoleChips(evtKey, wrap, _relayRoleData);
+        cleanup();
       });
+      dropdown.appendChild(item);
+    });
+
+    if (!dropdown.children.length) {
+      const empty = document.createElement('div');
+      empty.className = 'relay-role-dropdown__item';
+      empty.style.color = 'var(--muted)';
+      empty.textContent = 'Все роли уже добавлены';
+      dropdown.appendChild(empty);
     }
+
+    document.body.appendChild(dropdown);
+
+    function cleanup() {
+      dropdown.remove();
+      document.removeEventListener('click', outsideClick);
+      _relayDropdownCleanup = null;
+    }
+    function outsideClick(e) {
+      if (!dropdown.contains(e.target) && e.target !== anchorBtn) cleanup();
+    }
+    setTimeout(() => document.addEventListener('click', outsideClick), 10);
+    _relayDropdownCleanup = cleanup;
   }
 
   /* ── Devices panel ── */
@@ -11778,11 +12696,32 @@
       : `Автовосстановление отключено · ${when} (источник неизвестен)`;
   }
 
+  function relayChipHtml(u) {
+    const active = !!(u && u.relay_active);
+    const cls = active ? 'site-db-relay-chip--on' : 'site-db-relay-chip--off';
+    const title = active
+      ? (_lang === 'en' ? 'Relay bot connected by user' : 'Relay подключён пользователем')
+      : (_lang === 'en' ? 'Relay bot not connected' : 'Relay не подключён пользователем');
+    const label = active ? 'ON' : 'OFF';
+    return `<span class="site-db-relay-chip ${cls}" title="${escapeHtml(title)}">${label}</span>`;
+  }
+
+  function fmtSteamReassignedNote(u) {
+    if (!u || !u.steam_reassigned_to_discord_id) return '';
+    const when = u.steam_reassigned_at ? fmtTs(u.steam_reassigned_at) : '—';
+    const toId = String(u.steam_reassigned_to_discord_id);
+    return _lang === 'en'
+      ? `Steam profile reassigned to Discord ${toId} · ${when}`
+      : `Steam-профиль переназначен на Discord ${toId} · ${when}`;
+  }
+
   function siteDbRowMatchesSearch(u, q) {
     if (!q) return true;
     const hay = [
       u.discord_username, u.discord_id, u.steam_id,
       u.guild_id, u.country, u.last_ip, u.first_ip,
+      u.steam_reassigned_to_discord_id,
+      u.relay_guild_id, u.relay_channel_id,
       String(u.internal_id || ''),
       ...(Array.isArray(u.servers) ? u.servers.flatMap(s => [s.server_ip, s.server_name]) : []),
     ].filter(Boolean).map(x => String(x).toLowerCase());
@@ -11797,7 +12736,7 @@
     const filtered = q ? list.filter(u => siteDbRowMatchesSearch(u, q)) : list;
 
     if (!filtered.length) {
-      tbody.innerHTML = `<tr><td colspan="9" style="padding:12px" class="muted">${_lang==='en'?'No rust_users records':'Нет записей rust_users'}${q ? (_lang==='en'?' matching «':'  по запросу «') + escapeHtml(q) + '»' : ''}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="12" style="padding:12px" class="muted">${_lang==='en'?'No rust_users records':'Нет записей rust_users'}${q ? (_lang==='en'?' matching «':'  по запросу «') + escapeHtml(q) + '»' : ''}</td></tr>`;
       return;
     }
 
@@ -11816,26 +12755,37 @@
       const disabledNote = u.admin_disabled
         ? `<span class="site-db-disabled-note">${escapeHtml(fmtAdminDisabledNote(u))}</span>`
         : '';
+      const reassignChip = u.steam_reassigned_to_discord_id
+        ? `<span class="site-db-reassign-chip" title="${escapeHtml(fmtSteamReassignedNote(u))}">MOVE</span>`
+        : '';
+      const reassignNote = u.steam_reassigned_to_discord_id
+        ? `<span class="site-db-reassign-note">${escapeHtml(fmtSteamReassignedNote(u))}</span>`
+        : '';
       const activeSrv = u.active_server;
       const serversCell = (u.servers_count > 0)
         ? `${u.servers_count}${activeSrv ? `&nbsp;·&nbsp;<span class="mono" style="font-size:0.78rem">${escapeHtml(String(activeSrv.server_ip || '—'))}:${escapeHtml(String(activeSrv.server_port || '—'))}</span>` : ''}`
         : '<span class="muted">—</span>';
-      const rowExtraCls = (u.is_banned ? ' is-banned' : '') + (u.admin_disabled ? ' is-admin-disabled' : '');
+      const rowExtraCls = (u.is_banned ? ' is-banned' : '')
+        + (u.admin_disabled ? ' is-admin-disabled' : '')
+        + (u.steam_reassigned_to_discord_id ? ' is-reassigned' : '');
 
       return [
         `<tr class="site-db-row${open ? ' is-open' : ''}${rowExtraCls}" data-row-id="${escapeHtml(rowId)}">`,
           `<td style="text-align:center"><span class="site-db-caret">▸</span></td>`,
           `<td class="mono">${escapeHtml(String(u.internal_id))}</td>`,
-          `<td>${socketDot}${banChip}${disabledChip}${escapeHtml(String(u.discord_username || '—'))}<br/><span class="muted mono" style="font-size:0.76rem">${escapeHtml(String(u.discord_id || ''))}</span>${disabledNote ? `<br/>${disabledNote}` : ''}</td>`,
+          `<td>${socketDot}${banChip}${disabledChip}${reassignChip}${escapeHtml(String(u.discord_username || '—'))}<br/><span class="muted mono" style="font-size:0.76rem">${escapeHtml(String(u.discord_id || ''))}</span>${disabledNote ? `<br/>${disabledNote}` : ''}${reassignNote ? `<br/>${reassignNote}` : ''}</td>`,
           `<td class="mono">${u.steam_id ? steamProfileLink(u.steam_id) : '<span class="muted">—</span>'}</td>`,
           `<td>${fcmBadgeHtml(u.fcm_status)}</td>`,
           `<td class="mono">${escapeHtml(String(u.guild_id || '—'))}</td>`,
+          `<td style="text-align:center">${relayChipHtml(u)}</td>`,
+          `<td class="mono">${escapeHtml(String(u.relay_guild_id || '—'))}</td>`,
+          `<td class="mono">${escapeHtml(String(u.relay_channel_id || '—'))}</td>`,
           `<td>${escapeHtml(String(u.country || '—'))}</td>`,
           `<td>${serversCell}</td>`,
           `<td style="white-space:nowrap;font-size:0.82rem">${escapeHtml(fmtTs(u.last_login_at))}</td>`,
         `</tr>`,
         `<tr class="site-db-detail-row${open ? '' : ' is-hidden'}" data-row-id="${escapeHtml(rowId)}">`,
-          `<td colspan="9">${renderSiteDbDetail(u)}</td>`,
+          `<td colspan="12">${renderSiteDbDetail(u)}</td>`,
         `</tr>`,
       ].join('');
     }).join('');
@@ -11962,6 +12912,20 @@
     const chatLabel = String(u.discord_username || u.steam_id || iid);
     const canChat = !!(u.has_active_socket && chatSteamId);
 
+    const reassignMeta = u.steam_reassigned_to_discord_id ? `
+      <div class="site-db-detail-kv" style="grid-column:1/-1">
+        <h4 style="color:#fcd34d">${_lang==='en'?'Steam reassigned':'Steam переназначен'}</h4>
+        <dl style="margin:0">
+          ${kv(_lang==='en'?'New Discord ID':'Новый Discord ID', mono(u.steam_reassigned_to_discord_id))}
+          ${kv(_lang==='en'?'When':'Когда', escapeHtml(fmtTs(u.steam_reassigned_at)))}
+        </dl>
+        <p class="muted" style="margin:6px 0 0;font-size:.76rem">
+          ${_lang==='en'
+            ? 'FCM and Rust+ token were cleared on this account; the Steam profile is now linked to the Discord ID above.'
+            : 'На этом аккаунте сброшены FCM и Rust+ token; Steam-профиль привязан к Discord ID выше.'}
+        </p>
+      </div>` : '';
+
     const banMeta = u.is_banned ? `
       <div class="site-db-detail-kv" style="grid-column:1/-1">
         <h4 style="color:#fca5a5">Бан</h4>
@@ -12005,6 +12969,19 @@
           запись в <code>rust_users.is_banned</code> / <code>admin_disabled</code>.
           «Полный сброс» также удаляет FCM-токены, <code>rustplus_token</code> и все строки <code>rust_servers</code>.
         </p>
+      </div>`;
+
+    const relayMeta = `
+      <div class="site-db-detail-kv">
+        <h4>Relay</h4>
+        <dl style="margin:0">
+          ${kv(_lang==='en'?'Status':'Статус', relayChipHtml(u))}
+          ${kv('relay guild', mono(u.relay_guild_id))}
+          ${kv('relay channel', mono(u.relay_channel_id))}
+          ${kv(_lang==='en'?'Master enabled':'Мастер вкл.', u.relay_enabled ? '✅' : '<span class="muted">нет</span>')}
+          ${kv(_lang==='en'?'Discord notif.':'Discord увед.', u.relay_discord_notifications ? '✅' : '<span class="muted">нет</span>')}
+          ${kv('Updated', escapeHtml(fmtTs(u.relay_updated_at)))}
+        </dl>
       </div>`;
 
     const fcmMeta = `
@@ -12081,8 +13058,10 @@
     return `
       <div class="site-db-detail">
         ${actions}
+        ${reassignMeta}
         ${banMeta}
         ${userMeta}
+        ${relayMeta}
         ${teamMeta}
         ${fcmMeta}
         <div class="site-db-detail-kv" style="grid-column: 1 / -1">
@@ -13011,7 +13990,9 @@
     initIngameLangSettings(session);
     initCmdDelaySettings(session, data.discord_id || _dashDiscordId);
     initIngameNotifToggle(session, data.discord_id || _dashDiscordId);
-    initRelayDiscordSettings(session, data.discord_id || _dashDiscordId);
+    if (document.getElementById('panel-notify-discord')?.classList.contains('active')) {
+      initRelayDiscordSettings(session, data.discord_id || _dashDiscordId);
+    }
     initDevicesPanel(session);
     initWatchPanel(session);
     initCoinsPanel(session);
@@ -13410,15 +14391,147 @@
   let _mapDragOriginX = 0;
   let _mapDragOriginY = 0;
   let _mapGridSearchDebounce = null;
+  let _mapPollTimer = null;
+  let _mapLayers = {};
+  const MAP_POLL_INTERVAL_MS = 10000;
+  const MAP_LAYER_IDS = [
+    'layer-grid', 'layer-events', 'layer-shops', 'layer-team', 'layer-players',
+    'layer-monuments', 'layer-monument-labels', 'layer-active-events',
+  ];
+  const MAP_EVENT_TYPES = new Set([2, 4, 5, 6, 8, 9]);
 
   const MAP_MAX_SCALE = 8.0;
   const MAP_GRID_DIAMETER = 146.28571428571428;
   /** Как в rustplus: output.paste(generate_grid(...), (5, 5), grid) — сетка смещена на 5 px. */
   const MAP_GRID_PASTE_OFFSET = 5;
 
+  function loadMapLayersFromStorage() {
+    try {
+      const raw = localStorage.getItem('ri_map_layers');
+      _mapLayers = raw ? JSON.parse(raw) : {};
+    } catch (_) {
+      _mapLayers = {};
+    }
+    MAP_LAYER_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const stored = _mapLayers[id];
+      el.checked = stored !== undefined ? !!stored : true;
+      _mapLayers[id] = el.checked;
+    });
+  }
+
+  function saveMapLayers() {
+    try { localStorage.setItem('ri_map_layers', JSON.stringify(_mapLayers)); } catch (_) {}
+  }
+
+  function isMapLayerOn(id) {
+    return _mapLayers[id] !== false;
+  }
+
+  function bindMapLayerToggles() {
+    MAP_LAYER_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el || el.dataset.bound) return;
+      el.dataset.bound = '1';
+      el.addEventListener('change', () => {
+        _mapLayers[id] = el.checked;
+        saveMapLayers();
+        if (id === 'layer-grid') renderMapGridOverlay();
+        if (_mapData) renderMapMarkers(
+          _mapData.markers || [], _mapData.team || [], _mapData.server?.size || 4000
+        );
+      });
+    });
+  }
+
+  function startMapAutoRefresh() {
+    stopMapAutoRefresh();
+    _mapPollTimer = setInterval(() => { refreshMapLive().catch(() => {}); }, MAP_POLL_INTERVAL_MS);
+  }
+
+  function stopMapAutoRefresh() {
+    if (_mapPollTimer) { clearInterval(_mapPollTimer); _mapPollTimer = null; }
+  }
+
+  function updateMapStatusLine(extra) {
+    const statusEl = document.getElementById('map-status');
+    if (!statusEl || !_mapData?.ok) return;
+    const parts = [];
+    if (_mapData.image_cached)
+      parts.push(`✅ ${_lang==='en'?'Cache':'Кеш'} · seed ${_mapData.server?.seed ?? '?'}`);
+    else
+      parts.push(`✅ ${_mapData.server?.name || (_lang==='en'?'Loaded':'Загружено')}`);
+    if (_mapData.updated_at) {
+      const ago = formatAgo(_mapData.updated_at);
+      const src = _mapData.source === 'bot_cache' ? ` · ${_lang==='en'?'bot cache':'кеш бота'}` : '';
+      parts.push(` · ${_lang==='en'?'Updated':'Обновлено'} ${ago}${src}`);
+    }
+    if (_mapData.socket_connected === false)
+      parts.push(` · ⚠️ ${_lang==='en'?'Socket offline':'Сокет офлайн'}`);
+    if (extra) parts.push(extra);
+    statusEl.className = 'map-status';
+    statusEl.textContent = parts.join('');
+  }
+
+  async function refreshMapLive() {
+    const session = _dashSessionRef;
+    if (!session || !_mapData?.ok) return;
+    if (!document.getElementById('map-viewport')?.classList.contains('visible')) return;
+    const serverId = document.getElementById('map-server-select')?.value || '';
+    let url = `${API_BASE}/me/map/live?session=${encodeURIComponent(session)}`;
+    if (serverId) url += `&server_id=${encodeURIComponent(serverId)}`;
+    const resp = await fetch(url, { credentials: 'include', cache: 'no-store' });
+    const data = await resp.json();
+    if (!data.ok) return;
+    _mapData = { ..._mapData, ...data };
+    renderMapMarkers(data.markers || [], data.team || [], data.server?.size || _mapData.server?.size || 4000);
+    const q = document.getElementById('map-search-input')?.value?.trim() || '';
+    renderVendingSearch(q);
+    updateMapStatusLine();
+  }
+
+  function renderMapGridOverlay() {
+    const svg = document.getElementById('map-grid-overlay');
+    const imgEl = document.getElementById('map-img');
+    if (!svg || !imgEl || !_mapData) return;
+    const show = isMapLayerOn('layer-grid');
+    svg.classList.toggle('hidden', !show);
+    if (!show) return;
+    const mapSize = _mapData.server?.size || 4000;
+    const w = imgEl.naturalWidth || parseInt(imgEl.style.width, 10) || mapSize;
+    const h = imgEl.naturalHeight || parseInt(imgEl.style.height, 10) || mapSize;
+    svg.setAttribute('width', w);
+    svg.setAttribute('height', h);
+    svg.style.width = w + 'px';
+    svg.style.height = h + 'px';
+    const ox = MAP_GRID_PASTE_OFFSET;
+    const numCells = Math.max(1, Math.floor(mapSize / MAP_GRID_DIAMETER));
+    const lines = [];
+    for (let i = 0; i <= numCells; i++) {
+      const p = ox + i * MAP_GRID_DIAMETER;
+      const sx = (p / mapSize) * w;
+      const sy = (p / mapSize) * h;
+      lines.push(`<line x1="${sx}" y1="0" x2="${sx}" y2="${h}" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>`);
+      lines.push(`<line x1="0" y1="${sy}" x2="${w}" y2="${sy}" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>`);
+    }
+    svg.innerHTML = lines.join('');
+  }
+
+  function activeEventWorldCoords(evt, mapSize) {
+    if (evt.x != null && evt.y != null) return { x: evt.x, y: evt.y };
+    const grid = String(evt.grid_position || '').trim();
+    if (!grid) return null;
+    const m = grid.match(/^([A-Za-z]{1,2})(\d{1,3})$/);
+    if (!m) return null;
+    return gridRefToWorldCenter(m[1], parseInt(m[2], 10), mapSize);
+  }
+
   function initMapPanelOnce() {
     if (_mapPanelBound) { populateMapServerSelect(); return; }
     _mapPanelBound = true;
+    loadMapLayersFromStorage();
+    bindMapLayerToggles();
 
     const btnLoad    = document.getElementById('btn-map-load');
     const btnRefresh = document.getElementById('btn-map-refresh');
@@ -13617,19 +14730,18 @@
     if (!canvas || !container || !_mapData) return;
     const ch = canvas.offsetHeight;
     if (!canvas.offsetWidth || !ch) return;
-    container.querySelectorAll('.map-marker').forEach(el => {
+    const positionEl = (el) => {
       const wx = parseFloat(el.dataset.wx);
       const wy = parseFloat(el.dataset.wy);
       if (isNaN(wx) || isNaN(wy)) return;
-      // marker.x/y — прямые пиксельные координаты на PNG-изображении.
-      // x=0 — западный край, y=0 — южный край (y перевёрнут относительно canvas).
       const cx = wx;
       const cy = ch - wy;
       const sx = cx * _mapScale + _mapOffsetX;
       const sy = cy * _mapScale + _mapOffsetY;
       el.style.left = sx + 'px';
       el.style.top  = sy + 'px';
-    });
+    };
+    container.querySelectorAll('.map-marker, .map-monument-label').forEach(positionEl);
   }
 
   function resetMapView() {
@@ -13681,18 +14793,14 @@
       if (!data.ok) throw new Error(data.error || 'unknown');
       _mapData = data;
 
-      // 2. Изображение через отдельный endpoint
+      const seed = data.server?.seed;
       let imgUrl = `${API_BASE}/me/map/image?session=${encodeURIComponent(session)}`;
+      if (seed != null) imgUrl += `&seed=${encodeURIComponent(seed)}`;
       if (serverId) imgUrl += `&server_id=${encodeURIComponent(serverId)}`;
-      if (force)    imgUrl += `&force=1`;
+      if (force) imgUrl += `&force=1`;
 
       renderMap(data, imgUrl);
-
-      if (statusEl) {
-        statusEl.textContent = data.image_cached
-          ? `✅ ${_lang==='en'?'Cache':'Кеш'} · seed ${data.server?.seed ?? '?'} · ${data.server?.size ?? '?'}u`
-          : `✅ ${_lang==='en'?'Loaded':'Загружено'} · ${data.server?.name || ''}`;
-      }
+      updateMapStatusLine();
       if (btnRefresh) btnRefresh.style.display = '';
     } catch (e) {
       statusEl && Object.assign(statusEl, { className: 'map-status err', textContent: '❌ ' + (e.message || e) });
@@ -13735,6 +14843,7 @@
         applyMapTransform();
 
         // Маркеры рендерим только после того, как canvas получил реальные размеры
+        renderMapGridOverlay();
         renderMapMarkers(data.markers || [], data.team || [], data.server?.size || 4000);
         const si = document.getElementById('map-search-input');
         const q0 = (si && si.value) ? si.value.trim() : '';
@@ -13775,7 +14884,6 @@
     if (!container) return;
     container.innerHTML = '';
 
-    // Позиция задаётся через data-wx/wy — updateMarkerPositions() пересчитывает при каждом зуме
     const place = (wx, wy, typeClass, iconHtml, tooltipHtml, extraCls) => {
       const el = document.createElement('div');
       el.className = 'map-marker' + (extraCls ? ' ' + extraCls : '');
@@ -13783,65 +14891,110 @@
       el.dataset.wy = wy;
       el.innerHTML = `<div class="map-marker-icon ${typeClass}">${iconHtml}</div><div class="map-tooltip">${tooltipHtml}</div>`;
       container.appendChild(el);
+      return el;
+    };
+
+    const placeLabel = (wx, wy, text) => {
+      const el = document.createElement('div');
+      el.className = 'map-monument-label';
+      el.dataset.wx = wx;
+      el.dataset.wy = wy;
+      el.textContent = text;
+      container.appendChild(el);
     };
 
     let eventCount = 0;
     const vending = [];
 
-    for (const m of markers) {
-      if (m.x == null || m.y == null) continue;
-      if (m.type === 3) {
-        vending.push(m);
-        continue;
+    if (isMapLayerOn('layer-events') || isMapLayerOn('layer-shops') || isMapLayerOn('layer-players')) {
+      for (const m of (markers || [])) {
+        if (m.x == null || m.y == null) continue;
+        if (m.type === 3) {
+          if (isMapLayerOn('layer-shops')) vending.push(m);
+          continue;
+        }
+        if (m.type === 1) {
+          if (!isMapLayerOn('layer-players')) continue;
+          const grid = coordsToGrid(m.x, m.y, mapSize);
+          const tip = `<strong>${escapeHtml(m.name || m.type_name || 'Player')}</strong><div class="map-tip-coords">${grid}</div>`;
+          place(m.x, m.y, 'type-1', markerIconHtml(m), tip, '');
+          continue;
+        }
+        if (!isMapLayerOn('layer-events') || !MAP_EVENT_TYPES.has(m.type)) continue;
+        const tc = `type-${m.type}`;
+        eventCount++;
+        const grid = coordsToGrid(m.x, m.y, mapSize);
+        const tip = `<strong>${escapeHtml(m.type_name || String(m.type))}</strong><div class="map-tip-coords">${grid} · X${Math.round(m.x)} Y${Math.round(m.y)}</div>`;
+        place(m.x, m.y, tc, markerIconHtml(m), tip, '');
       }
-      const tc = `type-${m.type}`;
-      eventCount++;
-      const grid = coordsToGrid(m.x, m.y, mapSize);
-      const tip = `<strong>${escapeHtml(m.type_name || String(m.type))}</strong><div class="map-tip-coords">${grid} · X${Math.round(m.x)} Y${Math.round(m.y)}</div>`;
-      place(m.x, m.y, tc, markerIconHtml(m), tip, '');
     }
 
-    // Команда — рисуем перед вендингами; магазины последние в DOM и с большим z-index
-    for (const member of (team || [])) {
-      if (member.x == null || member.y == null) continue;
-      const alive = member.is_online && member.is_alive;
-      const tc    = `type-1${alive ? ' alive' : ''}`;
-      const grid  = coordsToGrid(member.x, member.y, mapSize);
-      const status = !member.is_online
-        ? (_lang==='en'?'⚫ offline':'⚫ офлайн')
-        : alive
-          ? (_lang==='en'?'🟢 alive':'🟢 живой')
-          : (_lang==='en'?'💀 dead':'💀 мёртв');
-      const tip = `<strong>${escapeHtml(member.name || '?')}</strong>${status}<div class="map-tip-coords">${grid} · X${Math.round(member.x)} Y${Math.round(member.y)}</div>`;
-      place(member.x, member.y, tc, markerIconHtml({ type: 1, name: member.name, avatar_url: member.avatar_url || '' }), tip, '');
+    if (isMapLayerOn('layer-monuments') || isMapLayerOn('layer-monument-labels')) {
+      for (const mon of (_mapData?.monuments || [])) {
+        if (mon.x == null || mon.y == null) continue;
+        const grid = coordsToGrid(mon.x, mon.y, mapSize);
+        const tip = `<strong>${escapeHtml(mon.name || mon.token || '?')}</strong><div class="map-tip-coords">${grid}</div>`;
+        if (isMapLayerOn('layer-monuments')) {
+          const icon = mon.icon_url
+            ? `<img src="${escapeHtml(mon.icon_url)}" alt="" style="width:22px;height:22px;object-fit:contain" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🏛',style:'font-size:14px'}))"/>`
+            : '<span style="font-size:14px">🏛</span>';
+          place(mon.x, mon.y, 'type-monument', icon, tip, 'map-marker--monument');
+        }
+        if (isMapLayerOn('layer-monument-labels')) {
+          placeLabel(mon.x, mon.y, mon.name || mon.token || '');
+        }
+      }
     }
 
-    for (const m of vending) {
-      const tc = `type-${m.type}`;
-      const orders = (m.sell_orders || []).slice(0, 4).map(o => {
-        const iImg = o.item_img     ? `<img src="${escapeHtml(o.item_img)}" class="map-tooltip-order-img" onerror="this.style.display='none'">` : '';
-        const cImg = o.currency_img ? `<img src="${escapeHtml(o.currency_img)}" class="map-tooltip-order-img" onerror="this.style.display='none'">` : '';
-        const bp    = o.is_blueprint ? ' 📘' : '';
-        const qty   = o.quantity   ?? 1;
-        const cost  = o.cost_per_item ?? '?';
-        const stock = (o.amount_in_stock > 0)
-          ? `<span style="margin-left:auto;color:#4ade80;font-size:.68rem">×${o.amount_in_stock}</span>`
-          : '';
-        return `<div class="map-tooltip-order">${iImg}<span>${escapeHtml(o.item_name||'')}${bp} ×${qty}</span><span class="arrow">→</span>${cImg}<span>${escapeHtml(o.currency_name||'')} ×${cost}</span>${stock}</div>`;
-      }).join('');
-      const grid = coordsToGrid(m.x, m.y, mapSize);
-      const tip = `<strong>${escapeHtml(m.name || 'Магазин')}</strong>${orders || '<span style="opacity:.5">нет данных</span>'}<div class="map-tip-coords">${grid} · X${Math.round(m.x)} Y${Math.round(m.y)}</div>`;
-      place(m.x, m.y, tc, markerIconHtml(m), tip, 'map-marker--vend');
+    if (isMapLayerOn('layer-active-events')) {
+      for (const evt of (_mapData?.active_events || [])) {
+        const pt = activeEventWorldCoords(evt, mapSize);
+        if (!pt) continue;
+        const grid = evt.grid_position || coordsToGrid(pt.x, pt.y, mapSize);
+        const tip = `<strong>${escapeHtml(evt.event_type || 'Event')}</strong><div class="map-tip-coords">${escapeHtml(grid)}</div>`;
+        place(pt.x, pt.y, 'type-active-ev', '<span style="font-size:14px">⭐</span>', tip, 'map-marker--active-ev');
+      }
     }
 
-    // Обновить позиции
+    if (isMapLayerOn('layer-team')) {
+      for (const member of (team || [])) {
+        if (member.x == null || member.y == null) continue;
+        const alive = member.is_online && member.is_alive;
+        const tc    = `type-1${alive ? ' alive' : ''}`;
+        const grid  = coordsToGrid(member.x, member.y, mapSize);
+        const status = !member.is_online
+          ? (_lang==='en'?'⚫ offline':'⚫ офлайн')
+          : alive
+            ? (_lang==='en'?'🟢 alive':'🟢 живой')
+            : (_lang==='en'?'💀 dead':'💀 мёртв');
+        const tip = `<strong>${escapeHtml(member.name || '?')}</strong>${status}<div class="map-tip-coords">${grid} · X${Math.round(member.x)} Y${Math.round(member.y)}</div>`;
+        place(member.x, member.y, tc, markerIconHtml({ type: 1, name: member.name, avatar_url: member.avatar_url || '' }), tip, '');
+      }
+    }
+
+    if (isMapLayerOn('layer-shops')) {
+      for (const m of vending) {
+        const tc = `type-${m.type}`;
+        const orders = (m.sell_orders || []).slice(0, 4).map(o => {
+          const iImg = o.item_img     ? `<img src="${escapeHtml(o.item_img)}" class="map-tooltip-order-img" onerror="this.style.display='none'">` : '';
+          const cImg = o.currency_img ? `<img src="${escapeHtml(o.currency_img)}" class="map-tooltip-order-img" onerror="this.style.display='none'">` : '';
+          const bp    = o.is_blueprint ? ' 📘' : '';
+          const qty   = o.quantity   ?? 1;
+          const cost  = o.cost_per_item ?? '?';
+          const stock = (o.amount_in_stock > 0)
+            ? `<span style="margin-left:auto;color:#4ade80;font-size:.68rem">×${o.amount_in_stock}</span>`
+            : '';
+          return `<div class="map-tooltip-order">${iImg}<span>${escapeHtml(o.item_name||'')}${bp} ×${qty}</span><span class="arrow">→</span>${cImg}<span>${escapeHtml(o.currency_name||'')} ×${cost}</span>${stock}</div>`;
+        }).join('');
+        const grid = coordsToGrid(m.x, m.y, mapSize);
+        const tip = `<strong>${escapeHtml(m.name || 'Магазин')}</strong>${orders || '<span style="opacity:.5">нет данных</span>'}<div class="map-tip-coords">${grid} · X${Math.round(m.x)} Y${Math.round(m.y)}</div>`;
+        place(m.x, m.y, tc, markerIconHtml(m), tip, 'map-marker--vend');
+      }
+    }
+
     updateMarkerPositions();
-
-    // Счётчик ивентов в статусе
-    const statusEl = document.getElementById('map-status');
-    if (statusEl && eventCount > 0) {
-      statusEl.textContent += ` · 🔴 ${_lang==='en'?'Events':'Ивентов'}: ${eventCount}`;
-    }
+    updateMapStatusLine(eventCount > 0
+      ? ` · 🔴 ${_lang==='en'?'Events':'Ивентов'}: ${eventCount}` : '');
   }
 
   function renderVendingSearch(query) {
