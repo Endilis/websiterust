@@ -14402,8 +14402,12 @@
 
   const MAP_MAX_SCALE = 8.0;
   const MAP_GRID_DIAMETER = 146.28571428571428;
-  /** Как в rustplus: output.paste(generate_grid(...), (5, 5), grid) — сетка смещена на 5 px. */
-  const MAP_GRID_PASTE_OFFSET = 5;
+
+  function getCorrectedMapSize(mapSize) {
+    const d = MAP_GRID_DIAMETER;
+    const rem = mapSize % d;
+    return rem < 120 ? mapSize - rem : mapSize + (d - rem);
+  }
 
   function loadMapLayersFromStorage() {
     try {
@@ -14505,17 +14509,28 @@
     svg.setAttribute('height', h);
     svg.style.width = w + 'px';
     svg.style.height = h + 'px';
-    const ox = MAP_GRID_PASTE_OFFSET;
-    const numCells = Math.max(1, Math.floor(mapSize / MAP_GRID_DIAMETER));
-    const lines = [];
-    for (let i = 0; i <= numCells; i++) {
-      const p = ox + i * MAP_GRID_DIAMETER;
-      const sx = (p / mapSize) * w;
-      const sy = (p / mapSize) * h;
-      lines.push(`<line x1="${sx}" y1="0" x2="${sx}" y2="${h}" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>`);
-      lines.push(`<line x1="0" y1="${sy}" x2="${w}" y2="${sy}" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>`);
+    const d = MAP_GRID_DIAMETER;
+    const corrected = getCorrectedMapSize(mapSize);
+    const numCells = Math.max(1, Math.floor(corrected / d));
+    const L = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    function colToLbl(c) {
+      return c < 26 ? L[c] : (L[Math.floor(c / 26) - 1] || '?') + L[c % 26];
     }
-    svg.innerHTML = lines.join('');
+    const parts = [];
+    for (let i = 0; i <= numCells; i++) {
+      const sx = ((i * d) / mapSize * w).toFixed(1);
+      const sy = ((i * d) / mapSize * h).toFixed(1);
+      parts.push(`<line x1="${sx}" y1="0" x2="${sx}" y2="${h}" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>`);
+      parts.push(`<line x1="0" y1="${sy}" x2="${w}" y2="${sy}" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>`);
+    }
+    for (let col = 0; col < numCells; col++) {
+      for (let j = 0; j < numCells; j++) {
+        const tx = ((col * d) / mapSize * w + 4).toFixed(1);
+        const ty = ((j   * d) / mapSize * h + 14).toFixed(1);
+        parts.push(`<text x="${tx}" y="${ty}" fill="rgba(255,255,255,0.65)" font-size="11" font-family="monospace">${colToLbl(col)}${j}</text>`);
+      }
+    }
+    svg.innerHTML = parts.join('');
   }
 
   function activeEventWorldCoords(evt, mapSize) {
@@ -14641,11 +14656,11 @@
   function gridRefToWorldCenter(letters, rowIndex, mapSize) {
     const col = lettersToGridCol(letters);
     if (col < 0) return null;
-    const numCells = Math.max(1, Math.floor(mapSize / MAP_GRID_DIAMETER));
+    const corrected = getCorrectedMapSize(mapSize);
+    const numCells = Math.max(1, Math.floor(corrected / MAP_GRID_DIAMETER));
     if (rowIndex < 0 || rowIndex >= numCells || col >= numCells) return null;
-    const ox = MAP_GRID_PASTE_OFFSET;
-    const x = ox + (col + 0.5) * MAP_GRID_DIAMETER;
-    const py = ox + (rowIndex + 0.5) * MAP_GRID_DIAMETER;
+    const x = (col + 0.5) * MAP_GRID_DIAMETER;
+    const py = (rowIndex + 0.5) * MAP_GRID_DIAMETER;
     const y = mapSize - py;
     return { x, y };
   }
@@ -15067,14 +15082,15 @@
   }
 
   function coordsToGrid(x, y, mapSize) {
-    // Сетка на PNG совпадает с rustplus: paste(grid, (5,5), grid) — учитываем сдвиг.
-    const ox = MAP_GRID_PASTE_OFFSET;
-    const col = Math.max(0, Math.floor((x - ox) / MAP_GRID_DIAMETER));
-    const row = Math.max(0, Math.floor((mapSize - y - ox) / MAP_GRID_DIAMETER));
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const d = MAP_GRID_DIAMETER;
+    const corrected = getCorrectedMapSize(mapSize);
+    const numCells = Math.floor(corrected / d);
+    const col = Math.max(0, Math.floor(x / d));
+    const row = Math.max(0, numCells - 1 - Math.floor(y / d));
+    const L = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const letter = col < 26
-      ? letters[col]
-      : (letters[Math.floor(col / 26) - 1] || '?') + letters[col % 26];
+      ? L[col]
+      : (L[Math.floor(col / 26) - 1] || '?') + L[col % 26];
     return letter + row;
   }
 
