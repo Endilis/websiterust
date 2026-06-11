@@ -6000,7 +6000,7 @@
                   </h3>
                   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
                     <button type="button" class="dash-btn dash-btn--sm" id="admin-polls-results-refresh" data-i18n="admin.polls.refresh">Обновить</button>
-                    <a class="dash-btn dash-btn--sm" id="admin-polls-export-csv" href="#" download data-i18n="admin.polls.export_csv">Экспорт CSV</a>
+                    <button type="button" class="dash-btn dash-btn--sm" id="admin-polls-export-csv" data-i18n="admin.polls.export_csv">Экспорт CSV</button>
                   </div>
                   <div id="admin-polls-results-bars" style="display:grid;gap:10px;margin-bottom:16px"></div>
                   <div class="admin-panel-table-wrap admin-panel-site-db__wrap">
@@ -9265,18 +9265,40 @@
     }).join('');
   }
 
+  async function downloadAdminPollCsv(session, pollId) {
+    if (!session || !pollId) return;
+    setAdminPollsStatus('', null);
+    try {
+      const r = await fetch(
+        `${API_BASE}/admin/polls/${pollId}/results?session=${encodeURIComponent(session)}&format=csv`,
+        { credentials: 'include', cache: 'no-store' },
+      );
+      if (!r.ok) {
+        const data = await r.json().catch(() => ({}));
+        setAdminPollsStatus(data.message || data.error || t('admin.polls.err'), 'err');
+        return;
+      }
+      const blob = await r.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `poll-${pollId}-results.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      setAdminPollsStatus(t('admin.polls.err'), 'err');
+    }
+  }
+
   async function refreshAdminPollResults(session, pollId, opts = {}) {
     if (!session || !pollId) return;
     _adminPollsSelectedId = pollId;
     const sec = document.getElementById('admin-polls-results-section');
     const idEl = document.getElementById('admin-polls-results-id');
-    const csvLink = document.getElementById('admin-polls-export-csv');
     if (sec) sec.style.display = '';
     if (idEl) idEl.textContent = `#${pollId}`;
-    if (csvLink) {
-      csvLink.href = `${API_BASE}/admin/polls/${pollId}/results?session=${encodeURIComponent(session)}&format=csv`;
-      csvLink.download = `poll-${pollId}-results.csv`;
-    }
     try {
       const r = await fetch(
         `${API_BASE}/admin/polls/${pollId}/results?session=${encodeURIComponent(session)}`,
@@ -9284,12 +9306,14 @@
       );
       const data = await r.json().catch(() => ({}));
       if (!r.ok || !data.ok) {
-        if (!opts.silent) setAdminPollsStatus(data.error || t('admin.polls.err'), 'err');
+        const msg = data.message || data.error || `HTTP ${r.status}`;
+        if (!opts.silent) setAdminPollsStatus(msg, 'err');
         return;
       }
       const results = data.results || {};
       renderAdminPollResultsBars(results);
       renderAdminPollVotersTable(results.voters || []);
+      if (!opts.silent) setAdminPollsStatus('', null);
     } catch (e) {
       if (!opts.silent) setAdminPollsStatus(t('admin.polls.err'), 'err');
     }
@@ -9312,6 +9336,11 @@
     document.getElementById('admin-polls-results-refresh')?.addEventListener('click', () => {
       if (_adminPollsSession && _adminPollsSelectedId) {
         refreshAdminPollResults(_adminPollsSession, _adminPollsSelectedId);
+      }
+    });
+    document.getElementById('admin-polls-export-csv')?.addEventListener('click', () => {
+      if (_adminPollsSession && _adminPollsSelectedId) {
+        downloadAdminPollCsv(_adminPollsSession, _adminPollsSelectedId);
       }
     });
   }
